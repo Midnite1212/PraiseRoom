@@ -15,12 +15,8 @@ import KeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp';
 import SongsLyrics from '../songsView/SongsLyrics';
 import SongsTitleCard from '../songsView/SongsTitleCard';
 import { SongViewSchema } from '../../types/song.types';
-import {
-  flatMusicKeysOptions,
-  sharpMusicKeysOptions,
-  specificSongsDesktopWidth,
-} from '../../constants';
-import { getSetlistStartingKey } from '../../helpers/song/chords';
+import { specificSongsDesktopWidth } from '../../constants';
+import { getKeyLabel, getSetlistStartingKey, isMinorKey } from '../../helpers/song/chords';
 
 const keyStepButtonStyles = {
   borderRadius: '4px',
@@ -144,7 +140,7 @@ const SetlistViewSongDisplay = ({
     setUseFlat((prev) => !prev);
   }, []);
 
-  const currentKey = (useFlat ? flatMusicKeysOptions : sharpMusicKeysOptions)[keyIndex];
+  const currentKey = getKeyLabel(keyIndex, useFlat, isMinorKey(song?.originalKey ?? startingKey));
 
   return (
     <Box

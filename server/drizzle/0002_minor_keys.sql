@@ -1,0 +1,2 @@
+ALTER TABLE "setlist_song_keys" DROP CONSTRAINT "setlist_song_keys_key_music_key";--> statement-breakpoint
+ALTER TABLE "setlist_song_keys" ADD CONSTRAINT "setlist_song_keys_key_music_key" CHECK ("setlist_song_keys"."key" in ('A', 'A#', 'Bb', 'B', 'C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#', 'Ab', 'Am', 'A#m', 'Bbm', 'Bm', 'Cm', 'C#m', 'Dbm', 'Dm', 'D#m', 'Ebm', 'Em', 'Fm', 'F#m', 'Gbm', 'Gm', 'G#m', 'Abm'));

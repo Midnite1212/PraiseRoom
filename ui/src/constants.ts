@@ -19,6 +19,8 @@ export const musicKeysOptions = [
   'Ab',
 ];
 
+export const minorMusicKeysOptions = musicKeysOptions.map((key) => `${key}m`);
+
 export const CardFields = ['Themes', 'Tempo', 'Original Key', 'Year', 'Code', 'Time', 'First Line'];
 
 export const flatMusicKeysOptions = [

@@ -6,13 +6,8 @@ import Snackbar from '@mui/material/Snackbar';
 import SongKeyControls from './SongKeyControls';
 import SongsLyrics from './SongsLyrics';
 import { SongViewSchema } from '../../types/song.types';
-import {
-  flatMusicKeysOptions,
-  sharpMusicKeysOptions,
-  specificSongsDesktopWidth,
-  specificSongsMobileWidth,
-} from '../../constants';
-import { getInitialSongKey } from '../../helpers/song/chords';
+import { specificSongsDesktopWidth, specificSongsMobileWidth } from '../../constants';
+import { getInitialSongKey, getKeyLabel, isMinorKey } from '../../helpers/song/chords';
 
 type SongsButtonCardProps = {
   song: SongViewSchema | undefined;
@@ -32,7 +27,7 @@ const SongsButtonsCard = ({
   const [showSplitSnackbar, setShowSplitSnackbar] = useState(false);
   const isSmallScreen = useMediaQuery(`(max-width:${specificSongsMobileWidth})`);
   const isDesktop = useMediaQuery(`(min-width:${specificSongsDesktopWidth})`);
-  const keyLabel = (useFlat && flatMusicKeysOptions[count]) || sharpMusicKeysOptions[count];
+  const keyLabel = getKeyLabel(count, useFlat, isMinorKey(song?.originalKey));
 
   const handleIncrement = () => {
     if (count < 11) setCount(count + 1);

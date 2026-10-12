@@ -7,11 +7,13 @@ import { customAxios as axios } from '../custom/customAxios';
 import { SongSchema } from '../../types/song.types';
 import { SongEditorFormFields } from '../../types/form.types';
 import {
+  minorMusicKeysOptions,
   musicKeysOptions,
   tempoOptions,
   timeSignatureOptions,
   themeOptions,
 } from '../../constants';
+import { isMinorKey } from '../../helpers/song/chords';
 import SongHelpDialog from './SongHelpDialog';
 import {
   Box,
@@ -98,6 +100,7 @@ const SongEditorContainer: FC = () => {
   const { errors } = formState;
   const themes = watch('themes');
   const tempo = watch('tempo');
+  const isMinorSong = isMinorKey(watch('originalKey'));
 
   const getSong = useCallback(async () => {
     if (songId === '') return;
@@ -456,7 +459,7 @@ const SongEditorContainer: FC = () => {
                         <Autocomplete
                           {...field}
                           id="original-key"
-                          options={musicKeysOptions}
+                          options={[...musicKeysOptions, ...minorMusicKeysOptions]}
                           getOptionLabel={(option) => option}
                           filterSelectedOptions
                           value={field.value || null}
@@ -483,7 +486,7 @@ const SongEditorContainer: FC = () => {
                       render={({ field }) => (
                         <AutocompleteInput
                           id="recommended-keys"
-                          options={musicKeysOptions}
+                          options={isMinorSong ? minorMusicKeysOptions : musicKeysOptions}
                           label="Recommended Keys"
                           clearAriaLabel="Clear all selected recommended keys"
                           autoComplete="recommended-keys"

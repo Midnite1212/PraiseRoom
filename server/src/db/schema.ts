@@ -12,7 +12,7 @@ import {
 } from 'drizzle-orm/pg-core';
 import { ACCESS_TYPES, DEFAULT_ACCESS_TYPE } from '../policies/permissions.config';
 
-export const MUSIC_KEYS = [
+const MAJOR_KEYS = [
   'A',
   'A#',
   'Bb',
@@ -31,6 +31,8 @@ export const MUSIC_KEYS = [
   'G#',
   'Ab',
 ] as const;
+
+export const MUSIC_KEYS = [...MAJOR_KEYS, ...MAJOR_KEYS.map((key) => `${key}m` as const)];
 
 const isObjectIdHex = (column: AnyPgColumn): SQL => sql`${column} ~ '^[0-9a-f]{24}$'`;
 

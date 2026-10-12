@@ -310,6 +310,11 @@ describe(
         assert.deepEqual(rekeyed.songKeys, [{ key: 'G', songId: b._id }]);
         assert.equal(rekeyed.name, 'Renamed');
         assert.equal(rekeyed.date, null);
+        const minor = await ok(updateSetlist, {
+          body: { id: created._id, songKeys: [{ key: 'F#m', songId: b._id }] },
+          user: MEMBER,
+        });
+        assert.deepEqual(minor.songKeys, [{ key: 'F#m', songId: b._id }]);
       });
 
       it('rejects unknown song ids and bad dates with 400 and writes nothing', async () => {

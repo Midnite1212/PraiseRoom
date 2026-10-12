@@ -6,6 +6,7 @@ const QUALITY = `(?:${QUALITY_TOKEN}|\\((?:${QUALITY_TOKEN}|,)+\\))*`;
 const CHORD_PATTERN = new RegExp(`^(\\s*)(${NOTE})(${QUALITY})(?:\\/(${NOTE}))?(\\s*)$`);
 
 const KEY_PATTERN = /^([A-G][#b]?)m?$/;
+const MINOR_KEY_PATTERN = /^[A-G][#b]?m$/;
 
 export const getNoteIndex = (note: string) =>
   flatMusicKeysOptions.indexOf(note) === -1
@@ -78,3 +79,8 @@ export const transposeChord = (chord: string, transpossedChordIndex: number, use
 export const getInitialSongKey = (originalKey: string | undefined) => parseSongKey(originalKey);
 
 export const getSetlistStartingKey = (startingKey: string) => parseSongKey(startingKey);
+
+export const isMinorKey = (key: string | undefined) => MINOR_KEY_PATTERN.test(key ?? '');
+
+export const getKeyLabel = (keyIndex: number, useFlat: boolean, isMinor: boolean) =>
+  `${(useFlat ? flatMusicKeysOptions : sharpMusicKeysOptions)[keyIndex]}${isMinor ? 'm' : ''}`;
