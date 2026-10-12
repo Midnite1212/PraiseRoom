@@ -9,6 +9,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import customTheme from './theme';
 import './styles.css';
 import PrivateRouteWrapper from './components/custom/PrivateRouteWrapper';
+import SessionProvider from './components/custom/SessionProvider';
 
 const enabledRoutes = appRoutes.filter((route) => route.enabled);
 
@@ -18,29 +19,31 @@ function App() {
       <PersistGate loading={null} persistor={persistor}>
         <ThemeProvider theme={customTheme}>
           <CssBaseline />
-          <BrowserRouter>
-            <Box
-              display="flex"
-              component="main"
-              sx={{ flexGrow: 1, width: '100%', height: '100vh' }}
-            >
-              <Suspense fallback={null}>
-                <Routes>
-                  {enabledRoutes.map((route) => (
-                    <Route
-                      key={route.key}
-                      path={route.path}
-                      element={
-                        <PrivateRouteWrapper permissions={route.permissions}>
-                          <route.component />
-                        </PrivateRouteWrapper>
-                      }
-                    />
-                  ))}
-                </Routes>
-              </Suspense>
-            </Box>
-          </BrowserRouter>
+          <SessionProvider>
+            <BrowserRouter>
+              <Box
+                display="flex"
+                component="main"
+                sx={{ flexGrow: 1, width: '100%', height: '100vh' }}
+              >
+                <Suspense fallback={null}>
+                  <Routes>
+                    {enabledRoutes.map((route) => (
+                      <Route
+                        key={route.key}
+                        path={route.path}
+                        element={
+                          <PrivateRouteWrapper permissions={route.permissions}>
+                            <route.component />
+                          </PrivateRouteWrapper>
+                        }
+                      />
+                    ))}
+                  </Routes>
+                </Suspense>
+              </Box>
+            </BrowserRouter>
+          </SessionProvider>
         </ThemeProvider>
       </PersistGate>
     </Provider>

@@ -48,6 +48,8 @@ const PrivateRouteWrapper = ({ children, permissions }: PrivateRouteWrapperProps
   const isAdmin = user?.accessType === UserAccessType.ADMIN;
   const isEditor = canWriteSongs(user?.accessType);
   const loginRedirect = <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  const redirectFrom: unknown = location.state?.from;
+  const signedInRedirectPath = typeof redirectFrom === 'string' ? redirectFrom : '/';
 
   if (permissions.includes('public')) {
     return isAuthenticated ? (
@@ -59,7 +61,7 @@ const PrivateRouteWrapper = ({ children, permissions }: PrivateRouteWrapperProps
 
   if (permissions.includes('noUser')) {
     return isAuthenticated ? (
-      <Navigate to="/" replace />
+      <Navigate to={signedInRedirectPath} replace />
     ) : (
       <Box sx={{ flexGrow: 1 }}>{children}</Box>
     );

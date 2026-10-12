@@ -118,23 +118,23 @@ Majors only. `ui/package.json` and `server/package.json` are the source of truth
 
 ### Frontend (`ui/src/`)
 
-| Path                               | Role                                                                                                                                                  |
-| ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `index.tsx`                        | Entry: React 18 `createRoot` → `StrictMode` → `App`                                                                                                   |
-| `App.tsx`                          | Redux `Provider` → MUI `ThemeProvider` + `CssBaseline` → `BrowserRouter`; maps `routes.ts` into `<Route>`s, each wrapped in `PrivateRouteWrapper`     |
-| `routes.ts`                        | The single route table: `{ key, title, path, enabled, component, permissions }`                                                                       |
-| `components/<feature>/`            | Feature UI: `auth/`, `home/`, `song/`, `songsView/`, `setlist/`, `setlistView/`, `profile/`, `navigation/`. Route-level components end in `Container` |
-| `components/setlist/hooks/`        | Setlist-only hooks (song search, folder members, tabs data, folder drawer)                                                                            |
-| `components/custom/`               | Shared building blocks plus `PrivateRouteWrapper.tsx`, `ErrorPage.tsx`, `authClient.ts` (Neon Auth client), and `customAxios.ts`                      |
-| `components/utility/`              | Cross-feature modals (`SongPreviewModal`)                                                                                                             |
-| `helpers/customHooks.ts`           | `useUser`, `useSongs`, `useOwnership`, `useOwnedSetlists`                                                                                             |
-| `helpers/song/`, `helpers/global/` | Pure helpers (lyrics preview, first line, chord parsing, date format) behind `index.tsx` barrels                                                      |
-| `reducers/`                        | RTK slices: `songs`, `ownership`, plus `sessionSlice.ts`'s bare `signout` action; barrel in `reducers/index.tsx`                                      |
-| `store.ts`                         | `configureStore`; nothing is persisted (`whitelist: []`); `signout` resets every slice; exports `RootState` and `useAppSelector`                      |
-| `types/`                           | Shared types: `song`, `setlist`, `ownership`, `user`, `form`                                                                                          |
-| `constants.ts`                     | Music keys, tempo, themes, `ChordColors`, layout heights and widths                                                                                   |
-| `theme.ts`                         | MUI theme: palette (incl. custom `darker` / `lighter` shades via module augmentation), typography, component overrides                                |
-| `vite-env.d.ts`                    | Vite client types and Vitest globals; no custom `VITE_*` env vars remain                                                                              |
+| Path                               | Role                                                                                                                                                    |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `index.tsx`                        | Entry: React 18 `createRoot` → `StrictMode` → `App`                                                                                                     |
+| `App.tsx`                          | Redux `Provider` → MUI `ThemeProvider` + `CssBaseline` → `BrowserRouter`; maps `routes.ts` into `<Route>`s, each wrapped in `PrivateRouteWrapper`       |
+| `routes.ts`                        | The single route table: `{ key, title, path, enabled, component, permissions }`                                                                         |
+| `components/<feature>/`            | Feature UI: `auth/`, `home/`, `song/`, `songsView/`, `setlist/`, `setlistView/`, `profile/`, `navigation/`. Route-level components end in `Container`   |
+| `components/setlist/hooks/`        | Setlist-only hooks (song search, folder members, tabs data, folder drawer)                                                                              |
+| `components/custom/`               | Shared building blocks plus `PrivateRouteWrapper.tsx`, `ErrorPage.tsx`, `SessionProvider.tsx`, `authClient.ts` (Neon Auth client), and `customAxios.ts` |
+| `components/utility/`              | Cross-feature modals (`SongPreviewModal`)                                                                                                               |
+| `helpers/customHooks.ts`           | `useUser`, `useSongs`, `useOwnership`, `useOwnedSetlists`                                                                                               |
+| `helpers/song/`, `helpers/global/` | Pure helpers (lyrics preview, first line, chord parsing, date format) behind `index.tsx` barrels                                                        |
+| `reducers/`                        | RTK slices: `songs`, `ownership`, plus `sessionSlice.ts`'s bare `signout` action; barrel in `reducers/index.tsx`                                        |
+| `store.ts`                         | `configureStore`; nothing is persisted (`whitelist: []`); `signout` resets every slice; exports `RootState` and `useAppSelector`                        |
+| `types/`                           | Shared types: `song`, `setlist`, `ownership`, `user`, `form`                                                                                            |
+| `constants.ts`                     | Music keys, tempo, themes, `ChordColors`, layout heights and widths                                                                                     |
+| `theme.ts`                         | MUI theme: palette (incl. custom `darker` / `lighter` shades via module augmentation), typography, component overrides                                  |
+| `vite-env.d.ts`                    | Vite client types and Vitest globals; no custom `VITE_*` env vars remain                                                                                |
 
 Imports are **relative** (`'../../helpers/customHooks'`). The `#/*` alias in `ui/tsconfig.json` is mirrored in `vite.config.ts` and resolves at runtime, but the codebase uses relative imports; do not add new `#/` imports.
 
@@ -257,7 +257,7 @@ const fetchSong = async () => {
 };
 ```
 
-- Always use `customAxios`. It is one `axios.create()` instance (`components/custom/customAxios.ts`) with a request interceptor that attaches `Authorization: Bearer <token>` from `getAuthToken()` in `authClient.ts`, caching the token in memory until shortly before its 15-minute `exp` and skipping the header entirely when signed out. The cache is module-level state; `clearAuthTokenCache()` (called on sign-out) is the only way to reset it.
+- Always use `customAxios`. It is one `axios.create()` instance (`components/custom/customAxios.ts`) with a request interceptor that attaches `Authorization: Bearer <token>` from `getAuthToken()` in `authClient.ts`, caching the token in memory until shortly before its 15-minute `exp` and skipping the header entirely when signed out. The same instance coalesces identical GETs (same url, params, and `Authorization`) into one request and reuses the response for 30 seconds, handing each caller its own copy; any non-GET request clears that response cache, and so does `clearAuthTokenCache()` (called on sign-out). Requests that pass their own `validateStatus` bypass it. Both caches are module-level state.
 - API paths: `/api/<resource>/<action>` for this server, including `/api/auth/*` (Better Auth proxy) and `/api/auth-callback` (Google OAuth callback). There is no `/external-api` proxy; the main HMCC HK site is not called from this repo.
 - Log request failures with `logRequestError(context, err)` from `helpers/global`. Never `console.log`/`console.error` a raw axios error: its `config.headers` carries the user's JWT.
 - Every request handles failure visibly. Mutations show a Snackbar on success and on failure (see `SetlistFolderDetail.tsx` for the pattern). Never show a success message without checking the result. Never render the raw server error string.
@@ -275,7 +275,7 @@ const fetchSong = async () => {
 ## State
 
 - Redux holds: `songs`, `ownership`. Nothing is persisted to localStorage (redux-persist `whitelist: []`); both slices are refetched on load. The session itself lives in Neon Auth's HTTP-only cookies on this origin, not Redux. `signout()` (from `reducers/sessionSlice.ts`) resets every slice; pair it with `persistor.purge()` on logout.
-- Use `useOwnership()` for the current user's ownership record and `useUser()` for the signed-in profile (`{ id, email, fullName, accessType }`). `useUser()` calls `authClient.getSession()` (`GET /api/auth/get-session`) on every mount, so call it once per page and pass `user` down, not in every child.
+- Use `useOwnership()` for the current user's ownership record and `useUser()` for the signed-in profile (`{ id, email, fullName, accessType }`). `useUser()` reads the session that `SessionProvider` (`components/custom/SessionProvider.tsx`, mounted once in `App.tsx`) loads on app start; call its `refreshSession()` after anything that changes who is signed in.
 - `RootState` and `useAppSelector` come from `store.ts`. Use `useAppSelector` in new code.
 - Do not add a slice unless the state is genuinely cross-page. Page state stays in the component.
 - Never put new personal data into Redux; it ends up in localStorage.
@@ -373,7 +373,7 @@ Then set the Vercel `DATABASE_URL` to Neon's pooled `-pooler` URL and redeploy.
 - Users, sessions, and sign-in live in Neon Auth (Managed Better Auth) in this app's own Neon project. This repo has no dependency on the HMCC HK main site for auth; there is no `/external-api` proxy and no `MAIN_URL`.
 - `ui/src/components/custom/authClient.ts` is a small axios client for this app's own `/api/auth/*` (Better Auth endpoints: `get-session`, `sign-in/email`, `sign-in/social`, `sign-up/email`, `request-password-reset`, `reset-password`, `sign-out`); the UI does not use the Neon Auth SDK, which would add about 550 kB. `getAuthToken()` reads the API JWT from the `set-auth-jwt` header of `get-session`. The server's `server/src/auth/neonAuth.routes.ts` proxies every `/api/auth/*` request to `NEON_AUTH_BASE_URL` (first-party cookies, works under Safari ITP) and `GET /api/auth-callback?next=<path>` finishes Google OAuth (exchanges the verifier, sets session cookies, redirects to `next`).
 - The auth screens (`components/auth/*Container.tsx`) call the Better Auth client directly: `authClient.signIn.email`, `authClient.signIn.social({ provider: 'google', callbackURL: '<origin>/api/auth-callback?next=<path>' })` (the client sends the browser to the returned Google URL), `authClient.signUp.email`, `authClient.requestPasswordReset({ email, redirectTo })`, `authClient.resetPassword({ newPassword, token })`. Every call resolves `{ data, error }` rather than throwing; never render `error.message` (it is server text), map `error.status` to a fixed safe string instead.
-- `useUser()` (`helpers/customHooks.ts`) calls `authClient.getSession()` for the signed-in identity, then loads or creates the user's `Ownership` record from `/api/ownerships/get` / `/api/ownerships/create`, and returns `{ id, email, fullName, accessType }` built from the session plus the ownership's `accessType`. There is no token in Redux; `customAxios`'s interceptor gets the bearer token from `getAuthToken()` (see `#data-and-api`).
+- `SessionProvider` calls `authClient.getSession()` once on app start (and again on `refreshSession()`, which email sign-in awaits before the `noUser` route sends the user to `location.state.from` or `/`) for the signed-in identity, then loads or creates the user's `Ownership` record from `/api/ownerships/get` / `/api/ownerships/create`, and `useUser()` (`helpers/customHooks.ts`) returns `{ id, email, fullName, accessType }` built from the session plus the ownership's `accessType`. There is no token in Redux; `customAxios`'s interceptor gets the bearer token from `getAuthToken()` (see `#data-and-api`).
 - Sign-out calls `authClient.signOut()`, then `clearAuthTokenCache()`, then `persistor.purge()`, then dispatches `signout()` (see `ProfileView.tsx`).
 - This server verifies Neon Auth's EdDSA JWTs against its JWKS (`jose`, `src/utils/verify-jwt.ts`) instead of a shared `JWT_KEY`, and reads **`Authorization: Bearer <token>`**. `req.user` (`AuthenticatedRequest`) holds the decoded `{ id, emailAddress, name }` plus `accessType` loaded from `ownerships.access_type` by the token's `sub` (Neon Auth tokens carry no custom claims). Trust `req.user` for identity; never trust a `userId` or `accessType` sent in the request body.
 
@@ -419,7 +419,7 @@ Read `.claude/docs/commit-convention.md` and `.claude/docs/pr-description.md` be
 8. Server tests rely on `node --test` expanding `'src/**/*.test.ts'`, which needs Node 21+; on Node 20 pass the files explicitly.
 9. On Vercel the SPA is the `ui` service, never the Express app, and `express.static` is ignored there. Locally use the Vite dev server on :3000. `server/` must not have a `build` script: Vercel's Express preset would run it, take `dist/app.js` as the handler at the function root, and lose `server/node_modules`, so every request fails with `Cannot find module`. Vercel compiles `app.ts` itself and type-checks it.
 10. `#/` imports resolve through the Vite alias, but the codebase uses relative imports. Keep to that.
-11. `useUser()` hits the network on every mount; do not call it in list items.
+11. `useUser()` reads shared context and never fetches; the session loads once in `SessionProvider`, so a signed-in state change must go through `refreshSession()` or a full page load.
 12. `isObjectIdString` requires a 24-character hex string in either case; repositories lowercase ids before querying, so compare stored ids against `toObjectId(id)`, not the raw request value. User ids are a separate shape: `isUserIdString` validates a Neon Auth user id, which is stored and compared as given, never lowercased.
 13. `yarn build` in `ui/` runs `tsc --noEmit` before `vite build`, so a type error fails the `ui` deploy. `ui/.eslintrc.cjs` is its own ESLint root (`@typescript-eslint/recommended`, the react, react-hooks, jsx-a11y, and import rules carried over from `eslint-config-react-app`, single quotes and semicolons); its plugins load from the root `node_modules`, so add UI lint plugins to the root `package.json`. Edit it, not the root config, for UI rules.
 14. Route `key`s in `routes.ts` must be unique, and React keys from data (`_id`), not indexes.
