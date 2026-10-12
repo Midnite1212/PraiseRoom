@@ -1,5 +1,8 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "git": {
+    "deploymentEnabled": { "*": false, "main": true }
+  },
   "services": {
     "server": { "root": "server", "framework": "express" },
     "ui": { "root": "ui", "framework": "create-react-app" }
