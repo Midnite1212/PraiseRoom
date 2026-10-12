@@ -40,28 +40,27 @@ const loadEntries = async (executor: Executor, ownershipIds: string[]) => {
   if (ownershipIds.length === 0) {
     return { groupIds: new Map<string, StoredOwnershipEntry[]>(), setlistIds: new Map() };
   }
-  const [groupRows, setlistRows] = await Promise.all([
-    executor
-      .select({
-        ownershipId: ownershipGroups.ownershipId,
-        entryId: ownershipGroups.groupId,
-        entryName: ownershipGroups.entryName,
-        entryCreatedAt: ownershipGroups.entryCreatedAt,
-      })
-      .from(ownershipGroups)
-      .where(inArray(ownershipGroups.ownershipId, ownershipIds))
-      .orderBy(asc(ownershipGroups.ownershipId), asc(ownershipGroups.position)),
-    executor
-      .select({
-        ownershipId: ownershipSetlists.ownershipId,
-        entryId: ownershipSetlists.setlistId,
-        entryName: ownershipSetlists.entryName,
-        entryCreatedAt: ownershipSetlists.entryCreatedAt,
-      })
-      .from(ownershipSetlists)
-      .where(inArray(ownershipSetlists.ownershipId, ownershipIds))
-      .orderBy(asc(ownershipSetlists.ownershipId), asc(ownershipSetlists.position)),
-  ]);
+  // Sequential: the executor may be a transaction, and one pg client cannot run queries concurrently.
+  const groupRows = await executor
+    .select({
+      ownershipId: ownershipGroups.ownershipId,
+      entryId: ownershipGroups.groupId,
+      entryName: ownershipGroups.entryName,
+      entryCreatedAt: ownershipGroups.entryCreatedAt,
+    })
+    .from(ownershipGroups)
+    .where(inArray(ownershipGroups.ownershipId, ownershipIds))
+    .orderBy(asc(ownershipGroups.ownershipId), asc(ownershipGroups.position));
+  const setlistRows = await executor
+    .select({
+      ownershipId: ownershipSetlists.ownershipId,
+      entryId: ownershipSetlists.setlistId,
+      entryName: ownershipSetlists.entryName,
+      entryCreatedAt: ownershipSetlists.entryCreatedAt,
+    })
+    .from(ownershipSetlists)
+    .where(inArray(ownershipSetlists.ownershipId, ownershipIds))
+    .orderBy(asc(ownershipSetlists.ownershipId), asc(ownershipSetlists.position));
   return {
     groupIds: groupBy(groupRows, (row) => row.ownershipId, toStoredEntry),
     setlistIds: groupBy(setlistRows, (row) => row.ownershipId, toStoredEntry),

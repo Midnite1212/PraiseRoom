@@ -70,7 +70,8 @@ const replaceSetlists = async (tx: Transaction, groupId: string, setlistIds: str
   if (setlistIds.length === 0) return;
   await tx
     .insert(groupSetlists)
-    .values(setlistIds.map((setlistId, position) => ({ groupId, setlistId, position })));
+    .values(setlistIds.map((setlistId, position) => ({ groupId, setlistId, position })))
+    .onConflictDoNothing();
 };
 
 export const groupRepository = {

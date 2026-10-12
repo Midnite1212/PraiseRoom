@@ -82,27 +82,26 @@ const isLiveSetlist = (id: string): SQL | undefined =>
 
 const loadLinks = async (executor: Executor, ids: string[]): Promise<Map<string, SetlistLinks>> => {
   if (ids.length === 0) return new Map();
-  const [songRows, keyRows, groupLinkRows] = await Promise.all([
-    executor
-      .select({ setlistId: setlistSongs.setlistId, songId: setlistSongs.songId })
-      .from(setlistSongs)
-      .where(inArray(setlistSongs.setlistId, ids))
-      .orderBy(asc(setlistSongs.setlistId), asc(setlistSongs.position)),
-    executor
-      .select({
-        setlistId: setlistSongKeys.setlistId,
-        songId: setlistSongKeys.songId,
-        key: setlistSongKeys.key,
-      })
-      .from(setlistSongKeys)
-      .where(inArray(setlistSongKeys.setlistId, ids))
-      .orderBy(asc(setlistSongKeys.setlistId), asc(setlistSongKeys.position)),
-    executor
-      .select({ setlistId: groupSetlists.setlistId, groupId: groupSetlists.groupId })
-      .from(groupSetlists)
-      .where(inArray(groupSetlists.setlistId, ids))
-      .orderBy(asc(groupSetlists.setlistId), asc(groupSetlists.groupId)),
-  ]);
+  // Sequential: the executor may be a transaction, and one pg client cannot run queries concurrently.
+  const songRows = await executor
+    .select({ setlistId: setlistSongs.setlistId, songId: setlistSongs.songId })
+    .from(setlistSongs)
+    .where(inArray(setlistSongs.setlistId, ids))
+    .orderBy(asc(setlistSongs.setlistId), asc(setlistSongs.position));
+  const keyRows = await executor
+    .select({
+      setlistId: setlistSongKeys.setlistId,
+      songId: setlistSongKeys.songId,
+      key: setlistSongKeys.key,
+    })
+    .from(setlistSongKeys)
+    .where(inArray(setlistSongKeys.setlistId, ids))
+    .orderBy(asc(setlistSongKeys.setlistId), asc(setlistSongKeys.position));
+  const groupLinkRows = await executor
+    .select({ setlistId: groupSetlists.setlistId, groupId: groupSetlists.groupId })
+    .from(groupSetlists)
+    .where(inArray(groupSetlists.setlistId, ids))
+    .orderBy(asc(groupSetlists.setlistId), asc(groupSetlists.groupId));
   const songIdsBySetlist = groupBy(
     songRows,
     (row) => row.setlistId,
