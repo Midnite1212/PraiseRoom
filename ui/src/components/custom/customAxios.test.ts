@@ -1,7 +1,13 @@
-import { AxiosHeaders, InternalAxiosRequestConfig } from 'axios';
+import { AxiosAdapter, AxiosHeaders, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { getAuthToken } from './authClient';
-import { authRequestInterceptor, clearAuthTokenCache } from './customAxios';
+import {
+  RESPONSE_CACHE_TTL_MS,
+  authRequestInterceptor,
+  clearAuthTokenCache,
+  clearResponseCache,
+  createCachingAdapter,
+} from './customAxios';
 
 vi.mock('./authClient', () => ({
   getAuthToken: vi.fn(),
@@ -52,5 +58,116 @@ describe('customAxios token cache', () => {
     expect(first.headers.get('Authorization')).toBe(`Bearer ${expiringToken}`);
     expect(second.headers.get('Authorization')).toBe(`Bearer ${freshToken}`);
     expect(getAuthToken).toHaveBeenCalledTimes(2);
+  });
+});
+
+const defaultValidateStatus = (status: number) => status >= 200 && status < 300;
+
+const cacheConfig = (
+  overrides: Partial<InternalAxiosRequestConfig> = {}
+): InternalAxiosRequestConfig => ({
+  headers: new AxiosHeaders(),
+  method: 'get',
+  url: '/api/songs/get',
+  validateStatus: defaultValidateStatus,
+  ...overrides,
+});
+
+const okResponse = (config: InternalAxiosRequestConfig, data: unknown): AxiosResponse => ({
+  data,
+  status: 200,
+  statusText: 'OK',
+  headers: {},
+  config,
+});
+
+const createSend = () =>
+  vi.fn<AxiosAdapter>(async (config) => okResponse(config, { items: [config.url] }));
+
+describe('customAxios response cache', () => {
+  afterEach(() => {
+    clearResponseCache();
+    vi.useRealTimers();
+  });
+
+  it('shares one request between identical GETs and hands each caller its own copy', async () => {
+    const send = createSend();
+    const adapter = createCachingAdapter(send, defaultValidateStatus);
+
+    const [first, second] = await Promise.all([adapter(cacheConfig()), adapter(cacheConfig())]);
+
+    expect(send).toHaveBeenCalledTimes(1);
+    expect(second.data).toEqual(first.data);
+    expect(second.data).not.toBe(first.data);
+  });
+
+  it('keys the cache by url, params, and Authorization header', async () => {
+    const send = createSend();
+    const adapter = createCachingAdapter(send, defaultValidateStatus);
+
+    await adapter(cacheConfig());
+    await adapter(cacheConfig({ params: { id: 'a' } }));
+    await adapter(cacheConfig({ headers: new AxiosHeaders({ Authorization: 'Bearer other' }) }));
+    await adapter(cacheConfig({ url: '/api/setlists/get' }));
+
+    expect(send).toHaveBeenCalledTimes(4);
+  });
+
+  it('refetches once the TTL has passed', async () => {
+    vi.useFakeTimers();
+    const send = createSend();
+    const adapter = createCachingAdapter(send, defaultValidateStatus);
+
+    await adapter(cacheConfig());
+    vi.advanceTimersByTime(RESPONSE_CACHE_TTL_MS);
+    await adapter(cacheConfig());
+
+    expect(send).toHaveBeenCalledTimes(2);
+  });
+
+  it('clears the cache on any write', async () => {
+    const send = createSend();
+    const adapter = createCachingAdapter(send, defaultValidateStatus);
+
+    await adapter(cacheConfig());
+    await adapter(cacheConfig({ method: 'put', url: '/api/songs/update' }));
+    await adapter(cacheConfig());
+
+    expect(send).toHaveBeenCalledTimes(3);
+  });
+
+  it('does not cache a failed request', async () => {
+    const send = vi
+      .fn<AxiosAdapter>()
+      .mockRejectedValueOnce(new Error('network'))
+      .mockImplementation(async (config) => okResponse(config, []));
+    const adapter = createCachingAdapter(send, defaultValidateStatus);
+
+    await expect(adapter(cacheConfig())).rejects.toThrow('network');
+    await adapter(cacheConfig());
+
+    expect(send).toHaveBeenCalledTimes(2);
+  });
+
+  it('bypasses the cache when the caller sets its own validateStatus', async () => {
+    const send = createSend();
+    const adapter = createCachingAdapter(send, defaultValidateStatus);
+    const validateStatus = (status: number) => status === 200 || status === 404;
+
+    await adapter(cacheConfig({ validateStatus }));
+    await adapter(cacheConfig({ validateStatus }));
+
+    expect(send).toHaveBeenCalledTimes(2);
+  });
+
+  it('is cleared on sign-out with the token cache', async () => {
+    const send = createSend();
+    const adapter = createCachingAdapter(send, defaultValidateStatus);
+
+    await adapter(cacheConfig());
+    clearAuthTokenCache();
+    await adapter(cacheConfig());
+
+    expect(send).toHaveBeenCalledTimes(2);
   });
 });
