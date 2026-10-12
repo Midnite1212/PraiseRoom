@@ -1,0 +1,6 @@
+{
+  "name": "@neondatabase/auth-ui",
+  "version": "0.0.0-unused",
+  "description": "Empty stand-in: the server imports only @neondatabase/auth/server, which never loads the React UI kit.",
+  "private": true
+}
