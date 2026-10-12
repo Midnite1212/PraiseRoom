@@ -1,4 +1,5 @@
 import { ComponentType, LazyExoticComponent, lazy } from 'react';
+import ErrorPage from './components/custom/ErrorPage';
 import type { RoutePermission } from './components/custom/PrivateRouteWrapper';
 
 const HomeContainer = lazy(() => import('./components/home/HomeContainer'));
@@ -14,7 +15,6 @@ const SetlistAdminViewContainer = lazy(
   () => import('./components/setlist/adminView/SetlistAdminViewContainer')
 );
 const SetlistFolderDetail = lazy(() => import('./components/setlist/SetlistFolderDetail'));
-const ErrorPage = lazy(() => import('./components/custom/ErrorPage'));
 
 type AppRoute = {
   key: string;
