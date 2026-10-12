@@ -22,6 +22,11 @@ describe('cast', () => {
     }
   });
 
+  it('rejects text containing a NUL character', () => {
+    assert.throws(() => castOptionalString('chordLyrics', 'a\u0000b'), InvalidInputError);
+    assert.throws(() => castStringArray('themes', ['Hope', '\u0000']), InvalidInputError);
+  });
+
   it('requires a non-empty string for required fields', () => {
     assert.equal(castRequiredString('title', ' '), ' ');
     assert.equal(castRequiredString('title', 123), '123');
@@ -59,6 +64,13 @@ describe('cast', () => {
       assert.equal(castDate('date', value), null);
     }
     for (const value of ['nope', true, {}, []]) {
+      assert.throws(() => castDate('date', value), InvalidInputError);
+    }
+  });
+
+  it('rejects dates outside the years 1000 to 9999', () => {
+    assert.equal(castDate('date', '9999-12-31T00:00:00Z')?.getUTCFullYear(), 9999);
+    for (const value of ['0026-01-01T00:00:00Z', '+010000-01-01T00:00:00Z', 1e15]) {
       assert.throws(() => castDate('date', value), InvalidInputError);
     }
   });

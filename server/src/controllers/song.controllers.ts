@@ -1,4 +1,5 @@
 import { Request, RequestHandler, Response } from 'express';
+import { hasNulCharacter } from '../db/cast';
 import { SONG_FIELDS, songRepository } from '../db/repositories/song.repository';
 import { pick } from '../utils/pick';
 import { sendError, sendResponse } from '../utils/response';
@@ -10,7 +11,7 @@ const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 100;
 
 const isSearchString = (value: unknown): value is string =>
-  typeof value === 'string' && value.length <= MAX_SEARCH_LENGTH;
+  typeof value === 'string' && value.length <= MAX_SEARCH_LENGTH && !hasNulCharacter(value);
 
 const toSearchArray = (value: unknown): string[] | null => {
   if (value === undefined || value === '') return [];

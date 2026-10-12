@@ -52,7 +52,7 @@ describe('response utils', () => {
     });
 
     it('maps Postgres data and constraint errors to 400 without logging, wrapped or not', () => {
-      for (const code of ['22001', '22007', '22P02', '23502', '23503', '23514']) {
+      for (const code of ['22001', '22007', '22021', '22P02', '23502', '23503', '23514']) {
         for (const error of [
           databaseError(code),
           new DrizzleQueryError('select 1', ['Private Name'], databaseError(code)),

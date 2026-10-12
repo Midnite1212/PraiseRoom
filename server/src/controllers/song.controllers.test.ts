@@ -124,6 +124,7 @@ describe('song controllers', () => {
         { keyword: 'a'.repeat(101) },
         { keyword: ['a'] },
         { keyword: { $ne: '' } },
+        { keyword: 'a\u0000b' },
         { code: 'c'.repeat(101) },
         { code: ['c'] },
       ]) {
@@ -141,6 +142,7 @@ describe('song controllers', () => {
         { tempo: { $ne: '' } },
         { themes: [1] },
         { themes: 'x'.repeat(101) },
+        { tempo: ['Fast', '\u0000'] },
       ]) {
         const res = await call(searchSongs, { query });
         assert.equal(res.statusCode, 400, JSON.stringify(query));

@@ -2,19 +2,27 @@ import { isObjectIdString } from '../utils/validation';
 import { toObjectId } from './objectId';
 
 export class InvalidInputError extends Error {
-  constructor(path: string) {
+  constructor(readonly path: string) {
     super(`Invalid value for ${path}`);
     this.name = 'InvalidInputError';
   }
 }
 
+const MIN_DATE_YEAR = 1000;
+const MAX_DATE_YEAR = 9999;
+
 const isScalar = (value: unknown): value is string | number | boolean | bigint =>
   ['string', 'number', 'boolean', 'bigint'].includes(typeof value);
 
+// Postgres text cannot store NUL, which MongoDB accepted.
+export const hasNulCharacter = (value: string): boolean => value.includes('\u0000');
+
 export const castOptionalString = (path: string, value: unknown): string | null => {
   if (value === undefined || value === null) return null;
-  if (isScalar(value)) return String(value);
-  throw new InvalidInputError(path);
+  if (!isScalar(value)) throw new InvalidInputError(path);
+  const text = String(value);
+  if (hasNulCharacter(text)) throw new InvalidInputError(path);
+  return text;
 };
 
 export const castRequiredString = (path: string, value: unknown): string => {
@@ -57,6 +65,9 @@ export const castDate = (path: string, value: unknown): Date | null => {
   }
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) throw new InvalidInputError(path);
+  // Outside these years Postgres rejects the value or Drizzle reads it back shifted by centuries.
+  const year = date.getUTCFullYear();
+  if (year < MIN_DATE_YEAR || year > MAX_DATE_YEAR) throw new InvalidInputError(path);
   return date;
 };
 
