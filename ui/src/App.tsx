@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from './store';
@@ -25,19 +26,21 @@ function App() {
                 component="main"
                 sx={{ flexGrow: 1, width: '100%', height: '100vh' }}
               >
-                <Routes>
-                  {enabledRoutes.map((route) => (
-                    <Route
-                      key={route.key}
-                      path={route.path}
-                      element={
-                        <PrivateRouteWrapper permissions={route.permissions}>
-                          <route.component />
-                        </PrivateRouteWrapper>
-                      }
-                    />
-                  ))}
-                </Routes>
+                <Suspense fallback={null}>
+                  <Routes>
+                    {enabledRoutes.map((route) => (
+                      <Route
+                        key={route.key}
+                        path={route.path}
+                        element={
+                          <PrivateRouteWrapper permissions={route.permissions}>
+                            <route.component />
+                          </PrivateRouteWrapper>
+                        }
+                      />
+                    ))}
+                  </Routes>
+                </Suspense>
               </Box>
             </BrowserRouter>
           </GoogleOAuthProvider>

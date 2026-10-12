@@ -1,24 +1,27 @@
-import { ComponentType } from 'react';
-import HomeContainer from './components/home/HomeContainer';
-import MainLoginContainer from './components/auth/MainLoginContainer';
-import SongEditorContainer from './components/song/SongEditorContainer';
-import SongListContainer from './components/song/SongListContainer';
-import ProfileContainer from './components/profile/ProfileContainer';
-import SongsViewContainer from './components/songsView/SongsViewContainer';
-import SetlistListContainer from './components/setlist/SetlistListContainer';
-import SetlistEditorContainer from './components/setlist/SetlistEditorContainer';
-import SetlistViewContainer from './components/setlistView/SetlistViewContainer';
-import SetlistAdminViewContainer from './components/setlist/adminView/SetlistAdminViewContainer';
-import SetlistFolderDetail from './components/setlist/SetlistFolderDetail';
-import ErrorPage from './components/custom/ErrorPage';
+import { ComponentType, LazyExoticComponent, lazy } from 'react';
 import type { RoutePermission } from './components/custom/PrivateRouteWrapper';
+
+const HomeContainer = lazy(() => import('./components/home/HomeContainer'));
+const MainLoginContainer = lazy(() => import('./components/auth/MainLoginContainer'));
+const SongEditorContainer = lazy(() => import('./components/song/SongEditorContainer'));
+const SongListContainer = lazy(() => import('./components/song/SongListContainer'));
+const ProfileContainer = lazy(() => import('./components/profile/ProfileContainer'));
+const SongsViewContainer = lazy(() => import('./components/songsView/SongsViewContainer'));
+const SetlistListContainer = lazy(() => import('./components/setlist/SetlistListContainer'));
+const SetlistEditorContainer = lazy(() => import('./components/setlist/SetlistEditorContainer'));
+const SetlistViewContainer = lazy(() => import('./components/setlistView/SetlistViewContainer'));
+const SetlistAdminViewContainer = lazy(
+  () => import('./components/setlist/adminView/SetlistAdminViewContainer')
+);
+const SetlistFolderDetail = lazy(() => import('./components/setlist/SetlistFolderDetail'));
+const ErrorPage = lazy(() => import('./components/custom/ErrorPage'));
 
 type AppRoute = {
   key: string;
   title: string;
   path: string;
   enabled: boolean;
-  component: ComponentType;
+  component: ComponentType | LazyExoticComponent<ComponentType>;
   permissions: RoutePermission[];
 };
 

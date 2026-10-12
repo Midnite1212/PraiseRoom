@@ -9,7 +9,14 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     resolve: {
-      alias: [{ find: /^#\//, replacement: fileURLToPath(new URL('./src/', import.meta.url)) }],
+      alias: [
+        { find: /^#\//, replacement: fileURLToPath(new URL('./src/', import.meta.url)) },
+        // The per-icon files are CommonJS; the production bundle would render their module object.
+        {
+          find: /^@mui\/icons-material\/(?!esm\/)([^/]+)$/,
+          replacement: '@mui/icons-material/esm/$1',
+        },
+      ],
     },
     server: {
       port: 3000,
