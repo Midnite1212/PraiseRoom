@@ -66,6 +66,20 @@ const assembleRecords = async (executor: Executor, rows: GroupRow[]): Promise<Gr
 };
 
 const replaceSetlists = async (tx: Transaction, groupId: string, setlistIds: string[]) => {
+  const linked = await tx
+    .select({ setlistId: groupSetlists.setlistId })
+    .from(groupSetlists)
+    .where(eq(groupSetlists.groupId, groupId));
+  const touched = unique([...linked.map(({ setlistId }) => setlistId), ...setlistIds]);
+  // Serializes with setlist updates, which rewrite a setlist's folder links under the same lock.
+  if (touched.length > 0) {
+    await tx
+      .select({ id: setlists.id })
+      .from(setlists)
+      .where(inArray(setlists.id, touched))
+      .orderBy(asc(setlists.id))
+      .for('update');
+  }
   await tx.delete(groupSetlists).where(eq(groupSetlists.groupId, groupId));
   if (setlistIds.length === 0) return;
   await tx
@@ -118,9 +132,9 @@ export const groupRepository = {
     return row ? toGroupAccess(row) : null;
   },
 
-  async findLiveAccessByIds(ids: string[]): Promise<GroupAccess[]> {
+  async findLiveAccessByIds(ids: string[], executor: Executor = getDb()): Promise<GroupAccess[]> {
     if (ids.length === 0) return [];
-    const rows = await getDb()
+    const rows = await executor
       .select()
       .from(groups)
       .where(and(inArray(groups.id, unique(ids.map(toObjectId))), eq(groups.isDeleted, false)));

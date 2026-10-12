@@ -1,4 +1,5 @@
 import { SQL, and, asc, eq, exists, inArray, notInArray, or, sql } from 'drizzle-orm';
+import { GroupAccess } from '../../types/group.types';
 import {
   PopulatedSetlistRecord,
   PublicSetlistRecord,
@@ -25,6 +26,7 @@ import {
   setlists,
   songs,
 } from '../schema';
+import { groupRepository } from './group.repository';
 import { Executor, Transaction, groupBy, presentFields, unique } from './shared';
 import { toPublicSongRecord, toSongRecord } from './song.repository';
 
@@ -37,6 +39,14 @@ export type SetlistView = 'full' | 'public';
 export type SetlistReach =
   | { all: true }
   | { setlistIds: string[]; groupIds: string[]; createdBy?: string };
+export type FindGroupAccess = (ids: string[]) => Promise<GroupAccess[]>;
+export type GroupLinkResolver = (
+  requested: string[],
+  current: string[],
+  findGroups: FindGroupAccess
+) => Promise<string[] | null>;
+
+export class GroupLinkForbiddenError extends Error {}
 
 type SetlistRow = typeof setlists.$inferSelect;
 type SetlistLinks = { songIds: string[]; songKeys: SetlistSongKey[]; groupIds: string[] };
@@ -349,16 +359,40 @@ export const setlistRepository = {
     }));
   },
 
-  async updateLive(id: string, fields: SetlistFields): Promise<SetlistRecord | null> {
+  async updateLive(
+    id: string,
+    fields: SetlistFields,
+    resolveGroupLinks?: GroupLinkResolver
+  ): Promise<SetlistRecord | null> {
     const { songs: songIds, songKeys, groupIds, ...scalars } = toSetlistValues(fields);
     return getDb().transaction(async (tx) => {
+      const [locked] = await tx
+        .select({ id: setlists.id })
+        .from(setlists)
+        .where(isLiveSetlist(id))
+        .for('update');
+      if (!locked) return null;
+      let linkedGroupIds = groupIds;
+      if (groupIds && resolveGroupLinks) {
+        const current = await tx
+          .select({ groupId: groupSetlists.groupId })
+          .from(groupSetlists)
+          .where(eq(groupSetlists.setlistId, locked.id))
+          .orderBy(asc(groupSetlists.groupId));
+        const resolved = await resolveGroupLinks(
+          groupIds,
+          current.map(({ groupId }) => groupId),
+          (ids) => groupRepository.findLiveAccessByIds(ids, tx)
+        );
+        if (!resolved) throw new GroupLinkForbiddenError();
+        linkedGroupIds = unique(resolved);
+      }
       const [row] = await tx
         .update(setlists)
         .set({ ...scalars, updatedAt: new Date() })
-        .where(isLiveSetlist(id))
+        .where(eq(setlists.id, locked.id))
         .returning();
-      if (!row) return null;
-      await writeLinks(tx, row.id, { songs: songIds, songKeys, groupIds });
+      await writeLinks(tx, row.id, { songs: songIds, songKeys, groupIds: linkedGroupIds });
       const [record] = await assembleRecords(tx, [row]);
       return record;
     });
