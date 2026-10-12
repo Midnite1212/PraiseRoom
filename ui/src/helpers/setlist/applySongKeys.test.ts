@@ -1,25 +1,13 @@
 import { Setlist } from '../../types/setlist.types';
 import { SongSetlistSchema } from '../../types/song.types';
-import { User } from '../../types/user.types';
+import { User, UserAccessType } from '../../types/user.types';
 import { applySongKeys } from './applySongKeys';
 
 const testUser: User = {
   fullName: 'Test User',
   email: 'test@example.com',
   id: 'u1',
-  isDeleted: false,
-  emailStatus: '',
-  countryOfOrigin: '',
-  address: '',
-  birthday: '',
-  campus: '',
-  lifestage: '',
-  lifeGroup: '',
-  isMember: false,
-  isBaptised: false,
-  ministryTeam: '',
-  phoneNumber: 0,
-  hasFilledProfileForm: false,
+  accessType: UserAccessType.MEMBER,
 };
 
 const makeSong = (id: string, originalKey: string, key = ''): SongSetlistSchema => ({

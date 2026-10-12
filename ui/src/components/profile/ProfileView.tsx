@@ -4,7 +4,9 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
 import PageHeader from '../navigation/PageHeader';
 import { persistor } from '../../store';
-import { signout } from '../../reducers/userSlice';
+import { signout } from '../../reducers/sessionSlice';
+import { authClient } from '../custom/authClient';
+import { clearAuthTokenCache } from '../custom/customAxios';
 import { useUser } from '../../helpers/customHooks';
 
 const FieldLabel = styled(Typography)(({ theme }) => ({
@@ -34,6 +36,8 @@ const ProfileView = () => {
   const dispatch = useDispatch();
 
   const handleLogout = async () => {
+    await authClient.signOut();
+    clearAuthTokenCache();
     await persistor.purge();
     dispatch(signout());
     window.location.assign('/login');

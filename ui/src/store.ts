@@ -11,17 +11,18 @@ import {
   persistStore,
 } from 'redux-persist';
 import storage from 'redux-persist/es/storage';
-import { ownershipSlice, songSlice, userSlice } from './reducers';
-import { signout } from './reducers/userSlice';
+import { ownershipSlice, songSlice } from './reducers';
+import { signout } from './reducers/sessionSlice';
 
+// Bumped from 'root' so a browser's old persisted main-site JWT under the
+// previous key is simply orphaned rather than rehydrated into this shape.
 const persistConfig = {
-  key: 'root',
+  key: 'root-v2',
   storage,
-  whitelist: ['user'],
+  whitelist: [],
 };
 
 const appReducer = combineReducers({
-  user: userSlice,
   songs: songSlice,
   ownership: ownershipSlice,
 });

@@ -91,7 +91,7 @@ export const routes: AppRoute[] = [
     path: '/song/add',
     enabled: true,
     component: SongEditorContainer,
-    permissions: ['admin'],
+    permissions: ['editor'],
   },
   {
     key: 'song-edit-route',
@@ -99,7 +99,7 @@ export const routes: AppRoute[] = [
     path: '/song/edit/:id',
     enabled: true,
     component: SongEditorContainer,
-    permissions: ['admin'],
+    permissions: ['editor'],
   },
   {
     key: 'songsView-route',
