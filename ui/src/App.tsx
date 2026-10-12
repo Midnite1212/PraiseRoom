@@ -2,7 +2,7 @@ import { Suspense } from 'react';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistor, store } from './store';
-import { CssBaseline, Box } from '@mui/material';
+import { CssBaseline, Box, Skeleton } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { routes as appRoutes } from './routes';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -20,13 +20,13 @@ function App() {
         <ThemeProvider theme={customTheme}>
           <CssBaseline />
           <SessionProvider>
-            <BrowserRouter>
+            <BrowserRouter future={{ v7_startTransition: true }}>
               <Box
                 display="flex"
                 component="main"
                 sx={{ flexGrow: 1, width: '100%', height: '100vh' }}
               >
-                <Suspense fallback={null}>
+                <Suspense fallback={<Skeleton variant="rectangular" width="100%" height="100%" />}>
                   <Routes>
                     {enabledRoutes.map((route) => (
                       <Route
