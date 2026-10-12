@@ -30,6 +30,16 @@ import { songRepository } from './repositories/song.repository';
 
 const TEST_DATABASE_URL = process.env.DATABASE_URL_TEST;
 
+// The suite truncates every table, so a mistyped production URL must never get this far.
+const assertDisposableDatabase = (url: string | undefined): void => {
+  const databaseName = url ? new URL(url).pathname.slice(1) : '';
+  if (!/test/i.test(databaseName) || url === process.env.DATABASE_URL) {
+    throw new Error(
+      'DATABASE_URL_TEST must name a disposable *test* database other than DATABASE_URL'
+    );
+  }
+};
+
 const ADMIN: TokenUser = { accessType: 'admin', id: '64b000000000000000000001' };
 const MEMBER: TokenUser = { accessType: 'ministry', id: '64b000000000000000000002' };
 const OUTSIDER: TokenUser = { accessType: 'ministry', id: '64b000000000000000000003' };
@@ -73,6 +83,7 @@ describe(
     const originalBaseUrl = process.env.BASE_URL;
 
     before(async () => {
+      assertDisposableDatabase(TEST_DATABASE_URL);
       process.env.DATABASE_URL = TEST_DATABASE_URL;
       process.env.BASE_URL = 'https://worship.example';
       await migrate(getDb(), { migrationsFolder: path.join(__dirname, '../../drizzle') });
@@ -135,6 +146,7 @@ describe(
           song(''),
           song('x', { themes: [''] }),
           song('x', { artist: { a: 1 } }),
+          song('x', { chordLyrics: 'pasted\u0000text' }),
         ]) {
           const res = await call(createSong, { body, user: ADMIN });
           assert.equal(res.status, 400, JSON.stringify(body));
@@ -636,6 +648,14 @@ describe(
 
         assert.equal(await insertSongs(rows), 0);
         assert.equal((await songRepository.listLive()).length, 2);
+      });
+
+      it('skips a song Postgres cannot store and still imports the rest', async () => {
+        const withNul = { ...song('Pasted', { chordLyrics: 'a\u0000b' }), _id: { $oid: ids[2] } };
+        const { rows, skipped } = mapSongDocuments([exported[0], withNul]);
+        assert.deepEqual(skipped, [{ index: 1, id: ids[2], reason: 'invalid chordLyrics' }]);
+        assert.equal(await insertSongs(rows), 1);
+        assert.equal((await songRepository.findLiveById(ids[0]))?.title, 'Imported');
       });
     });
   }
