@@ -196,7 +196,7 @@ const LoginContainer: React.FC = () => {
                 </Typography>
                 <Link
                   color="secondary"
-                  href={`${process.env.REACT_APP_MAIN_URL}/signup`}
+                  href={`${import.meta.env.VITE_MAIN_URL}/signup`}
                   underline={'hover'}
                   variant="button"
                   target="_blank"
