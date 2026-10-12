@@ -38,17 +38,17 @@ const run = async (handler: RequestHandler, headers: Record<string, string> = {}
 };
 
 describe('permissionMiddleware', () => {
-  const originalUrl = process.env.NEON_AUTH_URL;
+  const originalUrl = process.env.NEON_AUTH_BASE_URL;
 
   before(async () => {
     auth = await startTestAuthServer();
-    process.env.NEON_AUTH_URL = auth.url;
+    process.env.NEON_AUTH_BASE_URL = auth.url;
   });
 
   after(async () => {
     await auth.close();
-    if (originalUrl === undefined) delete process.env.NEON_AUTH_URL;
-    else process.env.NEON_AUTH_URL = originalUrl;
+    if (originalUrl === undefined) delete process.env.NEON_AUTH_BASE_URL;
+    else process.env.NEON_AUTH_BASE_URL = originalUrl;
   });
 
   beforeEach(() => {

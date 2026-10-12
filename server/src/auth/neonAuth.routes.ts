@@ -24,7 +24,7 @@ const UNFORWARDED_HEADERS = new Set([
 type AuthConfig = { baseUrl: string; cookieSecret: string };
 
 const readAuthConfig = (): AuthConfig | null => {
-  const baseUrl = process.env.NEON_AUTH_URL;
+  const baseUrl = process.env.NEON_AUTH_BASE_URL;
   const cookieSecret = process.env.NEON_AUTH_COOKIE_SECRET;
   return baseUrl && cookieSecret ? { baseUrl, cookieSecret } : null;
 };

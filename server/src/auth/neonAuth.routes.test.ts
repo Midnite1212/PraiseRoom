@@ -17,7 +17,7 @@ const close = (server: Server): Promise<void> =>
 
 describe('Neon Auth routes', () => {
   const originalEnv = {
-    url: process.env.NEON_AUTH_URL,
+    url: process.env.NEON_AUTH_BASE_URL,
     secret: process.env.NEON_AUTH_COOKIE_SECRET,
   };
   const recorded: Recorded[] = [];
@@ -41,7 +41,7 @@ describe('Neon Auth routes', () => {
         res.end(JSON.stringify({ ok: true }));
       });
     });
-    process.env.NEON_AUTH_URL = `${await listen(upstream)}/neondb/auth`;
+    process.env.NEON_AUTH_BASE_URL = `${await listen(upstream)}/neondb/auth`;
     process.env.NEON_AUTH_COOKIE_SECRET = 'a'.repeat(32);
 
     const expressApp = express();
@@ -58,7 +58,7 @@ describe('Neon Auth routes', () => {
   after(async () => {
     await Promise.all([close(upstream), close(app)]);
     for (const [key, value] of [
-      ['NEON_AUTH_URL', originalEnv.url],
+      ['NEON_AUTH_BASE_URL', originalEnv.url],
       ['NEON_AUTH_COOKIE_SECRET', originalEnv.secret],
     ] as const) {
       if (value === undefined) delete process.env[key];

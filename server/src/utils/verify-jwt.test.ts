@@ -7,20 +7,20 @@ import verifyToken from './verify-jwt';
 const USER_ID = '860dc360-609f-4b7d-9e70-ec93fe6414d3';
 
 describe('verifyToken', () => {
-  const originalUrl = process.env.NEON_AUTH_URL;
+  const originalUrl = process.env.NEON_AUTH_BASE_URL;
   let auth: TestAuthServer;
   let otherAuth: TestAuthServer;
 
   before(async () => {
     auth = await startTestAuthServer();
     otherAuth = await startTestAuthServer();
-    process.env.NEON_AUTH_URL = auth.url;
+    process.env.NEON_AUTH_BASE_URL = auth.url;
   });
 
   after(async () => {
     await Promise.all([auth.close(), otherAuth.close()]);
-    if (originalUrl === undefined) delete process.env.NEON_AUTH_URL;
-    else process.env.NEON_AUTH_URL = originalUrl;
+    if (originalUrl === undefined) delete process.env.NEON_AUTH_BASE_URL;
+    else process.env.NEON_AUTH_BASE_URL = originalUrl;
   });
 
   it('returns the id, email, and name of a valid Neon Auth token', async () => {
@@ -66,22 +66,22 @@ describe('verifyToken', () => {
     }
   });
 
-  it('rejects every token when NEON_AUTH_URL is unset', async () => {
+  it('rejects every token when NEON_AUTH_BASE_URL is unset', async () => {
     const token = await auth.sign({ sub: USER_ID });
-    delete process.env.NEON_AUTH_URL;
+    delete process.env.NEON_AUTH_BASE_URL;
     try {
       assert.equal(await verifyToken(token), null);
     } finally {
-      process.env.NEON_AUTH_URL = auth.url;
+      process.env.NEON_AUTH_BASE_URL = auth.url;
     }
   });
 
-  it('switches key sets when NEON_AUTH_URL changes', async () => {
-    process.env.NEON_AUTH_URL = otherAuth.url;
+  it('switches key sets when NEON_AUTH_BASE_URL changes', async () => {
+    process.env.NEON_AUTH_BASE_URL = otherAuth.url;
     try {
       assert.equal((await verifyToken(await otherAuth.sign({ sub: USER_ID })))?.id, USER_ID);
     } finally {
-      process.env.NEON_AUTH_URL = auth.url;
+      process.env.NEON_AUTH_BASE_URL = auth.url;
     }
   });
 });

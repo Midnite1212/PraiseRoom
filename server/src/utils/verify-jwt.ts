@@ -23,7 +23,7 @@ const optionalString = (value: unknown): string | undefined =>
   typeof value === 'string' && value !== '' ? value : undefined;
 
 const verifyToken = async (token: string): Promise<TokenIdentity | null> => {
-  const authUrl = process.env.NEON_AUTH_URL;
+  const authUrl = process.env.NEON_AUTH_BASE_URL;
   if (!token || !authUrl) return null;
 
   try {
