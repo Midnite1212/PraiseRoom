@@ -2,6 +2,7 @@ import {
   DEFAULT_AUTH_SKIP_ROUTES,
   handleAuthProxyRequest,
   processAuthMiddleware,
+  validateCookieConfig,
 } from '@neondatabase/auth/server';
 import { NextFunction, Request, Response, Router, raw } from 'express';
 import { sendResponse } from '../utils/response';
@@ -26,7 +27,14 @@ type AuthConfig = { baseUrl: string; cookieSecret: string };
 const readAuthConfig = (): AuthConfig | null => {
   const baseUrl = process.env.NEON_AUTH_BASE_URL;
   const cookieSecret = process.env.NEON_AUTH_COOKIE_SECRET;
-  return baseUrl && cookieSecret ? { baseUrl, cookieSecret } : null;
+  if (!baseUrl || !cookieSecret) return null;
+  try {
+    validateCookieConfig({ secret: cookieSecret });
+  } catch (error: unknown) {
+    console.error('Neon Auth is disabled:', error instanceof Error ? error.message : error);
+    return null;
+  }
+  return { baseUrl, cookieSecret };
 };
 
 const requestOrigin = (req: Request): string => {

@@ -2,8 +2,11 @@ import express from 'express';
 import assert from 'node:assert/strict';
 import { IncomingHttpHeaders, Server, createServer } from 'node:http';
 import { AddressInfo } from 'node:net';
-import { after, afterEach, before, describe, it } from 'node:test';
+import { after, afterEach, before, describe, it, mock } from 'node:test';
 import { createAuthRouter, safeNextPath } from './neonAuth.routes';
+
+const SESSION_COOKIE = '__Secure-neon-auth.session_token';
+const CHALLENGE_COOKIE = '__Secure-neon-auth.session_challenge';
 
 type Recorded = { method?: string; url?: string; headers: IncomingHttpHeaders; body: string };
 
@@ -37,6 +40,13 @@ describe('Neon Auth routes', () => {
           body: Buffer.concat(chunks).toString(),
         });
         res.setHeader('content-type', 'application/json');
+        if (req.url?.includes('/get-session')) {
+          res.setHeader('set-cookie', [
+            `${SESSION_COOKIE}=session-from-neon; Path=/; HttpOnly; Secure; SameSite=Lax`,
+          ]);
+          res.end(JSON.stringify({ session: { id: 's1' }, user: { id: 'u1' } }));
+          return;
+        }
         res.setHeader('set-cookie', ['first=1; Path=/', 'second=2; Path=/']);
         res.end(JSON.stringify({ ok: true }));
       });
@@ -101,10 +111,43 @@ describe('Neon Auth routes', () => {
     }
   });
 
+  it('treats a cookie secret shorter than 32 characters as unconfigured', async () => {
+    const secret = process.env.NEON_AUTH_COOKIE_SECRET;
+    const consoleError = mock.method(console, 'error', () => undefined);
+    process.env.NEON_AUTH_COOKIE_SECRET = 'too-short';
+    try {
+      const res = await fetch(`${appUrl}/api/auth/get-session`);
+      assert.equal(res.status, 503);
+      assert.equal(recorded.length, 0);
+      assert.doesNotMatch(String(consoleError.mock.calls[0]?.arguments), /too-short/);
+    } finally {
+      process.env.NEON_AUTH_COOKIE_SECRET = secret;
+      consoleError.mock.restore();
+    }
+  });
+
   it('redirects the sign-in callback to a safe local path', async () => {
     const res = await fetch(`${appUrl}/api/auth-callback?next=/setlist`, { redirect: 'manual' });
     assert.equal(res.status, 302);
     assert.equal(new URL(res.headers.get('location') ?? '', appUrl).pathname, '/setlist');
+  });
+
+  it('exchanges the Google verifier for session cookies, then drops it from the URL', async () => {
+    const res = await fetch(
+      `${appUrl}/api/auth-callback?next=/setlist&neon_auth_session_verifier=verifier-1`,
+      { redirect: 'manual', headers: { cookie: `${CHALLENGE_COOKIE}=challenge-1` } }
+    );
+    assert.equal(res.status, 302);
+    const location = new URL(res.headers.get('location') ?? '', appUrl);
+    assert.equal(location.pathname, '/api/auth-callback');
+    assert.equal(location.searchParams.get('next'), '/setlist');
+    assert.equal(location.searchParams.has('neon_auth_session_verifier'), false);
+    const cookies = res.headers.getSetCookie().join(' | ');
+    assert.match(cookies, new RegExp(`${SESSION_COOKIE}=session-from-neon`));
+    const [exchange] = recorded;
+    assert.match(exchange?.url ?? '', /get-session/);
+    assert.match(exchange?.url ?? '', /neon_auth_session_verifier=verifier-1/);
+    assert.match(String(exchange?.headers.cookie), new RegExp(CHALLENGE_COOKIE));
   });
 
   describe('safeNextPath', () => {
