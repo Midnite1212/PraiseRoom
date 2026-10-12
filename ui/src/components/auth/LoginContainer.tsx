@@ -17,7 +17,8 @@ import { z } from 'zod';
 import { LoginFormFields } from '../../types/form.types';
 import { formSpacing } from '../../constants';
 import { emailValidator, passwordValidator } from './helpers/zod.validators';
-import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
+import { useUser } from '../../helpers/customHooks';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import GoogleIcon from '@mui/icons-material/Google';
@@ -46,8 +47,8 @@ const LoginContainer: React.FC = () => {
   const [invalidLogin, setInvalidLogin] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const navigate = useNavigate();
   const location = useLocation();
+  const { refreshSession } = useUser();
   const theme = useTheme();
 
   const redirectFrom: unknown = location.state?.from;
@@ -62,8 +63,8 @@ const LoginContainer: React.FC = () => {
       setInvalidLogin(getLoginErrorMessage(error.status));
       return;
     }
-    setInvalidLogin('');
-    navigate(redirectPath);
+    const isSignedIn = await refreshSession();
+    setInvalidLogin(isSignedIn ? '' : GENERIC_LOGIN_ERROR);
   };
 
   const handleGoogleLogin = async () => {
