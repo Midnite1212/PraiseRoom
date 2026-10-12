@@ -22,8 +22,12 @@ jobs:
         with:
           node-version: 22
           cache: yarn
-          cache-dependency-path: yarn.lock
+          cache-dependency-path: |
+            yarn.lock
+            ui/yarn.lock
       - run: yarn install --frozen-lockfile
+      # ui/.eslintrc.js must resolve @typescript-eslint from ui/node_modules, or ESLint finds two copies.
+      - run: yarn --cwd ui install --frozen-lockfile
       - run: yarn lint
 
   ui:
