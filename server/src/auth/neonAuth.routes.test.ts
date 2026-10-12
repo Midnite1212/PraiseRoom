@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { IncomingHttpHeaders, Server, createServer } from 'node:http';
 import { AddressInfo } from 'node:net';
 import { after, afterEach, before, describe, it, mock } from 'node:test';
-import { createAuthRouter, safeNextPath } from './neonAuth.routes';
+import { createAuthRouter, neonCookies, safeNextPath, toFirstPartyCookie } from './neonAuth.routes';
 
 const SESSION_COOKIE = '__Secure-neon-auth.session_token';
 const CHALLENGE_COOKIE = '__Secure-neon-auth.session_challenge';
@@ -19,14 +19,12 @@ const close = (server: Server): Promise<void> =>
   new Promise((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
 
 describe('Neon Auth routes', () => {
-  const originalEnv = {
-    url: process.env.NEON_AUTH_BASE_URL,
-    secret: process.env.NEON_AUTH_COOKIE_SECRET,
-  };
+  const originalUrl = process.env.NEON_AUTH_BASE_URL;
   const recorded: Recorded[] = [];
   let upstream: Server;
   let app: Server;
   let appUrl: string;
+  let upstreamUrl: string;
 
   before(async () => {
     upstream = createServer((req, res) => {
@@ -41,18 +39,20 @@ describe('Neon Auth routes', () => {
         });
         res.setHeader('content-type', 'application/json');
         if (req.url?.includes('/get-session')) {
+          res.setHeader('set-auth-jwt', 'jwt-from-neon');
           res.setHeader('set-cookie', [
-            `${SESSION_COOKIE}=session-from-neon; Path=/; HttpOnly; Secure; SameSite=Lax`,
+            `${SESSION_COOKIE}=session-from-neon; Path=/; Secure; SameSite=None; Partitioned`,
           ]);
           res.end(JSON.stringify({ session: { id: 's1' }, user: { id: 'u1' } }));
           return;
         }
+        res.setHeader('x-internal', 'not for the browser');
         res.setHeader('set-cookie', ['first=1; Path=/', 'second=2; Path=/']);
         res.end(JSON.stringify({ ok: true }));
       });
     });
-    process.env.NEON_AUTH_BASE_URL = `${await listen(upstream)}/neondb/auth`;
-    process.env.NEON_AUTH_COOKIE_SECRET = 'a'.repeat(32);
+    upstreamUrl = await listen(upstream);
+    process.env.NEON_AUTH_BASE_URL = `${upstreamUrl}/neondb/auth/`;
 
     const expressApp = express();
     expressApp.use(createAuthRouter());
@@ -63,66 +63,75 @@ describe('Neon Auth routes', () => {
 
   afterEach(() => {
     recorded.length = 0;
+    mock.restoreAll();
   });
 
   after(async () => {
     await Promise.all([close(upstream), close(app)]);
-    for (const [key, value] of [
-      ['NEON_AUTH_BASE_URL', originalEnv.url],
-      ['NEON_AUTH_COOKIE_SECRET', originalEnv.secret],
-    ] as const) {
-      if (value === undefined) delete process.env[key];
-      else process.env[key] = value;
-    }
+    if (originalUrl === undefined) delete process.env.NEON_AUTH_BASE_URL;
+    else process.env.NEON_AUTH_BASE_URL = originalUrl;
   });
 
   it('forwards the method, sub-path, query, and raw body to Neon Auth', async () => {
     const body = JSON.stringify({ email: 'user@example.com', password: 'secret' });
     const res = await fetch(`${appUrl}/api/auth/sign-in/email?source=test`, {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers: { 'content-type': 'application/json', origin: 'https://app.example' },
       body,
     });
     assert.equal(res.status, 200);
     assert.deepEqual(await res.json(), { ok: true });
     const [call] = recorded;
     assert.equal(call?.method, 'POST');
-    assert.match(call?.url ?? '', /^\/neondb\/auth\/sign-in\/email(\?.*)?$/);
+    assert.equal(call?.url, '/neondb/auth/sign-in/email?source=test');
     assert.equal(call?.body, body);
+    assert.equal(call?.headers.origin, 'https://app.example');
+    assert.equal(call?.headers['content-type'], 'application/json');
   });
 
-  it('returns every Set-Cookie header separately', async () => {
+  it('forwards only Neon Auth cookies upstream', async () => {
+    await fetch(`${appUrl}/api/auth/get-session`, {
+      headers: { cookie: `other=1; ${SESSION_COOKIE}=abc; tracking=2` },
+    });
+    assert.equal(recorded[0]?.headers.cookie, `${SESSION_COOKIE}=abc`);
+  });
+
+  it('passes the JWT header and rewrites cookies as first-party', async () => {
+    const res = await fetch(`${appUrl}/api/auth/get-session`);
+    assert.equal(res.headers.get('set-auth-jwt'), 'jwt-from-neon');
+    assert.deepEqual(res.headers.getSetCookie(), [
+      `${SESSION_COOKIE}=session-from-neon; Path=/; HttpOnly; Secure; SameSite=Lax`,
+    ]);
+  });
+
+  it('returns every Set-Cookie header separately and drops unlisted headers', async () => {
     const res = await fetch(`${appUrl}/api/auth/sign-out`, { method: 'POST' });
     const cookies = res.headers.getSetCookie().map((cookie) => cookie.split(';')[0]);
-    assert.ok(cookies.includes('first=1'), cookies.join(' | '));
-    assert.ok(cookies.includes('second=2'), cookies.join(' | '));
+    assert.deepEqual(cookies, ['first=1', 'second=2']);
+    assert.equal(res.headers.get('x-internal'), null);
   });
 
   it('answers 503 without contacting Neon when auth is not configured', async () => {
-    const secret = process.env.NEON_AUTH_COOKIE_SECRET;
-    delete process.env.NEON_AUTH_COOKIE_SECRET;
+    delete process.env.NEON_AUTH_BASE_URL;
     try {
       const res = await fetch(`${appUrl}/api/auth/get-session`);
       assert.equal(res.status, 503);
       assert.equal(await res.json(), 'Sign-in is not configured');
       assert.equal(recorded.length, 0);
     } finally {
-      process.env.NEON_AUTH_COOKIE_SECRET = secret;
+      process.env.NEON_AUTH_BASE_URL = `${upstreamUrl}/neondb/auth/`;
     }
   });
 
-  it('treats a cookie secret shorter than 32 characters as unconfigured', async () => {
-    const secret = process.env.NEON_AUTH_COOKIE_SECRET;
-    const consoleError = mock.method(console, 'error', () => undefined);
-    process.env.NEON_AUTH_COOKIE_SECRET = 'too-short';
+  it('answers 502 when Neon Auth is unreachable', async () => {
+    mock.method(console, 'error', () => undefined);
+    process.env.NEON_AUTH_BASE_URL = 'http://127.0.0.1:9/neondb/auth';
     try {
       const res = await fetch(`${appUrl}/api/auth/get-session`);
-      assert.equal(res.status, 503);
-      assert.equal(recorded.length, 0);
-      assert.doesNotMatch(String(consoleError.mock.calls[0]?.arguments), /too-short/);
+      assert.equal(res.status, 502);
+      assert.equal(await res.json(), 'Sign-in is unavailable');
     } finally {
-      process.env.NEON_AUTH_COOKIE_SECRET = secret;
-      consoleError.mock.restore();
+      process.env.NEON_AUTH_BASE_URL = `${upstreamUrl}/neondb/auth/`;
     }
   });
 
@@ -130,32 +139,57 @@ describe('Neon Auth routes', () => {
     const res = await fetch(`${appUrl}/api/auth-callback?next=/setlist`, { redirect: 'manual' });
     assert.equal(res.status, 302);
     assert.equal(new URL(res.headers.get('location') ?? '', appUrl).pathname, '/setlist');
+    assert.equal(recorded.length, 0);
   });
 
-  it('exchanges the Google verifier for session cookies, then drops it from the URL', async () => {
+  it('exchanges the Google verifier for session cookies, then goes to next', async () => {
     const res = await fetch(
       `${appUrl}/api/auth-callback?next=/setlist&neon_auth_session_verifier=verifier-1`,
       { redirect: 'manual', headers: { cookie: `${CHALLENGE_COOKIE}=challenge-1` } }
     );
     assert.equal(res.status, 302);
-    const location = new URL(res.headers.get('location') ?? '', appUrl);
-    assert.equal(location.pathname, '/api/auth-callback');
-    assert.equal(location.searchParams.get('next'), '/setlist');
-    assert.equal(location.searchParams.has('neon_auth_session_verifier'), false);
-    const cookies = res.headers.getSetCookie().join(' | ');
-    assert.match(cookies, new RegExp(`${SESSION_COOKIE}=session-from-neon`));
+    assert.equal(new URL(res.headers.get('location') ?? '', appUrl).pathname, '/setlist');
+    assert.match(
+      res.headers.getSetCookie().join(' | '),
+      new RegExp(`${SESSION_COOKIE}=session-from-neon`)
+    );
     const [exchange] = recorded;
-    assert.match(exchange?.url ?? '', /get-session/);
+    assert.equal(exchange?.method, 'GET');
+    assert.match(exchange?.url ?? '', /^\/neondb\/auth\/get-session\?/);
     assert.match(exchange?.url ?? '', /neon_auth_session_verifier=verifier-1/);
-    assert.match(String(exchange?.headers.cookie), new RegExp(CHALLENGE_COOKIE));
+    assert.equal(exchange?.headers.cookie, `${CHALLENGE_COOKIE}=challenge-1`);
   });
 
-  describe('safeNextPath', () => {
-    it('keeps local paths and falls back to / for anything else', () => {
+  it('skips the exchange without a challenge cookie', async () => {
+    const res = await fetch(
+      `${appUrl}/api/auth-callback?next=/setlist&neon_auth_session_verifier=verifier-1`,
+      { redirect: 'manual' }
+    );
+    assert.equal(new URL(res.headers.get('location') ?? '', appUrl).pathname, '/setlist');
+    assert.equal(recorded.length, 0);
+  });
+
+  describe('helpers', () => {
+    it('keeps local next paths and falls back to / for anything else', () => {
       assert.equal(safeNextPath('/setlist/view/1?x=2'), '/setlist/view/1?x=2');
       for (const value of ['//evil.example', '/\\evil.example', 'https://evil.example', '', 5]) {
         assert.equal(safeNextPath(value), '/', String(value));
       }
+    });
+
+    it('keeps only Neon Auth cookies', () => {
+      assert.equal(neonCookies(undefined), '');
+      assert.equal(
+        neonCookies(`a=1; ${SESSION_COOKIE}=x;${CHALLENGE_COOKIE}=y`),
+        `${SESSION_COOKIE}=x; ${CHALLENGE_COOKIE}=y`
+      );
+    });
+
+    it('forces HttpOnly, Secure, and SameSite=Lax and drops Partitioned', () => {
+      assert.equal(
+        toFirstPartyCookie('a=1; Path=/; Max-Age=60; samesite=none; Partitioned'),
+        'a=1; Path=/; Max-Age=60; HttpOnly; Secure; SameSite=Lax'
+      );
     });
   });
 });
