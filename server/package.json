@@ -18,12 +18,10 @@
     "@types/pg": "^8.23.1",
     "drizzle-kit": "^0.31.11",
     "nodemon": "^3.0.1",
-    "rimraf": "^5.0.1",
     "ts-node": "^10.9.1",
     "typescript": "^5.1.6"
   },
   "scripts": {
-    "build": "rimraf dist && tsc -p tsconfig.build.json",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "import:songs": "cross-env TS_NODE_TRANSPILE_ONLY=1 ts-node scripts/import-songs.ts",
