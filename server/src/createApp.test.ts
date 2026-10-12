@@ -31,20 +31,15 @@ describe('createApp', () => {
 
   it('starts and answers sign-in requests with a 503 when Neon Auth is not configured', async () => {
     const ensureDatabase = mock.fn(async () => undefined);
-    const saved = {
-      url: process.env.NEON_AUTH_BASE_URL,
-      secret: process.env.NEON_AUTH_COOKIE_SECRET,
-    };
+    const savedUrl = process.env.NEON_AUTH_BASE_URL;
     delete process.env.NEON_AUTH_BASE_URL;
-    delete process.env.NEON_AUTH_COOKIE_SECRET;
     try {
       server = await listen(createApp({ ensureDatabase }));
       const res = await request('/api/auth/get-session');
       assert.equal(res.status, 503);
       assert.equal(ensureDatabase.mock.callCount(), 0);
     } finally {
-      if (saved.url !== undefined) process.env.NEON_AUTH_BASE_URL = saved.url;
-      if (saved.secret !== undefined) process.env.NEON_AUTH_COOKIE_SECRET = saved.secret;
+      if (savedUrl !== undefined) process.env.NEON_AUTH_BASE_URL = savedUrl;
     }
   });
 

@@ -1,119 +1,137 @@
-import {
-  DEFAULT_AUTH_SKIP_ROUTES,
-  handleAuthProxyRequest,
-  processAuthMiddleware,
-  validateCookieConfig,
-} from '@neondatabase/auth/server';
-import { NextFunction, Request, Response, Router, raw } from 'express';
+import { Request, Response, Router, raw } from 'express';
 import { sendResponse } from '../utils/response';
 
 export const AUTH_PATH_PREFIX = '/api/auth/';
 export const AUTH_CALLBACK_PATH = '/api/auth-callback';
 const LOGIN_PATH = '/login';
 const MAX_AUTH_BODY = '1mb';
+const NEON_COOKIE_PREFIX = '__Secure-neon-auth';
+const VERIFIER_PARAM = 'neon_auth_session_verifier';
+// Neon Auth still accepts the misspelled legacy name, so both count as an OAuth challenge.
+const CHALLENGE_COOKIES = [
+  `${NEON_COOKIE_PREFIX}.session_challenge`,
+  `${NEON_COOKIE_PREFIX}.session_challange`,
+];
+const FORWARDED_REQUEST_HEADERS = ['authorization', 'content-type', 'referer', 'user-agent'];
+const FORWARDED_RESPONSE_HEADERS = [
+  'content-type',
+  'date',
+  'set-auth-jwt',
+  'set-auth-token',
+  'x-neon-ret-request-id',
+];
 // Lax so the session cookie survives the top-level redirect back from Google.
-const SAME_SITE = 'lax';
-// fetch() has already decoded the body, so its framing headers no longer apply.
-const UNFORWARDED_HEADERS = new Set([
-  'connection',
-  'content-encoding',
-  'content-length',
-  'set-cookie',
-  'transfer-encoding',
-]);
+const COOKIE_ATTRIBUTES = ['HttpOnly', 'Secure', 'SameSite=Lax'];
+const REPLACED_COOKIE_ATTRIBUTE = /^(httponly|secure|samesite|partitioned)(=|$)/i;
 
-type AuthConfig = { baseUrl: string; cookieSecret: string };
-
-const readAuthConfig = (): AuthConfig | null => {
-  const baseUrl = process.env.NEON_AUTH_BASE_URL;
-  const cookieSecret = process.env.NEON_AUTH_COOKIE_SECRET;
-  if (!baseUrl || !cookieSecret) return null;
-  try {
-    validateCookieConfig({ secret: cookieSecret });
-  } catch (error: unknown) {
-    console.error('Neon Auth is disabled:', error instanceof Error ? error.message : error);
-    return null;
-  }
-  return { baseUrl, cookieSecret };
-};
+const readAuthBaseUrl = (): string | null =>
+  process.env.NEON_AUTH_BASE_URL?.replace(/\/+$/, '') || null;
 
 const requestOrigin = (req: Request): string => {
   const forwardedProto = req.get('x-forwarded-proto')?.split(',')[0]?.trim();
   return `${forwardedProto || req.protocol}://${req.get('host') ?? 'localhost'}`;
 };
 
-export const toFetchRequest = (req: Request): globalThis.Request => {
-  const headers = new Headers();
-  for (const [name, value] of Object.entries(req.headers)) {
-    if (Array.isArray(value)) value.forEach((item) => headers.append(name, item));
-    else if (value !== undefined) headers.set(name, value);
-  }
-  const body: unknown = req.body;
-  const init: RequestInit & { duplex?: 'half' } = { method: req.method, headers };
-  if (Buffer.isBuffer(body) && body.length > 0) {
-    init.body = body;
-    init.duplex = 'half';
-  }
-  return new globalThis.Request(new URL(req.originalUrl, requestOrigin(req)), init);
+const browserOrigin = (req: Request): string => {
+  const origin = req.get('origin');
+  if (origin) return origin;
+  const referer = req.get('referer');
+  if (referer && URL.canParse(referer)) return new URL(referer).origin;
+  return requestOrigin(req);
 };
 
-export const writeFetchResponse = async (
-  res: Response,
-  response: globalThis.Response
-): Promise<void> => {
-  res.status(response.status);
-  response.headers.forEach((value, name) => {
-    if (!UNFORWARDED_HEADERS.has(name)) res.setHeader(name, value);
-  });
-  const cookies = response.headers.getSetCookie();
-  if (cookies.length > 0) res.setHeader('Set-Cookie', cookies);
-  res.send(Buffer.from(await response.arrayBuffer()));
-};
+export const neonCookies = (cookieHeader: string | undefined): string =>
+  (cookieHeader ?? '')
+    .split(';')
+    .map((cookie) => cookie.trim())
+    .filter((cookie) => cookie.startsWith(NEON_COOKIE_PREFIX))
+    .join('; ');
+
+export const toFirstPartyCookie = (setCookie: string): string =>
+  [
+    ...setCookie
+      .split(';')
+      .map((part) => part.trim())
+      .filter((part) => part !== '' && !REPLACED_COOKIE_ATTRIBUTE.test(part)),
+    ...COOKIE_ATTRIBUTES,
+  ].join('; ');
 
 export const safeNextPath = (value: unknown): string =>
   typeof value === 'string' && /^\/(?![/\\])/.test(value) ? value : '/';
 
-const proxyAuth = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const config = readAuthConfig();
-  if (!config) {
+const fetchFromNeon = (
+  baseUrl: string,
+  req: Request,
+  path: string,
+  method: string
+): Promise<globalThis.Response> => {
+  const url = new URL(`${baseUrl}/${path}`);
+  url.search = new URL(req.originalUrl, 'http://localhost').search;
+  const headers = new Headers();
+  for (const name of FORWARDED_REQUEST_HEADERS) {
+    const value = req.get(name);
+    if (value) headers.set(name, value);
+  }
+  headers.set('origin', browserOrigin(req));
+  headers.set('cookie', neonCookies(req.headers.cookie));
+  const body: unknown = req.body;
+  const hasBody = method !== 'GET' && method !== 'HEAD' && Buffer.isBuffer(body) && body.length > 0;
+  return fetch(url, { method, headers, ...(hasBody ? { body } : {}) });
+};
+
+const setFirstPartyCookies = (res: Response, response: globalThis.Response): void => {
+  const cookies = response.headers.getSetCookie().map(toFirstPartyCookie);
+  if (cookies.length > 0) res.append('Set-Cookie', cookies);
+};
+
+const logUnreachable = (error: unknown): void => {
+  console.error('Neon Auth is unreachable:', error instanceof Error ? error.message : error);
+};
+
+const proxyAuth = async (req: Request, res: Response): Promise<void> => {
+  const baseUrl = readAuthBaseUrl();
+  if (!baseUrl) {
     sendResponse(res, 503, 'Sign-in is not configured');
     return;
   }
   try {
-    const response = await handleAuthProxyRequest({
-      ...config,
-      request: toFetchRequest(req),
-      path: req.path.slice(AUTH_PATH_PREFIX.length),
-      sameSite: SAME_SITE,
-    });
-    await writeFetchResponse(res, response);
+    const path = req.path.slice(AUTH_PATH_PREFIX.length);
+    const response = await fetchFromNeon(baseUrl, req, path, req.method);
+    const body = Buffer.from(await response.arrayBuffer());
+    res.status(response.status);
+    for (const name of FORWARDED_RESPONSE_HEADERS) {
+      const value = response.headers.get(name);
+      if (value) res.setHeader(name, value);
+    }
+    setFirstPartyCookies(res, response);
+    res.send(body);
   } catch (error: unknown) {
-    next(error);
+    logUnreachable(error);
+    sendResponse(res, 502, 'Sign-in is unavailable');
   }
 };
 
-// Google returns here; the toolkit swaps the one-time verifier for the session cookies.
-const finishSignIn = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-  const config = readAuthConfig();
-  if (!config) {
-    res.redirect(302, LOGIN_PATH);
+// Google returns here with a one-time verifier, which Neon Auth swaps for session cookies.
+const finishSignIn = async (req: Request, res: Response): Promise<void> => {
+  const baseUrl = readAuthBaseUrl();
+  const verifier = req.query[VERIFIER_PARAM];
+  const cookies = neonCookies(req.headers.cookie);
+  const hasChallenge = CHALLENGE_COOKIES.some((name) => cookies.includes(`${name}=`));
+  if (!baseUrl || typeof verifier !== 'string' || !hasChallenge) {
+    res.redirect(302, safeNextPath(req.query.next));
     return;
   }
   try {
-    const result = await processAuthMiddleware({
-      ...config,
-      request: toFetchRequest(req),
-      pathname: AUTH_CALLBACK_PATH,
-      skipRoutes: [...DEFAULT_AUTH_SKIP_ROUTES, AUTH_CALLBACK_PATH],
-      loginUrl: LOGIN_PATH,
-      sameSite: SAME_SITE,
-    });
-    if (result.cookies && result.cookies.length > 0) res.append('Set-Cookie', result.cookies);
-    const target =
-      result.action === 'allow' ? safeNextPath(req.query.next) : result.redirectUrl.toString();
-    res.redirect(302, target);
+    const response = await fetchFromNeon(baseUrl, req, 'get-session', 'GET');
+    if (!response.ok) {
+      res.redirect(302, LOGIN_PATH);
+      return;
+    }
+    setFirstPartyCookies(res, response);
+    res.redirect(302, safeNextPath(req.query.next));
   } catch (error: unknown) {
-    next(error);
+    logUnreachable(error);
+    res.redirect(302, LOGIN_PATH);
   }
 };
 
