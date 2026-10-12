@@ -23,7 +23,7 @@ For each changed file, check for:
 ### Import Consistency
 
 - API calls go through `customAxios` from `components/custom/customAxios`; type-only `AxiosResponse` imports from `axios` are fine.
-- Relative imports only; a `#/` import compiles under `tsc` but fails in the CRA bundle unless every binding is type-only.
+- Relative imports only; the `#/` alias resolves through Vite, but the codebase does not use it.
 - MUI icons imported by path (`@mui/icons-material/Delete`).
 - No react-router v5 APIs (`useHistory`, `Switch`, `withRouter`). This repo is on v6.
 - Everything used is imported; no circular import through the `reducers` or `helpers` barrels.
