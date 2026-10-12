@@ -41,8 +41,8 @@ const assertDisposableDatabase = (url: string | undefined): void => {
 };
 
 const ADMIN: TokenUser = { accessType: 'admin', id: '64b000000000000000000001' };
-const MEMBER: TokenUser = { accessType: 'ministry', id: '64b000000000000000000002' };
-const OUTSIDER: TokenUser = { accessType: 'ministry', id: '64b000000000000000000003' };
+const MEMBER: TokenUser = { accessType: 'editor', id: '64b000000000000000000002' };
+const OUTSIDER: TokenUser = { accessType: 'editor', id: '64b000000000000000000003' };
 const MISSING_ID = '64b0000000000000000000ee';
 const FORBIDDEN = { error: 'Access denied', message: 'Forbidden' };
 
@@ -527,7 +527,7 @@ describe(
         });
         assert.equal(again._id, first._id);
         assert.equal(again.fullName, 'Harness Member');
-        assert.equal(again.accessType, 'ministry');
+        assert.equal(again.accessType, 'editor');
         assert.ok(again.updatedAt >= first.updatedAt);
         assert.deepEqual(
           (await ok(getOwnership, { user: MEMBER })).map((summary: Body) =>
