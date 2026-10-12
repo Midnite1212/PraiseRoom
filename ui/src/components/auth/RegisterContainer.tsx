@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { isAxiosError } from 'axios';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { customAxios as axios } from '../custom/customAxios';
+import { authClient } from '../custom/authClient';
 import {
   Alert,
   Box,
@@ -77,27 +76,26 @@ const RegisterContainer: React.FC = () => {
   const [invalidRegistration, setInvalidRegistration] = useState<string>('');
 
   const handleRegister: SubmitHandler<RegisterFormFields> = async (data) => {
-    try {
-      await axios.post('/external-api/auth/signup', {
-        fullName: data.fullName,
-        email: data.email,
-        password: data.password ?? '',
-      });
-      setInvalidRegistration('');
-      setOpen(true);
-      redirectTimeoutRef.current = setTimeout(() => {
-        navigate('/login');
-      }, 3000);
-    } catch (err: unknown) {
-      const status = isAxiosError(err) ? err.response?.status : undefined;
-      if (status === 409) {
+    const { error } = await authClient.signUp.email({
+      name: data.fullName,
+      email: data.email,
+      password: data.password ?? '',
+    });
+    if (error) {
+      if (error.status === 409) {
         setInvalidRegistration('Email already exists, please try with another email');
-      } else if (status === 422) {
+      } else if (error.status === 422) {
         setInvalidRegistration('Required fields not filled');
       } else {
         setInvalidRegistration('Could not create your account. Please try again.');
       }
+      return;
     }
+    setInvalidRegistration('');
+    setOpen(true);
+    redirectTimeoutRef.current = setTimeout(() => {
+      navigate('/login');
+    }, 3000);
   };
 
   return (

@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
-import { isAxiosError } from 'axios';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
-import { signin } from '../../reducers/userSlice';
-import { customAxios as axios } from '../custom/customAxios';
+import { authClient } from '../custom/authClient';
 import {
   Box,
   Button,
@@ -21,9 +18,9 @@ import { LoginFormFields } from '../../types/form.types';
 import { formSpacing } from '../../constants';
 import { emailValidator, passwordValidator } from './helpers/zod.validators';
 import { Link as RouterLink, useLocation, useNavigate } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import GoogleIcon from '@mui/icons-material/Google';
 
 // zod validation
 const loginValidationSchema = z.object({
@@ -33,10 +30,8 @@ const loginValidationSchema = z.object({
 
 const GENERIC_LOGIN_ERROR = 'Could not log in. Please try again.';
 
-const getLoginErrorMessage = (error: unknown) => {
-  const status = isAxiosError(error) ? error.response?.status : undefined;
-  return status === 401 || status === 500 ? 'Invalid email or wrong password' : GENERIC_LOGIN_ERROR;
-};
+const getLoginErrorMessage = (status: number) =>
+  status === 401 ? 'Invalid email or wrong password' : GENERIC_LOGIN_ERROR;
 
 const LoginContainer: React.FC = () => {
   const { register, handleSubmit, formState } = useForm<LoginFormFields>({
@@ -47,7 +42,6 @@ const LoginContainer: React.FC = () => {
   const [invalidLogin, setInvalidLogin] = useState<string>('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const theme = useTheme();
@@ -56,32 +50,26 @@ const LoginContainer: React.FC = () => {
   const redirectPath = typeof redirectFrom === 'string' ? redirectFrom : '/';
 
   const handleEmailLogin: SubmitHandler<LoginFormFields> = async (data) => {
-    try {
-      const payload = await axios.post<string>('/external-api/auth/login', {
-        emailAddress: data.email,
-        password: data.password ?? '',
-      });
-      dispatch(signin(payload.data));
-      setInvalidLogin('');
-      navigate(redirectPath);
-    } catch (error: unknown) {
-      setInvalidLogin(getLoginErrorMessage(error));
-    }
-  };
-
-  const onGoogleSuccessLogin = async ({ credential }: { credential?: string }) => {
-    if (!credential) {
-      setInvalidLogin(GENERIC_LOGIN_ERROR);
+    const { error } = await authClient.signIn.email({
+      email: data.email,
+      password: data.password ?? '',
+    });
+    if (error) {
+      setInvalidLogin(getLoginErrorMessage(error.status));
       return;
     }
-    try {
-      const { data } = await axios.post<string>('/external-api/auth/login-google', {
-        tokenId: credential,
-      });
-      dispatch(signin(data));
-      setInvalidLogin('');
-      navigate(redirectPath);
-    } catch {
+    setInvalidLogin('');
+    navigate(redirectPath);
+  };
+
+  const handleGoogleLogin = async () => {
+    const { error } = await authClient.signIn.social({
+      provider: 'google',
+      callbackURL: `${window.location.origin}/api/auth-callback?next=${encodeURIComponent(
+        redirectPath
+      )}`,
+    });
+    if (error) {
       setInvalidLogin(GENERIC_LOGIN_ERROR);
     }
   };
@@ -176,15 +164,18 @@ const LoginContainer: React.FC = () => {
                 </Typography>
               </Button>
               <Typography>OR</Typography>
-              <GoogleLogin
-                locale="en"
-                size="large"
-                shape="pill"
-                text="signin_with"
-                use_fedcm_for_prompt={true}
-                onSuccess={onGoogleSuccessLogin}
-                onError={() => setInvalidLogin(GENERIC_LOGIN_ERROR)}
-              />
+              <Button
+                onClick={handleGoogleLogin}
+                variant={'outlined'}
+                color={'secondary'}
+                fullWidth
+                startIcon={<GoogleIcon />}
+                sx={{ borderRadius: '30px' }}
+              >
+                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                  Continue with Google
+                </Typography>
+              </Button>
               <Stack
                 direction={'row'}
                 spacing={4}
@@ -195,14 +186,13 @@ const LoginContainer: React.FC = () => {
                   Don't have an account?
                 </Typography>
                 <Link
+                  component={RouterLink}
+                  to="/register"
                   color="secondary"
-                  href={`${import.meta.env.VITE_MAIN_URL}/signup`}
                   underline={'hover'}
                   variant="button"
-                  target="_blank"
-                  rel="noopener noreferrer"
                 >
-                  <Typography variant="subtitle1">SIGN UP @HMCC.HK</Typography>
+                  <Typography variant="subtitle1">SIGN UP</Typography>
                 </Link>
               </Stack>
             </Stack>
