@@ -334,10 +334,10 @@ const getSong: RequestHandler = async (req: Request, res: Response): Promise<voi
 };
 ```
 
-Shared helpers in `src/utils/`: `sendResponse` / `sendError` (`response.ts`; `sendError` maps `InvalidInputError` and Postgres data or constraint errors (`22xxx`, `23502`, `23503`, `23514`) to 400 and everything else to a logged, generic 500, unwrapping `DrizzleQueryError` so query parameters are never logged), `pick` (`pick.ts`), and `isObjectIdString` / `toObjectIdList` (`validation.ts`). Use them; do not add another per-controller `sendResponse`.
+Shared helpers in `src/utils/`: `sendResponse` / `sendError` (`response.ts`; `sendError` maps `InvalidInputError` and Postgres data or constraint errors (`INVALID_INPUT_SQLSTATES`: `22001`, `22003`, `22007`, `22008`, `22009`, `22021`, `22P02`, `23502`, `23503`, `23514`) to 400 and everything else to a logged, generic 500, unwrapping `DrizzleQueryError` so query parameters are never logged), `pick` (`pick.ts`), and `isObjectIdString` / `toObjectIdList` (`validation.ts`). Use them; do not add another per-controller `sendResponse`.
 
 - Validate and narrow `req.query` / `req.body` values before using them in a query. Query values may be strings, arrays, or objects; ids must pass `isObjectIdString`.
-- Controllers never import `drizzle-orm` or the schema; they call a repository. Unit tests mock repository methods with `mock.method(songRepository, 'findLiveById', …)`.
+- Controllers never import `drizzle-orm` or query the database; they call a repository. Importing constants from the schema (`MUSIC_KEYS`) is fine. Unit tests mock repository methods with `mock.method(songRepository, 'findLiveById', …)`.
 - Never pass `req.body` straight into a repository. `pick` the allowed fields. Set `createdBy`, `userId`, and `accessType` from `req.user`, never from the body.
 - An update for a missing id must 404, not create a row. The only insert-or-return is `ownershipRepository.createIfMissing`.
 - Never send `error.message` to the client. Use `sendError`.
@@ -345,7 +345,8 @@ Shared helpers in `src/utils/`: `sendResponse` / `sendError` (`response.ts`; `se
 - Ids are 24-hex Mongo-style strings, stored lowercase (`generateObjectId`, `toObjectId`), so public setlist links and `isObjectIdString` keep working.
 - Soft delete is the convention: every top-level table has `is_deleted`. Filter it in every read and update. Delete endpoints are `PUT /api/<resource>/delete` and set it to true.
 - Requests that write more than one table run inside `getDb().transaction(…)` in the repository.
-- Schema changes: edit `src/db/schema.ts`, run `yarn db:generate`, commit the new `drizzle/` files, and never edit an applied migration.
+- Text values go through the `cast.ts` helpers, which reject NUL characters (Postgres text cannot store them) with a 400; setlist dates must fall in the years 1000–9999.
+- Schema changes: edit `src/db/schema.ts`, run `yarn db:generate`, commit the new `drizzle/` files, and never edit an applied migration. Vercel never runs migrations: apply them with `DATABASE_URL='<neon direct url>' yarn db:migrate` before merging code that needs the new schema.
 
 ### Server type-check
 
@@ -353,14 +354,15 @@ Shared helpers in `src/utils/`: `sendResponse` / `sendError` (`response.ts`; `se
 
 ### Cutover from MongoDB (songs only)
 
-Only songs move to Postgres. Setlists, folders, and ownerships are not imported; each user's ownership record is recreated on first login. `scripts/import-songs.ts` (outside the build) maps each exported document with `src/db/importSongs.ts`, keeping the Mongo `_id` as the row id, skips documents with a bad id, a missing required field, or a duplicate id (reported by index and id only), and inserts in one transaction with `on conflict (id) do nothing`, so a re-run is a no-op. Use Neon's direct (non-pooled) URL for the migration and the import, and keep the export outside the repo:
+Only songs move to Postgres. Setlists, folders, and ownerships are not imported; each user's ownership record is recreated on first login. `scripts/import-songs.ts` (outside the build) maps each exported document with `src/db/importSongs.ts`, keeping the Mongo `_id` as the row id and casting fields with the same rules as the song API (`toSongValues`), skips documents with a bad id, a missing or uncastable field, a NUL character, or a duplicate id (reported by index, id, and reason only), and inserts in one transaction with `on conflict (id) do nothing`, so a re-run is a no-op. Use Neon's direct (non-pooled) URL for the migration and the import, and keep the export outside the repo:
 
 ```bash
 mongoexport --uri '<mongo uri>' --collection=songs --jsonArray --out=<outside the repo>/songs.json
 cd server
-DATABASE_URL='<neon direct url>' yarn db:migrate
-yarn import:songs --file <outside the repo>/songs.json --database-url '<neon direct url>'          # dry run: read, valid, skipped ids, would insert
-yarn import:songs --file <outside the repo>/songs.json --database-url '<neon direct url>' --apply  # inserted vs already present
+read -rs DATABASE_URL && export DATABASE_URL   # paste the Neon direct url; keeps it out of shell history
+yarn db:migrate
+yarn import:songs --file <outside the repo>/songs.json          # dry run: read, valid, skipped ids with reasons, would insert
+yarn import:songs --file <outside the repo>/songs.json --apply  # inserted vs already present
 ```
 
 Then set the Vercel `DATABASE_URL` to Neon's pooled `-pooler` URL and redeploy.
@@ -387,7 +389,7 @@ User profiles from the main site carry personal data about real congregation mem
 ## Environment Variables
 
 - `server/.env` (loaded by `dotenv` in `app.ts`): `PORT`, `MAIN_URL`, `BASE_URL`, `JWT_KEY`, `DATABASE_URL` (Postgres connection string; Neon's pooled `-pooler` URL with `sslmode=require` works), optional `DATABASE_POOL_MAX` (connections per function instance, default 3).
-- `DATABASE_URL_TEST` (shell only, never in `.env`): a disposable Postgres database for `yarn test`; the integration suite migrates it and truncates every table, and is skipped when unset (CI runs without it).
+- `DATABASE_URL_TEST` (shell only, never in `.env`): a disposable Postgres database for `yarn test`; the integration suite migrates it and truncates every table, so it refuses to run unless the database name contains `test` and differs from `DATABASE_URL`, and is skipped when unset (CI runs without it).
 - `ui/.env`: `REACT_APP_GOOGLE_CLIENT_ID`, `REACT_APP_MAIN_URL`. Required for `yarn start` and `yarn build`.
 - `NODE_ENV=test` means "local development" in this repo: it disables static serving of `server/client/` when `app.ts` runs directly. The `dev` script sets it through `cross-env`.
 - Vercel project (all environments): `JWT_KEY`, `MAIN_URL`, `BASE_URL` (the public origin `publicLink` is built from), `DATABASE_URL` (the Neon pooled `-pooler` connection string with `sslmode=require`) for the `server` service at runtime, and `REACT_APP_GOOGLE_CLIENT_ID`, `REACT_APP_MAIN_URL` for the `ui` service at build time. `PORT` is not used on Vercel.
