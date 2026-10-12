@@ -1,9 +1,12 @@
 import { inArray } from 'drizzle-orm';
+import { pick } from '../utils/pick';
+import { InvalidInputError } from './cast';
 import { getDb } from './connect';
+import { SONG_FIELDS, SongValues, toSongValues } from './repositories/song.repository';
 import { songs } from './schema';
 
 export type SongRow = typeof songs.$inferInsert;
-export type SkippedSong = { index: number; id: string | null };
+export type SkippedSong = { index: number; id: string | null; reason: string };
 export type MappedSongs = { rows: SongRow[]; skipped: SkippedSong[] };
 
 type ExtendedJson = Record<string, unknown>;
@@ -29,36 +32,34 @@ export const parseDate = (value: unknown): Date | null => {
 
 export const objectIdDate = (id: string): Date => new Date(parseInt(id.slice(0, 8), 16) * 1000);
 
-const requiredText = (value: unknown): string | null =>
-  typeof value === 'string' && value.length > 0 ? value : null;
+const requireField = (
+  values: SongValues,
+  field: 'title' | 'artist' | 'originalKey' | 'chordLyrics'
+): string => {
+  const value = values[field];
+  if (!value) throw new InvalidInputError(field);
+  return value;
+};
 
-const optionalText = (value: unknown): string | null => (typeof value === 'string' ? value : null);
-
-const textArray = (value: unknown): string[] =>
-  Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
-
-export const toSongRow = (document: unknown): SongRow | null => {
-  if (!isRecord(document)) return null;
+export const toSongRow = (document: unknown): SongRow => {
+  if (!isRecord(document)) throw new InvalidInputError('document');
   const id = parseObjectId(document._id);
-  const title = requiredText(document.title);
-  const artist = requiredText(document.artist);
-  const originalKey = requiredText(document.originalKey);
-  const chordLyrics = requiredText(document.chordLyrics);
-  if (!id || !title || !artist || !originalKey || !chordLyrics) return null;
+  if (!id) throw new InvalidInputError('_id');
+  const values = toSongValues(pick(document, SONG_FIELDS));
   const createdAt = parseDate(document.createdAt) ?? objectIdDate(id);
   return {
     id,
-    title,
-    artist,
-    originalKey,
-    chordLyrics,
-    tempo: textArray(document.tempo),
-    recommendedKeys: textArray(document.recommendedKeys),
-    themes: textArray(document.themes),
-    timeSignature: textArray(document.timeSignature),
-    year: optionalText(document.year),
-    code: optionalText(document.code),
-    simplifiedChordLyrics: optionalText(document.simplifiedChordLyrics),
+    title: requireField(values, 'title'),
+    artist: requireField(values, 'artist'),
+    originalKey: requireField(values, 'originalKey'),
+    chordLyrics: requireField(values, 'chordLyrics'),
+    tempo: values.tempo ?? [],
+    recommendedKeys: values.recommendedKeys ?? [],
+    themes: values.themes ?? [],
+    timeSignature: values.timeSignature ?? [],
+    year: values.year ?? null,
+    code: values.code ?? null,
+    simplifiedChordLyrics: values.simplifiedChordLyrics ?? null,
     createdBy: parseObjectId(document.createdBy),
     lastUpdatedBy: parseObjectId(document.lastUpdatedBy),
     isVerified: document.isVerified === true,
@@ -73,12 +74,18 @@ export const mapSongDocuments = (documents: unknown[]): MappedSongs => {
   const skipped: SkippedSong[] = [];
   const seen = new Set<string>();
   documents.forEach((document, index) => {
-    const row = toSongRow(document);
-    if (row && !seen.has(row.id)) {
+    const id = isRecord(document) ? parseObjectId(document._id) : null;
+    try {
+      const row = toSongRow(document);
+      if (seen.has(row.id)) {
+        skipped.push({ index, id, reason: 'duplicate id' });
+        return;
+      }
       seen.add(row.id);
       rows.push(row);
-    } else {
-      skipped.push({ index, id: isRecord(document) ? parseObjectId(document._id) : null });
+    } catch (error: unknown) {
+      if (!(error instanceof InvalidInputError)) throw error;
+      skipped.push({ index, id, reason: `invalid ${error.path}` });
     }
   });
   return { rows, skipped };

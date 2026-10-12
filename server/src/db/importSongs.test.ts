@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
+import { InvalidInputError } from './cast';
 import { mapSongDocuments, objectIdDate, parseDate, parseObjectId, toSongRow } from './importSongs';
 
 const ID = '64b0000000000000000000a1';
@@ -85,8 +86,7 @@ describe('toSongRow', () => {
         year: '2019',
       })
     );
-    assert.ok(row);
-    assert.deepEqual(row.tempo, ['Fast']);
+    assert.deepEqual(row.tempo, ['Fast', '3']);
     assert.deepEqual([row.code, row.year, row.simplifiedChordLyrics], ['A1', '2019', 'La']);
     assert.deepEqual([row.createdBy, row.lastUpdatedBy], ['ab'.repeat(12), 'cd'.repeat(12)]);
     assert.deepEqual([row.isDeleted, row.isVerified], [true, true]);
@@ -95,23 +95,39 @@ describe('toSongRow', () => {
     assert.equal('__v' in row, false);
   });
 
+  it('casts numbers to text and single values to arrays, like the API', () => {
+    const row = toSongRow(exported({ year: 2019, code: 101, tempo: 'Fast', themes: 'Hope' }));
+    assert.deepEqual(
+      [row.year, row.code, row.tempo, row.themes],
+      ['2019', '101', ['Fast'], ['Hope']]
+    );
+  });
+
   it('falls back to createdAt for a missing updatedAt', () => {
     const row = toSongRow(exported({ createdAt: { $date: '2024-01-01T00:00:00Z' } }));
     assert.equal(row?.updatedAt?.toISOString(), '2024-01-01T00:00:00.000Z');
   });
 
-  it('rejects a bad id or a missing required field', () => {
-    assert.equal(toSongRow(exported({ _id: { $oid: 'nope' } })), null);
+  it('rejects a bad id, a missing required field, an uncastable value, or a NUL character', () => {
+    const rejects = (document: unknown, path: string) =>
+      assert.throws(
+        () => toSongRow(document),
+        (error: unknown) => error instanceof InvalidInputError && error.path === path,
+        path
+      );
+    rejects(exported({ _id: { $oid: 'nope' } }), '_id');
     for (const field of ['title', 'artist', 'originalKey', 'chordLyrics']) {
-      assert.equal(toSongRow(exported({ [field]: undefined })), null, field);
-      assert.equal(toSongRow(exported({ [field]: '' })), null, field);
+      rejects(exported({ [field]: undefined }), field);
+      rejects(exported({ [field]: '' }), field);
     }
-    assert.equal(toSongRow('not a document'), null);
+    rejects(exported({ tempo: [{ bpm: 120 }] }), 'tempo');
+    rejects(exported({ chordLyrics: 'pasted\u0000text' }), 'chordLyrics');
+    rejects('not a document', 'document');
   });
 });
 
 describe('mapSongDocuments', () => {
-  it('reports invalid and duplicate documents by index and id', () => {
+  it('reports invalid and duplicate documents by index, id, and reason', () => {
     const other = '64b0000000000000000000a2';
     const { rows, skipped } = mapSongDocuments([
       exported(),
@@ -126,10 +142,10 @@ describe('mapSongDocuments', () => {
       [ID, other]
     );
     assert.deepEqual(skipped, [
-      { index: 1, id: ID },
-      { index: 3, id: ID },
-      { index: 4, id: null },
-      { index: 5, id: null },
+      { index: 1, id: ID, reason: 'invalid title' },
+      { index: 3, id: ID, reason: 'duplicate id' },
+      { index: 4, id: null, reason: 'invalid _id' },
+      { index: 5, id: null, reason: 'invalid document' },
     ]);
   });
 });

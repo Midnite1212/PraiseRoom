@@ -41,7 +41,7 @@ export type SongSearch = {
 };
 
 type SongRow = typeof songs.$inferSelect;
-type SongValues = Partial<Omit<typeof songs.$inferInsert, 'id' | 'createdAt' | 'updatedAt'>>;
+export type SongValues = Partial<Omit<typeof songs.$inferInsert, 'id' | 'createdAt' | 'updatedAt'>>;
 
 const REQUIRED_STRING_FIELDS = ['title', 'originalKey', 'artist', 'chordLyrics'] as const;
 const OPTIONAL_STRING_FIELDS = ['year', 'code', 'simplifiedChordLyrics'] as const;
@@ -74,7 +74,7 @@ export const toSongRecord = (row: SongRow): SongRecord => ({
   ...presentFields({ createdBy: row.createdBy, lastUpdatedBy: row.lastUpdatedBy }),
 });
 
-const toSongValues = (fields: SongFields): SongValues => {
+export const toSongValues = (fields: SongFields): SongValues => {
   const values: SongValues = {};
   for (const field of REQUIRED_STRING_FIELDS) {
     if (has(fields, field)) values[field] = castRequiredString(field, fields[field]);

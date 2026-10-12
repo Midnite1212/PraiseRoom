@@ -21,7 +21,9 @@ const main = async (): Promise<void> => {
   console.log(`read: ${documents.length}`);
   console.log(`valid: ${rows.length}`);
   console.log(`skipped: ${skipped.length}`);
-  for (const { index, id } of skipped) console.log(`  #${index} ${id ?? '(no valid _id)'}`);
+  for (const { index, id, reason } of skipped) {
+    console.log(`  #${index} ${id ?? '(no valid _id)'}: ${reason}`);
+  }
 
   const databaseUrl = args['database-url'] ?? process.env.DATABASE_URL;
   if (!databaseUrl) {
