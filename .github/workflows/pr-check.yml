@@ -26,7 +26,7 @@ jobs:
             yarn.lock
             ui/yarn.lock
       - run: yarn install --frozen-lockfile
-      # ui/.eslintrc.js must resolve @typescript-eslint from ui/node_modules, or ESLint finds two copies.
+      # eslint-plugin-react detects the React version from ui/node_modules.
       - run: yarn --cwd ui install --frozen-lockfile
       - run: yarn lint
 
@@ -45,7 +45,7 @@ jobs:
           cache-dependency-path: ui/yarn.lock
       - run: yarn install --frozen-lockfile
       - run: yarn typecheck
-      - run: yarn test --watchAll=false
+      - run: yarn test
         env:
           CI: true
 

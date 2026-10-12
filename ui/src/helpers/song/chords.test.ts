@@ -318,14 +318,14 @@ describe('getColor', () => {
   describe('with distinct major and minor colours', () => {
     let isolatedGetColor: typeof getColor;
 
-    beforeAll(() => {
-      jest.isolateModules(() => {
-        jest.doMock('../../constants', () => ({
-          ...jest.requireActual('../../constants'),
-          ChordColors: { C: 'major', Cm: 'minor', Bb: 'flat major', Bbm: 'flat minor' },
-        }));
-        ({ getColor: isolatedGetColor } = jest.requireActual('./chords'));
-      });
+    beforeAll(async () => {
+      vi.resetModules();
+      vi.doMock('../../constants', async (importOriginal) => ({
+        ...(await importOriginal<typeof import('../../constants')>()),
+        ChordColors: { C: 'major', Cm: 'minor', Bb: 'flat major', Bbm: 'flat minor' },
+      }));
+      ({ getColor: isolatedGetColor } = await import('./chords'));
+      vi.doUnmock('../../constants');
     });
 
     it.each([

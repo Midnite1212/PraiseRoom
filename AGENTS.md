@@ -44,7 +44,7 @@ The HMCC Hong Kong worship-team app: a song library with chord charts, key trans
 
 Three independent packages in one repo, no workspaces wiring:
 
-- `ui/` — React 18 **TypeScript** SPA on Create React App (`react-scripts` 5), MUI v5, Redux Toolkit + redux-persist, react-router-dom **v6**
+- `ui/` — React 18 **TypeScript** SPA on Vite 8 (`@vitejs/plugin-react`), MUI v5, Redux Toolkit + redux-persist, react-router-dom **v6**
 - `server/` — Express 4 + Drizzle ORM on Postgres (Neon) in **TypeScript**, run with `ts-node` through nodemon
 - Root `package.json` — ESLint, Prettier, Husky, lint-staged, and commitlint only
 
@@ -57,7 +57,7 @@ Tracking is GitHub Issues on `Midnite1212/ripple-out-worship`, a self-hosted for
 - Do what has been asked; nothing more, nothing less.
 - NEVER create files unless they're absolutely necessary for achieving your goal. Prefer editing an existing file.
 - NEVER proactively create documentation files or READMEs unless asked.
-- Unit tests cover pure logic only: chord parsing and transposition, lyrics helpers, song codes, `songKeys`, the store reset (`ui/src/**/*.test.ts(x)`, CRA Jest), and the server utils, middleware and controller input handling (`server/src/**/*.test.ts`, `node:test`). When you change logic they cover, keep them green and add a case; do not rewrite an expected value to make a test pass unless the behaviour change is intended and stated. UI components have no render tests; verify those with type-check, lint, build, and the browser.
+- Unit tests cover pure logic only: chord parsing and transposition, lyrics helpers, song codes, `songKeys`, the store reset (`ui/src/**/*.test.ts(x)`, Vitest), and the server utils, middleware and controller input handling (`server/src/**/*.test.ts`, `node:test`). When you change logic they cover, keep them green and add a case; do not rewrite an expected value to make a test pass unless the behaviour change is intended and stated. UI components have no render tests; verify those with type-check, lint, build, and the browser.
 - Reuse existing components and helpers before inventing new ones (see `#working-in-a-messy-codebase`).
 - Use **yarn**, never npm or npx, for project work: `yarn` to install, `yarn <script>` to run, `yarn tsc` / `yarn eslint` / `yarn prettier` for binaries. The only `npx` in these docs is `npx gitnexus` (`#gitnexus-setup`), a per-machine tool that never touches `package.json` or `yarn.lock`.
 
@@ -80,12 +80,13 @@ yarn && (cd server && yarn) && (cd ui && yarn)
 
 # Run locally (two terminals)
 cd server && yarn dev           # Express on :1338 via nodemon + ts-node
-cd ui && yarn start             # CRA on :3000; src/setupProxy.js proxies /api → :1338 and /external-api → REACT_APP_MAIN_URL/api
+cd ui && yarn dev               # Vite on :3000; server.proxy in vite.config.ts sends /api → :1338 and /external-api → VITE_MAIN_URL/api
 
 # UI (in ui/)
 yarn typecheck                  # tsc --noEmit; 0 errors required
-CI=true yarn test --watchAll=false   # Jest unit tests; all must pass
-yarn build                      # production build → ui/build (what the Vercel `ui` service runs)
+yarn test                       # Vitest unit tests (jsdom, globals); all must pass
+yarn build                      # tsc --noEmit, then vite build → ui/dist (what the Vercel `ui` service runs)
+yarn preview                    # serve ui/dist locally
 
 # Server (in server/)
 yarn typecheck                  # tsc --noEmit; 0 errors required (noUnusedLocals and noUnusedParameters are on)
@@ -108,7 +109,7 @@ Prettier config: `.prettierrc.json` — 2-space, single quotes, semicolons, `pri
 
 ## Technology Stack
 
-- **UI**: React 18, TypeScript (`strict`, `noImplicitAny`, `noImplicitReturns`), Create React App 5, MUI 5 (`@mui/material`, `@mui/icons-material`, `@mui/x-date-pickers` 6) on Emotion, Redux Toolkit 1 + redux-persist, react-router-dom 6, axios 1, react-hook-form 7 + zod 3 via `@hookform/resolvers`, dayjs, `@react-oauth/google`
+- **UI**: React 18, TypeScript (`strict`, `noImplicitAny`, `noImplicitReturns`), Vite 8 + Vitest 5, MUI 5 (`@mui/material`, `@mui/icons-material`, `@mui/x-date-pickers` 6) on Emotion, Redux Toolkit 1 + redux-persist, react-router-dom 6, axios 1, react-hook-form 7 + zod 3 via `@hookform/resolvers`, dayjs, `@react-oauth/google`
 - **Server**: Express 4, Drizzle ORM (`drizzle-orm`, `drizzle-kit`) over node-postgres (`pg`) on Neon Postgres, jsonwebtoken, cors, http-proxy-middleware 2
 - **Fonts**: Work Sans and DM Sans through `@fontsource`
 
@@ -134,9 +135,9 @@ Majors only. `ui/package.json` and `server/package.json` are the source of truth
 | `types/`                           | Shared types: `song`, `setlist`, `ownership`, `user`, `form`                                                                                                              |
 | `constants.ts`                     | Music keys, tempo, themes, `ChordColors`, layout heights and widths                                                                                                       |
 | `theme.ts`                         | MUI theme: palette (incl. custom `darker` / `lighter` shades via module augmentation), typography, component overrides                                                    |
-| `setupProxy.js`                    | Dev-only CRA proxy                                                                                                                                                        |
+| `vite-env.d.ts`                    | Vite client types, Vitest globals, and the typed `VITE_*` env (`ImportMetaEnv`)                                                                                           |
 
-Imports are **relative** (`'../../helpers/customHooks'`). The `#/*` alias in `ui/tsconfig.json` is not supported by CRA's webpack; it only works today for type-only imports. Do not add new `#/` imports.
+Imports are **relative** (`'../../helpers/customHooks'`). The `#/*` alias in `ui/tsconfig.json` is mirrored in `vite.config.ts` and resolves at runtime, but the codebase uses relative imports; do not add new `#/` imports.
 
 ### Backend (`server/`)
 
@@ -370,7 +371,7 @@ Then set the Vercel `DATABASE_URL` to Neon's pooled `-pooler` URL and redeploy.
 ## Auth Flow
 
 - The main HMCC HK site (`MAIN_URL`) owns users, login, Google login, sign-up, and password reset. This repo has no user model.
-- The UI calls `/external-api/auth/*`. In development `ui/src/setupProxy.js` rewrites that to `REACT_APP_MAIN_URL/api/*`; in production the Vercel top-level rewrite sends `/external-api/*` to the `server` service, whose proxy in `src/createApp.ts` does the same with `MAIN_URL`.
+- The UI calls `/external-api/auth/*`. In development the Vite `server.proxy` in `ui/vite.config.ts` rewrites that to `VITE_MAIN_URL/api/*`; in production the Vercel top-level rewrite sends `/external-api/*` to the `server` service, whose proxy in `src/createApp.ts` does the same with `MAIN_URL`.
 - Login returns a JWT that the UI stores in the `user` slice. `useUser()` verifies it with `/external-api/auth/verify-token`, rebuilds `customAxios`, and loads or creates the user's `Ownership` record. On `token-expired` it clears localStorage and reloads.
 - This server verifies the same JWT with the shared `JWT_KEY` and reads **`Authorization: Bearer <token>`** (standard spelling). The main site reads `Authorisation`; do not copy that spelling here, and do not "fix" either side to match the other.
 - `req.user` (`AuthenticatedRequest`) holds the decoded `{ id, emailAddress, accessType }`. Trust it for identity; never trust a `userId` or `accessType` sent in the request body.
@@ -382,7 +383,7 @@ User profiles from the main site carry personal data about real congregation mem
 - Never paste personal data into commits, PR bodies, issue comments, screenshots, fixtures, or logs. Use dummy accounts for screenshots and blur anything real.
 - Server log lines carry IDs, not names or emails.
 - Endpoints return only the fields the UI needs. Do not add endpoints that list every ownership or user to unauthenticated callers.
-- `REACT_APP_*` values are inlined into the public bundle; never put a secret there.
+- `VITE_*` values are inlined into the public bundle; never put a secret there.
 - No credentials in code. Deployed values live in the Vercel project's environment variables; local `.env` files are never committed.
 - Public setlist links (`/setlist/view/:id`) are visible to anyone; they must show song content only, not member data.
 
@@ -390,13 +391,13 @@ User profiles from the main site carry personal data about real congregation mem
 
 - `server/.env` (loaded by `dotenv` in `app.ts`): `PORT`, `MAIN_URL`, `BASE_URL`, `JWT_KEY`, `DATABASE_URL` (Postgres connection string; Neon's pooled `-pooler` URL with `sslmode=require` works), optional `DATABASE_POOL_MAX` (connections per function instance, default 3).
 - `DATABASE_URL_TEST` (shell only, never in `.env`): a disposable Postgres database for `yarn test`; the integration suite migrates it and truncates every table, so it refuses to run unless the database name contains `test` and differs from `DATABASE_URL`, and is skipped when unset (CI runs without it).
-- `ui/.env`: `REACT_APP_GOOGLE_CLIENT_ID`, `REACT_APP_MAIN_URL`. Required for `yarn start` and `yarn build`.
+- `ui/.env`: `VITE_GOOGLE_CLIENT_ID`, `VITE_MAIN_URL`, read through `import.meta.env` and typed in `src/vite-env.d.ts`. Required for `yarn dev` and `yarn build`.
 - `NODE_ENV=test` means "local development" in this repo: it disables static serving of `server/client/` when `app.ts` runs directly. The `dev` script sets it through `cross-env`.
-- Vercel project (all environments): `JWT_KEY`, `MAIN_URL`, `BASE_URL` (the public origin `publicLink` is built from), `DATABASE_URL` (the Neon pooled `-pooler` connection string with `sslmode=require`) for the `server` service at runtime, and `REACT_APP_GOOGLE_CLIENT_ID`, `REACT_APP_MAIN_URL` for the `ui` service at build time. `PORT` is not used on Vercel.
+- Vercel project (all environments): `JWT_KEY`, `MAIN_URL`, `BASE_URL` (the public origin `publicLink` is built from), `DATABASE_URL` (the Neon pooled `-pooler` connection string with `sslmode=require`) for the `server` service at runtime, and `VITE_GOOGLE_CLIENT_ID`, `VITE_MAIN_URL` for the `ui` service at build time. `PORT` is not used on Vercel.
 
 ## CI / Deploy (`.github/workflows/`)
 
-- Hosting is one Vercel project in [services](https://vercel.com/docs/services) mode, configured by the root `vercel.json`: `server` (`server/`, Express preset, one Vercel Function from `app.ts`) and `ui` (`ui/`, Create React App preset, static `build/` with the preset's `index.html` fallback for client routes). Top-level rewrites send `/api/*` and `/external-api/*` to `server` and everything else to `ui`; each service receives the original path, and routing into a service is final. Each service installs with its own `yarn.lock`. Vercel deploys from the connected Git repo, and `git.deploymentEnabled` limits automatic deployments to `main`, so PRs get no preview; there is no deploy workflow.
+- Hosting is one Vercel project in [services](https://vercel.com/docs/services) mode, configured by the root `vercel.json`: `server` (`server/`, Express preset, one Vercel Function from `app.ts`) and `ui` (`ui/`, Vite preset, static `dist/`, with a service-level rewrite to `/index.html` for client routes, since the Vite preset has no SPA fallback). Top-level rewrites send `/api/*` and `/external-api/*` to `server` and everything else to `ui`; each service receives the original path, and routing into a service is final. Each service installs with its own `yarn.lock`. Vercel deploys from the connected Git repo, and `git.deploymentEnabled` limits automatic deployments to `main`, so PRs get no preview; there is no deploy workflow.
 - Node 22 for builds and functions comes from the project's Node.js Version setting; `.nvmrc` pins it for local use.
 - `pr-check.yml` runs on PRs to `release` and `main`: root lint, UI typecheck and tests, server typecheck and tests (Node 22). Keep all three green.
 - `.github/copilot-instructions.md` is Copilot's short summary; this file is the source of truth when they differ.
@@ -415,11 +416,11 @@ Read `.claude/docs/commit-convention.md` and `.claude/docs/pr-description.md` be
 6. `t3ch` is an access type, not a typo. The UI's `UserAccessType` enum knows only `admin` and `user`.
 7. Every top-level table has `is_deleted`; filter it on every read and update. Soft-deleted songs still appear inside a setlist's populated `songs`, as they did under Mongoose `populate`.
 8. Server tests rely on `node --test` expanding `'src/**/*.test.ts'`, which needs Node 21+; on Node 20 pass the files explicitly.
-9. On Vercel the SPA is the `ui` service, never the Express app, and `express.static` is ignored there. Locally use the CRA dev server on :3000.
-10. `#/` imports do not resolve in CRA at runtime. Use relative imports.
+9. On Vercel the SPA is the `ui` service, never the Express app, and `express.static` is ignored there. Locally use the Vite dev server on :3000.
+10. `#/` imports resolve through the Vite alias, but the codebase uses relative imports. Keep to that.
 11. `useUser()` hits the network on every mount; do not call it in list items.
 12. `isObjectIdString` requires a 24-character hex string in either case; repositories lowercase ids before querying, so compare stored ids against `toObjectId(id)`, not the raw request value.
-13. Vercel builds with `CI=1`, so a CRA warning fails the `ui` deploy. Check with `CI=true yarn build` in `ui/`. `ui/.eslintrc.js` is its own ESLint root (CRA + `@typescript-eslint/recommended` + single quotes and semicolons) because `ui/` and the root install different `@typescript-eslint` versions; edit it, not the root config, for UI rules.
+13. `yarn build` in `ui/` runs `tsc --noEmit` before `vite build`, so a type error fails the `ui` deploy. `ui/.eslintrc.cjs` is its own ESLint root (`@typescript-eslint/recommended`, the react, react-hooks, jsx-a11y, and import rules carried over from `eslint-config-react-app`, single quotes and semicolons); its plugins load from the root `node_modules`, so add UI lint plugins to the root `package.json`. Edit it, not the root config, for UI rules.
 14. Route `key`s in `routes.ts` must be unique, and React keys from data (`_id`), not indexes.
 
 ## Tooling
