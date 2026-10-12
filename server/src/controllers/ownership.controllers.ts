@@ -4,7 +4,7 @@ import { AuthenticatedRequest } from '../policies/permissionMiddleware';
 import { canEditSetlists, ownedEntryIds, sendForbidden } from '../utils/authorization';
 import { pick } from '../utils/pick';
 import { sendError, sendResponse } from '../utils/response';
-import { isObjectIdString } from '../utils/validation';
+import { isObjectIdString, isUserIdString } from '../utils/validation';
 
 const OWNERSHIP_FIELDS = ['setlistIds'] as const;
 
@@ -25,7 +25,7 @@ const createOwnership: RequestHandler = async (
     return;
   }
 
-  const fullName: unknown = req.body?.fullName;
+  const fullName: unknown = req.body?.fullName ?? req.user.name;
   if (typeof fullName !== 'string' || fullName.trim() === '') {
     sendResponse(res, 400, 'Missing required fields');
     return;
@@ -51,7 +51,7 @@ const getOwnership: RequestHandler = async (
 
   try {
     if (userId !== undefined) {
-      if (!isObjectIdString(userId)) {
+      if (!isUserIdString(userId)) {
         sendResponse(res, 400, 'Invalid user id');
         return;
       }
@@ -140,8 +140,8 @@ const deleteOwnership: RequestHandler = async (
     return;
   }
 
-  const userId: unknown = [req.body?.params?.userId, req.body?.userId].find(isObjectIdString);
-  if (!isObjectIdString(userId)) {
+  const userId: unknown = [req.body?.params?.userId, req.body?.userId].find(isUserIdString);
+  if (!isUserIdString(userId)) {
     sendResponse(res, 400, 'Missing required fields');
     return;
   }

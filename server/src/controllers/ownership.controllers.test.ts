@@ -71,7 +71,7 @@ describe('ownership controllers', () => {
   describe('getOwnership', () => {
     it('rejects an invalid userId before querying', async () => {
       const find = mock.method(ownershipRepository, 'findLiveByUserId', async () => null);
-      for (const userId of ['bad', '', [USER_ID], { $ne: null }]) {
+      for (const userId of ['not valid', 'x'.repeat(65), '', [USER_ID], { $ne: null }]) {
         const res = await call(getOwnership, { query: { userId }, user: USER });
         assert.equal(res.statusCode, 400);
         assert.equal(res.body, 'Invalid user id');
@@ -277,8 +277,8 @@ describe('ownership controllers', () => {
         undefined,
         {},
         { params: null },
-        { params: { userId: 'bad' } },
-        { params: { userId: 'bad' }, userId: 'bad' },
+        { params: { userId: 'not valid' } },
+        { params: { userId: 'not valid' }, userId: 'not/valid' },
       ]) {
         const res = await call(deleteOwnership, { body, user: USER });
         assert.equal(res.statusCode, 400, JSON.stringify(body));
@@ -305,7 +305,7 @@ describe('ownership controllers', () => {
       const softDelete = mock.method(ownershipRepository, 'softDeleteByUserId', async () => true);
       for (const body of [
         { params: { userId: USER_ID } },
-        { params: { userId: 'bad' }, userId: USER_ID },
+        { params: { userId: 'not valid' }, userId: USER_ID },
       ]) {
         const res = await call(deleteOwnership, { body, user: USER });
         assert.equal(res.statusCode, 200);

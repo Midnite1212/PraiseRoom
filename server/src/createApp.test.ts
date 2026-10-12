@@ -11,7 +11,6 @@ const listen = (app: Express): Promise<Server> =>
   });
 
 describe('createApp', () => {
-  const originalMainUrl = process.env.MAIN_URL;
   let server: Server | undefined;
 
   const request = (path: string, init?: RequestInit) => {
@@ -20,17 +19,30 @@ describe('createApp', () => {
   };
 
   beforeEach(() => {
-    process.env.MAIN_URL = 'https://main.example';
     mock.method(console, 'error', () => undefined);
   });
 
   afterEach(async () => {
     mock.restoreAll();
-    if (originalMainUrl === undefined) delete process.env.MAIN_URL;
-    else process.env.MAIN_URL = originalMainUrl;
     const closing = server;
     server = undefined;
     if (closing) await new Promise((resolve) => closing.close(resolve));
+  });
+
+  it('starts and answers sign-in requests with a 503 when Neon Auth is not configured', async () => {
+    const ensureDatabase = mock.fn(async () => undefined);
+    const saved = { url: process.env.NEON_AUTH_URL, secret: process.env.NEON_AUTH_COOKIE_SECRET };
+    delete process.env.NEON_AUTH_URL;
+    delete process.env.NEON_AUTH_COOKIE_SECRET;
+    try {
+      server = await listen(createApp({ ensureDatabase }));
+      const res = await request('/api/auth/get-session');
+      assert.equal(res.status, 503);
+      assert.equal(ensureDatabase.mock.callCount(), 0);
+    } finally {
+      if (saved.url !== undefined) process.env.NEON_AUTH_URL = saved.url;
+      if (saved.secret !== undefined) process.env.NEON_AUTH_COOKIE_SECRET = saved.secret;
+    }
   });
 
   it('answers unknown /api paths with a JSON 404', async () => {

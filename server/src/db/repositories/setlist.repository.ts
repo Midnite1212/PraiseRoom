@@ -271,7 +271,7 @@ const reachCondition = (reach: SetlistReach): SQL | undefined => {
       )
     );
   }
-  if (reach.createdBy) access.push(eq(setlists.createdBy, toObjectId(reach.createdBy)));
+  if (reach.createdBy) access.push(eq(setlists.createdBy, reach.createdBy));
   return and(eq(setlists.isDeleted, false), access.length > 0 ? or(...access) : sql`false`);
 };
 
@@ -289,7 +289,7 @@ export const setlistRepository = {
           id,
           name,
           date: values.date ?? null,
-          createdBy: toObjectId(createdBy),
+          createdBy,
           publicLink,
           createdAt: now,
           updatedAt: now,

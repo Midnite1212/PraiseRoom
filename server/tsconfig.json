@@ -4,7 +4,9 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "paths": {
-      "#/*": ["./src/*"]
+      "#/*": ["./src/*"],
+      // "node" resolution ignores package exports, so point TypeScript at the ESM-only toolkit types.
+      "@neondatabase/auth/server": ["./node_modules/@neondatabase/auth/dist/server/index.d.mts"]
     },
     "outDir": "./dist",
     "esModuleInterop": true,

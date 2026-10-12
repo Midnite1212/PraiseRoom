@@ -13,11 +13,11 @@ import {
 } from '../utils/authorization';
 import { pick } from '../utils/pick';
 import { sendError, sendResponse } from '../utils/response';
-import { isObjectIdString, toObjectIdList } from '../utils/validation';
+import { isObjectIdString, isUserIdString, toObjectIdList } from '../utils/validation';
 
 const parseUserIds = (value: unknown): string[] | null => {
   if (value === undefined) return [];
-  return Array.isArray(value) && value.every(isObjectIdString) ? Array.from(new Set(value)) : null;
+  return Array.isArray(value) && value.every(isUserIdString) ? Array.from(new Set(value)) : null;
 };
 
 const toOwnershipEntry = (group: GroupAccess): OwnershipEntry => ({

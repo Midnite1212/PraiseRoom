@@ -321,7 +321,7 @@ describe('group controllers', () => {
         { groupId: GROUP_ID },
         { add: [], groupId: GROUP_ID, remove: [] },
         { add: MEMBER_A, groupId: GROUP_ID },
-        { add: ['bad'], groupId: GROUP_ID },
+        { add: ['not valid'], groupId: GROUP_ID },
         { groupId: GROUP_ID, remove: [{ $ne: null }] },
       ]) {
         const res = await call(updateGroupMembers, { body, user: USER });

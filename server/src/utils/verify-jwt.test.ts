@@ -1,117 +1,87 @@
-import jwt from 'jsonwebtoken';
+import { SignJWT } from 'jose';
 import assert from 'node:assert/strict';
 import { after, before, describe, it } from 'node:test';
+import { TestAuthServer, startTestAuthServer } from '../testing/neonAuth';
 import verifyToken from './verify-jwt';
 
-const SECRET = 'test-secret';
-const USER_ID = '507f1f77bcf86cd799439011';
-
-const sign = (payload: object, options: jwt.SignOptions = {}, secret = SECRET): string =>
-  jwt.sign(payload, secret, { algorithm: 'HS256', ...options });
+const USER_ID = '860dc360-609f-4b7d-9e70-ec93fe6414d3';
 
 describe('verifyToken', () => {
-  const originalKey = process.env.JWT_KEY;
+  const originalUrl = process.env.NEON_AUTH_URL;
+  let auth: TestAuthServer;
+  let otherAuth: TestAuthServer;
 
-  before(() => {
-    process.env.JWT_KEY = SECRET;
+  before(async () => {
+    auth = await startTestAuthServer();
+    otherAuth = await startTestAuthServer();
+    process.env.NEON_AUTH_URL = auth.url;
   });
 
-  after(() => {
-    if (originalKey === undefined) delete process.env.JWT_KEY;
-    else process.env.JWT_KEY = originalKey;
+  after(async () => {
+    await Promise.all([auth.close(), otherAuth.close()]);
+    if (originalUrl === undefined) delete process.env.NEON_AUTH_URL;
+    else process.env.NEON_AUTH_URL = originalUrl;
   });
 
-  it('returns id, accessType and emailAddress for a valid HS256 token', () => {
-    const token = sign({ accessType: 'admin', emailAddress: 'user@example.com', id: USER_ID });
-    assert.deepEqual(verifyToken(token), {
-      accessType: 'admin',
+  it('returns the id, email, and name of a valid Neon Auth token', async () => {
+    const token = await auth.sign({ email: 'user@example.com', name: 'Test User', sub: USER_ID });
+    assert.deepEqual(await verifyToken(token), {
       emailAddress: 'user@example.com',
       id: USER_ID,
+      name: 'Test User',
     });
   });
 
-  it('drops other claims and sets emailAddress to undefined when absent or not a string', () => {
-    assert.deepEqual(verifyToken(sign({ accessType: 'tc', extra: 'x', id: USER_ID })), {
-      accessType: 'tc',
+  it('accepts a token without email or name', async () => {
+    assert.deepEqual(await verifyToken(await auth.sign({ sub: USER_ID })), {
       emailAddress: undefined,
       id: USER_ID,
-    });
-    assert.deepEqual(verifyToken(sign({ accessType: 'tc', emailAddress: 42, id: USER_ID })), {
-      accessType: 'tc',
-      emailAddress: undefined,
-      id: USER_ID,
+      name: undefined,
     });
   });
 
-  it('accepts any non-empty accessType value', () => {
-    assert.deepEqual(verifyToken(sign({ accessType: 'unsigned', id: USER_ID })), {
-      accessType: 'unsigned',
-      emailAddress: undefined,
-      id: USER_ID,
-    });
-  });
-
-  it('rejects ids that are not 24-character hex strings', () => {
-    for (const id of ['not-an-object-id', 'aaaaaaaaaaaa', '', `${USER_ID}0`]) {
-      assert.equal(verifyToken(sign({ accessType: 'admin', id })), null, id);
-    }
-  });
-
-  it('rejects an empty accessType', () => {
-    assert.equal(verifyToken(sign({ accessType: '', id: USER_ID })), null);
-  });
-
-  it('rejects tokens signed with another algorithm', () => {
-    const token = jwt.sign({ accessType: 'admin', id: USER_ID }, SECRET, { algorithm: 'HS512' });
-    assert.equal(verifyToken(token), null);
-  });
-
-  it('rejects unsigned tokens', () => {
-    const token = jwt.sign({ accessType: 'admin', id: USER_ID }, '', { algorithm: 'none' });
-    assert.equal(verifyToken(token), null);
-  });
-
-  it('rejects tokens signed with another secret', () => {
-    assert.equal(verifyToken(sign({ accessType: 'admin', id: USER_ID }, {}, 'other')), null);
-  });
-
-  it('rejects expired tokens', () => {
-    const token = sign({
-      accessType: 'admin',
-      exp: Math.floor(Date.now() / 1000) - 60,
-      id: USER_ID,
-    });
-    assert.equal(verifyToken(token), null);
-  });
-
-  it('rejects payloads missing a string id or accessType', () => {
-    for (const payload of [
-      { accessType: 'admin' },
-      { id: USER_ID },
-      { accessType: 'admin', id: 42 },
-      { accessType: ['admin'], id: USER_ID },
+  it('rejects a token from another issuer, an expired token, or one signed by another key', async () => {
+    for (const token of [
+      await auth.sign({ sub: USER_ID }, { issuer: 'https://evil.example' }),
+      await auth.sign({ sub: USER_ID }, { expiresIn: '-1m' }),
+      await otherAuth.sign({ sub: USER_ID }, { issuer: auth.origin }),
     ]) {
-      assert.equal(verifyToken(sign(payload)), null, JSON.stringify(payload));
+      assert.equal(await verifyToken(token), null);
     }
   });
 
-  it('rejects string payloads', () => {
-    assert.equal(verifyToken(jwt.sign('plain', SECRET, { algorithm: 'HS256' })), null);
+  it('rejects a missing or malformed subject and banned users', async () => {
+    for (const claims of [{}, { sub: '' }, { sub: 'has spaces' }, { banned: true, sub: USER_ID }]) {
+      assert.equal(await verifyToken(await auth.sign(claims)), null, JSON.stringify(claims));
+    }
   });
 
-  it('rejects garbage and empty tokens', () => {
-    assert.equal(verifyToken('garbage'), null);
-    assert.equal(verifyToken('a.b.c'), null);
-    assert.equal(verifyToken(''), null);
+  it('rejects an HS256 token and garbage', async () => {
+    const hs256 = await new SignJWT({ sub: USER_ID })
+      .setProtectedHeader({ alg: 'HS256' })
+      .setIssuer(auth.origin)
+      .sign(new TextEncoder().encode('a-shared-secret-that-is-long-enough'));
+    for (const token of [hs256, 'garbage', '']) {
+      assert.equal(await verifyToken(token), null);
+    }
   });
 
-  it('rejects every token when JWT_KEY is unset', () => {
-    const token = sign({ accessType: 'admin', id: USER_ID });
-    delete process.env.JWT_KEY;
+  it('rejects every token when NEON_AUTH_URL is unset', async () => {
+    const token = await auth.sign({ sub: USER_ID });
+    delete process.env.NEON_AUTH_URL;
     try {
-      assert.equal(verifyToken(token), null);
+      assert.equal(await verifyToken(token), null);
     } finally {
-      process.env.JWT_KEY = SECRET;
+      process.env.NEON_AUTH_URL = auth.url;
+    }
+  });
+
+  it('switches key sets when NEON_AUTH_URL changes', async () => {
+    process.env.NEON_AUTH_URL = otherAuth.url;
+    try {
+      assert.equal((await verifyToken(await otherAuth.sign({ sub: USER_ID })))?.id, USER_ID);
+    } finally {
+      process.env.NEON_AUTH_URL = auth.url;
     }
   });
 });
