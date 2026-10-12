@@ -1,6 +1,7 @@
 import axios, { AxiosResponse, isAxiosError } from 'axios';
 
-export type AuthError = { status: number };
+// `code` is Better Auth's machine-readable error code; its message text is never shown.
+export type AuthError = { status: number; code?: string };
 export type AuthResult<T> = { data: T | null; error: AuthError | null };
 export type SessionUser = { id: string; email: string; name: string };
 export type AuthSession = { user: SessionUser };
@@ -10,9 +11,15 @@ type SocialSignIn = { url?: string; redirect?: boolean };
 // Not customAxios: its interceptor asks this client for a token, which would recurse.
 const authApi = axios.create({ baseURL: '/api/auth' });
 
-const toAuthError = (error: unknown): AuthError => ({
-  status: isAxiosError(error) ? error.response?.status ?? 0 : 0,
-});
+const toAuthError = (error: unknown): AuthError => {
+  if (!isAxiosError(error)) return { status: 0 };
+  const body: unknown = error.response?.data;
+  const code = typeof body === 'object' && body !== null ? Reflect.get(body, 'code') : undefined;
+  return {
+    status: error.response?.status ?? 0,
+    ...(typeof code === 'string' ? { code } : {}),
+  };
+};
 
 const request = async <T>(send: () => Promise<AxiosResponse<T>>): Promise<AuthResult<T>> => {
   try {
@@ -23,11 +30,18 @@ const request = async <T>(send: () => Promise<AxiosResponse<T>>): Promise<AuthRe
   }
 };
 
-const isSession = (value: unknown): value is AuthSession =>
+const isNonEmptyString = (value: unknown): value is string =>
+  typeof value === 'string' && value !== '';
+
+const isSessionUser = (value: unknown): value is SessionUser =>
   typeof value === 'object' &&
   value !== null &&
-  typeof Reflect.get(value, 'user') === 'object' &&
-  Reflect.get(value, 'user') !== null;
+  isNonEmptyString(Reflect.get(value, 'id')) &&
+  isNonEmptyString(Reflect.get(value, 'email')) &&
+  typeof Reflect.get(value, 'name') === 'string';
+
+const isSession = (value: unknown): value is AuthSession =>
+  typeof value === 'object' && value !== null && isSessionUser(Reflect.get(value, 'user'));
 
 const fetchSession = async (): Promise<{ session: AuthSession | null; jwt: string | null }> => {
   const { data, headers } = await authApi.get<unknown>('/get-session');
