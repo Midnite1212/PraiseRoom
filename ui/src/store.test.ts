@@ -1,6 +1,6 @@
 import { fetchOwnership, fetchSongs } from './reducers';
 import { signout } from './reducers/sessionSlice';
-import { persistor, store } from './store';
+import { LEGACY_PERSIST_KEY, persistor, store } from './store';
 import { Ownership } from './types/ownership.types';
 import { SongSchema } from './types/song.types';
 
@@ -64,6 +64,13 @@ describe('store', () => {
     store.dispatch(signout());
 
     expect(sliceState()).toEqual(initialState);
+  });
+
+  it('removes the legacy persisted main-site token on load', async () => {
+    window.localStorage.setItem(LEGACY_PERSIST_KEY, '{"user":"old-jwt"}');
+    vi.resetModules();
+    await import('./store');
+    expect(window.localStorage.getItem(LEGACY_PERSIST_KEY)).toBeNull();
   });
 
   it('keeps redux-persist metadata after signout', () => {
