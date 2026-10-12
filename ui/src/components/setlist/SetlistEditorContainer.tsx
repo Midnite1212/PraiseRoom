@@ -149,52 +149,6 @@ const SetlistEditorContainer: FC<SetlistEditorProps> = () => {
         );
       }
 
-      // Add folder update promises
-      if (isEditSetlist && setlist) {
-        const originalFolderIds = setlist.groupIds || [];
-        const foldersToAdd = updatedSetlistFolderIds.filter(
-          (id) => !originalFolderIds.includes(id)
-        );
-        const foldersToRemove = originalFolderIds.filter(
-          (id) => !updatedSetlistFolderIds.includes(id)
-        );
-
-        // Helper function to update folder
-        const updateFolder = (folderId: string, shouldAdd: boolean) => {
-          const folder = folderOptions.find((f) => f._id === folderId);
-          if (!folder) return Promise.resolve(undefined);
-
-          const currentSetlistIds = folder.setlistIds || [];
-          const newSetlistIds = shouldAdd
-            ? Array.from(new Set([...currentSetlistIds, savedSetlistId]))
-            : currentSetlistIds.filter((id) => id !== savedSetlistId);
-
-          return axios.put('/api/groups/update', {
-            id: folderId,
-            setlistIds: newSetlistIds,
-          });
-        };
-
-        // Add folder update promises
-        promises.push(
-          ...foldersToAdd.map((folderId) => updateFolder(folderId, true)),
-          ...foldersToRemove.map((folderId) => updateFolder(folderId, false))
-        );
-      } else if (!isEditSetlist) {
-        // For new setlists, just add to all selected folders
-        const folderUpdatePromises = updatedSetlistFolderIds.map((folderId) => {
-          const folder = folderOptions.find((f) => f._id === folderId);
-          return folder
-            ? axios.put('/api/groups/update', {
-                id: folderId,
-                setlistIds: Array.from(new Set([...(folder.setlistIds || []), savedSetlistId])),
-              })
-            : Promise.resolve(undefined);
-        });
-
-        promises.push(...folderUpdatePromises);
-      }
-
       // Execute all updates
       if (promises.length > 0) {
         const results = await Promise.all(promises);
