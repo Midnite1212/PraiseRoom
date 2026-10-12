@@ -30,8 +30,12 @@ const loginValidationSchema = z.object({
 
 const GENERIC_LOGIN_ERROR = 'Could not log in. Please try again.';
 
-const getLoginErrorMessage = (status: number) =>
-  status === 401 ? 'Invalid email or wrong password' : GENERIC_LOGIN_ERROR;
+const getLoginErrorMessage = (status: number) => {
+  if (status === 401) return 'Invalid email or wrong password';
+  if (status === 403)
+    return 'Please verify your email first. Check your inbox for the verification link.';
+  return GENERIC_LOGIN_ERROR;
+};
 
 const LoginContainer: React.FC = () => {
   const { register, handleSubmit, formState } = useForm<LoginFormFields>({

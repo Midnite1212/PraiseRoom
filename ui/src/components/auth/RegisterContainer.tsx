@@ -82,10 +82,10 @@ const RegisterContainer: React.FC = () => {
       password: data.password ?? '',
     });
     if (error) {
-      if (error.status === 409) {
+      if (error.code?.startsWith('USER_ALREADY_EXISTS')) {
         setInvalidRegistration('Email already exists, please try with another email');
-      } else if (error.status === 422) {
-        setInvalidRegistration('Required fields not filled');
+      } else if (error.code === 'PASSWORD_TOO_SHORT') {
+        setInvalidRegistration('Password is too short');
       } else {
         setInvalidRegistration('Could not create your account. Please try again.');
       }
@@ -95,7 +95,7 @@ const RegisterContainer: React.FC = () => {
     setOpen(true);
     redirectTimeoutRef.current = setTimeout(() => {
       navigate('/login');
-    }, 3000);
+    }, 6000);
   };
 
   return (
@@ -230,11 +230,11 @@ const RegisterContainer: React.FC = () => {
       <Snackbar
         open={open}
         onClose={handleClose}
-        autoHideDuration={5000}
+        autoHideDuration={6000}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
         <Alert severity="success" sx={{ width: '100%' }} onClose={handleClose}>
-          Successfully registered! Redirecting to login page...
+          Account created! Check your email for a verification link, then log in.
         </Alert>
       </Snackbar>
     </>
