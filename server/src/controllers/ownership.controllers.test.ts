@@ -16,7 +16,7 @@ import {
 const USER_ID = '507f1f77bcf86cd799439011';
 const OTHER_USER_ID = '507f1f77bcf86cd799439012';
 const OWNERSHIP_ID = '507f1f77bcf86cd799439013';
-const USER: TokenUser = { accessType: 'ministry', id: USER_ID };
+const USER: TokenUser = { accessType: 'member', id: USER_ID, name: 'Name' };
 const STORED_AT = new Date('2026-01-01T00:00:00.000Z');
 
 const call = async (handler: Parameters<typeof callHandler>[0], init: FakeRequestInit) => {
@@ -43,11 +43,14 @@ describe('ownership controllers', () => {
       assert.equal(create.mock.callCount(), 0);
     });
 
-    it('rejects a missing, blank, or non-string fullName', async () => {
+    it('rejects a token without a usable name, ignoring any name in the body', async () => {
       const create = mock.method(ownershipRepository, 'createIfMissing', async () => ({}));
-      for (const body of [undefined, {}, { fullName: '' }, { fullName: '   ' }, { fullName: 1 }]) {
-        const res = await call(createOwnership, { body, user: USER });
-        assert.equal(res.statusCode, 400, JSON.stringify(body));
+      for (const name of [undefined, '', '   ']) {
+        const res = await call(createOwnership, {
+          body: { fullName: 'Spoofed' },
+          user: { ...USER, name },
+        });
+        assert.equal(res.statusCode, 400, String(name));
         assert.equal(res.body, 'Missing required fields');
       }
       assert.equal(create.mock.callCount(), 0);
@@ -57,11 +60,16 @@ describe('ownership controllers', () => {
       const ownership = { _id: OWNERSHIP_ID, userId: USER_ID };
       const create = mock.method(ownershipRepository, 'createIfMissing', async () => ownership);
       const res = await call(createOwnership, {
-        body: { accessType: 'admin', fullName: 'Name', setlistIds: ['x'], userId: OTHER_USER_ID },
+        body: {
+          accessType: 'admin',
+          fullName: 'Spoofed',
+          setlistIds: ['x'],
+          userId: OTHER_USER_ID,
+        },
         user: USER,
       });
       assert.deepEqual(create.mock.calls[0]?.arguments, [
-        { accessType: 'ministry', fullName: 'Name', userId: USER_ID },
+        { accessType: 'member', fullName: 'Name', userId: USER_ID },
       ]);
       assert.equal(res.statusCode, 200);
       assert.equal(res.body, ownership);

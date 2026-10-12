@@ -25,7 +25,7 @@ const createOwnership: RequestHandler = async (
     return;
   }
 
-  const fullName: unknown = req.body?.fullName ?? req.user.name;
+  const fullName = req.user.name;
   if (typeof fullName !== 'string' || fullName.trim() === '') {
     sendResponse(res, 400, 'Missing required fields');
     return;

@@ -100,7 +100,7 @@ describe(
         [MEMBER, 'Harness Member'],
         [OUTSIDER, 'Harness Outsider'],
       ] as const) {
-        await ok(createOwnership, { body: { fullName }, user });
+        await ok(createOwnership, { user: { ...user, name: fullName } });
       }
     });
 
@@ -523,7 +523,7 @@ describe(
         const first = await ownershipOf(MEMBER);
         const again = await ok(createOwnership, {
           body: { accessType: 'admin', fullName: 'Renamed', userId: OUTSIDER.id },
-          user: MEMBER,
+          user: { ...MEMBER, name: 'Renamed' },
         });
         assert.equal(again._id, first._id);
         assert.equal(again.fullName, 'Harness Member');
