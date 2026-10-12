@@ -92,7 +92,6 @@ yarn preview                    # serve ui/dist locally
 yarn typecheck                  # tsc --noEmit; 0 errors required (noUnusedLocals and noUnusedParameters are on)
 yarn test                       # node:test unit tests, no database needed (Node 21+ for the glob)
 DATABASE_URL_TEST=<url> yarn test  # also runs src/db/integration.test.ts against a disposable Postgres database
-yarn build                      # tsc -p tsconfig.build.json → server/dist, tests excluded; the Vercel `server` service runs it as a type gate
 yarn db:generate                # drizzle-kit generate: new SQL migration in server/drizzle/ from src/db/schema.ts
 yarn db:migrate                 # drizzle-kit migrate: apply pending migrations to DATABASE_URL
 yarn import:songs --file <songs.json> [--apply]  # one-off MongoDB songs import; see #cutover-from-mongodb-songs-only
@@ -418,7 +417,7 @@ Read `.claude/docs/commit-convention.md` and `.claude/docs/pr-description.md` be
 6. Access types are `member`, `editor`, `admin` (no hierarchy); only `editor` and `admin` can write songs (`SONG_WRITERS` server-side, the `'editor'` route permission client-side). `member` is the default for a new ownership record.
 7. Every top-level table has `is_deleted`; filter it on every read and update. Soft-deleted songs still appear inside a setlist's populated `songs`, as they did under Mongoose `populate`.
 8. Server tests rely on `node --test` expanding `'src/**/*.test.ts'`, which needs Node 21+; on Node 20 pass the files explicitly.
-9. On Vercel the SPA is the `ui` service, never the Express app, and `express.static` is ignored there. Locally use the Vite dev server on :3000.
+9. On Vercel the SPA is the `ui` service, never the Express app, and `express.static` is ignored there. Locally use the Vite dev server on :3000. `server/` must not have a `build` script: Vercel's Express preset would run it, take `dist/app.js` as the handler at the function root, and lose `server/node_modules`, so every request fails with `Cannot find module`. Vercel compiles `app.ts` itself and type-checks it.
 10. `#/` imports resolve through the Vite alias, but the codebase uses relative imports. Keep to that.
 11. `useUser()` hits the network on every mount; do not call it in list items.
 12. `isObjectIdString` requires a 24-character hex string in either case; repositories lowercase ids before querying, so compare stored ids against `toObjectId(id)`, not the raw request value. User ids are a separate shape: `isUserIdString` validates a Neon Auth user id, which is stored and compared as given, never lowercased.
