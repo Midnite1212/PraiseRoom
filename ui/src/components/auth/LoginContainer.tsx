@@ -172,7 +172,7 @@ const LoginContainer: React.FC = () => {
                 startIcon={<GoogleIcon />}
                 sx={{ borderRadius: '30px' }}
               >
-                <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                <Typography component="span" variant="subtitle1" sx={{ fontWeight: 700 }}>
                   Continue with Google
                 </Typography>
               </Button>

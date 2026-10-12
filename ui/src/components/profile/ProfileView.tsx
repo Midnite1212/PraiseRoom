@@ -1,4 +1,14 @@
-import { Box, Button, Container, Stack, TextField, Typography, styled } from '@mui/material';
+import { useState } from 'react';
+import {
+  Box,
+  Button,
+  Container,
+  Snackbar,
+  Stack,
+  TextField,
+  Typography,
+  styled,
+} from '@mui/material';
 import { useDispatch } from 'react-redux';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
@@ -30,13 +40,19 @@ const DisabledTextField = styled(TextField)(({ theme }) => ({
 }));
 
 const fieldWidth = { xs: '100%', sm: '75%' };
+const LOGOUT_ERROR_AUTO_HIDE_MS = 4000;
 
 const ProfileView = () => {
   const { user } = useUser();
   const dispatch = useDispatch();
+  const [isLogoutFailed, setIsLogoutFailed] = useState(false);
 
   const handleLogout = async () => {
-    await authClient.signOut();
+    const { error } = await authClient.signOut();
+    if (error) {
+      setIsLogoutFailed(true);
+      return;
+    }
     clearAuthTokenCache();
     await persistor.purge();
     dispatch(signout());
@@ -99,6 +115,12 @@ const ProfileView = () => {
           </Box>
         </Stack>
       </Box>
+      <Snackbar
+        open={isLogoutFailed}
+        autoHideDuration={LOGOUT_ERROR_AUTO_HIDE_MS}
+        onClose={() => setIsLogoutFailed(false)}
+        message="Could not log out. Please try again."
+      />
     </Container>
   );
 };
