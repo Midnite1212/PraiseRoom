@@ -9,7 +9,7 @@ import { InvalidInputError, castOptionalString } from '../cast';
 import { getDb } from '../connect';
 import { generateObjectId, toObjectId } from '../objectId';
 import { ownershipGroups, ownershipSetlists, ownerships } from '../schema';
-import { Executor, groupBy, presentFields } from './shared';
+import { Executor, groupBy, presentFields, unique } from './shared';
 
 export type CallerAccess = {
   groupIds: StoredOwnershipEntry[];
@@ -226,18 +226,17 @@ export const ownershipRepository = {
     remove,
   }: GroupMembershipChange): Promise<{ added: number; removed: number }> {
     return getDb().transaction(async (tx) => {
-      const now = new Date();
-      const candidates =
-        add.length > 0
-          ? await tx
-              .select({ id: ownerships.id })
-              .from(ownerships)
-              .where(isLiveUser(add))
-              .orderBy(asc(ownerships.id))
-              .for('update')
-          : [];
+      const affected = await tx
+        .select({ id: ownerships.id, userId: ownerships.userId })
+        .from(ownerships)
+        .where(isLiveUser(unique([...add, ...remove])))
+        .orderBy(asc(ownerships.id))
+        .for('update');
+      const adding = new Set(add);
+      const removing = new Set(remove);
       const joining: string[] = [];
-      for (const { id } of candidates) {
+      for (const { id, userId } of affected) {
+        if (!adding.has(userId)) continue;
         const [membership] = await tx
           .select({ ownershipId: ownershipGroups.ownershipId })
           .from(ownershipGroups)
@@ -253,29 +252,28 @@ export const ownershipRepository = {
         });
         joining.push(id);
       }
-      if (joining.length > 0) {
-        await tx.update(ownerships).set({ updatedAt: now }).where(inArray(ownerships.id, joining));
-      }
-      const leaving =
-        remove.length > 0
+      const leavingIds = affected.filter(({ userId }) => removing.has(userId)).map(({ id }) => id);
+      const deleted =
+        leavingIds.length > 0
           ? await tx
-              .update(ownerships)
-              .set({ updatedAt: now })
-              .where(isLiveUser(remove))
-              .returning({ id: ownerships.id })
+              .delete(ownershipGroups)
+              .where(
+                and(
+                  inArray(ownershipGroups.ownershipId, leavingIds),
+                  eq(ownershipGroups.groupId, entry.id)
+                )
+              )
+              .returning({ ownershipId: ownershipGroups.ownershipId })
           : [];
-      if (leaving.length > 0) {
-        await tx.delete(ownershipGroups).where(
-          and(
-            inArray(
-              ownershipGroups.ownershipId,
-              leaving.map(({ id }) => id)
-            ),
-            eq(ownershipGroups.groupId, entry.id)
-          )
-        );
+      const left = unique(deleted.map(({ ownershipId }) => ownershipId));
+      const changed = unique([...joining, ...left]);
+      if (changed.length > 0) {
+        await tx
+          .update(ownerships)
+          .set({ updatedAt: new Date() })
+          .where(inArray(ownerships.id, changed));
       }
-      return { added: joining.length, removed: leaving.length };
+      return { added: joining.length, removed: left.length };
     });
   },
 };

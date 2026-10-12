@@ -310,6 +310,11 @@ describe(
         assert.deepEqual(rekeyed.songKeys, [{ key: 'G', songId: b._id }]);
         assert.equal(rekeyed.name, 'Renamed');
         assert.equal(rekeyed.date, null);
+        const minor = await ok(updateSetlist, {
+          body: { id: created._id, songKeys: [{ key: 'F#m', songId: b._id }] },
+          user: MEMBER,
+        });
+        assert.deepEqual(minor.songKeys, [{ key: 'F#m', songId: b._id }]);
       });
 
       it('rejects unknown song ids and bad dates with 400 and writes nothing', async () => {
@@ -415,6 +420,40 @@ describe(
             .status,
           403
         );
+      });
+
+      it('counts only real removals and survives opposite concurrent membership changes', async () => {
+        const folder = await ok(createGroup, { body: { groupName: 'Swap' }, user: ADMIN });
+        const untouched = (await ownershipOf(OUTSIDER)).updatedAt;
+        assert.deepEqual(
+          await ok(updateGroupMembers, {
+            body: { groupId: folder._id, remove: [OUTSIDER.id, MISSING_ID] },
+            user: ADMIN,
+          }),
+          { added: 0, groupId: folder._id, removed: 0 }
+        );
+        assert.equal((await ownershipOf(OUTSIDER)).updatedAt, untouched);
+
+        await ok(updateGroupMembers, {
+          body: { add: [MEMBER.id], groupId: folder._id },
+          user: ADMIN,
+        });
+        for (let round = 0; round < 5; round += 1) {
+          const results = await Promise.all([
+            call(updateGroupMembers, {
+              body: { add: [OUTSIDER.id], groupId: folder._id, remove: [MEMBER.id] },
+              user: ADMIN,
+            }),
+            call(updateGroupMembers, {
+              body: { add: [MEMBER.id], groupId: folder._id, remove: [OUTSIDER.id] },
+              user: ADMIN,
+            }),
+          ]);
+          assert.deepEqual(
+            results.map(({ status }) => status),
+            [200, 200]
+          );
+        }
       });
 
       it('requires edit rights on each setlist a folder update newly adds', async () => {

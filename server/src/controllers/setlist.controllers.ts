@@ -2,6 +2,8 @@ import { RequestHandler, Response } from 'express';
 import { generateObjectId } from '../db/objectId';
 import { groupRepository } from '../db/repositories/group.repository';
 import {
+  FindGroupAccess,
+  GroupLinkForbiddenError,
   SETLIST_FIELDS,
   SetlistReach,
   setlistRepository,
@@ -79,12 +81,13 @@ export const resolveGroupLinks = async (
   user: TokenUser,
   ownership: CallerOwnership,
   requested: string[],
-  current: readonly string[]
+  current: readonly string[],
+  findGroups: FindGroupAccess = (ids) => groupRepository.findLiveAccessByIds(ids)
 ): Promise<string[] | null> => {
   const added = requested.filter((groupId) => !current.includes(groupId));
   const removed = current.filter((groupId) => !requested.includes(groupId));
   if (added.length + removed.length === 0) return requested;
-  const groups = await groupRepository.findLiveAccessByIds([...added, ...removed]);
+  const groups = await findGroups([...added, ...removed]);
   const editable = new Set(
     groups.filter((group) => canEditGroup(user, group, ownership)).map(({ _id }) => _id)
   );
@@ -241,15 +244,16 @@ const updateSetlist: RequestHandler = async (
         sendResponse(res, 400, 'Invalid request');
         return;
       }
-      const linked = await resolveGroupLinks(req.user, ownership, groupIds, existing.groupIds);
-      if (!linked) {
-        sendForbidden(res);
-        return;
-      }
-      toUpdate.groupIds = linked;
+      toUpdate.groupIds = groupIds;
     }
 
-    const setlist = await setlistRepository.updateLive(id, toUpdate);
+    const user = req.user;
+    const setlist = await setlistRepository.updateLive(
+      id,
+      toUpdate,
+      (requested, current, findGroups) =>
+        resolveGroupLinks(user, ownership, requested, current, findGroups)
+    );
 
     if (setlist) {
       sendResponse(res, 200, setlist);
@@ -257,6 +261,10 @@ const updateSetlist: RequestHandler = async (
       sendResponse(res, 404, 'Setlist not found');
     }
   } catch (error: unknown) {
+    if (error instanceof GroupLinkForbiddenError) {
+      sendForbidden(res);
+      return;
+    }
     sendError(res, error);
   }
 };

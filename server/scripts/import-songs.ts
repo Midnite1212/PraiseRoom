@@ -4,6 +4,17 @@ import { parseArgs } from 'node:util';
 import { closeDatabase } from '../src/db/connect';
 import { countExistingSongs, insertSongs, mapSongDocuments } from '../src/db/importSongs';
 
+class ImportUsageError extends Error {}
+
+const readDocuments = (file: string): unknown => {
+  const text = readFileSync(file, 'utf8');
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new ImportUsageError(`Import failed: ${file} is not valid JSON`);
+  }
+};
+
 const { values: args } = parseArgs({
   options: {
     apply: { type: 'boolean', default: false },
@@ -13,9 +24,11 @@ const { values: args } = parseArgs({
 });
 
 const main = async (): Promise<void> => {
-  if (!args.file) throw new Error('Usage: yarn import:songs --file <songs.json> [--apply]');
-  const documents: unknown = JSON.parse(readFileSync(args.file, 'utf8'));
-  if (!Array.isArray(documents)) throw new Error('Expected a mongoexport --jsonArray file');
+  if (!args.file)
+    throw new ImportUsageError('Usage: yarn import:songs --file <songs.json> [--apply]');
+  const documents = readDocuments(args.file);
+  if (!Array.isArray(documents))
+    throw new ImportUsageError('Expected a mongoexport --jsonArray file');
 
   const { rows, skipped } = mapSongDocuments(documents);
   console.log(`read: ${documents.length}`);
@@ -27,7 +40,7 @@ const main = async (): Promise<void> => {
 
   const databaseUrl = args['database-url'] ?? process.env.DATABASE_URL;
   if (!databaseUrl) {
-    if (args.apply) throw new Error('Pass --database-url or set DATABASE_URL');
+    if (args.apply) throw new ImportUsageError('Pass --database-url or set DATABASE_URL');
     console.log(`would insert: ${rows.length} (database not checked)`);
     return;
   }
@@ -47,8 +60,12 @@ const main = async (): Promise<void> => {
 
 main()
   .catch((error: unknown) => {
-    const cause = error instanceof DrizzleQueryError ? error.cause : error;
-    console.error(cause instanceof Error ? cause.message : 'Import failed');
+    if (error instanceof ImportUsageError) {
+      console.error(error.message);
+    } else {
+      const cause = error instanceof DrizzleQueryError ? error.cause : error;
+      console.error(cause instanceof Error ? `Import failed: ${cause.name}` : 'Import failed');
+    }
     process.exitCode = 1;
   })
   .finally(closeDatabase);

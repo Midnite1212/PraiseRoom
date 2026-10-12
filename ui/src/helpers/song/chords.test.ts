@@ -1,9 +1,11 @@
 import {
   getColor,
   getInitialSongKey,
+  getKeyLabel,
   getNoteIndex,
   getSetlistStartingKey,
   getTransposeOffset,
+  isMinorKey,
   searchChordColor,
   transposeChord,
 } from './chords';
@@ -415,4 +417,46 @@ describe('getSetlistStartingKey', () => {
       expect(getSetlistStartingKey(key)).toEqual(getInitialSongKey(key));
     }
   );
+});
+
+describe('minor keys', () => {
+  it.each([
+    ['Em', true],
+    ['F#m', true],
+    ['Bbm', true],
+    ['E', false],
+    ['Emaj', false],
+    ['em', false],
+    ['', false],
+    [undefined, false],
+  ])('detects whether %p is a minor key (%p)', (key, isMinor) => {
+    expect(isMinorKey(key)).toBe(isMinor);
+  });
+
+  it('transposes an Em song to F#m by two semitones and keeps each chord quality', () => {
+    const offset = getTransposeOffset('Em', getInitialSongKey('F#m').keyIndex);
+    expect(offset).toBe(2);
+    expect(
+      ['Em', 'C', 'G/B', 'D', 'Am7', 'B7sus4'].map((chord) => transposeChord(chord, offset, false))
+    ).toEqual(['F#m', 'D', 'A/C#', 'E', 'Bm7', 'C#7sus4']);
+  });
+
+  it('labels a minor song by its root plus m, in sharp or flat spelling', () => {
+    expect(getKeyLabel(getInitialSongKey('Em').keyIndex, false, true)).toBe('Em');
+    expect(getKeyLabel(6, false, true)).toBe('F#m');
+    expect(getKeyLabel(6, true, true)).toBe('Gbm');
+    expect(getKeyLabel(10, getInitialSongKey('Bbm').isFlat, true)).toBe('Bbm');
+    expect(getKeyLabel(1, false, true)).toBe('C#m');
+    expect(getKeyLabel(1, true, true)).toBe('Dbm');
+  });
+
+  it('keeps major labels for major songs', () => {
+    expect(getKeyLabel(6, false, false)).toBe('F#');
+    expect(getKeyLabel(10, true, false)).toBe('Bb');
+  });
+
+  it('spells transposed minor chords with flats or sharps as chosen', () => {
+    expect(transposeChord('Em', getTransposeOffset('Em', 3), true)).toBe('Ebm');
+    expect(transposeChord('Em', getTransposeOffset('Em', 3), false)).toBe('D#m');
+  });
 });

@@ -12,14 +12,7 @@ import {
 import { SongSetlistSchema } from '../../types/song.types';
 import { Close, KeyboardArrowDown, KeyboardArrowUp, Tune } from '@mui/icons-material';
 import HeaderWithIcon from '../custom/HeaderWithIcon';
-import { flatMusicKeysOptions, sharpMusicKeysOptions } from '../../constants';
-
-const getKeyPosition = (musicKey: string) => {
-  const sharpIndex = sharpMusicKeysOptions.indexOf(musicKey);
-  if (sharpIndex >= 0) return { isFlat: false, index: sharpIndex };
-  const flatIndex = flatMusicKeysOptions.indexOf(musicKey);
-  return { isFlat: flatIndex >= 0, index: Math.max(0, flatIndex) };
-};
+import { getKeyLabel, getSetlistStartingKey, isMinorKey } from '../../helpers/song/chords';
 
 interface SetlistChangeKeyModalProps {
   open: boolean;
@@ -35,19 +28,22 @@ const SetlistChangeKeyModal: React.FC<SetlistChangeKeyModalProps> = ({
   handleSave,
 }) => {
   const initialKey = song.key || song.originalKey || 'C';
-  const [count, setCount] = useState(() => getKeyPosition(initialKey).index);
-  const [useFlat, setUseFlat] = useState<boolean | null>(() => getKeyPosition(initialKey).isFlat);
+  const isMinor = isMinorKey(song.originalKey || initialKey);
+  const [count, setCount] = useState(() => getSetlistStartingKey(initialKey).keyIndex);
+  const [useFlat, setUseFlat] = useState<boolean | null>(
+    () => getSetlistStartingKey(initialKey).isFlat
+  );
   const [key, setKey] = useState<string>(initialKey);
 
   useEffect(() => {
-    const { isFlat, index } = getKeyPosition(initialKey);
+    const { isFlat, keyIndex } = getSetlistStartingKey(initialKey);
     setUseFlat(isFlat);
-    setCount(index);
+    setCount(keyIndex);
   }, [initialKey]);
 
   useEffect(() => {
-    setKey(useFlat ? flatMusicKeysOptions[count] : sharpMusicKeysOptions[count]);
-  }, [count, useFlat]);
+    setKey(getKeyLabel(count, Boolean(useFlat), isMinor));
+  }, [count, useFlat, isMinor]);
 
   const handleIncrement = () => {
     if (count < 11) setCount(count + 1);
@@ -157,9 +153,7 @@ const SetlistChangeKeyModal: React.FC<SetlistChangeKeyModalProps> = ({
           paddingTop={'8px'}
         >
           <Button
-            onClick={() =>
-              handleSave(useFlat ? flatMusicKeysOptions[count] : sharpMusicKeysOptions[count])
-            }
+            onClick={() => handleSave(getKeyLabel(count, Boolean(useFlat), isMinor))}
             variant="contained"
             sx={{
               backgroundColor: 'secondary.main',

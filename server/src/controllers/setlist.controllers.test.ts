@@ -2,7 +2,12 @@ import assert from 'node:assert/strict';
 import { after, afterEach, before, beforeEach, describe, it, mock } from 'node:test';
 import { groupRepository } from '../db/repositories/group.repository';
 import { CallerAccess, ownershipRepository } from '../db/repositories/ownership.repository';
-import { setlistRepository } from '../db/repositories/setlist.repository';
+import {
+  GroupLinkForbiddenError,
+  GroupLinkResolver,
+  SetlistFields,
+  setlistRepository,
+} from '../db/repositories/setlist.repository';
 import { MUSIC_KEYS } from '../db/schema';
 import { FakeRequestInit, callHandler, createRequest, createResponse } from '../testing/http';
 import { GroupAccess } from '../types/group.types';
@@ -94,6 +99,13 @@ describe('setlist songKeys helpers', () => {
       assert.equal(parsed?.length, MUSIC_KEYS.length);
     });
 
+    it('accepts minor keys built on every major root', () => {
+      for (const key of ['Em', 'F#m', 'Bbm', 'Abm', 'C#m']) {
+        assert.deepEqual(parseSongKeys([{ key, songId: SONG_A }]), [{ key, songId: SONG_A }]);
+      }
+      assert.equal(MUSIC_KEYS.length, 34);
+    });
+
     it('rejects the whole list when any entry is invalid', () => {
       const valid = { key: 'C', songId: SONG_A };
       for (const invalid of [
@@ -101,7 +113,10 @@ describe('setlist songKeys helpers', () => {
         'C',
         { key: 'H', songId: SONG_A },
         { key: 'c', songId: SONG_A },
-        { key: 'Cm', songId: SONG_A },
+        { key: 'cm', songId: SONG_A },
+        { key: 'Hm', songId: SONG_A },
+        { key: 'Cmaj', songId: SONG_A },
+        { key: 'Cm7', songId: SONG_A },
         { key: 'C' },
         { songId: SONG_A },
         { key: 'C', songId: 'bad' },
@@ -582,7 +597,10 @@ describe('setlist controllers', () => {
         const res = await call(updateSetlist, { body: { id: SETLIST_ID, name: 'Sunday' }, user });
         assert.equal(res.statusCode, 200, JSON.stringify(stored));
         assert.equal(res.body, updated);
-        assert.deepEqual(update.mock.calls[0]?.arguments, [SETLIST_ID, { name: 'Sunday' }]);
+        assert.deepEqual(update.mock.calls[0]?.arguments.slice(0, 2), [
+          SETLIST_ID,
+          { name: 'Sunday' },
+        ]);
         mock.restoreAll();
       }
     });
@@ -604,7 +622,7 @@ describe('setlist controllers', () => {
         },
         user: USER,
       });
-      assert.deepEqual(update.mock.calls[0]?.arguments, [
+      assert.deepEqual(update.mock.calls[0]?.arguments.slice(0, 2), [
         SETLIST_ID,
         { songKeys: [{ key: 'A', songId: SONG_A }], songs: [SONG_A] },
       ]);
@@ -631,33 +649,51 @@ describe('setlist controllers', () => {
       });
     });
 
-    it('links new folders the caller can edit and keeps folders the caller cannot edit', async () => {
-      mockStored(storedSetlist({ createdBy: USER.id, groupIds: [OTHER_GROUP_ID] }));
+    it('resolves folder links against the links the repository reads in its transaction', async () => {
+      mockStored(storedSetlist({ createdBy: USER.id }));
       mockOwnership({ groupIds: [entry(GROUP_ID)], setlistIds: [] });
-      mockFolders(folder(GROUP_ID, OTHER_USER_ID), folder(OTHER_GROUP_ID, OTHER_USER_ID));
-      const update = mock.method(setlistRepository, 'updateLive', async () => ({}));
+      const findGroups = mock.fn(async () => [
+        folder(GROUP_ID, OTHER_USER_ID),
+        folder(OTHER_GROUP_ID, OTHER_USER_ID),
+      ]);
+      const update = mock.method(
+        setlistRepository,
+        'updateLive',
+        async (_id: string, fields: SetlistFields, resolve?: GroupLinkResolver) => {
+          assert.deepEqual(await resolve?.([GROUP_ID], [OTHER_GROUP_ID], findGroups), [
+            GROUP_ID,
+            OTHER_GROUP_ID,
+          ]);
+          return { ...fields };
+        }
+      );
       const res = await call(updateSetlist, {
         body: { groupIds: [GROUP_ID.toUpperCase()], id: SETLIST_ID },
         user: USER,
       });
       assert.equal(res.statusCode, 200);
-      assert.deepEqual(update.mock.calls[0]?.arguments[1], {
-        groupIds: [GROUP_ID, OTHER_GROUP_ID],
-      });
+      assert.deepEqual(update.mock.calls[0]?.arguments[1], { groupIds: [GROUP_ID] });
+      assert.equal(findGroups.mock.callCount(), 1);
     });
 
     it('forbids linking a folder the caller cannot edit', async () => {
       mockStored(storedSetlist({ createdBy: USER.id }));
       mockOwnership(null);
-      mockFolders(folder(GROUP_ID, OTHER_USER_ID));
-      const update = mock.method(setlistRepository, 'updateLive', async () => ({}));
+      const findGroups = mock.fn(async () => [folder(GROUP_ID, OTHER_USER_ID)]);
+      mock.method(
+        setlistRepository,
+        'updateLive',
+        async (_id: string, _fields: SetlistFields, resolve?: GroupLinkResolver) => {
+          assert.equal(await resolve?.([GROUP_ID], [], findGroups), null);
+          throw new GroupLinkForbiddenError();
+        }
+      );
       const res = await call(updateSetlist, {
         body: { groupIds: [GROUP_ID], id: SETLIST_ID },
         user: USER,
       });
       assert.equal(res.statusCode, 403);
       assert.deepEqual(res.body, FORBIDDEN);
-      assert.equal(update.mock.callCount(), 0);
     });
 
     it('returns 404 when the setlist disappears before the write', async () => {
