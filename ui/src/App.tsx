@@ -8,7 +8,6 @@ import { routes as appRoutes } from './routes';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import customTheme from './theme';
 import './styles.css';
-import { GoogleOAuthProvider } from '@react-oauth/google';
 import PrivateRouteWrapper from './components/custom/PrivateRouteWrapper';
 
 const enabledRoutes = appRoutes.filter((route) => route.enabled);
@@ -19,31 +18,29 @@ function App() {
       <PersistGate loading={null} persistor={persistor}>
         <ThemeProvider theme={customTheme}>
           <CssBaseline />
-          <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID ?? ''}>
-            <BrowserRouter>
-              <Box
-                display="flex"
-                component="main"
-                sx={{ flexGrow: 1, width: '100%', height: '100vh' }}
-              >
-                <Suspense fallback={null}>
-                  <Routes>
-                    {enabledRoutes.map((route) => (
-                      <Route
-                        key={route.key}
-                        path={route.path}
-                        element={
-                          <PrivateRouteWrapper permissions={route.permissions}>
-                            <route.component />
-                          </PrivateRouteWrapper>
-                        }
-                      />
-                    ))}
-                  </Routes>
-                </Suspense>
-              </Box>
-            </BrowserRouter>
-          </GoogleOAuthProvider>
+          <BrowserRouter>
+            <Box
+              display="flex"
+              component="main"
+              sx={{ flexGrow: 1, width: '100%', height: '100vh' }}
+            >
+              <Suspense fallback={null}>
+                <Routes>
+                  {enabledRoutes.map((route) => (
+                    <Route
+                      key={route.key}
+                      path={route.path}
+                      element={
+                        <PrivateRouteWrapper permissions={route.permissions}>
+                          <route.component />
+                        </PrivateRouteWrapper>
+                      }
+                    />
+                  ))}
+                </Routes>
+              </Suspense>
+            </Box>
+          </BrowserRouter>
         </ThemeProvider>
       </PersistGate>
     </Provider>

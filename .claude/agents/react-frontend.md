@@ -22,9 +22,9 @@ Most of `ui/src/components/` was written by junior volunteers. Expect 500–1100
 ## Project context
 
 - React 18 + TypeScript (`strict`), Vite 8 with `@vitejs/plugin-react`. The `#/*` path alias resolves, but the codebase uses relative imports; keep to that.
-- Vite dev server on :3000; `server.proxy` in `vite.config.ts` sends `/api` to Express on :1338 and `/external-api` to the main HMCC HK site. Env vars are `VITE_*` through `import.meta.env`, typed in `src/vite-env.d.ts`. Yarn for installs, scripts, and binaries; never npm or npx.
+- Vite dev server on :3000; `server.proxy` in `vite.config.ts` sends `/api` (including the `/api/auth/*` Neon Auth proxy) to Express on :1338. Env vars are `VITE_*` through `import.meta.env`, typed in `src/vite-env.d.ts`. Yarn for installs, scripts, and binaries; never npm or npx.
 - MUI **v5** on Emotion, `@mui/icons-material` (import by path), `@mui/x-date-pickers` 6 with dayjs. Custom theme in `ui/src/theme.ts` with extra palette shades (`primary.darker`, `primary.lighter`, …) declared through module augmentation.
-- Redux Toolkit + redux-persist; only `user` (the JWT string) is persisted. Slices: `user`, `songs`, `ownership`. Use `useAppSelector` from `store.ts`.
+- Redux Toolkit + redux-persist; nothing is persisted. Slices: `songs`, `ownership`; the session lives in Neon Auth cookies. Use `useAppSelector` from `store.ts`.
 - react-router-dom **v6**: `useNavigate`, `useParams`, `<Navigate replace>`. No v5 APIs (`useHistory`, `Switch`, `props.history`).
 - Forms: react-hook-form 7 + zod 3 through `zodResolver`.
 - Majors only above. `ui/package.json` is the source of truth for exact versions; check it before relying on an API.
@@ -71,16 +71,16 @@ try {
 }
 ```
 
-- Always `customAxios`. It is a singleton rebuilt by `updateAxiosClient(token)` inside `useUser`; it sends `Authorization: Bearer <token>`. Import the binding each time; never cache the instance.
-- `/api/*` is this repo's Express server; `/external-api/*` is the main HMCC HK site (auth, users).
+- Always `customAxios`. Its request interceptor adds `Authorization: Bearer <token>` from `getAuthToken()` in `authClient.ts`; call `clearAuthTokenCache()` on sign-out.
+- `/api/*` is this repo's Express server; sign-in goes through the Neon Auth client in `components/custom/authClient.ts`, which talks to `/api/auth/*`.
 - Every mutation gives feedback through a Snackbar on success and failure, and checks the result before claiming success. Never render the raw server error text.
 - Load what the page needs by id rather than reading everything from Redux.
-- `useUser()` calls verify-token on every mount; call it once per page and pass `user` down.
+- `useUser()` calls `authClient.getSession()` on every mount; call it once per page and pass `user` down.
 
 ## Routing and access
 
 - Every route is an entry in `ui/src/routes.ts` with a unique `key`; `App.tsx` wraps each in `PrivateRouteWrapper`. Never a bare `<Route>` elsewhere.
-- `permissions`: `'noUser'`, `'user'`, `'admin'` (`user.accessType === 'admin'`), `'public'` (anyone). Read `PrivateRouteWrapper.tsx` before adding a new combination.
+- `permissions`: `'noUser'`, `'user'`, `'editor'` (editor or admin), `'admin'` (`user.accessType === 'admin'`), `'public'` (anyone). Read `PrivateRouteWrapper.tsx` before adding a new combination.
 - Check that a new path does not collide with `/setlist/:id?` and its siblings under v6 ranking.
 - Frontend gating is UX only. The server's `ROUTE_PERMISSIONS` is the real check; say so when a task touches access.
 
@@ -93,7 +93,7 @@ try {
 
 ## Data handling
 
-User profiles come from the main church site and include names, emails, phone numbers, addresses, birthdays, and life groups. Never paste them into commits, PR bodies, screenshots, fixtures, or logs, and never add them to Redux or localStorage. Use dummy accounts for screenshots.
+Users are Neon Auth accounts with a name and email; ownerships and folders record who is on which team. Never paste them into commits, PR bodies, screenshots, fixtures, or logs, and never add them to Redux or localStorage. Use dummy accounts for screenshots.
 
 ## Output format
 

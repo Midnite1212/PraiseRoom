@@ -1,11 +1,10 @@
 import { fetchOwnership, fetchSongs } from './reducers';
-import { signin, signout } from './reducers/userSlice';
-import { persistor, store } from './store';
+import { signout } from './reducers/sessionSlice';
+import { LEGACY_PERSIST_KEY, persistor, store } from './store';
 import { Ownership } from './types/ownership.types';
 import { SongSchema } from './types/song.types';
 
 const initialState = {
-  user: '',
   songs: [],
   ownership: {
     userId: '',
@@ -18,8 +17,8 @@ const initialState = {
 };
 
 const sliceState = () => {
-  const { user, songs, ownership } = store.getState();
-  return { user, songs, ownership };
+  const { songs, ownership } = store.getState();
+  return { songs, ownership };
 };
 
 const song = { _id: 'song-1', title: 'Song', code: 'A1' } as SongSchema;
@@ -51,22 +50,27 @@ describe('store', () => {
   });
 
   it('keeps state on unrelated actions', () => {
-    store.dispatch(signin('token-1'));
     store.dispatch(fetchSongs([song]));
     store.dispatch(fetchOwnership(ownership));
     store.dispatch({ type: 'unrelated/action' });
 
-    expect(sliceState()).toEqual({ user: 'token-1', songs: [song], ownership });
+    expect(sliceState()).toEqual({ songs: [song], ownership });
   });
 
   it('resets every slice on signout', () => {
-    store.dispatch(signin('token-2'));
     store.dispatch(fetchSongs([song]));
     store.dispatch(fetchOwnership(ownership));
 
     store.dispatch(signout());
 
     expect(sliceState()).toEqual(initialState);
+  });
+
+  it('removes the legacy persisted main-site token on load', async () => {
+    window.localStorage.setItem(LEGACY_PERSIST_KEY, '{"user":"old-jwt"}');
+    vi.resetModules();
+    await import('./store');
+    expect(window.localStorage.getItem(LEGACY_PERSIST_KEY)).toBeNull();
   });
 
   it('keeps redux-persist metadata after signout', () => {

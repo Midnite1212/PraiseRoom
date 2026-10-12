@@ -9,8 +9,7 @@ An [Express](https://expressjs.com/) application
 
 ## Usage
 
-1.  Whitelist your current IP address for our database access
-    - You can follow our tutorial [here](https://t3ch.super.site/guides/mongodb-setup-guide) or set up your own database
+1.  Set `DATABASE_URL` in `.env` to a Postgres connection string (a Neon pooled `-pooler` URL with `sslmode=require` works, or set up your own Postgres database)
 2.  Open your choice of Terminal/cmd/PowerShell
 3.  Run `yarn dev` at `./server`
 
@@ -20,4 +19,4 @@ Jesus' disciples
 
 ---
 
-_Engage people who were, are, and will be a part of HMCC-HK, in order to Equip them with resources and Enable the church vision to be lived out._
+_A song library, chord charts, and setlists for worship teams._

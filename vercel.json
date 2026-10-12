@@ -14,7 +14,6 @@
   },
   "rewrites": [
     { "source": "/api/(.*)", "destination": { "service": "server" } },
-    { "source": "/external-api/(.*)", "destination": { "service": "server" } },
     { "source": "/(.*)", "destination": { "service": "ui" } }
   ]
 }

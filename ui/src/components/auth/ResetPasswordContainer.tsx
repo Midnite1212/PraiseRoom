@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { isAxiosError } from 'axios';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { customAxios as axios } from '../custom/customAxios';
+import { authClient } from '../custom/authClient';
 import {
   Box,
   Button,
@@ -53,8 +52,7 @@ const ResetPasswordContainer: React.FC = () => {
   const redirectTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
 
   const token = query.get('token');
-  const email = query.get('email');
-  const hasResetParams = Boolean(token && email);
+  const hasResetParams = Boolean(token);
 
   useEffect(() => {
     return () => clearTimeout(redirectTimeoutRef.current);
@@ -75,44 +73,34 @@ const ResetPasswordContainer: React.FC = () => {
   const { errors } = formState;
 
   const handleResetPassword: SubmitHandler<ResetPasswordFields> = async (data) => {
-    if (!token || !email) {
+    if (!token) {
       setStatus('error');
       setMessage(INVALID_RESET_LINK_MESSAGE);
       setOpen(true);
       return;
     }
-    try {
-      const payload = await axios.post('/external-api/auth/reset-password', {
-        email: email,
-        token: token,
-        password: data.password ?? '',
-      });
+    const { error } = await authClient.resetPassword({
+      newPassword: data.password,
+      token,
+    });
 
-      if (payload.status === 200) {
-        setStatus('success');
-        setMessage('Password successfully reset! Please login again.');
-        redirectTimeoutRef.current = setTimeout(() => {
-          navigate('/login');
-        }, 3000);
-      } else {
-        setStatus('error');
-        setMessage('Error resetting password, please try again.');
-      }
+    if (error) {
+      setStatus('error');
+      setMessage(
+        error.status === 401
+          ? 'Invalid token, please try again.'
+          : 'Error resetting password, please try again.'
+      );
       setOpen(true);
-    } catch (err: unknown) {
-      const errorStatus = isAxiosError(err) ? err.response?.status : undefined;
-      if (errorStatus === 401) {
-        setStatus('error');
-        setMessage('Invalid token, please try again.');
-      } else if (errorStatus === 422) {
-        setStatus('error');
-        setMessage('Required fields not filled');
-      } else {
-        setStatus('error');
-        setMessage('Error resetting password, please try again.');
-      }
-      setOpen(true);
+      return;
     }
+
+    setStatus('success');
+    setMessage('Password successfully reset! Please login again.');
+    setOpen(true);
+    redirectTimeoutRef.current = setTimeout(() => {
+      navigate('/login');
+    }, 3000);
   };
 
   return (

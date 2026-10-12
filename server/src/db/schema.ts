@@ -10,6 +10,7 @@ import {
   text,
   timestamp,
 } from 'drizzle-orm/pg-core';
+import { ACCESS_TYPES, DEFAULT_ACCESS_TYPE } from '../policies/permissions.config';
 
 export const MUSIC_KEYS = [
   'A',
@@ -170,11 +171,20 @@ export const ownerships = pgTable(
     id: text('id').primaryKey(),
     userId: text('user_id').notNull().unique('ownerships_user_id_unique'),
     fullName: text('full_name').notNull(),
-    accessType: text('access_type').notNull().default('unsigned'),
+    accessType: text('access_type').notNull().default(DEFAULT_ACCESS_TYPE),
     isDeleted: boolean('is_deleted').notNull().default(false),
     ...timestamps,
   },
-  (table) => [check('ownerships_id_object_id', isObjectIdHex(table.id))]
+  (table) => [
+    check('ownerships_id_object_id', isObjectIdHex(table.id)),
+    check(
+      'ownerships_access_type_known',
+      sql`${table.accessType} in (${sql.join(
+        ACCESS_TYPES.map((accessType) => sql.raw(`'${accessType}'`)),
+        sql`, `
+      )})`
+    ),
+  ]
 );
 
 const ownershipEntryColumns = {

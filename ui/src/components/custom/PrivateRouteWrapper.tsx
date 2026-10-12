@@ -5,9 +5,9 @@ import ErrorPage from './ErrorPage';
 import Sidebar from '../navigation/Sidebar';
 import { useUser } from '../../helpers/customHooks';
 import { DESKTOP_SIDEBAR_WIDTH, MOBILE_NAVBAR_HEIGHT } from '../../constants';
-import { UserAccessType } from '../../types/user.types';
+import { UserAccessType, canWriteSongs } from '../../types/user.types';
 
-export type RoutePermission = 'noUser' | 'user' | 'admin' | 'public';
+export type RoutePermission = 'noUser' | 'user' | 'editor' | 'admin' | 'public';
 
 type PageWrapperProps = {
   children: ReactNode;
@@ -44,8 +44,9 @@ const PrivateRouteWrapper = ({ children, permissions }: PrivateRouteWrapperProps
     return <Skeleton variant="rectangular" width="100%" height="100%" />;
   }
 
-  const isAuthenticated = !!user && Object.keys(user).length > 0;
+  const isAuthenticated = !!user;
   const isAdmin = user?.accessType === UserAccessType.ADMIN;
+  const isEditor = canWriteSongs(user?.accessType);
   const loginRedirect = <Navigate to="/login" state={{ from: location.pathname }} replace />;
 
   if (permissions.includes('public')) {
@@ -66,6 +67,13 @@ const PrivateRouteWrapper = ({ children, permissions }: PrivateRouteWrapperProps
 
   if (permissions.includes('user')) {
     return isAuthenticated ? <PageWrapper>{children}</PageWrapper> : loginRedirect;
+  }
+
+  if (permissions.includes('editor')) {
+    if (!isAuthenticated) {
+      return loginRedirect;
+    }
+    return isEditor ? <PageWrapper>{children}</PageWrapper> : <ErrorPage />;
   }
 
   if (permissions.includes('admin')) {

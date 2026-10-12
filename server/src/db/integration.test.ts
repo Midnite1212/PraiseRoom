@@ -41,8 +41,8 @@ const assertDisposableDatabase = (url: string | undefined): void => {
 };
 
 const ADMIN: TokenUser = { accessType: 'admin', id: '64b000000000000000000001' };
-const MEMBER: TokenUser = { accessType: 'ministry', id: '64b000000000000000000002' };
-const OUTSIDER: TokenUser = { accessType: 'ministry', id: '64b000000000000000000003' };
+const MEMBER: TokenUser = { accessType: 'editor', id: '64b000000000000000000002' };
+const OUTSIDER: TokenUser = { accessType: 'editor', id: '64b000000000000000000003' };
 const MISSING_ID = '64b0000000000000000000ee';
 const FORBIDDEN = { error: 'Access denied', message: 'Forbidden' };
 
@@ -100,7 +100,7 @@ describe(
         [MEMBER, 'Harness Member'],
         [OUTSIDER, 'Harness Outsider'],
       ] as const) {
-        await ok(createOwnership, { body: { fullName }, user });
+        await ok(createOwnership, { user: { ...user, name: fullName } });
       }
     });
 
@@ -523,11 +523,11 @@ describe(
         const first = await ownershipOf(MEMBER);
         const again = await ok(createOwnership, {
           body: { accessType: 'admin', fullName: 'Renamed', userId: OUTSIDER.id },
-          user: MEMBER,
+          user: { ...MEMBER, name: 'Renamed' },
         });
         assert.equal(again._id, first._id);
         assert.equal(again.fullName, 'Harness Member');
-        assert.equal(again.accessType, 'ministry');
+        assert.equal(again.accessType, 'editor');
         assert.ok(again.updatedAt >= first.updatedAt);
         assert.deepEqual(
           (await ok(getOwnership, { user: MEMBER })).map((summary: Body) =>

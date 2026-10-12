@@ -113,6 +113,14 @@ const isLiveUser = (userIds: string[]): SQL | undefined =>
   and(inArray(ownerships.userId, userIds), eq(ownerships.isDeleted, false));
 
 export const ownershipRepository = {
+  async findAccessType(userId: string): Promise<string | null> {
+    const [row] = await getDb()
+      .select({ accessType: ownerships.accessType })
+      .from(ownerships)
+      .where(and(eq(ownerships.userId, userId), eq(ownerships.isDeleted, false)));
+    return row?.accessType ?? null;
+  },
+
   async findCallerAccess(userId: string): Promise<CallerAccess | null> {
     const record = await findOne(
       and(eq(ownerships.userId, userId), eq(ownerships.isDeleted, false))

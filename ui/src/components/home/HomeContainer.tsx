@@ -78,12 +78,6 @@ const HomeContainer: FC = (): ReactElement => {
                   God!
                 </Typography>
               </Box>
-              <Typography
-                sx={{ fontSize: ['12px', '16px'], fontFamily: 'DM Sans, sans-serif' }}
-                fontWeight={400}
-              >
-                Harvest Mission Community Church
-              </Typography>
             </Box>
             <Box
               sx={{

@@ -1,4 +1,6 @@
-export type AccessType = 'ministry' | 't3ch' | 'tc' | 'admin';
+export const ACCESS_TYPES = ['member', 'editor', 'admin'] as const;
+export type AccessType = (typeof ACCESS_TYPES)[number];
+export const DEFAULT_ACCESS_TYPE: AccessType = 'member';
 
 export type PermissionConfig =
   | {
@@ -12,18 +14,9 @@ export type PermissionConfig =
       description?: string;
     };
 
-// Centralized permissions configuration
-/**
- * By default, there is a hierarchy in this accessTypes
- * Admin > tc > t3ch > ministry > isLoggedIn (requiresAuth)
- * But this permission schema will not follow the ones in the main web.
- * It will use the more conventional approach, i.e. only the access types listed can access it.
- * Please make sure the proper access level are listed.
- */
+// Only the access types listed can use a route; there is no hierarchy.
+const SONG_WRITERS: AccessType[] = ['editor', 'admin'];
 
-const ALL_ACCESS_TYPES: AccessType[] = ['ministry', 't3ch', 'tc', 'admin'];
-
-// TODO: Confirm on which access types can do what
 export const ROUTE_PERMISSIONS: Record<string, PermissionConfig> = {
   // Ownership routes
   'POST /api/ownerships/create': {
@@ -87,7 +80,7 @@ export const ROUTE_PERMISSIONS: Record<string, PermissionConfig> = {
   // Song routes
   'POST /api/songs/create': {
     requiresAuth: true,
-    allowedAccessTypes: ALL_ACCESS_TYPES,
+    allowedAccessTypes: SONG_WRITERS,
     description: 'Create new song',
   },
   'GET /api/songs/get': {
@@ -100,12 +93,12 @@ export const ROUTE_PERMISSIONS: Record<string, PermissionConfig> = {
   },
   'PUT /api/songs/update': {
     requiresAuth: true,
-    allowedAccessTypes: ALL_ACCESS_TYPES,
+    allowedAccessTypes: SONG_WRITERS,
     description: 'Update song',
   },
   'PUT /api/songs/delete': {
     requiresAuth: true,
-    allowedAccessTypes: ALL_ACCESS_TYPES,
+    allowedAccessTypes: SONG_WRITERS,
     description: 'Delete song',
   },
   'GET /api/songs/search': {

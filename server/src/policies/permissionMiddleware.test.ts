@@ -1,18 +1,28 @@
 import { RequestHandler } from 'express';
-import jwt from 'jsonwebtoken';
 import assert from 'node:assert/strict';
 import { after, afterEach, before, beforeEach, describe, it, mock } from 'node:test';
+import { ownershipRepository } from '../db/repositories/ownership.repository';
 import { callHandler, createRequest, createResponse } from '../testing/http';
+import { TestAuthServer, startTestAuthServer } from '../testing/neonAuth';
 import { createPermissionMiddleware } from './permissionMiddleware';
 import { ROUTE_PERMISSIONS } from './permissions.config';
 
-const SECRET = 'test-secret';
-const USER_ID = '507f1f77bcf86cd799439011';
+const USER_ID = '860dc360-609f-4b7d-9e70-ec93fe6414d3';
 
-const tokenFor = (accessType: string): string =>
-  jwt.sign({ accessType, emailAddress: 'user@example.com', id: USER_ID }, SECRET, {
-    algorithm: 'HS256',
-  });
+let auth: TestAuthServer;
+
+const tokenFor = (): Promise<string> =>
+  auth.sign({ email: 'user@example.com', name: 'Test User', sub: USER_ID });
+
+const storeAccessType = (accessType: string | null) =>
+  mock.method(ownershipRepository, 'findAccessType', async () => accessType);
+
+const userWith = (accessType: string) => ({
+  accessType,
+  emailAddress: 'user@example.com',
+  id: USER_ID,
+  name: 'Test User',
+});
 
 const middlewareAt = (method: string, path: string, index: number): RequestHandler => {
   const handler = createPermissionMiddleware(method, path)[index];
@@ -28,15 +38,17 @@ const run = async (handler: RequestHandler, headers: Record<string, string> = {}
 };
 
 describe('permissionMiddleware', () => {
-  const originalKey = process.env.JWT_KEY;
+  const originalUrl = process.env.NEON_AUTH_BASE_URL;
 
-  before(() => {
-    process.env.JWT_KEY = SECRET;
+  before(async () => {
+    auth = await startTestAuthServer();
+    process.env.NEON_AUTH_BASE_URL = auth.url;
   });
 
-  after(() => {
-    if (originalKey === undefined) delete process.env.JWT_KEY;
-    else process.env.JWT_KEY = originalKey;
+  after(async () => {
+    await auth.close();
+    if (originalUrl === undefined) delete process.env.NEON_AUTH_BASE_URL;
+    else process.env.NEON_AUTH_BASE_URL = originalUrl;
   });
 
   beforeEach(() => {
@@ -122,7 +134,7 @@ describe('permissionMiddleware', () => {
     });
 
     it('rejects malformed authorization headers', async () => {
-      const token = tokenFor('admin');
+      const token = await tokenFor();
       for (const header of [
         token,
         `Token ${token}`,
@@ -150,17 +162,34 @@ describe('permissionMiddleware', () => {
       assert.equal(req.user, undefined);
     });
 
-    it('sets req.user and calls next for a valid token', async () => {
+    it('sets req.user with the stored access type and calls next for a valid token', async () => {
+      const lookup = storeAccessType('editor');
       const { next, req, res } = await run(requireAuth(), {
-        authorization: `Bearer ${tokenFor('ministry')}`,
+        authorization: `Bearer ${await tokenFor()}`,
       });
-      assert.deepEqual(req.user, {
-        accessType: 'ministry',
-        emailAddress: 'user@example.com',
-        id: USER_ID,
-      });
+      assert.deepEqual(req.user, userWith('editor'));
+      assert.deepEqual(lookup.mock.calls[0]?.arguments, [USER_ID]);
       assert.equal(next.mock.callCount(), 1);
       assert.deepEqual(next.mock.calls[0]?.arguments, []);
+      assert.equal(res.statusCode, undefined);
+    });
+
+    it('defaults to member when the caller has no ownership yet', async () => {
+      storeAccessType(null);
+      const { req } = await run(requireAuth(), { authorization: `Bearer ${await tokenFor()}` });
+      assert.equal(req.user?.accessType, 'member');
+    });
+
+    it('passes a failed access-type lookup to next', async () => {
+      const failure = new Error('database down');
+      mock.method(ownershipRepository, 'findAccessType', async () => {
+        throw failure;
+      });
+      const { next, req, res } = await run(requireAuth(), {
+        authorization: `Bearer ${await tokenFor()}`,
+      });
+      assert.deepEqual(next.mock.calls[0]?.arguments, [failure]);
+      assert.equal(req.user, undefined);
       assert.equal(res.statusCode, undefined);
     });
   });
@@ -169,7 +198,7 @@ describe('permissionMiddleware', () => {
     const requireAccessType = () => middlewareAt('POST', '/api/songs/create', 1);
 
     it('allows each listed access type', async () => {
-      for (const accessType of ['ministry', 't3ch', 'tc', 'admin']) {
+      for (const accessType of ['editor', 'admin']) {
         const req = createRequest({ user: { accessType, id: USER_ID } });
         const res = createResponse();
         const next = await callHandler(requireAccessType(), req, res);
@@ -179,13 +208,13 @@ describe('permissionMiddleware', () => {
     });
 
     it('rejects unlisted access types with a 403 that names none of them', async () => {
-      for (const accessType of ['unsigned', 'user', 'Admin', 'tech', '']) {
+      for (const accessType of ['member', 'ministry', 'Admin', 'editors', '']) {
         const req = createRequest({ user: { accessType, id: USER_ID } });
         const res = createResponse();
         const next = await callHandler(requireAccessType(), req, res);
         assert.equal(res.statusCode, 403, accessType);
         assert.deepEqual(res.body, { error: 'Access denied', message: 'Forbidden' });
-        assert.doesNotMatch(JSON.stringify(res.body), /ministry|t3ch|tc"|admin/);
+        assert.doesNotMatch(JSON.stringify(res.body), /editor|admin/);
         assert.equal(next.mock.callCount(), 0);
       }
     });
@@ -198,8 +227,9 @@ describe('permissionMiddleware', () => {
     });
 
     it('runs after requireAuth in the song write chains', async () => {
+      storeAccessType('member');
       const chain = createPermissionMiddleware('PUT', '/api/songs/update');
-      const req = createRequest({ headers: { authorization: `Bearer ${tokenFor('unsigned')}` } });
+      const req = createRequest({ headers: { authorization: `Bearer ${await tokenFor()}` } });
       const res = createResponse();
       for (const handler of chain) {
         const next = await callHandler(handler, req, res);
@@ -220,7 +250,7 @@ describe('permissionMiddleware', () => {
     });
 
     it('continues anonymously with a malformed header or bad token', async () => {
-      for (const header of ['garbage', `bearer ${tokenFor('admin')}`, 'Bearer garbage']) {
+      for (const header of ['garbage', `bearer ${await tokenFor()}`, 'Bearer garbage']) {
         const { next, req, res } = await run(optionalAuth(), { authorization: header });
         assert.equal(next.mock.callCount(), 1, header);
         assert.equal(req.user, undefined);
@@ -229,22 +259,21 @@ describe('permissionMiddleware', () => {
     });
 
     it('sets req.user for a valid token', async () => {
+      storeAccessType('admin');
       const { next, req } = await run(optionalAuth(), {
-        authorization: `Bearer ${tokenFor('tc')}`,
+        authorization: `Bearer ${await tokenFor()}`,
       });
       assert.equal(next.mock.callCount(), 1);
-      assert.deepEqual(req.user, {
-        accessType: 'tc',
-        emailAddress: 'user@example.com',
-        id: USER_ID,
-      });
+      assert.deepEqual(req.user, userWith('admin'));
     });
 
-    it('accepts any access type, including unlisted ones', async () => {
-      const { req } = await run(optionalAuth(), {
-        authorization: `Bearer ${tokenFor('unsigned')}`,
+    it('passes a failed access-type lookup to next', async () => {
+      const failure = new Error('database down');
+      mock.method(ownershipRepository, 'findAccessType', async () => {
+        throw failure;
       });
-      assert.equal(req.user?.accessType, 'unsigned');
+      const { next } = await run(optionalAuth(), { authorization: `Bearer ${await tokenFor()}` });
+      assert.deepEqual(next.mock.calls[0]?.arguments, [failure]);
     });
   });
 });

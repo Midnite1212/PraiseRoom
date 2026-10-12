@@ -85,7 +85,7 @@ export const groupRepository = {
         .values({
           id: generateObjectId(now),
           groupName,
-          createdBy: toObjectId(createdBy),
+          createdBy,
           createdAt: now,
           updatedAt: now,
         })

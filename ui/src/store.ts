@@ -11,17 +11,25 @@ import {
   persistStore,
 } from 'redux-persist';
 import storage from 'redux-persist/es/storage';
-import { ownershipSlice, songSlice, userSlice } from './reducers';
-import { signout } from './reducers/userSlice';
+import { ownershipSlice, songSlice } from './reducers';
+import { signout } from './reducers/sessionSlice';
+
+// The pre-Neon key held the main-site JWT; it must not linger in localStorage.
+export const LEGACY_PERSIST_KEY = 'persist:root';
+
+try {
+  window.localStorage.removeItem(LEGACY_PERSIST_KEY);
+} catch {
+  // Storage can be unavailable (private mode); nothing to clean up then.
+}
 
 const persistConfig = {
-  key: 'root',
+  key: 'root-v2',
   storage,
-  whitelist: ['user'],
+  whitelist: [],
 };
 
 const appReducer = combineReducers({
-  user: userSlice,
   songs: songSlice,
   ownership: ownershipSlice,
 });

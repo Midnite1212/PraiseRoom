@@ -71,7 +71,7 @@ const findReach = async (user: TokenUser): Promise<SetlistReach> => {
   return {
     setlistIds: ownedEntryIds(ownership?.setlistIds).filter(isObjectIdString),
     groupIds: ownedEntryIds(ownership?.groupIds).filter(isObjectIdString),
-    ...(isObjectIdString(user.id) ? { createdBy: user.id } : {}),
+    createdBy: user.id,
   };
 };
 

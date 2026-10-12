@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { customAxios as axios } from '../custom/customAxios';
+import { authClient } from '../custom/authClient';
 import {
   Box,
   Button,
@@ -46,24 +46,19 @@ const RecoverPasswordContainer: React.FC = () => {
   const { errors } = formState;
 
   const handleRecoverPassword: SubmitHandler<RecoverPasswordFields> = async (data) => {
-    try {
-      const payload = await axios.post('/external-api/auth/forgot-password', {
-        email: data.email,
-      });
+    const { error } = await authClient.requestPasswordReset({
+      email: data.email,
+      redirectTo: `${window.location.origin}/password/new`,
+    });
 
-      if (payload.status === 200) {
-        setStatus('success');
-        setMessage('Password recovery email successfully sent! Please check your email.');
-      } else {
-        setStatus('error');
-        setMessage('An error occurred. Please try again.');
-      }
-      setOpen(true);
-    } catch {
+    if (error) {
       setStatus('error');
       setMessage('An error occurred. Please try again.');
-      setOpen(true);
+    } else {
+      setStatus('success');
+      setMessage('Password recovery email successfully sent! Please check your email.');
     }
+    setOpen(true);
   };
 
   return (
@@ -110,8 +105,8 @@ const RecoverPasswordContainer: React.FC = () => {
                 />
               </Stack>
               <Typography variant={'body1'} textAlign={'left'}>
-                Please input the email you used to create your HMCC account. (This will change your
-                HMCC account password)
+                Please enter the email on your account and we'll send you a link to reset your
+                password.
               </Typography>
               <Button
                 type={'submit'}

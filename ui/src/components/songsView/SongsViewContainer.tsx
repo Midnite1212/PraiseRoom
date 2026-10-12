@@ -11,6 +11,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { specificSongsTabletWidth } from '../../constants';
 import EditIcon from '@mui/icons-material/Edit';
 import { logRequestError } from '../../helpers/global';
+import { canWriteSongs } from '../../types/user.types';
 
 const SongsViewContainer: FC = (): ReactElement => {
   const navigate = useNavigate();
@@ -89,7 +90,7 @@ const SongsViewContainer: FC = (): ReactElement => {
           <Box sx={{ width: '100%' }}>
             <SongsTitleCard song={song} />
           </Box>
-          {ownership?.accessType === 'admin' && (
+          {canWriteSongs(ownership?.accessType) && (
             <Button
               variant="outlined"
               onClick={() => navigate(`/song/edit/${id}`)}

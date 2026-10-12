@@ -56,4 +56,4 @@ Jesus' disciples
 
 ---
 
-_Engage people who were, are, and will be a part of HMCC-HK, in order to Equip them with resources and Enable the church vision to be lived out._
+_A song library, chord charts, and setlists for worship teams._

@@ -1,30 +1,41 @@
-import jwt from 'jsonwebtoken';
-import { isObjectIdString } from './validation';
+import { JWTVerifyGetKey, createRemoteJWKSet, jwtVerify } from 'jose';
+import { isUserIdString } from './validation';
 
-export type TokenUser = {
+export type TokenIdentity = {
   id: string;
-  accessType: string;
   emailAddress?: string;
+  name?: string;
 };
 
-const verifyToken = (token: string): TokenUser | null => {
-  const secret = process.env.JWT_KEY;
-  if (!token || !secret) return null;
+export type TokenUser = TokenIdentity & {
+  accessType: string;
+};
+
+let keySet: { url: string; getKey: JWTVerifyGetKey } | undefined;
+
+const keySetFor = (authUrl: string): JWTVerifyGetKey => {
+  const url = `${authUrl.replace(/\/+$/, '')}/.well-known/jwks.json`;
+  if (keySet?.url !== url) keySet = { url, getKey: createRemoteJWKSet(new URL(url)) };
+  return keySet.getKey;
+};
+
+const optionalString = (value: unknown): string | undefined =>
+  typeof value === 'string' && value !== '' ? value : undefined;
+
+const verifyToken = async (token: string): Promise<TokenIdentity | null> => {
+  const authUrl = process.env.NEON_AUTH_BASE_URL;
+  if (!token || !authUrl) return null;
 
   try {
-    const payload = jwt.verify(token, secret, { algorithms: ['HS256'] });
-    if (
-      typeof payload !== 'object' ||
-      !isObjectIdString(payload.id) ||
-      typeof payload.accessType !== 'string' ||
-      payload.accessType === ''
-    ) {
-      return null;
-    }
+    const { payload } = await jwtVerify(token, keySetFor(authUrl), {
+      algorithms: ['EdDSA'],
+      issuer: new URL(authUrl).origin,
+    });
+    if (!isUserIdString(payload.sub) || payload.banned === true) return null;
     return {
-      id: payload.id,
-      accessType: payload.accessType,
-      emailAddress: typeof payload.emailAddress === 'string' ? payload.emailAddress : undefined,
+      id: payload.sub,
+      emailAddress: optionalString(payload.email),
+      name: optionalString(payload.name),
     };
   } catch {
     return null;

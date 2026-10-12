@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { isAxiosError } from 'axios';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { customAxios as axios } from '../custom/customAxios';
+import { authClient } from '../custom/authClient';
 import {
   Alert,
   Box,
@@ -77,27 +76,26 @@ const RegisterContainer: React.FC = () => {
   const [invalidRegistration, setInvalidRegistration] = useState<string>('');
 
   const handleRegister: SubmitHandler<RegisterFormFields> = async (data) => {
-    try {
-      await axios.post('/external-api/auth/signup', {
-        fullName: data.fullName,
-        email: data.email,
-        password: data.password ?? '',
-      });
-      setInvalidRegistration('');
-      setOpen(true);
-      redirectTimeoutRef.current = setTimeout(() => {
-        navigate('/login');
-      }, 3000);
-    } catch (err: unknown) {
-      const status = isAxiosError(err) ? err.response?.status : undefined;
-      if (status === 409) {
+    const { error } = await authClient.signUp.email({
+      name: data.fullName,
+      email: data.email,
+      password: data.password ?? '',
+    });
+    if (error) {
+      if (error.code?.startsWith('USER_ALREADY_EXISTS')) {
         setInvalidRegistration('Email already exists, please try with another email');
-      } else if (status === 422) {
-        setInvalidRegistration('Required fields not filled');
+      } else if (error.code === 'PASSWORD_TOO_SHORT') {
+        setInvalidRegistration('Password is too short');
       } else {
         setInvalidRegistration('Could not create your account. Please try again.');
       }
+      return;
     }
+    setInvalidRegistration('');
+    setOpen(true);
+    redirectTimeoutRef.current = setTimeout(() => {
+      navigate('/login');
+    }, 6000);
   };
 
   return (
@@ -232,11 +230,11 @@ const RegisterContainer: React.FC = () => {
       <Snackbar
         open={open}
         onClose={handleClose}
-        autoHideDuration={5000}
+        autoHideDuration={6000}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
         <Alert severity="success" sx={{ width: '100%' }} onClose={handleClose}>
-          Successfully registered! Redirecting to login page...
+          Account created! Check your email for a verification link, then log in.
         </Alert>
       </Snackbar>
     </>

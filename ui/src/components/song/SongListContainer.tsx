@@ -31,6 +31,7 @@ import {
   specificSongsMobileWidth,
 } from '../../constants';
 import { logRequestError } from '../../helpers/global';
+import { canWriteSongs } from '../../types/user.types';
 
 type SongQuery = {
   search: string;
@@ -67,7 +68,7 @@ const getSongQueryKey = (filterData: SongSearchFilter | undefined) =>
 
 const SongListContainer: FC = (): ReactElement => {
   const ownership = useOwnership();
-  const isAdmin = ownership?.accessType === 'admin';
+  const canEditSongs = canWriteSongs(ownership?.accessType);
   const theme = useTheme();
   const [songResults, setSongResults] = useState<SongSchema[]>([]);
   const [filterData, setFilterData] = useState<SongSearchFilter>();
@@ -208,7 +209,7 @@ const SongListContainer: FC = (): ReactElement => {
         }}
         disableGutters
       >
-        {isAdmin && (
+        {canEditSongs && (
           <Button
             variant="outlined"
             sx={{
@@ -243,7 +244,7 @@ const SongListContainer: FC = (): ReactElement => {
           title="Songs"
           icon={<MusicNoteIcon />}
           actionButtons={
-            isAdmin && (
+            canEditSongs && (
               <Button
                 variant="outlined"
                 sx={{

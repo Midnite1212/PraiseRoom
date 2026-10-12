@@ -1,43 +1,46 @@
-import { isAxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { customAxios as axios, updateAxiosClient } from '../components/custom/customAxios';
+import { authClient } from '../components/custom/authClient';
+import { customAxios as axios } from '../components/custom/customAxios';
 import { fetchOwnership, fetchSongs } from '../reducers';
-import { signout } from '../reducers/userSlice';
-import { persistor, useAppSelector } from '../store';
+import { useAppSelector } from '../store';
 import { Ownership } from '../types/ownership.types';
 import { Setlist } from '../types/setlist.types';
 import { SongSchema } from '../types/song.types';
-import { User } from '../types/user.types';
+import { User, toUserAccessType } from '../types/user.types';
 import { logRequestError } from './global';
 
-type VerifiedSession = {
-  token: string;
-  user?: User;
+type Identity = {
+  id: string;
+  email: string;
+  fullName: string;
 };
 
-export const useUser = (): { token: string; user?: User; loading: boolean } => {
-  const token = useAppSelector((state) => state.user);
+export const useUser = (): { user?: User; loading: boolean } => {
   const dispatch = useDispatch();
-  const hasToken = typeof token === 'string' && token.length > 0;
-  const [session, setSession] = useState<VerifiedSession>();
+  const ownership = useAppSelector((state) => state.ownership);
+  const [identity, setIdentity] = useState<Identity>();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!hasToken) {
-      return;
-    }
     let ignore = false;
-    const verifySession = async () => {
-      let verifiedUser: User | undefined;
+    const loadSession = async () => {
+      setLoading(true);
       try {
-        const { data } = await axios.post<User>('/external-api/auth/verify-token', { token });
+        const { data, error } = await authClient.getSession();
         if (ignore) {
           return;
         }
-        updateAxiosClient(token);
-        verifiedUser = data;
+        if (error || !data) {
+          setIdentity(undefined);
+          return;
+        }
+
+        const { id, email, name } = data.user;
+        setIdentity({ id, email, fullName: name });
+
         const { data: ownershipData, status } = await axios.get<Ownership>('/api/ownerships/get', {
-          params: { userId: data.id },
+          params: { userId: id },
           validateStatus: (responseStatus) => responseStatus === 200 || responseStatus === 404,
         });
         if (ignore) {
@@ -45,10 +48,7 @@ export const useUser = (): { token: string; user?: User; loading: boolean } => {
         }
         if (status === 404) {
           const { data: createdOwnership } = await axios.post<Ownership>('/api/ownerships/create', {
-            userId: data.id,
-            fullName: data.fullName,
-            setlistIds: [],
-            groupIds: [],
+            fullName: name,
           });
           if (!ignore) {
             dispatch(fetchOwnership(createdOwnership));
@@ -57,32 +57,27 @@ export const useUser = (): { token: string; user?: User; loading: boolean } => {
           dispatch(fetchOwnership(ownershipData));
         }
       } catch (err: unknown) {
-        if (ignore) {
-          return;
-        }
-        logRequestError('Session verification failed', err);
-        if (isAxiosError(err) && err.response?.data?.raw === 'token-expired') {
-          await persistor.purge();
-          dispatch(signout());
+        if (!ignore) {
+          logRequestError('Session verification failed', err);
+          setIdentity(undefined);
         }
       } finally {
         if (!ignore) {
-          setSession({ token, user: verifiedUser });
+          setLoading(false);
         }
       }
     };
-    verifySession();
+    loadSession();
     return () => {
       ignore = true;
     };
-  }, [dispatch, hasToken, token]);
+  }, [dispatch]);
 
-  const isVerified = hasToken && session?.token === token;
-  return {
-    token,
-    user: isVerified ? session?.user : undefined,
-    loading: hasToken && !isVerified,
-  };
+  const user: User | undefined = identity
+    ? { ...identity, accessType: toUserAccessType(ownership?.accessType) }
+    : undefined;
+
+  return { user, loading };
 };
 
 export const useSongs = (id?: string) => {
