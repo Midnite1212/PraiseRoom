@@ -109,7 +109,7 @@ Prettier config: `.prettierrc.json` — 2-space, single quotes, semicolons, `pri
 
 ## Technology Stack
 
-- **UI**: React 18, TypeScript (`strict`, `noImplicitAny`, `noImplicitReturns`), Vite 8 + Vitest 5, MUI 5 (`@mui/material`, `@mui/icons-material`, `@mui/x-date-pickers` 6) on Emotion, Redux Toolkit 1 + redux-persist, react-router-dom 6, axios 1, react-hook-form 7 + zod 3 via `@hookform/resolvers`, dayjs, `@neondatabase/auth` (Neon Auth / Better Auth client)
+- **UI**: React 18, TypeScript (`strict`, `noImplicitAny`, `noImplicitReturns`), Vite 8 + Vitest 5, MUI 5 (`@mui/material`, `@mui/icons-material`, `@mui/x-date-pickers` 6) on Emotion, Redux Toolkit 1 + redux-persist, react-router-dom 6, axios 1, react-hook-form 7 + zod 3 via `@hookform/resolvers`, dayjs
 - **Server**: Express 4, Drizzle ORM (`drizzle-orm`, `drizzle-kit`) over node-postgres (`pg`) on Neon Postgres, `@neondatabase/auth` (server-side Better Auth proxy), `jose` (JWKS verification)
 - **Fonts**: Work Sans and DM Sans through `@fontsource`
 
@@ -258,7 +258,7 @@ const fetchSong = async () => {
 };
 ```
 
-- Always use `customAxios`. It is one `axios.create()` instance (`components/custom/customAxios.ts`) with a request interceptor that attaches `Authorization: Bearer <token>` from the Neon Auth SDK, caching the token in memory until shortly before its 15-minute `exp` and skipping the header entirely when signed out. The cache is module-level state; `clearAuthTokenCache()` (called on sign-out) is the only way to reset it.
+- Always use `customAxios`. It is one `axios.create()` instance (`components/custom/customAxios.ts`) with a request interceptor that attaches `Authorization: Bearer <token>` from `getAuthToken()` in `authClient.ts`, caching the token in memory until shortly before its 15-minute `exp` and skipping the header entirely when signed out. The cache is module-level state; `clearAuthTokenCache()` (called on sign-out) is the only way to reset it.
 - API paths: `/api/<resource>/<action>` for this server, including `/api/auth/*` (Better Auth proxy) and `/api/auth-callback` (Google OAuth callback). There is no `/external-api` proxy; the main HMCC HK site is not called from this repo.
 - Log request failures with `logRequestError(context, err)` from `helpers/global`. Never `console.log`/`console.error` a raw axios error: its `config.headers` carries the user's JWT.
 - Every request handles failure visibly. Mutations show a Snackbar on success and on failure (see `SetlistFolderDetail.tsx` for the pattern). Never show a success message without checking the result. Never render the raw server error string.
@@ -275,8 +275,8 @@ const fetchSong = async () => {
 
 ## State
 
-- Redux holds: `songs`, `ownership`. Nothing is persisted to localStorage (redux-persist `whitelist: []`); both slices are refetched on load. The session itself lives in the Neon Auth SDK's own cache (cookies + in-memory), not Redux. `signout()` (from `reducers/sessionSlice.ts`) resets every slice; pair it with `persistor.purge()` on logout.
-- Use `useOwnership()` for the current user's ownership record and `useUser()` for the signed-in profile (`{ id, email, fullName, accessType }`). `useUser()` calls the Neon Auth SDK's `getSession()` on every mount, so call it once per page and pass `user` down, not in every child.
+- Redux holds: `songs`, `ownership`. Nothing is persisted to localStorage (redux-persist `whitelist: []`); both slices are refetched on load. The session itself lives in Neon Auth's HTTP-only cookies on this origin, not Redux. `signout()` (from `reducers/sessionSlice.ts`) resets every slice; pair it with `persistor.purge()` on logout.
+- Use `useOwnership()` for the current user's ownership record and `useUser()` for the signed-in profile (`{ id, email, fullName, accessType }`). `useUser()` calls `authClient.getSession()` (`GET /api/auth/get-session`) on every mount, so call it once per page and pass `user` down, not in every child.
 - `RootState` and `useAppSelector` come from `store.ts`. Use `useAppSelector` in new code.
 - Do not add a slice unless the state is genuinely cross-page. Page state stays in the component.
 - Never put new personal data into Redux; it ends up in localStorage.
@@ -372,9 +372,9 @@ Then set the Vercel `DATABASE_URL` to Neon's pooled `-pooler` URL and redeploy.
 ## Auth Flow
 
 - Users, sessions, and sign-in live in Neon Auth (Managed Better Auth) in this app's own Neon project. This repo has no dependency on the HMCC HK main site for auth; there is no `/external-api` proxy and no `MAIN_URL`.
-- `ui/src/components/custom/authClient.ts` creates the Neon Auth client with `createInternalNeonAuth(`${window.location.origin}/api/auth`)`, so the SDK always talks to this app's own origin. The server's `server/src/auth/neonAuth.routes.ts` proxies every `/api/auth/*` request to `NEON_AUTH_BASE_URL` (first-party cookies, works under Safari ITP) and `GET /api/auth-callback?next=<path>` finishes Google OAuth (exchanges the verifier, sets session cookies, redirects to `next`).
-- The auth screens (`components/auth/*Container.tsx`) call the Better Auth client directly: `authClient.signIn.email`, `authClient.signIn.social({ provider: 'google', callbackURL: '<origin>/api/auth-callback?next=<path>' })` (the SDK redirects the browser itself), `authClient.signUp.email`, `authClient.requestPasswordReset({ email, redirectTo })`, `authClient.resetPassword({ newPassword, token })`. Every call resolves `{ data, error }` rather than throwing; never render `error.message` (it is server text), map `error.status` to a fixed safe string instead.
-- `useUser()` (`helpers/customHooks.ts`) calls `authClient.getSession()` for the signed-in identity, then loads or creates the user's `Ownership` record from `/api/ownerships/get` / `/api/ownerships/create`, and returns `{ id, email, fullName, accessType }` built from the session plus the ownership's `accessType`. There is no token in Redux; `customAxios`'s interceptor pulls the bearer token straight from the SDK (see `#data-and-api`).
+- `ui/src/components/custom/authClient.ts` is a small axios client for this app's own `/api/auth/*` (Better Auth endpoints: `get-session`, `sign-in/email`, `sign-in/social`, `sign-up/email`, `request-password-reset`, `reset-password`, `sign-out`); the UI does not use the Neon Auth SDK, which would add about 550 kB. `getAuthToken()` reads the API JWT from the `set-auth-jwt` header of `get-session`. The server's `server/src/auth/neonAuth.routes.ts` proxies every `/api/auth/*` request to `NEON_AUTH_BASE_URL` (first-party cookies, works under Safari ITP) and `GET /api/auth-callback?next=<path>` finishes Google OAuth (exchanges the verifier, sets session cookies, redirects to `next`).
+- The auth screens (`components/auth/*Container.tsx`) call the Better Auth client directly: `authClient.signIn.email`, `authClient.signIn.social({ provider: 'google', callbackURL: '<origin>/api/auth-callback?next=<path>' })` (the client sends the browser to the returned Google URL), `authClient.signUp.email`, `authClient.requestPasswordReset({ email, redirectTo })`, `authClient.resetPassword({ newPassword, token })`. Every call resolves `{ data, error }` rather than throwing; never render `error.message` (it is server text), map `error.status` to a fixed safe string instead.
+- `useUser()` (`helpers/customHooks.ts`) calls `authClient.getSession()` for the signed-in identity, then loads or creates the user's `Ownership` record from `/api/ownerships/get` / `/api/ownerships/create`, and returns `{ id, email, fullName, accessType }` built from the session plus the ownership's `accessType`. There is no token in Redux; `customAxios`'s interceptor gets the bearer token from `getAuthToken()` (see `#data-and-api`).
 - Sign-out calls `authClient.signOut()`, then `clearAuthTokenCache()`, then `persistor.purge()`, then dispatches `signout()` (see `ProfileView.tsx`).
 - This server verifies Neon Auth's EdDSA JWTs against its JWKS (`jose`, `src/utils/verify-jwt.ts`) instead of a shared `JWT_KEY`, and reads **`Authorization: Bearer <token>`**. `req.user` (`AuthenticatedRequest`) holds the decoded `{ id, emailAddress, name }` plus `accessType` loaded from `ownerships.access_type` by the token's `sub` (Neon Auth tokens carry no custom claims). Trust `req.user` for identity; never trust a `userId` or `accessType` sent in the request body.
 
@@ -399,7 +399,7 @@ Neon Auth owns user accounts (name, email, password); this repo's own data carri
 
 ## CI / Deploy (`.github/workflows/`)
 
-- Hosting is one Vercel project in [services](https://vercel.com/docs/services) mode, configured by the root `vercel.json`: `server` (`server/`, Express preset, one Vercel Function from `app.ts`) and `ui` (`ui/`, Vite preset, static `dist/`, with a service-level rewrite to `/index.html` for client routes, since the Vite preset has no SPA fallback). Top-level rewrites send `/api/*` to `server` and everything else to `ui`; each service receives the original path, and routing into a service is final. Each service installs with its own `yarn.lock`. Vercel deploys from the connected Git repo, and `git.deploymentEnabled` limits automatic deployments to `main`, so PRs get no preview; there is no deploy workflow.
+- Hosting is one Vercel project in [services](https://vercel.com/docs/services) mode, configured by the root `vercel.json`: `server` (`server/`, Express preset, one Vercel Function from `app.ts`) and `ui` (`ui/`, Vite preset, static `dist/`, with a service-level rewrite to `/index.html` for client routes, since the Vite preset has no SPA fallback). Top-level rewrites send `/api/*` to `server` and everything else to `ui`; each service receives the original path, and routing into a service is final. Each service installs with its own `yarn.lock`. `server/package.json` resolves `@neondatabase/auth-ui` to the empty `server/stubs/neon-auth-ui`, because `@neondatabase/auth/server` never loads that React UI kit; if a toolkit upgrade starts importing it, the compiled server fails to load and the stub must go. Vercel deploys from the connected Git repo, and `git.deploymentEnabled` limits automatic deployments to `main`, so PRs get no preview; there is no deploy workflow.
 - Node 22 for builds and functions comes from the project's Node.js Version setting; `.nvmrc` pins it for local use.
 - `pr-check.yml` runs on PRs to `release` and `main`: root lint, UI typecheck and tests, server typecheck and tests (Node 22). Keep all three green.
 - `.github/copilot-instructions.md` is Copilot's short summary; this file is the source of truth when they differ.
@@ -410,8 +410,8 @@ Read `.claude/docs/commit-convention.md` and `.claude/docs/pr-description.md` be
 
 ## Common Gotchas
 
-1. There is no `user` slice in Redux any more; the session lives in the Neon Auth SDK. Use `useUser()` for the profile, never a Redux selector.
-2. `customAxios`'s interceptor fetches the token from the SDK on every request (cached until near `exp`); there is no `updateAxiosClient` to call after sign-in.
+1. There is no `user` slice in Redux any more; the session lives in Neon Auth's cookies. Use `useUser()` for the profile, never a Redux selector.
+2. `customAxios`'s interceptor gets the token from `getAuthToken()` (cached until near `exp`); there is no `updateAxiosClient` to call after sign-in.
 3. A route missing from `ROUTE_PERMISSIONS` silently falls back to `requireAuth`.
 4. Public routes cannot take `allowedAccessTypes`; use `optionalAuth` when a public endpoint must know who is calling.
 5. `requireAuth` is authentication, not authorisation. Check ownership on writes with the helpers in `utils/authorization.ts`.
