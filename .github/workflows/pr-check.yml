@@ -45,7 +45,7 @@ jobs:
           cache-dependency-path: ui/yarn.lock
       - run: yarn install --frozen-lockfile
       - run: yarn typecheck
-      - run: yarn test --watchAll=false
+      - run: yarn test
         env:
           CI: true
 

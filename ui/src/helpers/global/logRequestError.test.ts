@@ -1,14 +1,12 @@
 import { AxiosError, AxiosHeaders } from 'axios';
+import type { MockInstance } from 'vitest';
 import { logRequestError } from './logRequestError';
 
-// CRA's Jest does not transform node_modules, so load axios's CommonJS build.
-jest.mock('axios', () => jest.requireActual('axios/dist/browser/axios.cjs'));
-
 describe('logRequestError', () => {
-  let consoleError: jest.SpyInstance;
+  let consoleError: MockInstance<typeof console.error>;
 
   beforeEach(() => {
-    consoleError = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+    consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
   });
 
   afterEach(() => {

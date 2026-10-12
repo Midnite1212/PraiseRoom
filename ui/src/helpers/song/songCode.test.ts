@@ -1,9 +1,9 @@
 import { customAxios } from '../../components/custom/customAxios';
 import { getNextSongCode } from './songCode';
 
-jest.mock('../../components/custom/customAxios', () => ({ customAxios: { get: jest.fn() } }));
+vi.mock('../../components/custom/customAxios', () => ({ customAxios: { get: vi.fn() } }));
 
-const mockGet = jest.mocked(customAxios.get);
+const mockGet = vi.mocked(customAxios.get);
 
 type SongCodePage = { data?: { code?: string | null }[]; totalPages?: number };
 
