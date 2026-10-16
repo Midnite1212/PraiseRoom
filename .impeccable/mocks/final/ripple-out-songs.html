@@ -235,9 +235,13 @@ function notFoundDesk(theme = 'light') {
     <div class="dym"><div><small>Did you mean</small><b>It Is Well with My Soul</b><small>Horatio Spafford &amp; Philip Bliss · key C</small></div>${btn('Open', '', 'arrowR')}</div></div>
     <div class="req"><h3>Not the one you meant?</h3><p>Ask for a song to be added. An admin checks its lyrics and chords before it joins the songbook for everyone.</p>${btn('Request a different song', '', 'request')}</div></div></section>`);
 }
+function requestFormDesk(theme = 'light') {
+  return page(theme, '/song?q=oceans&request', `${hero('oceans', '', 'No match')}<section class="sheet book"><div class="notfound"><div><h2>Request “Oceans”</h2><p>An admin checks the lyrics and chords before it joins the songbook for everyone. Title and artist are enough.</p></div>
+    <div class="req"><h3>Request a song</h3><p class="flabel">Title</p><div class="field"><span>Oceans</span></div><p class="flabel">Artist</p><div class="field"><span class="ph">Who sings or wrote it</span></div><p class="flabel">First line or a link (optional)</p><div class="field"><span class="ph">Helps the admin find the right song</span></div>${btn('Send request', 'primary', 'request')}</div></div></section>`);
+}
 function requestSentDesk(theme = 'light') {
-  return page(theme, '/song?q=oceans', `${hero('oceans', '', 'No match')}<section class="sheet book"><div class="notfound"><div><h2>Requested: “Oceans”</h2><p>An admin will check the lyrics and chords. You’ll see it in the songbook once it’s added, and in Home under New in the songbook.</p><div class="dym"><div><small>Your requests</small><b>Oceans</b><small>Waiting for review · sent just now</small></div>${btn('Cancel request', 'sm quiet')}</div></div>
-    <div class="req"><h3>Sent</h3><p>One request per song is enough. Admins see how many people asked for it.</p>${btn('Request another song', '', 'request')}</div></div></section>`);
+  return page(theme, '/song?q=oceans', `${hero('oceans', '', 'No match')}<section class="sheet book"><div class="notfound"><div><h2>Requested: “Oceans”</h2><p>An admin will check the lyrics and chords. You’ll see it in the songbook once it’s added, and in Home under New in the songbook.</p><div class="dym"><div><small>Your requests</small><b>Oceans · Hillsong UNITED</b><small>Waiting for review · sent just now</small></div>${btn('Cancel request', 'sm quiet')}</div></div>
+    <div class="req"><h3>One request is enough</h3><p>Admins see how many people asked for a song, so there’s no need to send it twice.</p>${btn('Request another song', '', 'request')}</div></div></section>`);
 }
 function loadingDesk(theme = 'light') {
   const sk = (w, h = 14) => `<div class="sk" style="width:${w}%;height:${h}px"></div>`;
@@ -329,7 +333,7 @@ document.getElementById('app').innerHTML = `
 ${sec('Songbook', 'Search by title, artist or a remembered line, or browse the indexes a hymnal prints at the back. Above the themes, “Sung this week” shows what groups everywhere are singing, counted from setlists: the one place the songbook shows worship rippling out. Result rows keep their key and an Add to a setlist button in view, so nothing depends on hover.')}
 ${row(fig('Themes index (member) · /song?index=themes', themesDesk()), fig('A–Z index · /song?index=a-z', azDesk()))}
 ${row(fig('Search across titles and lyrics · /song?q=peace', resultsDesk()), fig('Themes index · dark', themesDesk('dark')))}
-${row(fig('No match: did you mean (request is secondary)', notFoundDesk()), fig('Request sent', requestSentDesk()))}
+${row(fig('No match: did you mean (request is secondary)', notFoundDesk()), fig('Request a song: title filled from the search', requestFormDesk()), fig('Request sent', requestSentDesk()))}
 ${row(fig('Offline', offlineDesk()), fig('Loading', loadingDesk()))}
 ${row(fig('Phone · themes', themesPhone()), fig('Phone · search', resultsPhone()), fig('Phone · no match', notFoundPhone()), fig('Phone · dark', themesPhone('dark')))}
 

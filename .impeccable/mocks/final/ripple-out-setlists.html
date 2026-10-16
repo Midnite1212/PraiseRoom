@@ -19,7 +19,8 @@
 .flow .ar::before { content: '→'; color: var(--muted); margin: 0 6px; }
 .more { width: 44px; height: 44px; }
 .meta a { color: var(--accent-ink); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
-.gchips { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 18px; }
+.gchips { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin: 0 0 18px; }
+.glink { display: inline-flex; align-items: center; gap: 2px; margin-left: 6px; font-size: 14px; font-weight: 400; color: var(--accent-ink); }
 .crumb .back { display: inline-flex; align-items: center; gap: 4px; }
 .from { font-style: normal; font-family: var(--sans); font-size: 12px; color: var(--muted); font-weight: 400; margin-left: 2px; }
 .viewnote { font-size: 14px; color: var(--muted); line-height: 1.5; }
@@ -70,7 +71,7 @@
 .hacts { display: flex; gap: 8px; }
 .rbody { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 20px; min-height: 0; }
 .run { padding: 14px 32px 0; }
-.ro { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto 120px 44px; gap: 16px; align-items: center; padding: 16px 0; box-shadow: 0 -1px 0 var(--hairline); }
+.ro { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto 110px auto; gap: 16px; align-items: center; padding: 16px 0; box-shadow: 0 -1px 0 var(--hairline); }
 .ro:first-child { box-shadow: none; }
 .ro .n { font-weight: 300; font-size: 30px; color: var(--accent); text-align: center; }
 .ro h2 { font-weight: 300; font-size: 24px; line-height: 1.2; }
@@ -194,16 +195,16 @@ const GROUPS = [['Thursday Care Group', '8 people'], ['Sunday Service Team', '9 
 const PEOPLE = [['JL', 'Joanna L.', 'You', 'Can edit'], ['GL', 'Grace L.', 'Started the group', 'Can edit'], ['DW', 'Daniel W.', '', 'Can edit'], ['MC', 'Mei C.', '', 'Can view'], ['SH', 'Samuel H.', '', 'Can view']];
 const flow = (songs, max = 5) => songs.slice(0, max).map((n) => T(n).t).join('<span class="ar"></span>');
 const dateBlock = ([w, d, m]) => `<div class="dt"><i>${w}</i><b>${d}</b><em>${m}</em></div>`;
-const metaLine = (s) => `<p class="meta">${s.g === 'Just me' ? `<span>${I('user')}Just me</span>` : `<a>${I('users')}${s.g}</a>`}<span>${s.songs.length} songs</span>${s.pub ? `<span>${I('globe')}Public link on</span>` : `<span>Private</span>`}</p>`;
+const metaLine = (s) => `<p class="meta">${s.g === 'Just me' ? `<span>${I('user')}Just you</span>` : `<a>${I('users')}${s.g}</a>`}<span>${s.songs.length} songs</span>${s.pub ? `<span>${I('globe')}Public link on</span>` : `<span>Private</span>`}</p>`;
 const moreBtn = (label) => `<button class="btn icon quiet more" aria-label="More for ${label}">${I('more')}</button>`;
 
 /* ===== Planner ===== */
 const groupList = `<p class="wk">Groups</p>${GROUPS.map(([n, c]) => `<div class="gi">${I('users')}<span>${n}<small>${c}</small></span>${I('next', 's16 go')}</div>`).join('')}<div class="gi add">${I('plus')}<span>Start a group</span></div>`;
-const groupChips = (on = 0) => `<div class="gchips">${['All', 'Thursday Care Group', 'Sunday Service Team', 'Youth Worship', 'Just me'].map((g, i) => `<span class="chip sm ${i === on ? 'on' : ''}">${g}</span>`).join('')}</div>`;
-const groupCol = `<aside class="groups"><h2>Groups</h2>${GROUPS.map(([n, c]) => `<div class="gi">${I('users')}<span>${n}<small>${c}</small></span>${I('next', 's16 go')}</div>`).join('')}<div class="gi">${I('user')}<span>Just me<small>Setlists only you can edit</small></span>${I('next', 's16 go')}</div><div class="gi add">${I('plus')}<span>Start a group</span></div></aside>`;
+const groupChips = (on = 0) => `<div class="gchips">${['All', 'Thursday Care Group', 'Sunday Service Team', 'Youth Worship', 'Just you'].map((g, i) => `<span class="chip sm ${i === on ? 'on' : ''}">${g}</span>`).join('')}<a class="glink">All groups${I('next', 's16')}</a></div>`;
+const groupCol = `<aside class="groups"><h2>Groups</h2>${GROUPS.map(([n, c]) => `<div class="gi">${I('users')}<span>${n}<small>${c}</small></span>${I('next', 's16 go')}</div>`).join('')}<div class="gi">${I('user')}<span>Just you<small>Setlists only you can edit</small></span>${I('next', 's16 go')}</div><div class="gi add">${I('plus')}<span>Start a group</span></div></aside>`;
 function plannerMain({ menu = false, deleted = '', chips = false } = {}) {
   const [first, ...rest] = SETS.filter((s) => s.n !== deleted);
-  const next = `<div class="next">${dateBlock(first.d)}<div><h2>${first.n}</h2><p class="when whenl">${first.when}</p>${metaLine(first)}<p class="flow">${flow(first.songs)}</p><div class="acts">${btn('Sing', 'primary', 'sing')}${btn('Open setlist', '', 'arrowR')}${btn('Share', '', 'qr')}</div></div></div>`;
+  const next = `<div class="next">${dateBlock(first.d)}<div><h2>${first.n}</h2><p class="when whenl">${first.when}</p>${metaLine(first)}<p class="flow">${flow(first.songs)}</p><div class="acts">${btn('Sing', 'primary', 'sing')}${btn('Edit setlist', '', 'edit')}${btn('Share', '', 'qr')}</div></div></div>`;
   let lastWk = '';
   const items = rest.map((s) => { const wk = s.wk && s.wk !== lastWk ? `<p class="wk">${s.wk}</p>` : ''; if (s.wk) lastWk = s.wk;
     return `${wk}<div class="svc">${dateBlock(s.d)}<div><h2>${s.n}</h2>${metaLine(s)}<p class="flow">${flow(s.songs)}</p></div>${moreBtn(s.n)}</div>`; }).join('');
@@ -226,12 +227,12 @@ function plannerPhone(theme = 'light', end = false) {
   }
   const items = rest.slice(0, 3).map((s) => `${s.wk ? `<p class="wk">${s.wk}</p>` : ''}<div class="msvc">${dateBlock(s.d)}<div><h2>${s.n}</h2>${metaLine(s)}</div>${moreBtn(s.n)}</div>`).join('');
   return mbrowser(theme, '/setlist', `${mwebbar()}<div class="mtop"><div style="display:flex;align-items:center;gap:10px"><h1 class="h1" style="flex:1;font-size:36px">Setlists</h1>${btn('New', '', 'plus')}</div><div class="mchips">${seg(['Coming up', 'Past'], 0, 'soft')}</div><div class="gchips" style="flex-wrap:nowrap;overflow:hidden;margin:10px -20px 0 0">${['All', 'Thursday Care Group', 'Sunday Service Team', 'Youth Worship'].map((g, i) => `<span class="chip sm ${i === 0 ? 'on' : ''}" style="flex-shrink:0">${g}</span>`).join('')}</div></div>
-    <section class="sheet mpage"><p class="wk" style="margin-top:0">This week</p><div class="mnext"><h2>${first.n}</h2><p class="when" style="font-size:15px;margin-top:2px">${first.when}</p>${metaLine(first)}<div class="acts">${btn('Sing', 'primary', 'sing')}${btn('Open', '', 'arrowR')}${btn('Share', '', 'qr')}</div></div>${items}${groupList}</section>`);
+    <section class="sheet mpage"><p class="wk" style="margin-top:0">This week</p><div class="mnext"><h2>${first.n}</h2><p class="when" style="font-size:15px;margin-top:2px">${first.when}</p>${metaLine(first)}<div class="acts">${btn('Sing', 'primary', 'sing')}${btn('Edit', '', 'edit')}${btn('Share', '', 'qr')}</div></div>${items}${groupList}</section>`);
 }
 
 /* ===== Setlist page ===== */
 const RUN = [['Amazing Grace', 'G', ''], ['Come Thou Fount', 'D', ''], ['Be Thou My Vision', 'E', 'from D'], ['It Is Well', 'D', 'from C'], ['To God Be', 'A♭', '']];
-const runRows = RUN.map(([n, k, d], i) => { const s = T(n); return `<div class="ro"><span class="n">${i + 1}</span><div><h2>${s.t}</h2><p>${esc(s.a)} · ${s.fl}</p></div><span class="kt">${k}${d ? `<i>${d}</i>` : ''}</span><span class="tm">${s.tempo} · ${s.time}</span><button class="btn icon quiet more" aria-label="Sing from ${s.t}" title="Sing from here">${I('sing')}</button></div>`; }).join('');
+const runRows = RUN.map(([n, k, d], i) => { const s = T(n); return `<div class="ro"><span class="n">${i + 1}</span><div><h2>${s.t}</h2><p>${esc(s.a)} · ${s.fl}</p></div><span class="kt">${k}${d ? `<i>${d}</i>` : ''}</span><span class="tm">${s.tempo} · ${s.time}</span><button class="btn sm quiet" aria-label="Sing from ${s.t}">${I('sing', 's18')}Sing</button></div>`; }).join('');
 const shareOn = `<div class="share"><div class="state"><b>Public link · <span>On</span></b><i class="tog on" role="switch" aria-checked="true" aria-label="Public link"></i></div><p class="expl">Anyone with the link or this code can follow along on their phone. No account needed.</p><div class="qrbox">${qr(168, 11)}</div><div class="url"><span>/setlist/view/66f2a9c4e1b0</span>${btn('Copy link', 'sm', 'copy')}</div><p class="tv">The code also shows on the first screen when you press Sing, so a room can scan it from the TV.</p></div>`;
 const shareOff = `<div class="share off"><div class="state"><b>Public link · Off</b><i class="tog" role="switch" aria-checked="false" aria-label="Public link"></i></div><div class="offbox">Only people in Thursday Care Group can open this setlist. Turn the link on to share it with anyone, including guests who don’t have an account.<br>${btn('Turn on the public link', '', 'globe')}</div></div>`;
 const shareView = `<div class="share"><div class="state"><b>Public link · <span>On</span></b></div><p class="expl">Anyone with the link or this code can follow along on their phone.</p><div class="qrbox">${qr(168, 11)}</div><div class="url"><span>/setlist/view/66f2a9c4e1b0</span>${btn('Copy link', 'sm', 'copy')}</div></div>`;
@@ -244,7 +245,7 @@ function setlistDesk(theme = 'light', { off = false, dialog = '', viewer = false
     off: `<div class="scrim"></div><div class="dialog dlg"><h2>Turn off the public link?</h2><p>Anyone who scanned the code or saved the link will see “This setlist isn’t available”. Turn it back on later and the same link works again.</p><div class="acts">${btn('Keep it on')}<button class="btn dangerbtn">Turn off</button></div></div>`,
     del: `<div class="scrim"></div><div class="dialog dlg"><h2>Delete “Thursday night”?</h2><p>It disappears for everyone in Thursday Care Group and its public link stops working. The songs stay in the songbook.</p><div class="acts">${btn('Keep it')}<button class="btn dangerbtn">${I('trash', 's18')}Delete setlist</button></div></div>`,
   };
-  return browser(theme, '/setlist/details/66f2a9c4e1b0', `${webbar('Setlists')}<div class="wrapc col">${head}<div class="rbody"><section class="sheet run">${runRows}<p class="runhint">Sing starts from the top. Each song’s ${I('sing', 's16')} starts from that song.</p></section><aside class="side">${viewer ? shareView : off ? shareOff : shareOn}${viewer ? viewCard : whoCard}</aside></div></div>${dlgs[dialog] || ''}`, 'desk tall');
+  return browser(theme, '/setlist/details/66f2a9c4e1b0', `${webbar('Setlists')}<div class="wrapc col">${head}<div class="rbody"><section class="sheet run">${runRows}<p class="runhint">Sing at the top starts from song 1. Sing on a row starts from that song.</p></section><aside class="side">${viewer ? shareView : off ? shareOff : shareOn}${viewer ? viewCard : whoCard}</aside></div></div>${dlgs[dialog] || ''}`, 'desk tall');
 }
 function setlistPhone(theme = 'light') {
   const rows = RUN.map(([n, k, d], i) => { const s = T(n); return `<div class="mro"><span class="n">${i + 1}</span><div><h2>${s.t}</h2><p>${s.tempo} · ${s.time}</p></div><span class="kt">${k}${d ? `<i>${d}</i>` : ''}</span></div>`; }).join('');
@@ -291,7 +292,7 @@ function groupDesk(theme = 'light') {
   const mine = [{ d: ['THU', '22', 'OCT'], n: 'Thursday night', g: 'Thursday Care Group', songs: SETS[3].songs, pub: true }];
   const past = [{ d: ['THU', '15', 'OCT'], n: 'Thursday night', g: 'Thursday Care Group', songs: ['Amazing Grace', 'Be Thou My Vision', 'It Is Well', 'Holy, Holy, Holy', 'Come Thou Fount'], pub: true }, { d: ['THU', '8', 'OCT'], n: 'Harvest thanksgiving', g: 'Thursday Care Group', songs: ['Praise to the Lord', 'Come Thou Fount', 'To God Be', 'Joyful, Joyful'], pub: false }];
   const rowOf = (s) => `<div class="svc">${dateBlock(s.d)}<div><h2>${s.n}</h2><p class="meta"><span>${s.songs.length} songs</span>${s.pub ? `<span>${I('globe')}Public link on</span>` : '<span>Group only</span>'}</p><p class="flow">${flow(s.songs, 4)}</p></div>${moreBtn(s.n)}</div>`;
-  const head = `<div class="ghead"><div><p class="crumb"><a>Setlists</a>${I('next', 's16')}Groups</p><h1 class="h1" style="margin-top:12px">Thursday Care Group</h1><div class="people"><span class="avs">${PEOPLE.map(([i]) => `<span class="avatar">${i}</span>`).join('')}</span>Grace L., Daniel W., Mei C. and 5 others</div></div><div class="hacts">${moreBtn('Thursday Care Group')}${btn('New setlist for this group', 'primary', 'plus')}</div></div>`;
+  const head = `<div class="ghead"><div><p class="crumb"><a>Setlists</a></p><h1 class="h1" style="margin-top:12px">Thursday Care Group</h1><div class="people"><span class="avs">${PEOPLE.map(([i]) => `<span class="avatar">${i}</span>`).join('')}</span>Grace L., Daniel W., Mei C. and 5 others</div></div><div class="hacts">${moreBtn('Thursday Care Group')}${btn('New setlist for this group', 'primary', 'plus')}</div></div>`;
   const side = `<aside class="side"><div class="pcard"><h2>People</h2><p style="margin-bottom:10px">People who can view see the group’s setlists. People who can edit can also plan them.</p>${PEOPLE.map(([i, n, r, role]) => `<div class="pp"><span class="avatar sm">${i}</span><span>${n}${r ? `<small>${r}</small>` : ''}</span><span class="role">${role}${I('chev', 's16')}</span>${i === 'JL' ? '<span></span>' : moreBtn(n).replace('more"', 'more" style="width:40px;height:40px"')}</div>`).join('')}<div class="pp pending"><span class="avatar sm">${I('mail', 's16')}</span><span>new@example.com<small>Invited 2 days ago</small></span><span class="role">Can view${I('chev', 's16')}</span>${moreBtn('the invite').replace('more"', 'more" style="width:40px;height:40px"')}</div><a class="showall">Show all 8 people</a>
     <div class="invite"><div class="field"><span class="ph">Add by email</span></div><span class="role" style="height:44px">Can view${I('chev', 's16')}</span>${btn('Invite')}</div><div class="joinrow">${I('link', 's18')}<span>Or share an invite link. Anyone who opens it joins as Can view.</span>${btn('Copy invite link', 'sm', 'copy')}</div></div></aside>`;
   return browser(theme, '/setlist/folder/66e1c0b7a2d4', `${webbar('Setlists')}<div class="wrapc col">${head}<div class="gbody"><section class="sheet tl"><p class="wk" style="margin-top:0">Coming up</p>${mine.map(rowOf).join('')}<p class="wk">Past</p>${past.map(rowOf).join('')}</section>${side}</div></div>`, 'desk tall');

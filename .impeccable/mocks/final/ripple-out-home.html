@@ -23,7 +23,7 @@
 .nextup .whenl { font-size: 19px; margin-bottom: 10px; }
 .nextup .flow { margin-top: 14px; max-width: 56ch; }
 .order { list-style: none; margin-top: 18px; counter-reset: o; }
-.order li { counter-increment: o; display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 10px; align-items: center; min-height: 42px; box-shadow: 0 -1px 0 var(--hairline); font-size: 18px; font-weight: 300; }
+.order li { counter-increment: o; display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 10px; align-items: center; min-height: 56px; font-size: 20px !important; box-shadow: 0 -1px 0 var(--hairline); font-size: 18px; font-weight: 300; }
 .order li:first-child { box-shadow: none; }
 .order .keytag { background: var(--sheet); }
 .order li::before { content: counter(o); color: var(--accent-ink); font-size: 20px; }
@@ -170,17 +170,17 @@ function weekMap({ empty = false } = {}) {
   const ringsSvg = (extra) => `<svg aria-hidden="true">${[R1, R2, R2 + 150].map((r, i) => `<circle cx="${CX}" cy="${CY}" r="${r}" fill="none" stroke="currentColor" stroke-width="1.2" opacity="${[0.35, 0.25, 0.12][i]}"/>`).join('')}${extra}</svg>`;
   const me = `<div class="me" style="left:${CX}px;top:${CY}px"><span class="avatar" title="Joanna L.">JL</span><span>You</span></div>`;
   if (empty) {
-    const songs = [['It Is Well', -28, 'r', 6], ['Be Thou My Vision', 0, 'b', 0], ['Come Thou Fount', 28, 'r', -6]];
+    const songs = [['It Is Well', -28, 'r', 6], ['Be Thou My Vision', 0, 'r', 0], ['Come Thou Fount', 28, 'r', -6]];
     const pts = songs.map(([, a]) => polar(CX, CY, R1, a));
     const inv = polar(CX, CY, R2, 40);
     const svg = ringsSvg(pts.map((p) => line([CX, CY], p)).join('') + line([CX, CY], inv, true));
     const nodes = songs.map(([n, , side, dy], i) => `<i class="dot song" style="left:${pts[i][0]}px;top:${pts[i][1]}px"></i>${lab(pts[i], n, side, dy)}`).join('');
     const invite = `<i class="dot soft" style="left:${inv[0]}px;top:${inv[1]}px"></i>${lab(inv, 'Plan with a group →', 'r', 0, 'invite')}`;
     const list = `<ul class="sr"><li>Songs you’re learning: It Is Well, Be Thou My Vision, Come Thou Fount</li><li>Plan with a group</li></ul>`;
-    return `<section class="weekmap"><h2>This week<small>What you’re learning, from you outward.</small></h2>${svg}${me}${nodes}${invite}${list}<p class="legend"><span><i class="song"></i>Song you’re learning</span></p></section>`;
+    return `<section class="weekmap"><h2>What you’re learning<small>From you outward, with an open door to a group.</small></h2>${svg}${me}${nodes}${invite}${list}<p class="legend"><span><i class="song"></i>Song you’re learning</span></p></section>`;
   }
   /* each gathering sits on its group's line; gatherings with no group join you directly */
-  const groups = [['Sunday Service Team', -22, 'r', 6, [['SUN', 'Sunday Morning']]], ['Thursday Care Group', 22, 'r', -8, [['THU', 'Thursday night']]], ['Youth Worship', 44, 'r', -8, [['FRI', 'Youth Night']]]];
+  const groups = [['Sunday Service Team', -22, 'r', 6, [['SUN', 'Sunday Morning']]], ['Thursday Care Group', 22, 'r', -8, [['THU', 'Thursday night']]], ['Youth Worship', 44, 'r', -13, [['FRI', 'Youth Night']]]];
   const solo = [['SAT', 'Living room night', -44, true], ['WED', 'Prayer night', 0]];
   let spokes = '', nodes = '';
   groups.forEach(([n, a, side, dy, gs]) => {
@@ -196,11 +196,11 @@ function weekMap({ empty = false } = {}) {
 
 /* ===== Home ===== */
 const NEXT = `<section class="nextup"><h2 class="sr">What we’re singing next</h2><h3>Living room night</h3><p class="when whenl">Next up: tomorrow, Saturday 17 October</p>
-  <p class="meta"><span>${I('user')}No group · shared by link</span><span>4 songs</span><span>${I('globe')}Public link on</span></p>
+  <p class="meta"><span>${I('user')}Just you · shared by link</span><span>4 songs</span><span>${I('globe')}Public link on</span></p>
   <ol class="order">${[['Be Thou My Vision', 'E'], ['It Is Well', 'C'], ['Come Thou Fount', 'D'], ['Blessed Assurance', 'D']].map(([n, k]) => `<li><span>${T(n).t}</span><span class="keytag">${k}</span></li>`).join('')}</ol>
   <div class="acts">${btn('Sing', 'primary', 'sing')}${btn('Edit setlist', '', 'edit')}${btn('Share', '', 'qr')}</div></section>`;
 const NEWSONGS = `<div><h3>New in the songbook<a>See all</a></h3>${[['Like a River Glorious', 'Frances Havergal · added 2 days ago'], ['Dear Lord and Father of Mankind', 'John Greenleaf Whittier · added last week'], ['Joyful, Joyful, We Adore Thee', 'Henry van Dyke · added last week']].map(([t, m]) => `<div class="it">${I('music')}<div><b>${t}</b><small>${m}</small></div>${ibtn('listPlus', 'Add ' + t + ' to a setlist', 'quiet')}</div>`).join('')}</div>`;
-const LOWER_LEARN = `<section class="sheet lower"><div><h3>Browse by theme<a>All themes</a></h3>${[['Hope', '12 songs'], ['Dependence', '18 songs'], ["God's Faithfulness", '15 songs']].map(([t, m]) => `<div class="it">${I('music')}<div><b>${t}</b><small>${m}</small></div>${ibtn('arrowR', 'Open ' + t, 'quiet')}</div>`).join('')}</div>${NEWSONGS}</section>`;
+const LOWER_LEARN = `<section class="sheet lower"><div><h3>Browse by theme<a>All themes</a></h3>${[['Hope', '12 songs'], ['Dependence', '18 songs'], ["God's Faithfulness", '15 songs']].map(([t, m]) => `<div class="it">${I('filter')}<div><b>${t}</b><small>${m}</small></div>${ibtn('arrowR', 'Open ' + t, 'quiet')}</div>`).join('')}</div>${NEWSONGS}</section>`;
 const LOWER = `<section class="sheet lower">
   <div><h3>Pick up where you left off</h3>${[['Be Thou My Vision', 'Yesterday · chords in E'], ['It Is Well with My Soul', 'Tuesday · lyrics'], ['Come Thou Fount', 'Last week · chords in D']].map(([t, m]) => `<div class="it">${I('music')}<div><b>${t}</b><small>${m}</small></div>${ibtn('arrowR', 'Open ' + t, 'quiet')}</div>`).join('')}</div>
   <div><h3>New in the songbook<a>See all</a></h3>${[['Like a River Glorious', 'Frances Havergal · added 2 days ago'], ['Dear Lord and Father of Mankind', 'John Greenleaf Whittier · added last week'], ['Joyful, Joyful, We Adore Thee', 'Henry van Dyke · added last week']].map(([t, m]) => `<div class="it">${I('music')}<div><b>${t}</b><small>${m}</small></div>${ibtn('listPlus', 'Add ' + t + ' to a setlist', 'quiet')}</div>`).join('')}</div></section>`;
@@ -264,7 +264,7 @@ function profileDesk(theme = 'light', dialog = '') {
     leave: `<div class="scrim"></div><div class="dialog dlg"><h3>Leave Sunday Service Team?</h3><p>You’ll stop seeing the group’s setlists. Setlists you planned for the group stay with it. Someone who can edit can invite you back.</p><div class="acts">${btn('Stay')}<button class="btn" style="background:var(--danger);color:var(--sheet);font-weight:500">Leave group</button></div></div>`,
   };
   const dlg = dlgs[dialog] || '';
-  return browser(theme, '/profile', `${webbar('')}<div class="wrapc col"><div class="phead"><span class="avatar xl">JL</span><div><h1>Joanna L.</h1><p class="meta"><span>3 groups</span><span>23 setlists</span></p></div></div>${body}${dlg}</div>`, 'desk tall');
+  return browser(theme, '/profile', `${webbar('')}<div class="wrapc col"><div class="phead"><span class="avatar xl">JL</span><div><h1>Joanna L.</h1><p class="meta"><span>3 groups</span><span>23 setlists</span></p></div></div>${body}</div>${dlg}`, 'desk tall');
 }
 function profilePhone(theme = 'light') {
   return mbrowser(theme, '/profile', `${mwebbar()}<section class="sheet mpage"><div style="display:flex;gap:14px;align-items:center;margin-bottom:6px"><span class="avatar" style="width:52px;height:52px;font-size:17px">JL</span><div><h1 style="font-weight:300;font-size:30px">Joanna L.</h1><p class="t-small">3 groups · 23 setlists</p></div></div>

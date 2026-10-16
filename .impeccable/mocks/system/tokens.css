@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'RO Dot';
+  src: local('Helvetica Neue'), local('Helvetica'), local('Arial');
+  unicode-range: U+00B7;
+}
 /* Ripple Out · Calm × Paper · E4 "Dusty Navy & Powder Sky"
    Shared design tokens for every HTML mock. A frame opts into a theme with
    class="theme-light" or class="theme-dark"; nothing reads tokens from :root. */
@@ -68,7 +73,7 @@
 
 :root {
   /* type */
-  --sans: 'Overpass', system-ui, sans-serif;
+  --sans: 'RO Dot', 'Overpass', system-ui, sans-serif;
   --mono: 'Source Code Pro', ui-monospace, monospace;
   /* shape */
   --r-xs: 6px;
