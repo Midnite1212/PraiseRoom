@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight, ListMusic } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
@@ -23,6 +23,7 @@ type MusicianViewProps = {
   songNumber: number;
   onSongChange: (songNumber: number) => void;
   variant?: 'member' | 'public';
+  actions?: ReactNode;
 };
 
 export function MusicianView({
@@ -30,6 +31,7 @@ export function MusicianView({
   songNumber,
   onSongChange,
   variant = 'member',
+  actions,
 }: MusicianViewProps) {
   const { t, i18n } = useTranslation();
   const [chosenKeys, setChosenKeys] = useState<Record<string, number>>({});
@@ -107,6 +109,7 @@ export function MusicianView({
         <div className="flex items-center gap-1.5">
           <ReaderPreferenceControls />
           <ShareButton link={setlist.publicLink} />
+          {actions}
         </div>
         <ol className="flex w-full gap-1" aria-label={t('reader.progress')}>
           {setlist.songs.map((entry, index) => (

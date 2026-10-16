@@ -1,10 +1,14 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { Pencil } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { setlistQueryOptions } from '@/features/setlists/api';
 import { MusicianView } from '@/features/setlists/musician-view/musician-view';
+import { canEditSetlist } from '@/features/setlists/permissions';
 import { ensureOrNotFound } from '@/lib/ensure-or-not-found';
 
 const musicianSearchSchema = z.object({
@@ -20,16 +24,29 @@ export const Route = createFileRoute('/_app/setlists/$setlistId')({
 });
 
 function MusicianPage() {
+  const { t } = useTranslation();
   const { setlistId } = Route.useParams();
   const { song } = Route.useSearch();
+  const { session } = Route.useRouteContext();
   const navigate = Route.useNavigate();
   const { data: setlist } = useSuspenseQuery(setlistQueryOptions(setlistId));
+
   return (
     <MusicianView
       key={setlist._id}
       setlist={setlist}
       songNumber={song}
       onSongChange={(number) => void navigate({ search: { song: number }, replace: true })}
+      actions={
+        canEditSetlist(session, setlist) ? (
+          <Button asChild variant="outline" size="sm">
+            <Link to="/setlists/$setlistId/edit" params={{ setlistId }}>
+              <Pencil />
+              {t('editor.edit')}
+            </Link>
+          </Button>
+        ) : null
+      }
     />
   );
 }
