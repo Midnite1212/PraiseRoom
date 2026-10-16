@@ -7,20 +7,20 @@
 ## Stack
 
 - React 18, TypeScript (`strict`, `noImplicitAny`, `noImplicitReturns`), Vite 8 + Vitest 5, MUI 5 (`@mui/material`, `@mui/icons-material`, `@mui/x-date-pickers` 6) on Emotion, Redux Toolkit 1 + redux-persist, react-router-dom 6, axios 1, react-hook-form 7 + zod 3 via `@hookform/resolvers`, dayjs. Fonts: Work Sans and DM Sans through `@fontsource`.
-- Majors only. `old-ui/package.json` is the source of truth for exact versions. Installs use **yarn** with `old-ui/yarn.lock`.
+- Majors only. `old-ui/package.json` is the source of truth for exact versions. Installs use **pnpm** with `old-ui/pnpm-lock.yaml`.
 
 ## Commands
 
 ```bash
-cd old-ui && yarn               # install
-yarn dev                        # Vite on :3000; /api is proxied to the server on :1338 (changeOrigin: false)
-yarn typecheck                  # tsc --noEmit; 0 errors required
-yarn test                       # Vitest unit tests (jsdom, globals); all must pass
-yarn build                      # tsc --noEmit, then vite build → old-ui/dist (not deployed)
-yarn preview                    # serve old-ui/dist locally
+cd old-ui && pnpm install       # install
+pnpm dev                        # Vite on :3000; /api is proxied to the server on :1338 (changeOrigin: false)
+pnpm typecheck                  # tsc --noEmit; 0 errors required
+pnpm test                       # Vitest unit tests (jsdom, globals); all must pass
+pnpm build                      # tsc --noEmit, then vite build → old-ui/dist (not deployed)
+pnpm preview                    # serve old-ui/dist locally
 ```
 
-Lint from the repo root: `yarn lint` (ESLint, 0 errors, no new warnings) and `yarn prettier --write "<touched files>"`.
+Lint from the repo root: `pnpm lint` (ESLint, 0 errors, no new warnings) and `pnpm exec prettier --write "<touched files>"`.
 
 - Unit tests cover pure logic only: chord parsing and transposition, lyrics helpers, song codes, `songKeys`, the store reset, and the response cache (`old-ui/src/**/*.test.ts(x)`). Components have no render tests; verify them with type-check, lint, build, and the browser.
 
@@ -114,14 +114,14 @@ export default SongDeleteDialog;
 - No new `any`. Type API responses with the types in `types/` (`axios.get<SongSchema[]>(…)`) and use `unknown` plus narrowing in `catch`. ESLint enforces `no-explicit-any` as an error.
 - No non-null assertions (`!`) on fetched data or env vars in new code; guard instead.
 - No `as` casts to paper over a wrong type. Fix the type.
-- `old-ui/tsconfig.json` is strict. Keep `yarn tsc --noEmit` at 0 errors.
+- `old-ui/tsconfig.json` is strict. Keep `pnpm exec tsc --noEmit` at 0 errors.
 
 ### Preferences
 
 - Functional components with hooks; arrow functions; `const`/`let`; async/await.
 - Ternary for either/or rendering, `&&` only for render-if-true with a boolean left side (`items.length > 0 &&`, never `items.length &&`), complex conditions extracted to a named `const`.
 - Stable `key`s from data (`song._id`), not array indexes, for any list that can reorder, filter, or change.
-- `useEffect` dependency arrays must be complete. `react-hooks/exhaustive-deps` is at 0 warnings and `yarn lint` runs with `--max-warnings=0`; fix the effect or move the function inside it.
+- `useEffect` dependency arrays must be complete. `react-hooks/exhaustive-deps` is at 0 warnings and `pnpm lint` runs with `--max-warnings=0`; fix the effect or move the function inside it.
 - Reuse library code over hand-rolled logic: dayjs for dates, zod for validation, MUI components over custom HTML.
 - Produce valid HTML. MUI `Typography` renders `<p>` by default; nesting it inside a `Button` or another `Typography` yields invalid DOM. Use the `component` prop.
 - Default to no comments. If a line needs explaining, rename the symbol. A comment is for a _why_ the code cannot say.
@@ -211,7 +211,7 @@ Songs store `chordLyrics` (and optional `simplifiedChordLyrics`) as one plain-te
 2. `customAxios`'s interceptor gets the token from `getAuthToken()` (cached until near `exp`); there is no `updateAxiosClient` to call after sign-in.
 3. `#/` imports resolve through the Vite alias, but the codebase uses relative imports. Keep to that.
 4. `useUser()` reads shared context and never fetches; the session loads once in `SessionProvider`, so a signed-in state change must go through `refreshSession()` or a full page load.
-5. `yarn build` in `old-ui/` runs `tsc --noEmit` before `vite build`, so a type error fails the `ui` deploy. `old-ui/.eslintrc.cjs` is its own ESLint root (`@typescript-eslint/recommended`, the react, react-hooks, jsx-a11y, and import rules carried over from `eslint-config-react-app`, single quotes and semicolons); its plugins load from the root `node_modules`, so add UI lint plugins to the root `package.json`. Edit it, not the root config, for UI rules.
+5. `pnpm build` in `old-ui/` runs `tsc --noEmit` before `vite build`, so a type error fails the `ui` deploy. `old-ui/.eslintrc.cjs` is its own ESLint root (`@typescript-eslint/recommended`, the react, react-hooks, jsx-a11y, and import rules carried over from `eslint-config-react-app`, single quotes and semicolons); its plugins load from the root `node_modules`, so add UI lint plugins to the root `package.json`. Edit it, not the root config, for UI rules.
 6. Route `key`s in `routes.ts` must be unique, and React keys from data (`_id`), not indexes.
 
 - MUI docs: use the MUI MCP server (`useMuiDocs`, then `fetchDocs` with only the URLs it returns) when it is available, and pin answers to v5.

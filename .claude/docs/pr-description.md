@@ -11,7 +11,7 @@ There is no PR template in `.github/` for this repo, so the shape below is the c
 - **Tabulate anything you'd otherwise list:** changed behaviours, before/after states, affected pages, new props, endpoints and their `ROUTE_PERMISSIONS` entries.
 - **Diagram flows and state transitions** when there are more than three steps (save-setlist flow, folder sharing). Keep them under ~10 nodes, left-to-right (`flowchart LR`, or `direction LR` on state diagrams).
 - **Screenshots for any UI change**, desktop and mobile, in a before/after table. The app is used on phones during worship and several components have a separate `*Mobile.tsx` variant, so both need checking.
-- **Say how it was verified.** Concrete steps or a checklist a reviewer can replay. Unit tests cover pure logic only and there is no CI check on PRs, so the verification section carries the weight: which pages were opened, at which widths, what was clicked. Type-check (ui and server), lint, unit tests (ui and server), and `yarn build` passing are worth one line.
+- **Say how it was verified.** Concrete steps or a checklist a reviewer can replay. Unit tests cover pure logic only and there is no CI check on PRs, so the verification section carries the weight: which pages were opened, at which widths, what was clicked. Type-check (ui and server), lint, unit tests (ui and server), and `pnpm build` passing are worth one line.
 - **API changes call out access.** A new or changed endpoint states its `requiresAuth` / `allowedAccessTypes` and whether it checks ownership.
 - **No file paths or line numbers** in prose. GitHub shows them and line numbers rot on the next push. Exception: a deliberate callout, marked as such:
   > ⚠️ **Reviewer note:** `server/src/policies/permissions.config.ts` changes who can update songs; the rest of the diff is consumers.
@@ -47,7 +47,7 @@ Closes #<issue#>
 
 - [ ] Open `/setlist/add` → add three songs → save → reopen
 - [ ] Desktop 1440 and mobile 390
-- [ ] Checks for each folder touched: `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build` in ui/; `yarn typecheck`, `yarn test`, `yarn build` in old-ui/; `yarn typecheck`, `yarn test` in server/; `yarn lint` from the root
+- [ ] Checks for each folder touched: `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build` in ui/; `pnpm typecheck`, `pnpm test`, `pnpm build` in old-ui/; `pnpm typecheck`, `pnpm test` in server/; `pnpm lint` from the root
 - [ ] Pattern docs changed (new UI): list them, or "none"
 
 ## Not in this PR

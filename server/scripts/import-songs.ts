@@ -25,7 +25,7 @@ const { values: args } = parseArgs({
 
 const main = async (): Promise<void> => {
   if (!args.file)
-    throw new ImportUsageError('Usage: yarn import:songs --file <songs.json> [--apply]');
+    throw new ImportUsageError('Usage: pnpm import:songs --file <songs.json> [--apply]');
   const documents = readDocuments(args.file);
   if (!Array.isArray(documents))
     throw new ImportUsageError('Expected a mongoexport --jsonArray file');

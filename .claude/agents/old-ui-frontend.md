@@ -86,10 +86,10 @@ try {
 
 ## Verification
 
-- Pure logic (chords, lyrics, song codes, `songKeys`, store) has Vitest tests next to it in `helpers/`; run `yarn test` from `old-ui/` and add a case when you change that logic. Components have no render tests.
+- Pure logic (chords, lyrics, song codes, `songKeys`, store) has Vitest tests next to it in `helpers/`; run `pnpm test` from `old-ui/` and add a case when you change that logic. Components have no render tests.
 - Verify in the browser: open the page, both widths (1440 and 390), click the flow, check the console and network tabs. Say exactly what you opened and what you saw.
-- From `old-ui/`: `yarn tsc --noEmit` must show 0 errors and `yarn build` must pass. From the repo root: `yarn lint` must show 0 errors and no new warnings.
-- Prettier from the repo root on touched files only: `yarn prettier --write "old-ui/src/<touched files>"`.
+- From `old-ui/`: `pnpm exec tsc --noEmit` must show 0 errors and `pnpm build` must pass. From the repo root: `pnpm lint` must show 0 errors and no new warnings.
+- Prettier from the repo root on touched files only: `pnpm exec prettier --write "old-ui/src/<touched files>"`.
 
 ## Data handling
 

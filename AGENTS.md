@@ -42,9 +42,9 @@ The HMCC Hong Kong worship-team app: a song library with chord charts, key trans
 Independent packages in one repo, no workspaces wiring:
 
 - `ui/` — **the production UI, still being rebuilt**: React 19 with the React Compiler, TypeScript 7, Vite 8, Tailwind v4 + shadcn/ui, TanStack Router/Query/Form/Table, pnpm. Old routes it doesn't have yet (public setlist links, password reset, sign-up, song and setlist editing, profile) show not-found until rebuilt. Rules in `ui/AGENTS.md`.
-- `old-ui/` — the previous UI, no longer deployed: React 18 TypeScript SPA on Vite 8, MUI v5, Redux Toolkit, react-router-dom v6, yarn. Kept as the reference for screens not yet rebuilt; frozen. Rules in `old-ui/AGENTS.md`.
-- `server/` — Express 4 + Drizzle ORM on Postgres (Neon) in **TypeScript**, run with `ts-node` through nodemon, yarn
-- Root `package.json` — ESLint and Prettier for `old-ui/` and `server/`, Husky, lint-staged, and commitlint, yarn
+- `old-ui/` — the previous UI, no longer deployed: React 18 TypeScript SPA on Vite 8, MUI v5, Redux Toolkit, react-router-dom v6, pnpm. Kept as the reference for screens not yet rebuilt; frozen. Rules in `old-ui/AGENTS.md`.
+- `server/` — Express 4 + Drizzle ORM on Postgres (Neon) in **TypeScript**, run with `ts-node` through nodemon, pnpm
+- Root `package.json` — ESLint and Prettier for `old-ui/` and `server/`, Husky, lint-staged, and commitlint, pnpm
 
 Login, sign-up, and password reset run on Neon Auth (Managed Better Auth) in this app's own Neon project; the app no longer depends on the HMCC HK main site. See `#auth-flow`.
 
@@ -57,30 +57,30 @@ Tracking is GitHub Issues on `Midnite1212/ripple-out-worship`, a self-hosted for
 - NEVER proactively create documentation files or READMEs unless asked. The exception is `ui/docs/patterns/`, which you update in the same PR as a pattern change (see the `ui-patterns` skill).
 - Server unit tests cover utils, middleware, and controller input handling (`server/src/**/*.test.ts`, `node:test`); each UI's test scope is in its own `AGENTS.md`. When you change covered logic, keep the tests green and add a case; do not rewrite an expected value to make a test pass unless the behaviour change is intended and stated.
 - Reuse existing components and helpers before inventing new ones.
-- Package managers are per folder: **pnpm** in `ui/`, **yarn** everywhere else (`yarn` to install, `yarn <script>` to run, `yarn tsc` / `yarn eslint` / `yarn prettier` for binaries). Never npm or npx for project work; the only npm use in these docs is the global GitNexus install (`#gitnexus-setup`), a per-machine tool that never touches a lockfile.
+- Every folder uses **pnpm** 10 with its own lockfile and no workspace (`pnpm install` to install, `pnpm <script>` to run, `pnpm exec <binary>` for binaries). Never yarn, npm, or npx for project work; the only npm use in these docs is the global GitNexus install (`#gitnexus-setup`), a per-machine tool that never touches a lockfile.
 
 ## Development Commands
 
 ```bash
 # Install (separate installs, no workspaces); the root install also enables the husky hooks
-yarn && (cd server && yarn) && (cd ui && pnpm install) && (cd old-ui && yarn)
+pnpm install && (cd server && pnpm install) && (cd ui && pnpm install) && (cd old-ui && pnpm install)
 
 # Run locally (two terminals): the server, plus whichever UI you are working on (both use :3000)
-cd server && yarn dev           # Express on :1338 via nodemon + ts-node
+cd server && pnpm dev           # Express on :1338 via nodemon + ts-node
 cd ui && pnpm dev               # new UI; see ui/AGENTS.md for its other scripts
-cd old-ui && yarn dev           # old UI; see old-ui/AGENTS.md
+cd old-ui && pnpm dev           # old UI; see old-ui/AGENTS.md
 
 # Server (in server/)
-yarn typecheck                  # tsc --noEmit; 0 errors required (noUnusedLocals and noUnusedParameters are on)
-yarn test                       # node:test unit tests, no database needed
-DATABASE_URL_TEST=<url> yarn test  # also runs src/db/integration.test.ts against a disposable Postgres database
-yarn db:generate                # drizzle-kit generate: new SQL migration in server/drizzle/ from src/db/schema.ts
-yarn db:migrate                 # drizzle-kit migrate: apply pending migrations to DATABASE_URL
-yarn import:songs --file <songs.json> [--apply]  # one-off MongoDB songs import; see #cutover-from-mongodb-songs-only
+pnpm typecheck                  # tsc --noEmit; 0 errors required (noUnusedLocals and noUnusedParameters are on)
+pnpm test                       # node:test unit tests, no database needed
+DATABASE_URL_TEST=<url> pnpm test  # also runs src/db/integration.test.ts against a disposable Postgres database
+pnpm db:generate                # drizzle-kit generate: new SQL migration in server/drizzle/ from src/db/schema.ts
+pnpm db:migrate                 # drizzle-kit migrate: apply pending migrations to DATABASE_URL
+pnpm import:songs --file <songs.json> [--apply]  # one-off MongoDB songs import; see #cutover-from-mongodb-songs-only
 
 # Lint and format old-ui/ and server/ (from repo root); ui/ has its own oxlint and oxfmt
-yarn lint                       # eslint over old-ui/ and server/; 0 errors required, do not add warnings
-yarn prettier --write "<touched files>"
+pnpm lint                       # eslint over old-ui/ and server/; 0 errors required, do not add warnings
+pnpm exec prettier --write "<touched files>"
 
 # Both Vercel services together, no Vercel login (optional; needs the Vercel CLI)
 vercel dev -L
@@ -102,7 +102,7 @@ Majors only. Each folder's `package.json` is the source of truth for exact versi
 
 | Path                                           | Role                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `app.ts`                                       | Vercel `server` service entry: default-exports the app; run directly (`yarn dev`, `yarn start`) it connects, then listens on `PORT`                                                                                                                                                                                                                                                                                                                                         |
+| `app.ts`                                       | Vercel `server` service entry: default-exports the app; run directly (`pnpm dev`, `pnpm start`) it connects, then listens on `PORT`                                                                                                                                                                                                                                                                                                                                         |
 | `src/createApp.ts`                             | `createApp()`: `/api/auth/*` + `/api/auth-callback` router (before the JSON parser, since it forwards raw bodies to Neon Auth), `ensureDatabase` for `/api`, JSON body, routes, a JSON 404 for unknown `/api`                                                                                                                                                                                                                                                               |
 | `src/db/connect.ts`                            | `getDb()` (lazy `pg` pool + Drizzle from `DATABASE_URL`), `ensureDatabase()` (one memoized `select 1` per instance, shared by concurrent requests, retried after a failure), `closeDatabase()`                                                                                                                                                                                                                                                                              |
 | `src/db/schema.ts`                             | Drizzle tables; `drizzle/` holds the generated SQL migrations and `drizzle.config.ts` points drizzle-kit at both                                                                                                                                                                                                                                                                                                                                                            |
@@ -166,11 +166,11 @@ Shared helpers in `src/utils/`: `sendResponse` / `sendError` (`response.ts`; `se
 - Soft delete is the convention: every top-level table has `is_deleted`. Filter it in every read and update. Delete endpoints are `PUT /api/<resource>/delete` and set it to true.
 - Requests that write more than one table run inside `getDb().transaction(…)` in the repository.
 - Text values go through the `cast.ts` helpers, which reject NUL characters (Postgres text cannot store them) with a 400; setlist dates must fall in the years 1000–9999.
-- Schema changes: edit `src/db/schema.ts`, run `yarn db:generate`, commit the new `drizzle/` files, and never edit an applied migration. Vercel never runs migrations: apply them with `DATABASE_URL='<neon direct url>' yarn db:migrate` before merging code that needs the new schema.
+- Schema changes: edit `src/db/schema.ts`, run `pnpm db:generate`, commit the new `drizzle/` files, and never edit an applied migration. Vercel never runs migrations: apply them with `DATABASE_URL='<neon direct url>' pnpm db:migrate` before merging code that needs the new schema.
 
 ### Server type-check
 
-`server/tsconfig.json` has `noUnusedLocals` and `noUnusedParameters`. Prefix intentionally unused parameters with `_`. `yarn tsc --noEmit` in `server/` must show 0 errors.
+`server/tsconfig.json` has `noUnusedLocals` and `noUnusedParameters`. Prefix intentionally unused parameters with `_`. `pnpm exec tsc --noEmit` in `server/` must show 0 errors.
 
 ### Cutover from MongoDB (songs only)
 
@@ -180,9 +180,9 @@ Only songs move to Postgres. Setlists, folders, and ownerships are not imported;
 mongoexport --uri '<mongo uri>' --collection=songs --jsonArray --out=<outside the repo>/songs.json
 cd server
 read -rs DATABASE_URL && export DATABASE_URL   # paste the Neon direct url; keeps it out of shell history
-yarn db:migrate
-yarn import:songs --file <outside the repo>/songs.json          # dry run: read, valid, skipped ids with reasons, would insert
-yarn import:songs --file <outside the repo>/songs.json --apply  # inserted vs already present
+pnpm db:migrate
+pnpm import:songs --file <outside the repo>/songs.json          # dry run: read, valid, skipped ids with reasons, would insert
+pnpm import:songs --file <outside the repo>/songs.json --apply  # inserted vs already present
 ```
 
 Then set the Vercel `DATABASE_URL` to Neon's pooled `-pooler` URL and redeploy.
@@ -207,7 +207,7 @@ Neon Auth owns user accounts (name, email, password); this repo's own data carri
 ## Environment Variables
 
 - `server/.env` (loaded by `dotenv` in `app.ts`): `PORT`, `BASE_URL`, `NEON_AUTH_BASE_URL` (the Neon Auth base URL), `DATABASE_URL` (Postgres connection string; Neon's pooled `-pooler` URL with `sslmode=require` works), optional `DATABASE_POOL_MAX` (connections per function instance, default 3). Without `NEON_AUTH_BASE_URL`, `/api/auth/*` returns 503 `'Sign-in is not configured'` and the server can't verify bearer tokens.
-- `DATABASE_URL_TEST` (shell only, never in `.env`): a disposable Postgres database for `yarn test`; the integration suite migrates it and truncates every table, so it refuses to run unless the database name contains `test` and differs from `DATABASE_URL`, and is skipped when unset (CI runs without it).
+- `DATABASE_URL_TEST` (shell only, never in `.env`): a disposable Postgres database for `pnpm test`; the integration suite migrates it and truncates every table, so it refuses to run unless the database name contains `test` and differs from `DATABASE_URL`, and is skipped when unset (CI runs without it).
 - `ui/.env` and `old-ui/.env`: none required today. Both auth clients talk to `${window.location.origin}/api/auth`, so there is no `VITE_*` var to configure.
 - `NODE_ENV=test` means "local development" in this repo: it disables static serving of `server/client/` when `app.ts` runs directly. The `dev` script sets it through `cross-env`.
 - Vercel project (all environments): `NEON_AUTH_BASE_URL`, `BASE_URL` (the public origin `publicLink` is built from), `DATABASE_URL` (the Neon pooled `-pooler` connection string with `sslmode=require`) for the `server` service at runtime. The `ui` service needs no build-time env vars. The Neon integration may also add `VITE_NEON_AUTH_URL`; nothing reads it, because the UI reaches Neon Auth through `/api/auth`. `PORT` is not used on Vercel.

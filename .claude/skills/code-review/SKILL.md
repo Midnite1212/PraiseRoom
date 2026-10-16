@@ -38,7 +38,7 @@ The bar is the written standard, not "better than before".
 - Backend changes in the same PR: a new endpoint has both a route line and a `ROUTE_PERMISSIONS` entry; writes check that `req.user` owns the target; `req.body` is not passed straight to Mongoose; no `upsert: true` on updates; queries filter `isDeleted: false`; `error.message` is not sent to the client; user input in `$regex` is escaped.
 - Mobile and desktop both covered when layout changed.
 - No member data in the diff, fixtures, or screenshots.
-- Lint and type-check: `yarn lint` and `yarn tsc --noEmit` (old-ui and server) are clean on the branch.
+- Lint and type-check: `pnpm lint` and `pnpm exec tsc --noEmit` (old-ui and server) are clean on the branch.
 
 ## Output
 

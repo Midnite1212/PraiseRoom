@@ -42,7 +42,7 @@ For each changed file, check for:
 
 ### Type and Runtime Safety
 
-- `yarn tsc --noEmit` passes in `old-ui/` and `server/`. Check whether the PR passes it by adding `any`, `as`, or `!` rather than by fixing types.
+- `pnpm exec tsc --noEmit` passes in `old-ui/` and `server/`. Check whether the PR passes it by adding `any`, `as`, or `!` rather than by fixing types.
 - Every `.map`, `.filter`, `.length`, and nested property on fetched data is guarded, especially nullable fields (`publicLink`, `date`, `code`, `simplifiedChordLyrics`, populated `songs`).
 - `useParams` values checked before use; `/setlist/:id?` makes `id` optional.
 - Loading, empty, and error states rendered; async work in `try/catch` with user-visible feedback.
