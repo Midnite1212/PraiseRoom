@@ -4,7 +4,7 @@
     "deploymentEnabled": { "*": false, "main": true }
   },
   "services": {
-    "server": { "root": "server", "framework": "express" },
+    "server": { "root": "server", "framework": "express", "buildCommand": "pnpm typecheck" },
     "ui": {
       "root": "ui",
       "framework": "vite",
