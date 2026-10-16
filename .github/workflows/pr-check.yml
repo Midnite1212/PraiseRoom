@@ -1,4 +1,4 @@
-name: "PR Check"
+name: 'PR Check'
 on:
   pull_request:
     branches:
@@ -12,8 +12,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint:
-    name: 'Lint'
+  root:
+    name: 'Root'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -24,13 +24,10 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
-          cache-dependency-path: |
-            pnpm-lock.yaml
-            old-ui/pnpm-lock.yaml
+          cache-dependency-path: pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
-      # eslint-plugin-react detects the React version from old-ui/node_modules.
-      - run: pnpm --dir old-ui install --frozen-lockfile
       - run: pnpm lint
+      - run: pnpm format:check
 
   old-ui:
     name: 'Old UI'
@@ -50,6 +47,8 @@ jobs:
           cache-dependency-path: old-ui/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm format:check
       - run: pnpm test
         env:
           CI: true
@@ -95,4 +94,6 @@ jobs:
           cache-dependency-path: server/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm format:check
       - run: pnpm test

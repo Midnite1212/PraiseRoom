@@ -1,28 +1,21 @@
 {
   "private": true,
-  "packageManager": "pnpm@10.33.0",
+  "scripts": {
+    "lint": "oxlint --deny-warnings --ignore-pattern \"ui/**\" --ignore-pattern \"server/**\" --ignore-pattern \"old-ui/**\"",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "prepare": "husky"
+  },
   "devDependencies": {
     "@commitlint/cli": "^21.2.3",
     "@commitlint/config-conventional": "^21.2.3",
-    "@typescript-eslint/eslint-plugin": "^6.4.1",
-    "@typescript-eslint/parser": "^6.4.1",
-    "eslint": "^8.0.0",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-jsx-a11y": "^6.10.2",
-    "eslint-plugin-react": "^7.33.2",
-    "eslint-plugin-react-hooks": "^4.6.2",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
-    "prettier": "^3.0.2",
-    "typescript": "^5.1.6"
-  },
-  "scripts": {
-    "lint": "eslint --max-warnings=0 --ignore-path .eslintignore \"**/*.+(js|jsx|ts|tsx)\"",
-    "lint:fix": "eslint --ignore-path .eslintignore --fix \"**/*.+(js|jsx|ts|tsx)\"",
-    "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|jsx|ts|tsx|json|md|css)\" --config .prettierrc.json",
-    "prepare": "husky"
+    "oxfmt": "^0.73.0",
+    "oxlint": "^1.88.0"
   },
   "engines": {
     "node": "24.x"
-  }
+  },
+  "packageManager": "pnpm@10.33.0"
 }
