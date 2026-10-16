@@ -28,7 +28,7 @@
 .order .keytag { background: var(--sheet); }
 .order li::before { content: counter(o); color: var(--accent-ink); font-size: 20px; }
 .verse { margin-top: 22px; font-size: 26px; line-height: 1.45; font-weight: 300; letter-spacing: -.01em; max-width: 26ch; }
-.nextup .acts { display: flex; gap: 8px; margin-top: 24px; }
+.nextup .acts { display: flex; gap: 8px; margin-top: auto; padding-top: 24px; }
 .weekmap { position: relative; overflow: hidden; border-radius: 28px; background: var(--rail); min-height: 520px; }
 .weekmap h2 { position: absolute; left: 28px; top: 24px; font-weight: 300; font-size: 22px; letter-spacing: -.01em; z-index: 2; }
 .weekmap h2 small { display: block; font-size: 14px; color: var(--muted); margin-top: 4px; letter-spacing: 0; }
@@ -46,6 +46,10 @@
 .legend { position: absolute; left: 28px; bottom: 22px; display: flex; gap: 16px; font-size: 13px; color: var(--muted); z-index: 2; }
 .legend span { display: inline-flex; align-items: center; gap: 7px; }
 .legend i { width: 11px; height: 11px; border-radius: 50%; background: var(--accent); }
+.dot.next { width: 20px; height: 20px; box-shadow: 0 0 0 4px var(--rail), 0 0 0 7px var(--accent); }
+.wl em { font-style: normal; font-size: 12px; font-weight: 500; color: var(--accent-ink); background: var(--wash); border-radius: 6px; padding: 1px 6px; margin-left: 8px; }
+.dot.song { border-radius: 4px; background: var(--sheet); box-shadow: inset 0 0 0 2px var(--accent), 0 0 0 4px var(--rail); }
+.legend i.song { border-radius: 3px; background: var(--sheet); box-shadow: inset 0 0 0 2px var(--accent); }
 .legend i.g { background: var(--sheet); box-shadow: inset 0 0 0 2px var(--accent); }
 .quick { display: flex; gap: 8px; padding: 16px 0 20px; }
 .lower { flex: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 56px; padding: 30px 44px 0; }
@@ -122,6 +126,13 @@
 .mnext .acts .btn { flex: 1; height: 46px; }
 .mweek { margin: 12px 14px 0; border-radius: 22px; background: var(--rail); padding: 16px 18px; }
 .mweek h2 { font-weight: 300; font-size: 19px; margin-bottom: 6px; }
+.wkrow { display: grid; grid-template-columns: 12px 34px minmax(0, 1fr) auto; gap: 10px; align-items: center; min-height: 48px; }
+.wkrow i { width: 10px; height: 10px; border-radius: 50%; background: var(--accent); }
+.wkrow i.nx { box-shadow: 0 0 0 3px var(--rail), 0 0 0 5px var(--accent); }
+.wkrow b { font-size: 13px; font-weight: 500; color: var(--accent-ink); }
+.wkrow span { font-size: 16px; font-weight: 400; }
+.wkrow small { display: block; font-size: 13px; color: var(--muted); font-weight: 300; }
+.wkrow em { font-style: normal; font-size: 12px; font-weight: 500; color: var(--accent-ink); background: var(--wash); border-radius: 6px; padding: 2px 7px; }
 .ring { display: flex; align-items: center; gap: 12px; min-height: 32px; }
 .ring i { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); flex: none; margin-left: var(--ind); }
 .ring.g i { background: var(--sheet); box-shadow: inset 0 0 0 2px var(--accent); }
@@ -163,14 +174,14 @@ function weekMap({ empty = false } = {}) {
     const pts = songs.map(([, a]) => polar(CX, CY, R1, a));
     const inv = polar(CX, CY, R2, 40);
     const svg = ringsSvg(pts.map((p) => line([CX, CY], p)).join('') + line([CX, CY], inv, true));
-    const nodes = songs.map(([n, , side, dy], i) => `<i class="dot g" style="left:${pts[i][0]}px;top:${pts[i][1]}px"></i>${lab(pts[i], n, side, dy)}`).join('');
+    const nodes = songs.map(([n, , side, dy], i) => `<i class="dot song" style="left:${pts[i][0]}px;top:${pts[i][1]}px"></i>${lab(pts[i], n, side, dy)}`).join('');
     const invite = `<i class="dot soft" style="left:${inv[0]}px;top:${inv[1]}px"></i>${lab(inv, 'Plan with a group →', 'r', 0, 'invite')}`;
     const list = `<ul class="sr"><li>Songs you’re learning: It Is Well, Be Thou My Vision, Come Thou Fount</li><li>Plan with a group</li></ul>`;
-    return `<section class="weekmap"><h2>This week<small>What you’re learning, from you outward.</small></h2>${svg}${me}${nodes}${invite}${list}<p class="legend"><span><i class="g"></i>Song you’re learning</span></p></section>`;
+    return `<section class="weekmap"><h2>This week<small>What you’re learning, from you outward.</small></h2>${svg}${me}${nodes}${invite}${list}<p class="legend"><span><i class="song"></i>Song you’re learning</span></p></section>`;
   }
   /* each gathering sits on its group's line; gatherings with no group join you directly */
-  const groups = [['Sunday Service Team', -28, 'r', 6, [['SUN', 'Sunday Morning']]], ['Thursday Care Group', 0, 'b', 0, [['THU', 'Thursday night']]], ['Youth Worship', 28, 'r', -6, [['FRI', 'Youth Night']]]];
-  const solo = [['SAT', 'Living room night', -44], ['WED', 'Prayer night', 44]];
+  const groups = [['Sunday Service Team', -22, 'r', 6, [['SUN', 'Sunday Morning']]], ['Thursday Care Group', 22, 'r', -8, [['THU', 'Thursday night']]], ['Youth Worship', 44, 'r', -8, [['FRI', 'Youth Night']]]];
+  const solo = [['SAT', 'Living room night', -44, true], ['WED', 'Prayer night', 0]];
   let spokes = '', nodes = '';
   groups.forEach(([n, a, side, dy, gs]) => {
     const g = polar(CX, CY, R1, a), t = polar(CX, CY, R2, a);
@@ -178,8 +189,8 @@ function weekMap({ empty = false } = {}) {
     nodes += `<i class="dot g" style="left:${g[0]}px;top:${g[1]}px"></i>${lab(g, n, side, dy)}`;
     nodes += `<i class="dot" style="left:${t[0]}px;top:${t[1]}px"></i>${lab(t, `<b>${gs[0][0]}</b>${gs[0][1]}`)}`;
   });
-  solo.forEach(([d, n, a]) => { const t = polar(CX, CY, R2, a); spokes += line([CX, CY], t); nodes += `<i class="dot" style="left:${t[0]}px;top:${t[1]}px"></i>${lab(t, `<b>${d}</b>${n}`)}`; });
-  const list = `<ul class="sr"><li>Just you: Saturday, Living room night; Wednesday, Prayer night</li>${groups.map(([n, , , , gs]) => `<li>${n}: ${gs.map(([d, t]) => `${d}, ${t}`).join('; ')}</li>`).join('')}</ul>`;
+  solo.forEach(([d, n, a, next]) => { const t = polar(CX, CY, R2, a); spokes += line([CX, CY], t); nodes += `<i class="dot${next ? ' next' : ''}" style="left:${t[0]}px;top:${t[1]}px"></i>${lab(t, `<b>${d}</b>${n}${next ? '<em>Next</em>' : ''}`)}`; });
+  const list = `<ul class="sr"><li>Just you: Saturday, Living room night (next); Wednesday, Prayer night</li>${groups.map(([n, , , , gs]) => `<li>${n}: ${gs.map(([d, t]) => `${d}, ${t}`).join('; ')}</li>`).join('')}</ul>`;
   return `<section class="weekmap"><h2>This week<small>Who you sing with, and where.</small></h2>${ringsSvg(spokes)}${me}${nodes}${list}<p class="legend"><span><i class="g"></i>Group</span><span><i></i>Gathering</span></p></section>`;
 }
 
@@ -187,7 +198,7 @@ function weekMap({ empty = false } = {}) {
 const NEXT = `<section class="nextup"><h2 class="sr">What we’re singing next</h2><h3>Living room night</h3><p class="when whenl">Next up: tomorrow, Saturday 17 October</p>
   <p class="meta"><span>${I('user')}No group · shared by link</span><span>4 songs</span><span>${I('globe')}Public link on</span></p>
   <ol class="order">${[['Be Thou My Vision', 'E'], ['It Is Well', 'C'], ['Come Thou Fount', 'D'], ['Blessed Assurance', 'D']].map(([n, k]) => `<li><span>${T(n).t}</span><span class="keytag">${k}</span></li>`).join('')}</ol>
-  <div class="acts">${btn('Sing', 'primary', 'sing')}${btn('Open setlist', '', 'arrowR')}${btn('Share', '', 'qr')}</div></section>`;
+  <div class="acts">${btn('Sing', 'primary', 'sing')}${btn('Edit setlist', '', 'edit')}${btn('Share', '', 'qr')}</div></section>`;
 const NEWSONGS = `<div><h3>New in the songbook<a>See all</a></h3>${[['Like a River Glorious', 'Frances Havergal · added 2 days ago'], ['Dear Lord and Father of Mankind', 'John Greenleaf Whittier · added last week'], ['Joyful, Joyful, We Adore Thee', 'Henry van Dyke · added last week']].map(([t, m]) => `<div class="it">${I('music')}<div><b>${t}</b><small>${m}</small></div>${ibtn('listPlus', 'Add ' + t + ' to a setlist', 'quiet')}</div>`).join('')}</div>`;
 const LOWER_LEARN = `<section class="sheet lower"><div><h3>Browse by theme<a>All themes</a></h3>${[['Hope', '12 songs'], ['Dependence', '18 songs'], ["God's Faithfulness", '15 songs']].map(([t, m]) => `<div class="it">${I('music')}<div><b>${t}</b><small>${m}</small></div>${ibtn('arrowR', 'Open ' + t, 'quiet')}</div>`).join('')}</div>${NEWSONGS}</section>`;
 const LOWER = `<section class="sheet lower">
@@ -208,9 +219,9 @@ function homeFirst(theme = 'light') {
 }
 function homePhone(theme = 'light') {
   const R = (k, t, ind = 0) => k === 'me' ? `<div class="ring"><span class="avatar sm">JL</span><span>You</span></div>` : `<div class="ring ${k}" style="--ind:${ind}px"><i></i><span>${t}</span></div>`;
-  const rows = [R('me'), R('', '<b>SAT</b>Living room night', 18), R('', '<b>WED</b>Prayer night', 18), R('g grp', 'Sunday Service Team', 18), R('', '<b>SUN</b>Sunday Morning', 40), R('g grp', 'Thursday Care Group', 18), R('', '<b>THU</b>Thursday night', 40), R('g grp', 'Youth Worship', 18), R('', '<b>FRI</b>Youth Night', 40)].join('');
+  const rows = [['SAT', 'Living room night', 'Just you', 1], ['SUN', 'Sunday Morning', 'Sunday Service Team'], ['WED', 'Prayer night', 'Just you'], ['THU', 'Thursday night', 'Thursday Care Group'], ['FRI', 'Youth Night', 'Youth Worship']].map(([d, n, g, nx]) => `<div class="wkrow"><i class="${nx ? 'nx' : ''}"></i><b>${d}</b><span>${n}<small>${g}</small></span>${nx ? '<em>Next</em>' : ''}</div>`).join('');
   return mbrowser(theme, '/', `${mwebbar()}<section class="mnext"><h2 class="sr">What we’re singing next</h2><h3>Living room night</h3><p class="when" style="font-size:15px">Next up: tomorrow, Saturday 17 October</p><p class="meta" style="font-size:13px;margin-top:6px"><span>4 songs</span><span>${I('globe')}Public link on</span></p>
-    <div class="acts">${btn('Sing', 'primary', 'sing')}${btn('Open', '', 'arrowR')}${btn('Share', '', 'qr')}</div></section>
+    <div class="acts">${btn('Sing', 'primary', 'sing')}${btn('Edit', '', 'edit')}${btn('Share', '', 'qr')}</div></section>
     <div class="mquick">${btn('New setlist', '', 'plus')}${btn('Request a song', '', 'request')}</div>
     <section class="mweek"><h2>This week</h2>${rows}</section>
     <section class="sheet mpage" style="margin-top:14px"><p class="mh">New in the songbook</p>${[['Like a River Glorious', 'Frances Havergal · 2 days ago'], ['Dear Lord and Father of Mankind', 'Whittier · last week']].map(([t, m]) => `<div class="it">${I('music')}<div><b>${t}</b><small>${m}</small></div></div>`).join('')}</section>`);
@@ -257,8 +268,8 @@ function profileDesk(theme = 'light', dialog = '') {
 }
 function profilePhone(theme = 'light') {
   return mbrowser(theme, '/profile', `${mwebbar()}<section class="sheet mpage"><div style="display:flex;gap:14px;align-items:center;margin-bottom:6px"><span class="avatar" style="width:52px;height:52px;font-size:17px">JL</span><div><h1 style="font-weight:300;font-size:30px">Joanna L.</h1><p class="t-small">3 groups · 23 setlists</p></div></div>
-    <p class="mh" style="margin-top:16px">Reading</p>${pr('Songs open with', '', seg(['Lyrics', 'Chords'], 1, 'soft mini tall'))}${pr('Chords as', '', seg(['1 4 5', 'A B C'], 0, 'soft mini tall'))}${pr('Chord detail', '', seg(['Full', 'Simple'], 0, 'soft mini tall'))}
-    <p class="mh" style="margin-top:12px">Groups</p>${pr('Thursday Care Group', 'Can edit', btn('Leave', 'sm'))}${pr('Sunday Service Team', 'Can view', btn('Leave', 'sm'))}
+    <p class="mh" style="margin-top:16px">Reading</p>${pr('Songs open with', '', seg(['Lyrics', 'Chords'], 1, 'soft mini tall'))}${pr('Chords as', 'Numbers stay the same in any key', seg(['1 4 5', 'A B C'], 0, 'soft mini tall'))}${pr('Chord detail', '', seg(['Full', 'Simple'], 0, 'soft mini tall'))}
+    <p class="mh" style="margin-top:12px">Groups</p>${pr('Thursday Care Group', 'Can edit', btn('Leave', 'sm'))}${pr('Sunday Service Team', 'Can view', btn('Leave', 'sm'))}${pr('Youth Worship', 'Can edit', btn('Leave', 'sm'))}
     <p class="mh" style="margin-top:12px">Account</p>${pr('Google', 'joanna.l@example.com', btn('Sign out', 'sm'))}${pr('Download setlists', '', btn('Download', 'sm'))}${pr('Delete account', '', btn('Delete', 'sm danger'))}</section>`);
 }
 
@@ -267,7 +278,7 @@ const nav = [['ripple-out-desktop.html', 'Setlist view'], ['ripple-out-songs.htm
 document.getElementById('app').innerHTML = `
 <header class="ph"><h1>Home and profile</h1><p class="lead">Round 3, after the second design critique. Home leads with whatever you’re singing next, in any setting, not a Sunday service. Beside it, the week is drawn as a ripple: you at the centre, your groups on the first ring, and each gathering on the line from the group it belongs to. Gatherings with no group join you directly. The vision becomes the layout instead of an ornament. Search has one shortcut (/). Profile keeps only defaults that follow you (text size and theme stay per device in Aa, as locked). Desktop at 55%, phone at 80%.</p><nav class="topnav">${nav}</nav></header>
 
-${sec('Home', 'The left card is the next thing you’ll sing, with Sing, Open setlist and Share. The right card is your week as a ripple: each gathering sits on the line from its group, gatherings with no group connect straight to you, and every label is a link. A legend names the two kinds of dot. Below, three quick actions (Request a song for members, Write a song for admins), the songs you were last working on, and what is new in the songbook. Someone learning on their own gets their last song instead, the songs they’re learning on the ripple, and a quiet invitation to plan with a group.')}
+${sec('Home', 'The left card is the next thing you’ll sing, in order with keys, then Sing, Edit setlist and Share. The right card is your week as a ripple: gatherings run top to bottom by date, the next one is ringed, each sits on the line from its group, gatherings with no group connect straight to you, and every label is a link. A legend names the kinds of mark. Below, three quick actions (Request a song for members, Write a song for admins), the songs you were last working on, and what is new in the songbook. Someone learning on their own gets their last song instead, the songs they’re learning on the ripple, and a quiet invitation to plan with a group.')}
 ${row(fig('Home · /', homeDesk()), fig('Home · dark', homeDesk('dark')))}
 ${row(fig('Learning on your own, nothing dated', homeLearner()), fig('First visit', homeFirst()))}
 ${row(fig('Phone', homePhone()), fig('Phone · dark', homePhone('dark')), fig('Phone · first visit', homeFirstPhone()))}

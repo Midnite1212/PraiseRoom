@@ -198,6 +198,7 @@ const metaLine = (s) => `<p class="meta">${s.g === 'Just me' ? `<span>${I('user'
 const moreBtn = (label) => `<button class="btn icon quiet more" aria-label="More for ${label}">${I('more')}</button>`;
 
 /* ===== Planner ===== */
+const groupList = `<p class="wk">Groups</p>${GROUPS.map(([n, c]) => `<div class="gi">${I('users')}<span>${n}<small>${c}</small></span>${I('next', 's16 go')}</div>`).join('')}<div class="gi add">${I('plus')}<span>Start a group</span></div>`;
 const groupChips = (on = 0) => `<div class="gchips">${['All', 'Thursday Care Group', 'Sunday Service Team', 'Youth Worship', 'Just me'].map((g, i) => `<span class="chip sm ${i === on ? 'on' : ''}">${g}</span>`).join('')}</div>`;
 const groupCol = `<aside class="groups"><h2>Groups</h2>${GROUPS.map(([n, c]) => `<div class="gi">${I('users')}<span>${n}<small>${c}</small></span>${I('next', 's16 go')}</div>`).join('')}<div class="gi">${I('user')}<span>Just me<small>Setlists only you can edit</small></span>${I('next', 's16 go')}</div><div class="gi add">${I('plus')}<span>Start a group</span></div></aside>`;
 function plannerMain({ menu = false, deleted = '', chips = false } = {}) {
@@ -208,7 +209,7 @@ function plannerMain({ menu = false, deleted = '', chips = false } = {}) {
     return `${wk}<div class="svc">${dateBlock(s.d)}<div><h2>${s.n}</h2>${metaLine(s)}<p class="flow">${flow(s.songs)}</p></div>${moreBtn(s.n)}</div>`; }).join('');
   const shelf = `<div class="shelf">${I('setlist')}<span>2 setlists have no date <small>· Learning: Advent songs · Car worship</small></span>${btn('Show', 'sm', 'arrowR')}</div>`;
   const nm = menu ? `<div class="pop newmenu"><div class="nm hl">${I('plus')}<div><b>Blank setlist</b><small>Start from nothing</small></div></div><p class="nmsub">Or copy one you sang before</p>${[['Sunday Morning', 'Sun 11 Oct · 5 songs'], ['Thursday night', 'Thu 15 Oct · 5 songs'], ['Youth Night', 'Fri 9 Oct · 6 songs']].map(([n, m]) => `<div class="nm">${I('copy')}<div><b>${n}</b><small>${m}</small></div></div>`).join('')}</div>` : '';
-  return `<section class="sheet tl"><div class="tlhead"><h1>Setlists</h1>${seg(['Coming up', 'Past'], 0, 'soft')}${btn('New setlist', menu ? 'on' : '', 'plus')}</div>${chips ? groupChips() : ''}<p class="wk" style="margin-top:0">This week</p>${next}${items}${shelf}${nm}</section>`;
+  return `<section class="sheet tl"><div class="tlhead"><h1>Setlists</h1>${seg(['Coming up', 'Past'], 0, 'soft')}${btn('New setlist', menu ? 'on' : '', 'plus')}</div>${chips ? groupChips() : ''}<p class="wk" style="margin-top:0">This week</p>${next}${items}${shelf}${chips ? groupList : ''}${nm}</section>`;
 }
 function plannerDesk(theme = 'light', o = {}) {
   return browser(theme, '/setlist', `${webbar('Setlists')}<div class="wrapc col"><div class="plan">${groupCol}${plannerMain(o)}</div></div>`, 'desk xtall');
@@ -216,11 +217,16 @@ function plannerDesk(theme = 'light', o = {}) {
 function plannerTablet(theme = 'light') {
   return browser(theme, '/setlist', `${webbar('Setlists')}<div class="wrapc col" style="padding:0 24px"><div class="plan" style="grid-template-columns:minmax(0,1fr)">${plannerMain({ chips: true })}</div></div>`, 'tabl');
 }
-function plannerPhone(theme = 'light') {
+function plannerPhone(theme = 'light', end = false) {
   const [first, ...rest] = SETS;
+  if (end) {
+    const tail = rest.slice(2).map((s) => `<div class="msvc">${dateBlock(s.d)}<div><h2>${s.n}</h2>${metaLine(s)}</div>${moreBtn(s.n)}</div>`).join('');
+    const shelf = `<div class="shelf">${I('setlist')}<span>2 setlists have no date</span>${btn('Show', 'sm', 'arrowR')}</div>`;
+    return mbrowser(theme, '/setlist', `${mwebbar()}<section class="sheet mpage" style="padding-top:8px">${tail}${shelf}${groupList}</section>`);
+  }
   const items = rest.slice(0, 3).map((s) => `${s.wk ? `<p class="wk">${s.wk}</p>` : ''}<div class="msvc">${dateBlock(s.d)}<div><h2>${s.n}</h2>${metaLine(s)}</div>${moreBtn(s.n)}</div>`).join('');
   return mbrowser(theme, '/setlist', `${mwebbar()}<div class="mtop"><div style="display:flex;align-items:center;gap:10px"><h1 class="h1" style="flex:1;font-size:36px">Setlists</h1>${btn('New', '', 'plus')}</div><div class="mchips">${seg(['Coming up', 'Past'], 0, 'soft')}</div><div class="gchips" style="flex-wrap:nowrap;overflow:hidden;margin:10px -20px 0 0">${['All', 'Thursday Care Group', 'Sunday Service Team', 'Youth Worship'].map((g, i) => `<span class="chip sm ${i === 0 ? 'on' : ''}" style="flex-shrink:0">${g}</span>`).join('')}</div></div>
-    <section class="sheet mpage"><p class="wk" style="margin-top:0">This week</p><div class="mnext"><h2>${first.n}</h2><p class="when" style="font-size:15px;margin-top:2px">${first.when}</p>${metaLine(first)}<div class="acts">${btn('Sing', 'primary', 'sing')}${btn('Open', '', 'arrowR')}${btn('Share', '', 'qr')}</div></div>${items}</section>`);
+    <section class="sheet mpage"><p class="wk" style="margin-top:0">This week</p><div class="mnext"><h2>${first.n}</h2><p class="when" style="font-size:15px;margin-top:2px">${first.when}</p>${metaLine(first)}<div class="acts">${btn('Sing', 'primary', 'sing')}${btn('Open', '', 'arrowR')}${btn('Share', '', 'qr')}</div></div>${items}${groupList}</section>`);
 }
 
 /* ===== Setlist page ===== */
@@ -238,7 +244,7 @@ function setlistDesk(theme = 'light', { off = false, dialog = '', viewer = false
     off: `<div class="scrim"></div><div class="dialog dlg"><h2>Turn off the public link?</h2><p>Anyone who scanned the code or saved the link will see “This setlist isn’t available”. Turn it back on later and the same link works again.</p><div class="acts">${btn('Keep it on')}<button class="btn dangerbtn">Turn off</button></div></div>`,
     del: `<div class="scrim"></div><div class="dialog dlg"><h2>Delete “Thursday night”?</h2><p>It disappears for everyone in Thursday Care Group and its public link stops working. The songs stay in the songbook.</p><div class="acts">${btn('Keep it')}<button class="btn dangerbtn">${I('trash', 's18')}Delete setlist</button></div></div>`,
   };
-  return browser(theme, '/setlist/details/66f2a9c4e1b0', `${webbar('Setlists')}<div class="wrapc col">${head}<div class="rbody"><section class="sheet run">${runRows}<p class="runhint">Sing starts from the top. Each song’s ${I('sing', 's16')} starts from that song.</p></section><aside class="side">${viewer ? shareView : off ? shareOff : shareOn}${viewer ? viewCard : whoCard}</aside></div>${dlgs[dialog] || ''}</div>`, 'desk tall');
+  return browser(theme, '/setlist/details/66f2a9c4e1b0', `${webbar('Setlists')}<div class="wrapc col">${head}<div class="rbody"><section class="sheet run">${runRows}<p class="runhint">Sing starts from the top. Each song’s ${I('sing', 's16')} starts from that song.</p></section><aside class="side">${viewer ? shareView : off ? shareOff : shareOn}${viewer ? viewCard : whoCard}</aside></div></div>${dlgs[dialog] || ''}`, 'desk tall');
 }
 function setlistPhone(theme = 'light') {
   const rows = RUN.map(([n, k, d], i) => { const s = T(n); return `<div class="mro"><span class="n">${i + 1}</span><div><h2>${s.t}</h2><p>${s.tempo} · ${s.time}</p></div><span class="kt">${k}${d ? `<i>${d}</i>` : ''}</span></div>`; }).join('');
@@ -277,7 +283,7 @@ function builderPhone(theme = 'light', { menu = false, search = false, removed =
   }
   const rows = BADD.filter(([n]) => !(removed && n === 'Come Thou Fount')).map(([n, k, d], i) => { const s = T(n); return `<div class="mbro"><span class="n">${i + 1}</span><div><h2>${s.t}</h2></div>${keyChip(k, d)}${moreBtn(s.t)}</div>`; }).join('');
   const m = menu ? `<div class="pop rowmenu" style="right:14px;top:430px">${[['up', 'Move up'], ['down', 'Move down'], ['music', 'Change key']].map(([ic, t]) => `<div class="mi">${I(ic)}${t}</div>`).join('')}<div class="mi danger">${I('trash')}Remove from setlist</div></div>` : '';
-  return mbrowser(theme, '/setlist/edit/66f2a9c4e1b0', `${mwebbar()}<section class="sheet mpage"><p class="tin" style="font-size:32px">Thursday night<i class="caret"></i></p><div class="dets" style="margin:12px 0 8px"><span class="chip">${I('calendar')}Thu 22 Oct</span><span class="chip">${I('users')}Thursday Care Group</span></div>${rows}<button class="btn" style="width:100%;height:48px;margin-top:14px">${I('plus')}Add songs</button></section>${m}${removed ? `<div class="toast" style="left:16px;right:16px;bottom:96px">${I('check', 's18')}<span style="flex:1">Removed Come Thou Fount</span>${btn('Undo', 'sm')}</div>` : ''}<div class="mfoot"><span class="saved">${I('check', 's16')}Saved</span>${btn('Undo', 'quiet')}${btn('Done', 'primary')}</div>`);
+  return mbrowser(theme, '/setlist/edit/66f2a9c4e1b0', `${mwebbar()}<section class="sheet mpage"><p class="tin" style="font-size:32px">Thursday night<i class="caret"></i></p><div class="dets" style="margin:12px 0 8px"><span class="chip">${I('calendar')}Thu 22 Oct</span><span class="chip">${I('users')}Thursday Care Group</span></div>${rows}<button class="btn" style="width:100%;height:48px;margin-top:14px">${I('plus')}Add songs</button></section>${m}${removed ? `<div class="toast" style="left:16px;right:16px;bottom:96px">${I('check', 's18')}<span style="flex:1">Removed Come Thou Fount</span>${btn('Undo', 'sm')}</div>` : ''}<div class="mfoot"><span class="saved">${I('check', 's16')}Saved</span>${removed ? '' : btn('Undo', 'quiet')}${btn('Done', 'primary')}</div>`);
 }
 
 /* ===== Group ===== */
@@ -314,7 +320,7 @@ document.getElementById('app').innerHTML = `
 ${sec('Planner', 'Coming up and Past are the two views; setlists without a date sit on a shelf at the end, not behind a third tab. The next gathering is pinned with Sing, Open setlist and Share; the rest follow by week, each with a ⋯ menu that is always there (Sing, Edit, Duplicate, Move to group, Delete). Groups in the left column open their group pages; on tablet and phone the same groups are a chip row, and every group name in a row is a link. New setlist offers to copy a past one, since most weekly sets start from last week’s.')}
 ${row(fig('Planner · /setlist', plannerDesk()), fig('New setlist: blank, or copy a past one', plannerDesk('light', { menu: true })))}
 ${row(fig('Planner · dark', plannerDesk('dark')), fig('Tablet landscape · 1180 × 820', plannerTablet()))}
-${row(fig('Phone', plannerPhone()), fig('Phone · dark', plannerPhone('dark')))}
+${row(fig('Phone', plannerPhone()), fig('Phone · scrolled to the end: undated shelf and groups', plannerPhone('light', true)), fig('Phone · dark', plannerPhone('dark')))}
 
 ${sec('Setlist', 'One page per setlist, for reading and singing. Sing starts from the top, and every song has its own Sing from here button. The public link panel starts with its state and switch, then the code and the link, and says the code also appears on the first Sing screen so a room can scan it from the TV. When the link is off, the panel explains who can still open it. Turning it off asks first and says what breaks.')}
 ${row(fig('Setlist · /setlist/details/:id', setlistDesk()), fig('Public link off', setlistDesk('light', { off: true })))}

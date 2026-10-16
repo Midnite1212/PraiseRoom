@@ -237,7 +237,7 @@ function notFoundDesk(theme = 'light') {
 }
 function requestSentDesk(theme = 'light') {
   return page(theme, '/song?q=oceans', `${hero('oceans', '', 'No match')}<section class="sheet book"><div class="notfound"><div><h2>Requested: “Oceans”</h2><p>An admin will check the lyrics and chords. You’ll see it in the songbook once it’s added, and in Home under New in the songbook.</p><div class="dym"><div><small>Your requests</small><b>Oceans</b><small>Waiting for review · sent just now</small></div>${btn('Cancel request', 'sm quiet')}</div></div>
-    <div class="req"><h3>Request a song</h3><p>Title and artist are enough. Add a link or the first line if you have them.</p><div class="field"><span>Oceans</span></div><div class="field"><span>Hillsong UNITED</span></div><div class="field"><span class="ph">First line or a link (optional)</span></div>${btn('Request', 'primary', 'request')}</div></div></section>`);
+    <div class="req"><h3>Sent</h3><p>One request per song is enough. Admins see how many people asked for it.</p>${btn('Request another song', '', 'request')}</div></div></section>`);
 }
 function loadingDesk(theme = 'light') {
   const sk = (w, h = 14) => `<div class="sk" style="width:${w}%;height:${h}px"></div>`;
@@ -263,7 +263,7 @@ function notFoundPhone(theme = 'light') {
 }
 
 /* ===== song page: the reading sheet, for one song ===== */
-const songTools = (musician, admin = true, add = false, guest = false) => `<div class="tbar"><p class="crumb"><a>${I('back', 's16')}Results for “vision”</a></p>${seg(['Lyrics', 'Chords'], musician ? 1 : 0)}<button class="aa">Aa</button>${ibtn('link', 'Copy link')}${btn(guest ? 'Sign in to add to a setlist' : 'Add to a setlist', add ? 'on' : '', 'listPlus')}${admin ? ibtn('edit', 'Edit song') : ''}</div>`;
+const songTools = (musician, admin = true, add = false, guest = false) => `<div class="tbar"><p class="crumb"><a>${I('back', 's16')}${guest ? 'Songbook' : 'Results for “vision”'}</a></p>${seg(['Lyrics', 'Chords'], musician ? 1 : 0)}<button class="aa">Aa</button>${ibtn('link', 'Copy link')}${btn(guest ? 'Sign in to add to a setlist' : 'Add to a setlist', add ? 'on' : '', 'listPlus')}${admin ? ibtn('edit', 'Edit song') : ''}</div>`;
 const header = (musician, key = 'E', delta = '+2') => `<div class="hd"><div class="tline"><h1 class="t-title">Be Thou My Vision</h1><button class="ib" aria-label="About this song">${I('info', 's18')}</button></div>
   <div class="drow"><span class="t-meta">Irish hymn</span>${musician ? `<span class="ctl">${keychip(key, delta)}${seg(['1 4 5', 'A B C'], 0, 'soft mini')}<button class="btn sm icon" aria-label="Chord settings">${I('sliders', 's18')}</button></span>` : ''}</div></div>`;
 const ABOUT = `<div class="pop about" style="left:56px;top:142px"><p class="lab">About this song</p><div class="facts"><div><small>Original key</small><b>D</b></div><div><small>Time</small><b>3/4</b></div><div><small>Tempo</small><b>Slow</b></div></div>
