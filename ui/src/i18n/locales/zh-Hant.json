@@ -5,7 +5,8 @@
   "nav": {
     "home": "首頁",
     "songs": "詩歌",
-    "toggleSidebar": "切換側邊欄"
+    "toggleSidebar": "切換側邊欄",
+    "setlists": "歌單"
   },
   "theme": {
     "label": "主題",
@@ -63,5 +64,45 @@
     "notFound": "此頁面不存在。",
     "generic": "發生錯誤，請再試一次。",
     "goHome": "返回首頁"
+  },
+  "setlists": {
+    "title": "歌單",
+    "empty": "你還沒有歌單。",
+    "noDate": "未定日期"
+  },
+  "reader": {
+    "setlist": "歌單",
+    "songCount_one": "{{count}} 首詩歌",
+    "songCount_other": "{{count}} 首詩歌",
+    "changeSongs": "切換詩歌",
+    "progress": "歌單進度",
+    "mode": "顯示",
+    "lyrics": "歌詞",
+    "chords": "和弦",
+    "notation": "和弦標記",
+    "numbers": "數字",
+    "letters": "字母",
+    "key": "調",
+    "original": "原調",
+    "textSize": "歌詞字體大小",
+    "smaller": "縮小歌詞",
+    "larger": "放大歌詞",
+    "copyLink": "複製公開連結",
+    "linkCopied": "已複製連結。",
+    "linkCopyFailed": "未能複製連結。",
+    "previous": "上一首",
+    "next": "下一首",
+    "emptySetlist": "此歌單暫時沒有詩歌。",
+    "noLyrics": "此詩歌暫時沒有歌詞。",
+    "info": {
+      "title": "詩歌資料",
+      "artist": "作者",
+      "originalKey": "原調",
+      "code": "編號",
+      "year": "年份",
+      "tempo": "速度",
+      "timeSignature": "拍號",
+      "themes": "主題"
+    }
   }
 }

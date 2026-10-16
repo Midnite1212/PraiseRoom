@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as AppSetlistsIndexRouteImport } from './routes/_app/setlists/index'
+import { Route as AppSetlistsSetlistIdRouteImport } from './routes/_app/setlists/$setlistId'
 import { Route as AppSongsIndexRouteImport } from './routes/_app/songs/index'
 
 const AppRoute = AppRouteImport.update({
@@ -28,6 +30,16 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSetlistsIndexRoute = AppSetlistsIndexRouteImport.update({
+  id: '/setlists/',
+  path: '/setlists/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSetlistsSetlistIdRoute = AppSetlistsSetlistIdRouteImport.update({
+  id: '/setlists/$setlistId',
+  path: '/setlists/$setlistId',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSongsIndexRoute = AppSongsIndexRouteImport.update({
   id: '/songs/',
   path: '/songs/',
@@ -37,11 +49,15 @@ const AppSongsIndexRoute = AppSongsIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/login': typeof LoginRoute
+  '/setlists/$setlistId': typeof AppSetlistsSetlistIdRoute
+  '/setlists/': typeof AppSetlistsIndexRoute
   '/songs/': typeof AppSongsIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/': typeof AppIndexRoute
+  '/setlists/$setlistId': typeof AppSetlistsSetlistIdRoute
+  '/setlists': typeof AppSetlistsIndexRoute
   '/songs': typeof AppSongsIndexRoute
 }
 export interface FileRoutesById {
@@ -49,14 +65,23 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/setlists/$setlistId': typeof AppSetlistsSetlistIdRoute
+  '/_app/setlists/': typeof AppSetlistsIndexRoute
   '/_app/songs/': typeof AppSongsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/songs/'
+  fullPaths: '/' | '/login' | '/setlists/$setlistId' | '/setlists/' | '/songs/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/' | '/songs'
-  id: '__root__' | '/_app' | '/login' | '/_app/' | '/_app/songs/'
+  to: '/login' | '/' | '/setlists/$setlistId' | '/setlists' | '/songs'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/login'
+    | '/_app/'
+    | '/_app/setlists/$setlistId'
+    | '/_app/setlists/'
+    | '/_app/songs/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -87,6 +112,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/setlists/': {
+      id: '/_app/setlists/'
+      path: '/setlists'
+      fullPath: '/setlists/'
+      preLoaderRoute: typeof AppSetlistsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/setlists/$setlistId': {
+      id: '/_app/setlists/$setlistId'
+      path: '/setlists/$setlistId'
+      fullPath: '/setlists/$setlistId'
+      preLoaderRoute: typeof AppSetlistsSetlistIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/songs/': {
       id: '/_app/songs/'
       path: '/songs'
@@ -99,11 +138,15 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
+  AppSetlistsSetlistIdRoute: typeof AppSetlistsSetlistIdRoute
+  AppSetlistsIndexRoute: typeof AppSetlistsIndexRoute
   AppSongsIndexRoute: typeof AppSongsIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
+  AppSetlistsSetlistIdRoute: AppSetlistsSetlistIdRoute,
+  AppSetlistsIndexRoute: AppSetlistsIndexRoute,
   AppSongsIndexRoute: AppSongsIndexRoute,
 }
 

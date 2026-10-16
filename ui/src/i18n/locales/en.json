@@ -5,7 +5,8 @@
   "nav": {
     "home": "Home",
     "songs": "Songs",
-    "toggleSidebar": "Toggle sidebar"
+    "toggleSidebar": "Toggle sidebar",
+    "setlists": "Setlists"
   },
   "theme": {
     "label": "Theme",
@@ -63,5 +64,45 @@
     "notFound": "This page doesn't exist.",
     "generic": "Something went wrong. Please try again.",
     "goHome": "Go home"
+  },
+  "setlists": {
+    "title": "Setlists",
+    "empty": "You have no setlists yet.",
+    "noDate": "No date"
+  },
+  "reader": {
+    "setlist": "Setlist",
+    "songCount_one": "{{count}} song",
+    "songCount_other": "{{count}} songs",
+    "changeSongs": "change songs",
+    "progress": "Setlist progress",
+    "mode": "Show",
+    "lyrics": "Lyrics",
+    "chords": "Chords",
+    "notation": "Chord notation",
+    "numbers": "Numbers",
+    "letters": "Letters",
+    "key": "Key",
+    "original": "original",
+    "textSize": "Lyrics size",
+    "smaller": "Smaller lyrics",
+    "larger": "Larger lyrics",
+    "copyLink": "Copy public link",
+    "linkCopied": "Link copied.",
+    "linkCopyFailed": "Could not copy the link.",
+    "previous": "Previous",
+    "next": "Next",
+    "emptySetlist": "This setlist has no songs yet.",
+    "noLyrics": "This song has no lyrics yet.",
+    "info": {
+      "title": "Song details",
+      "artist": "Artist",
+      "originalKey": "Original key",
+      "code": "Code",
+      "year": "Year",
+      "tempo": "Tempo",
+      "timeSignature": "Time signature",
+      "themes": "Themes"
+    }
   }
 }
