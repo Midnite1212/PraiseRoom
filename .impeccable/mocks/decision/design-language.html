@@ -1,0 +1,176 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Ripple Out design language</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400&family=Plus+Jakarta+Sans:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#DCE2E8;color:#0A1628;font-family:'Plus Jakarta Sans',sans-serif;padding:32px 16px 56px}
+.intro{max-width:1180px;margin:0 auto 28px}.intro h1{font-family:'Sora';font-weight:300;font-size:30px}.intro p{margin-top:8px;color:#3D4B57;max-width:74ch;line-height:1.5}
+section{max-width:1180px;margin:0 auto 44px}section h2{font-family:'Sora';font-weight:400;font-size:24px}section h2 span{font-family:'Geist Mono';font-size:16px;border:1px solid #0A1628;border-radius:6px;padding:2px 8px;vertical-align:middle;margin-right:6px}
+.why{margin:6px 0 14px;color:#3D4B57;max-width:84ch;line-height:1.5}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:20px}
+.panel{background:var(--bg);color:var(--text);padding:24px;border-radius:20px}
+.mode{font-family:'Geist Mono';font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+.top{display:flex;justify-content:space-between;align-items:center}
+.brand{font-family:'Geist Mono';font-size:12px;letter-spacing:.12em;color:var(--muted)}
+.acts{display:flex;gap:6px}
+button{font:inherit;cursor:pointer;color:inherit;background:none;border:none}
+.icon{width:40px;height:40px;display:grid;place-items:center;color:var(--primary)}
+h3{font-family:'Sora';font-weight:300;font-size:30px;letter-spacing:-.02em;margin-top:10px}
+.meta{font-family:'Geist Mono';font-size:13px;color:var(--muted);margin-top:4px}
+.field{display:flex;align-items:center;gap:10px;margin-top:18px;height:46px;padding:0 14px;color:var(--muted);font-size:15px}
+.songs{list-style:none;margin:16px 0}.songs li{display:flex;align-items:center;gap:14px;padding:12px 14px;font-size:16px}
+.songs b{font-family:'Geist Mono';font-weight:500;font-size:13px;width:28px;height:28px;display:grid;place-items:center}
+.songs em{margin-left:auto;font-style:normal;font-family:'Geist Mono';font-size:13px;color:var(--muted)}
+.songs li.now{font-weight:600}.songs li.now em{color:var(--text)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.pri,.sec{font-weight:600;font-size:15px;padding:11px 18px}
+.pri{background:var(--primary);color:var(--onP)}.sec{color:var(--primary)}
+.ctl{justify-content:space-between}
+.seg-ctl{display:flex}.seg-ctl span{padding:9px 14px;font-size:14px;font-weight:500}
+.key{display:flex;align-items:center;gap:4px}.key button{width:38px;height:38px;font-size:20px;color:var(--primary)}.key b{font-family:'Geist Mono';font-weight:500;font-size:18px;min-width:30px;text-align:center;color:var(--acc)}
+.rule{border:none;border-top:1px solid var(--outline);margin:18px 0 0}
+.wave{display:block;width:100%;height:12px;margin-top:18px;color:var(--acc);opacity:.6}
+.card{margin-top:16px;padding:16px}
+.sec-l{font-family:'Geist Mono';font-size:12px;letter-spacing:.12em;color:var(--muted);margin-bottom:10px}
+.line{display:flex;flex-wrap:wrap;margin-bottom:8px}.seg{display:flex;flex-direction:column}.c{font-family:'Geist Mono';font-weight:500;font-size:14px;height:20px;color:var(--chord)}.l{font-size:19px;line-height:1.3;white-space:pre}
+.toast{display:inline-flex;align-items:center;gap:10px;margin-top:16px;padding:11px 16px;font-size:14px;font-weight:500;background:var(--primary);color:var(--onP)}
+/* 1 soft */
+.soft .icon{border-radius:14px;background:var(--alt)}
+.soft .field{background:var(--alt);border-radius:16px}
+.soft .songs li{border-radius:16px;margin-bottom:4px}.soft .songs li.now{background:var(--cont)}
+.soft .songs b{border-radius:10px;background:var(--alt)}.soft .songs li.now b{background:var(--acc);color:var(--surface)}
+.soft .pri,.soft .sec{border-radius:16px}.soft .sec{background:var(--alt)}
+.soft .seg-ctl{background:var(--alt);border-radius:14px;padding:4px}.soft .seg-ctl span{border-radius:10px}.soft .seg-ctl .on{background:var(--surface);color:var(--primary);font-weight:600}
+.soft .key{background:var(--alt);border-radius:14px;padding:2px}.soft .key button{border-radius:12px}
+.soft .rule{display:none}.soft .card{background:var(--surface);border-radius:20px;margin-top:18px}
+.soft .toast{border-radius:16px}
+/* 2 crisp */
+.crisp .icon{border:1px solid var(--outline);border-radius:6px;width:36px;height:36px}
+.crisp .field{border:1px solid var(--outline);border-radius:6px;height:40px}
+.crisp .songs{border-top:1px solid var(--outline)}.crisp .songs li{border-bottom:1px solid var(--outline);padding:10px 8px;position:relative}
+.crisp .songs li.now{box-shadow:inset 3px 0 0 var(--acc);background:var(--cont)}
+.crisp .songs b{border:1px solid var(--outline);border-radius:4px;width:26px;height:26px}.crisp .songs li.now b{border-color:var(--acc);color:var(--acc)}
+.crisp .pri,.crisp .sec{border-radius:6px;padding:9px 14px}.crisp .pri{border:1px solid var(--primary)}.crisp .sec{border:1px solid var(--outline)}
+.crisp .seg-ctl{border:1px solid var(--outline);border-radius:6px}.crisp .seg-ctl span+span{border-left:1px solid var(--outline)}.crisp .seg-ctl .on{background:var(--primary);color:var(--onP)}
+.crisp .key{border:1px solid var(--outline);border-radius:6px}.crisp .key button{width:34px;height:34px}
+.crisp .card{border:1px solid var(--outline);border-radius:6px;background:var(--surface)}
+.crisp .toast{border-radius:6px}
+/* 3 pill */
+.pill .icon{border-radius:999px;background:var(--alt)}
+.pill .field{border-radius:999px;background:var(--surface);border:1px solid var(--outline)}
+.pill .songs li{border-radius:999px;margin-bottom:4px}.pill .songs li.now{background:var(--cont)}
+.pill .songs b{border-radius:50%;border:1px solid var(--outline)}.pill .songs li.now b{background:var(--acc);border-color:var(--acc);color:var(--surface)}
+.pill .pri,.pill .sec{border-radius:999px;padding:11px 22px}.pill .sec{border:1px solid var(--outline)}
+.pill .seg-ctl{border-radius:999px;background:var(--alt);padding:4px}.pill .seg-ctl span{border-radius:999px}.pill .seg-ctl .on{background:var(--primary);color:var(--onP)}
+.pill .key{border-radius:999px;border:1px solid var(--outline);padding:2px}.pill .key button{border-radius:50%}
+.pill .card{background:var(--surface);border-radius:24px;margin-top:14px}
+.pill .toast{border-radius:999px}
+/* 4 editorial */
+.edit .icon{width:auto;padding:0 6px}
+.edit .field{border-bottom:1px solid var(--text);padding:0;border-radius:0}
+.edit .songs li{padding:12px 0;border-bottom:1px solid var(--outline)}.edit .songs li.now span{text-decoration:underline;text-decoration-color:var(--acc);text-decoration-thickness:2px;text-underline-offset:6px}
+.edit .songs b{width:auto;justify-content:start;color:var(--muted)}.edit .songs li.now b{color:var(--acc)}
+.edit .pri,.edit .sec{border-radius:4px}.edit .sec{padding-left:4px;text-decoration:underline;text-underline-offset:4px}
+.edit .seg-ctl span{padding:8px 0;margin-right:16px;border-bottom:2px solid transparent;color:var(--muted)}.edit .seg-ctl .on{border-bottom-color:var(--acc);color:var(--text);font-weight:600}
+.edit .key button{width:30px}
+.edit .rule{border-top-color:var(--text)}
+.edit .card{padding:16px 0 0}
+.edit .toast{border-radius:4px}
+</style></head><body>
+<header class="intro"><h1>Ripple Out design language: four options</h1><p>Same fonts, same Deep Navy &amp; Clear Sky colours (E5), same content. Only the shapes, edges, surfaces, spacing and icon style change. The layout is a neutral sample, not the setlist screen itself.</p></header>
+<section><h2><span>1</span> Soft & Airy</h2><p class="why">Generous rounded corners (16–20px), filled tonal surfaces instead of borders, lots of breathing room, rounded icons. Feels calm and friendly, like smooth sea-worn shapes.</p><div class="pair"><div class="panel soft" style="--bg:#F7F9FC;--surface:#FFFFFF;--alt:#EAF0F7;--text:#0A1628;--muted:#4A586C;--outline:#D0DAE6;--primary:#0B2545;--onP:#FFFFFF;--acc:#1C6FD1;--cont:#DAEAFC;--chord:#1B66C0;--err:#B3261E">
+  <p class="mode">Light</p>
+  <div class="top"><p class="brand">RIPPLE OUT WORSHIP</p><span class="acts"><button class="icon" aria-label="Copy link"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button><button class="icon" aria-label="Edit"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button></span></div>
+  <h3>Thursday Care Group</h3>
+  <p class="meta">Thu 15 Oct · 4 songs</p>
+  <label class="field"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><span>Search this setlist</span></label>
+  <ol class="songs"><li class="now"><b>1</b><span>Amazing Grace</span><em>G</em></li><li><b>2</b><span>Be Thou My Vision</span><em>D</em></li><li><b>3</b><span>It Is Well</span><em>C</em></li></ol>
+  <div class="row"><button class="pri">Copy link</button><button class="sec">Edit setlist</button></div>
+  <div class="row ctl"><span class="seg-ctl"><span class="on">Chords</span><span>Lyrics only</span></span><span class="key"><button>−</button><b>G</b><button>+</button></span></div>
+  <hr class="rule">
+  <div class="card"><p class="sec-l">VERSE 1</p><div class="line"><span class="seg"><span class="c">G</span><span class="l">Amazing </span></span><span class="seg"><span class="c">G7</span><span class="l">grace, how </span></span><span class="seg"><span class="c">C</span><span class="l">sweet the </span></span><span class="seg"><span class="c">G</span><span class="l">sound</span></span></div><div class="line"><span class="seg"><span class="c"></span><span class="l">That </span></span><span class="seg"><span class="c">G</span><span class="l">saved a wretch like </span></span><span class="seg"><span class="c">D</span><span class="l">me</span></span></div></div>
+  <div class="toast"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Link copied</span></div>
+</div><div class="panel soft" style="--bg:#060E1A;--surface:#0C182A;--alt:#13233D;--text:#EEF3FA;--muted:#A0B1C6;--outline:#22354F;--primary:#C3DAF7;--onP:#0B2545;--acc:#5AA6F5;--cont:#13345C;--chord:#7DB9F7;--err:#F2B8B5">
+  <p class="mode">Dark</p>
+  <div class="top"><p class="brand">RIPPLE OUT WORSHIP</p><span class="acts"><button class="icon" aria-label="Copy link"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button><button class="icon" aria-label="Edit"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button></span></div>
+  <h3>Thursday Care Group</h3>
+  <p class="meta">Thu 15 Oct · 4 songs</p>
+  <label class="field"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><span>Search this setlist</span></label>
+  <ol class="songs"><li class="now"><b>1</b><span>Amazing Grace</span><em>G</em></li><li><b>2</b><span>Be Thou My Vision</span><em>D</em></li><li><b>3</b><span>It Is Well</span><em>C</em></li></ol>
+  <div class="row"><button class="pri">Copy link</button><button class="sec">Edit setlist</button></div>
+  <div class="row ctl"><span class="seg-ctl"><span class="on">Chords</span><span>Lyrics only</span></span><span class="key"><button>−</button><b>G</b><button>+</button></span></div>
+  <hr class="rule">
+  <div class="card"><p class="sec-l">VERSE 1</p><div class="line"><span class="seg"><span class="c">G</span><span class="l">Amazing </span></span><span class="seg"><span class="c">G7</span><span class="l">grace, how </span></span><span class="seg"><span class="c">C</span><span class="l">sweet the </span></span><span class="seg"><span class="c">G</span><span class="l">sound</span></span></div><div class="line"><span class="seg"><span class="c"></span><span class="l">That </span></span><span class="seg"><span class="c">G</span><span class="l">saved a wretch like </span></span><span class="seg"><span class="c">D</span><span class="l">me</span></span></div></div>
+  <div class="toast"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Link copied</span></div>
+</div></div></section><section><h2><span>2</span> Crisp & Precise</h2><p class="why">Small corners (6px), 1px hairline borders, no fills or shadows, a tight 8px rhythm, thin outlined icons. Feels exact and modern, like a well-made tool.</p><div class="pair"><div class="panel crisp" style="--bg:#F7F9FC;--surface:#FFFFFF;--alt:#EAF0F7;--text:#0A1628;--muted:#4A586C;--outline:#D0DAE6;--primary:#0B2545;--onP:#FFFFFF;--acc:#1C6FD1;--cont:#DAEAFC;--chord:#1B66C0;--err:#B3261E">
+  <p class="mode">Light</p>
+  <div class="top"><p class="brand">RIPPLE OUT WORSHIP</p><span class="acts"><button class="icon" aria-label="Copy link"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button><button class="icon" aria-label="Edit"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button></span></div>
+  <h3>Thursday Care Group</h3>
+  <p class="meta">Thu 15 Oct · 4 songs</p>
+  <label class="field"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><span>Search this setlist</span></label>
+  <ol class="songs"><li class="now"><b>1</b><span>Amazing Grace</span><em>G</em></li><li><b>2</b><span>Be Thou My Vision</span><em>D</em></li><li><b>3</b><span>It Is Well</span><em>C</em></li></ol>
+  <div class="row"><button class="pri">Copy link</button><button class="sec">Edit setlist</button></div>
+  <div class="row ctl"><span class="seg-ctl"><span class="on">Chords</span><span>Lyrics only</span></span><span class="key"><button>−</button><b>G</b><button>+</button></span></div>
+  <hr class="rule">
+  <div class="card"><p class="sec-l">VERSE 1</p><div class="line"><span class="seg"><span class="c">G</span><span class="l">Amazing </span></span><span class="seg"><span class="c">G7</span><span class="l">grace, how </span></span><span class="seg"><span class="c">C</span><span class="l">sweet the </span></span><span class="seg"><span class="c">G</span><span class="l">sound</span></span></div><div class="line"><span class="seg"><span class="c"></span><span class="l">That </span></span><span class="seg"><span class="c">G</span><span class="l">saved a wretch like </span></span><span class="seg"><span class="c">D</span><span class="l">me</span></span></div></div>
+  <div class="toast"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Link copied</span></div>
+</div><div class="panel crisp" style="--bg:#060E1A;--surface:#0C182A;--alt:#13233D;--text:#EEF3FA;--muted:#A0B1C6;--outline:#22354F;--primary:#C3DAF7;--onP:#0B2545;--acc:#5AA6F5;--cont:#13345C;--chord:#7DB9F7;--err:#F2B8B5">
+  <p class="mode">Dark</p>
+  <div class="top"><p class="brand">RIPPLE OUT WORSHIP</p><span class="acts"><button class="icon" aria-label="Copy link"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button><button class="icon" aria-label="Edit"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button></span></div>
+  <h3>Thursday Care Group</h3>
+  <p class="meta">Thu 15 Oct · 4 songs</p>
+  <label class="field"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><span>Search this setlist</span></label>
+  <ol class="songs"><li class="now"><b>1</b><span>Amazing Grace</span><em>G</em></li><li><b>2</b><span>Be Thou My Vision</span><em>D</em></li><li><b>3</b><span>It Is Well</span><em>C</em></li></ol>
+  <div class="row"><button class="pri">Copy link</button><button class="sec">Edit setlist</button></div>
+  <div class="row ctl"><span class="seg-ctl"><span class="on">Chords</span><span>Lyrics only</span></span><span class="key"><button>−</button><b>G</b><button>+</button></span></div>
+  <hr class="rule">
+  <div class="card"><p class="sec-l">VERSE 1</p><div class="line"><span class="seg"><span class="c">G</span><span class="l">Amazing </span></span><span class="seg"><span class="c">G7</span><span class="l">grace, how </span></span><span class="seg"><span class="c">C</span><span class="l">sweet the </span></span><span class="seg"><span class="c">G</span><span class="l">sound</span></span></div><div class="line"><span class="seg"><span class="c"></span><span class="l">That </span></span><span class="seg"><span class="c">G</span><span class="l">saved a wretch like </span></span><span class="seg"><span class="c">D</span><span class="l">me</span></span></div></div>
+  <div class="toast"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Link copied</span></div>
+</div></div></section><section><h2><span>3</span> Pill & Flow</h2><p class="why">Fully rounded pill controls, soft 24px cards, and one subtle wave line as the signature divider. Feels fluid and gentle, the most "ripple" of the four.</p><div class="pair"><div class="panel pill" style="--bg:#F7F9FC;--surface:#FFFFFF;--alt:#EAF0F7;--text:#0A1628;--muted:#4A586C;--outline:#D0DAE6;--primary:#0B2545;--onP:#FFFFFF;--acc:#1C6FD1;--cont:#DAEAFC;--chord:#1B66C0;--err:#B3261E">
+  <p class="mode">Light</p>
+  <div class="top"><p class="brand">RIPPLE OUT WORSHIP</p><span class="acts"><button class="icon" aria-label="Copy link"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button><button class="icon" aria-label="Edit"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button></span></div>
+  <h3>Thursday Care Group</h3>
+  <p class="meta">Thu 15 Oct · 4 songs</p>
+  <label class="field"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><span>Search this setlist</span></label>
+  <ol class="songs"><li class="now"><b>1</b><span>Amazing Grace</span><em>G</em></li><li><b>2</b><span>Be Thou My Vision</span><em>D</em></li><li><b>3</b><span>It Is Well</span><em>C</em></li></ol>
+  <div class="row"><button class="pri">Copy link</button><button class="sec">Edit setlist</button></div>
+  <div class="row ctl"><span class="seg-ctl"><span class="on">Chords</span><span>Lyrics only</span></span><span class="key"><button>−</button><b>G</b><button>+</button></span></div>
+  <svg class="wave" viewBox="0 0 320 12" preserveAspectRatio="none"><path d="M0 6 C 26 0, 54 0, 80 6 S 134 12, 160 6 S 214 0, 240 6 S 294 12, 320 6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+  <div class="card"><p class="sec-l">VERSE 1</p><div class="line"><span class="seg"><span class="c">G</span><span class="l">Amazing </span></span><span class="seg"><span class="c">G7</span><span class="l">grace, how </span></span><span class="seg"><span class="c">C</span><span class="l">sweet the </span></span><span class="seg"><span class="c">G</span><span class="l">sound</span></span></div><div class="line"><span class="seg"><span class="c"></span><span class="l">That </span></span><span class="seg"><span class="c">G</span><span class="l">saved a wretch like </span></span><span class="seg"><span class="c">D</span><span class="l">me</span></span></div></div>
+  <div class="toast"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Link copied</span></div>
+</div><div class="panel pill" style="--bg:#060E1A;--surface:#0C182A;--alt:#13233D;--text:#EEF3FA;--muted:#A0B1C6;--outline:#22354F;--primary:#C3DAF7;--onP:#0B2545;--acc:#5AA6F5;--cont:#13345C;--chord:#7DB9F7;--err:#F2B8B5">
+  <p class="mode">Dark</p>
+  <div class="top"><p class="brand">RIPPLE OUT WORSHIP</p><span class="acts"><button class="icon" aria-label="Copy link"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button><button class="icon" aria-label="Edit"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button></span></div>
+  <h3>Thursday Care Group</h3>
+  <p class="meta">Thu 15 Oct · 4 songs</p>
+  <label class="field"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><span>Search this setlist</span></label>
+  <ol class="songs"><li class="now"><b>1</b><span>Amazing Grace</span><em>G</em></li><li><b>2</b><span>Be Thou My Vision</span><em>D</em></li><li><b>3</b><span>It Is Well</span><em>C</em></li></ol>
+  <div class="row"><button class="pri">Copy link</button><button class="sec">Edit setlist</button></div>
+  <div class="row ctl"><span class="seg-ctl"><span class="on">Chords</span><span>Lyrics only</span></span><span class="key"><button>−</button><b>G</b><button>+</button></span></div>
+  <svg class="wave" viewBox="0 0 320 12" preserveAspectRatio="none"><path d="M0 6 C 26 0, 54 0, 80 6 S 134 12, 160 6 S 214 0, 240 6 S 294 12, 320 6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+  <div class="card"><p class="sec-l">VERSE 1</p><div class="line"><span class="seg"><span class="c">G</span><span class="l">Amazing </span></span><span class="seg"><span class="c">G7</span><span class="l">grace, how </span></span><span class="seg"><span class="c">C</span><span class="l">sweet the </span></span><span class="seg"><span class="c">G</span><span class="l">sound</span></span></div><div class="line"><span class="seg"><span class="c"></span><span class="l">That </span></span><span class="seg"><span class="c">G</span><span class="l">saved a wretch like </span></span><span class="seg"><span class="c">D</span><span class="l">me</span></span></div></div>
+  <div class="toast"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Link copied</span></div>
+</div></div></section><section><h2><span>4</span> Open Editorial</h2><p class="why">Almost no containers: content sits on the background, separated by whitespace and thin section rules; underline-style selection, 4px corners. Feels like a clean printed page.</p><div class="pair"><div class="panel edit" style="--bg:#F7F9FC;--surface:#FFFFFF;--alt:#EAF0F7;--text:#0A1628;--muted:#4A586C;--outline:#D0DAE6;--primary:#0B2545;--onP:#FFFFFF;--acc:#1C6FD1;--cont:#DAEAFC;--chord:#1B66C0;--err:#B3261E">
+  <p class="mode">Light</p>
+  <div class="top"><p class="brand">RIPPLE OUT WORSHIP</p><span class="acts"><button class="icon" aria-label="Copy link"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button><button class="icon" aria-label="Edit"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button></span></div>
+  <h3>Thursday Care Group</h3>
+  <p class="meta">Thu 15 Oct · 4 songs</p>
+  <label class="field"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><span>Search this setlist</span></label>
+  <ol class="songs"><li class="now"><b>1</b><span>Amazing Grace</span><em>G</em></li><li><b>2</b><span>Be Thou My Vision</span><em>D</em></li><li><b>3</b><span>It Is Well</span><em>C</em></li></ol>
+  <div class="row"><button class="pri">Copy link</button><button class="sec">Edit setlist</button></div>
+  <div class="row ctl"><span class="seg-ctl"><span class="on">Chords</span><span>Lyrics only</span></span><span class="key"><button>−</button><b>G</b><button>+</button></span></div>
+  <hr class="rule">
+  <div class="card"><p class="sec-l">VERSE 1</p><div class="line"><span class="seg"><span class="c">G</span><span class="l">Amazing </span></span><span class="seg"><span class="c">G7</span><span class="l">grace, how </span></span><span class="seg"><span class="c">C</span><span class="l">sweet the </span></span><span class="seg"><span class="c">G</span><span class="l">sound</span></span></div><div class="line"><span class="seg"><span class="c"></span><span class="l">That </span></span><span class="seg"><span class="c">G</span><span class="l">saved a wretch like </span></span><span class="seg"><span class="c">D</span><span class="l">me</span></span></div></div>
+  <div class="toast"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Link copied</span></div>
+</div><div class="panel edit" style="--bg:#060E1A;--surface:#0C182A;--alt:#13233D;--text:#EEF3FA;--muted:#A0B1C6;--outline:#22354F;--primary:#C3DAF7;--onP:#0B2545;--acc:#5AA6F5;--cont:#13345C;--chord:#7DB9F7;--err:#F2B8B5">
+  <p class="mode">Dark</p>
+  <div class="top"><p class="brand">RIPPLE OUT WORSHIP</p><span class="acts"><button class="icon" aria-label="Copy link"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button><button class="icon" aria-label="Edit"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button></span></div>
+  <h3>Thursday Care Group</h3>
+  <p class="meta">Thu 15 Oct · 4 songs</p>
+  <label class="field"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4 4"/></svg><span>Search this setlist</span></label>
+  <ol class="songs"><li class="now"><b>1</b><span>Amazing Grace</span><em>G</em></li><li><b>2</b><span>Be Thou My Vision</span><em>D</em></li><li><b>3</b><span>It Is Well</span><em>C</em></li></ol>
+  <div class="row"><button class="pri">Copy link</button><button class="sec">Edit setlist</button></div>
+  <div class="row ctl"><span class="seg-ctl"><span class="on">Chords</span><span>Lyrics only</span></span><span class="key"><button>−</button><b>G</b><button>+</button></span></div>
+  <hr class="rule">
+  <div class="card"><p class="sec-l">VERSE 1</p><div class="line"><span class="seg"><span class="c">G</span><span class="l">Amazing </span></span><span class="seg"><span class="c">G7</span><span class="l">grace, how </span></span><span class="seg"><span class="c">C</span><span class="l">sweet the </span></span><span class="seg"><span class="c">G</span><span class="l">sound</span></span></div><div class="line"><span class="seg"><span class="c"></span><span class="l">That </span></span><span class="seg"><span class="c">G</span><span class="l">saved a wretch like </span></span><span class="seg"><span class="c">D</span><span class="l">me</span></span></div></div>
+  <div class="toast"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg><span>Link copied</span></div>
+</div></div></section></body></html>

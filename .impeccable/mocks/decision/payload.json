@@ -1,0 +1,170 @@
+{
+  "title": "Choose the Ripple Out visual world",
+  "question": "Your steer, oceanic, clean, minimal and modern, now binds every card. The roll assigned Sea Glass. Keep it, take an alternate, or re-roll.",
+  "options": [
+    {
+      "id": "assigned",
+      "kind": "assigned",
+      "label": "Sea Glass",
+      "kicker": "THE ROLL",
+      "lineage": "Sea glass: broken glass the waves carry for years and wash up, smooth and frosted, on every shore.",
+      "thesis": "Each song is a piece of sea glass the setlist carries out to whoever opens it: worn smooth, frosted, quietly coloured.",
+      "palette": ["#0C2A33", "#EAF4F1", "#8FD3C7", "#4A78C9"],
+      "materials": [
+        "deep wet-sand sea ground",
+        "flat frosted glass tints (no blur)",
+        "one foam tideline"
+      ],
+      "viewport": "Songs as numbered sea-glass pieces along a foam tideline, word-labelled controls, and a calm lyric column with chords tinted by their glass colour.",
+      "risk": "Frosted pieces can slide into glassmorphism or pebble-cute if they get blur, shine or tilt, so they stay flat, matte and on the grid.",
+      "raised": [
+        {
+          "from": "challenger-depot",
+          "raise": "Rank is inversion: the song being sung is the only solid piece; every other song stays frosted outline."
+        },
+        {
+          "from": "challenger-hoarding",
+          "raise": "The lyric column is the one calm panel; colour lives only in the frame and the chords."
+        },
+        {
+          "from": "challenger-tensegrity",
+          "raise": "Nothing touches: one constant gap between every element, so the page breathes at TV distance."
+        },
+        {
+          "from": "challenger-zine",
+          "raise": "Every control says what it does in words (Chords, Key, Split); no unexplained icons."
+        }
+      ],
+      "html": ".impeccable/mocks/decision/assigned.html",
+      "htmlFrame": "390x844"
+    },
+    {
+      "id": "model-pick",
+      "kind": "pick",
+      "label": "The Set",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "Surf swell forecasts: waves arrive in sets, drawn as clean bar charts with period and direction.",
+      "thesis": "A setlist is a set of waves; each song is one wave rolling in, charted like a clean swell forecast.",
+      "palette": ["#F5F9FA", "#0D2B45", "#1F6FB2", "#19B3B1"],
+      "materials": ["spray-white ground", "swell bar chart", "tabular forecast data"],
+      "viewport": "A swell chart where each bar is a song in the set and the one being sung is crest teal, with key and tempo set as forecast data above the lyrics.",
+      "risk": "Familiar: it reads like the weather and dashboard apps people already use, and a white ground is bright on a TV at night.",
+      "html": ".impeccable/mocks/decision/model-pick.html",
+      "htmlFrame": "390x844"
+    },
+    {
+      "id": "challenger-tanaka",
+      "kind": "challenger",
+      "catalogId": "tanaka-plane-portrait",
+      "verdict": "competitive",
+      "label": "Plane Wave",
+      "lineage": "Ikko Tanaka's posters: a figure rebuilt from a few flat planes on a quiet grid.",
+      "thesis": "The wave is built from the songs: each song is one flat plane of ocean colour, and together they crest.",
+      "palette": ["#F4F6F5", "#1E2A78", "#2C6BBF", "#2FA39A"],
+      "materials": ["calm paper-white ground", "flat geometric planes", "no outlines anywhere"],
+      "viewport": "A cresting wave of four flat planes, one per song, with the current song's plane in the accent colour, over a strictly gridded reading column.",
+      "case": "Holds identification: it is exactly your 'clean, minimal, modern', and the songs literally form the wave. Narrowly loses on clarity, because planes are more abstract than numbered pieces.",
+      "risk": "A light ground glares on a TV at night, and the planes become decoration if they stop mapping to songs.",
+      "hero": "https://impeccable.style/worlds/cards/tanaka-plane-portrait-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/tanaka-plane-portrait.webp",
+      "html": ".impeccable/mocks/decision/challenger-tanaka.html",
+      "htmlFrame": "390x844"
+    },
+    {
+      "id": "challenger-deepdive",
+      "kind": "challenger",
+      "catalogId": "rivers-tides-ocean-depths-mesophotic-deep-dive",
+      "verdict": "competitive",
+      "label": "Deep Dive",
+      "lineage": "A dive down an ocean wall: the turquoise surface, a cold thermocline, then the deep.",
+      "thesis": "The setlist as a descent: each song is a depth stop, the one being sung lit by a single thermocline band.",
+      "palette": ["#061226", "#0B2547", "#5CC8D6", "#F0F4F5"],
+      "materials": ["abyssal ink ground", "thermocline band", "still marine-snow texture"],
+      "viewport": "A vertical depth axis with songs as depth stops, a cyan band across the current song, and lyrics in chalk white beside it.",
+      "case": "Beats the roll on clarity, because one lit band on a vertical axis is unmistakable. Loses on identification, because worship isn't a descent and divers are a niche.",
+      "risk": "Deep dark plus one cyan band edges toward the stage and concert look you ruled out.",
+      "hero": "https://impeccable.style/worlds/cards/rivers-tides-ocean-depths-mesophotic-deep-dive-hero.webp",
+      "board": "https://impeccable.style/worlds/cards/rivers-tides-ocean-depths-mesophotic-deep-dive.webp",
+      "html": ".impeccable/mocks/decision/challenger-deepdive.html",
+      "htmlFrame": "390x844"
+    },
+    {
+      "id": "challenger-depot",
+      "kind": "challenger",
+      "catalogId": "operate-c-depot-blind-courses",
+      "verdict": "declined",
+      "label": "Depot Blind",
+      "lineage": "Bus destination blinds: dyed cloth courses stepping under one window.",
+      "thesis": "Songs as cloth courses stepping under a fixed window.",
+      "palette": ["#1F4D3A", "#F2C230", "#F1EDE2"],
+      "materials": ["dyed duck cloth", "chrome-yellow legends"],
+      "viewport": "A green cloth blind showing the current song under a window.",
+      "case": "Declined: bottle green and chrome yellow break your oceanic steer, and transit cloth isn't your audience's world.",
+      "risk": "Reads as transport, not worship.",
+      "kept": "Rank is inversion: the lead item alone prints solid.",
+      "hero": "https://impeccable.style/worlds/cards/operate-c-depot-blind-courses-hero.webp"
+    },
+    {
+      "id": "challenger-hoarding",
+      "kind": "challenger",
+      "catalogId": "fly-posted-festival-hoarding-built",
+      "verdict": "declined",
+      "label": "Festival Hoarding",
+      "lineage": "Screenprinted street-fair flyers pasted over each other.",
+      "thesis": "A collage of flat colour with one calm white panel on top.",
+      "palette": ["#F3EDE0", "#111111", "#FF6A00", "#7B57F0"],
+      "materials": ["riso grain", "torn deckle edges"],
+      "viewport": "A loud collage with a white panel floating over it.",
+      "case": "Declined: loud and playful, the opposite of clean, minimal and oceanic.",
+      "risk": "Too playful for worship.",
+      "kept": "When the frame is busy, the reading column is the one calm panel.",
+      "hero": "https://impeccable.style/worlds/cards/fly-posted-festival-hoarding-built-hero.webp"
+    },
+    {
+      "id": "challenger-tensegrity",
+      "kind": "challenger",
+      "catalogId": "kinetic-sculpture-automata-tensegrity-breathing-column",
+      "verdict": "declined",
+      "label": "Tensegrity Column",
+      "lineage": "Carbon rods held apart by red cord.",
+      "thesis": "Songs as members of a balanced force network.",
+      "palette": ["#D9D8D3", "#151515", "#C8322B", "#8E8E8E"],
+      "materials": ["carbon rods", "red cord"],
+      "viewport": "A breathing column of rods with force labels.",
+      "case": "Declined: engineering and red cord, nothing oceanic and nothing worshipful.",
+      "risk": "Reads as an engineering diagram.",
+      "kept": "Nothing touches: every element keeps its distance.",
+      "hero": "https://impeccable.style/worlds/cards/kinetic-sculpture-automata-tensegrity-breathing-column-hero.webp"
+    },
+    {
+      "id": "challenger-zine",
+      "kind": "challenger",
+      "catalogId": "hand-drawn-zine-explainer",
+      "verdict": "declined",
+      "label": "Napkin Zine",
+      "lineage": "Hand-drawn explainer zines with mascots and marker.",
+      "thesis": "Songs explained like a friend's napkin sketch.",
+      "palette": ["#F6F0E1", "#111111", "#F5D90A", "#2BB3A3"],
+      "materials": ["marker ink", "highlighter swipes"],
+      "viewport": "A doodled setlist with a mascot pointing at the song.",
+      "case": "Declined: mascots and marker are the 'too playful' you ruled out.",
+      "risk": "Cute.",
+      "kept": "Explain like a friend: every control says what it does in words.",
+      "hero": "https://impeccable.style/worlds/cards/hand-drawn-zine-explainer-hero.webp"
+    }
+  ],
+  "reroll": { "registers": ["safer", "bolder"] },
+  "buildPath": { "value": "code" },
+  "canon": true,
+  "canonCard": {
+    "label": "The category standard",
+    "thesis": "A clean chord-sheet app in the OnSong and Planning Center mould, executed impeccably.",
+    "palette": ["#FFFFFF", "#1B1B1F", "#2563EB", "#E5E7EB"],
+    "materials": ["system UI type", "bold coloured chords", "plain top bar"],
+    "viewport": "A song list bar, key controls, and black lyrics with blue chords on white.",
+    "risk": "Indistinguishable from every other chord app by design, and nothing in it says 'ripple out'.",
+    "html": ".impeccable/mocks/decision/canon.html",
+    "htmlFrame": "390x844"
+  },
+  "steer": true
+}

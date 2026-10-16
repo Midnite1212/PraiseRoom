@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ripple Out · Songs</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<style>
+.col { flex: 1; display: flex; flex-direction: column; min-height: 0; position: relative; }
+.crumb { font-size: 14px; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+.crumb a { color: var(--accent-ink); text-decoration: none; }
+
+/* ---------- Songbook ---------- */
+.hero { padding: 26px 0 20px; }
+.bigsearch { display: flex; align-items: center; gap: 16px; height: 76px; padding: 0 26px; border-radius: 20px; background: var(--sheet); box-shadow: 0 1px 2px var(--shadow), 0 10px 30px -12px var(--shadow); }
+.bigsearch .i { width: 26px; height: 26px; color: var(--primary); }
+.bigsearch .q { flex: 1; min-width: 0; font-weight: 300; font-size: 30px; letter-spacing: -.01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bigsearch .q.ph { color: var(--muted); }
+.caret { display: inline-block; width: 2px; height: 1em; background: var(--accent); vertical-align: -.12em; margin-left: 2px; }
+.bigsearch .n { font-size: 14px; color: var(--muted); }
+.ix { display: flex; align-items: center; gap: 6px; margin-top: 18px; }
+.ix a { padding: 9px 14px; border-radius: 10px; font-size: 16px; font-weight: 400; color: var(--muted); text-decoration: none; white-space: nowrap; }
+.ix a.on { background: var(--wash); color: var(--accent-ink); font-weight: 500; }
+.ix .r { margin-left: auto; }
+.book { flex: 1; padding: 30px 44px 0; }
+.book > * { flex-shrink: 0; }
+.week { display: grid; grid-template-columns: auto repeat(4, minmax(0, 1fr)); gap: 12px; align-items: stretch; margin-bottom: 30px; }
+.week h3 { font-weight: 300; font-size: 22px; line-height: 1.2; align-self: center; padding-right: 16px; max-width: 9ch; }
+.wk { background: var(--tint); border-radius: 16px; padding: 14px 16px; }
+.wk b { display: block; font-weight: 400; font-size: 16px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.wk small { display: block; margin-top: 4px; font-size: 13px; color: var(--muted); }
+.tgrid { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 56px; row-gap: 30px; }
+.te h3 { display: flex; align-items: baseline; gap: 12px; font-weight: 300; font-size: 24px; letter-spacing: -.01em; line-height: 1.2; }
+.te h3 span { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--accent); }
+.te p { margin-top: 6px; font-size: 15px; line-height: 1.55; color: var(--muted); }
+.letters { display: flex; flex-wrap: wrap; gap: 2px; margin: -6px 0 24px; }
+.letters span { font-family: var(--mono); font-size: 15px; font-weight: 500; width: 36px; height: 36px; border-radius: 8px; display: grid; place-items: center; }
+.letters span.off { color: var(--muted); font-weight: 400; }
+.letters span.on { background: var(--wash); color: var(--accent-ink); }
+.azs { display: grid; grid-template-columns: 96px 1fr; gap: 12px; padding-bottom: 26px; }
+.azs .big { font-weight: 300; font-size: 64px; line-height: .9; color: var(--accent); }
+.azcols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 40px; row-gap: 18px; }
+.az b { display: flex; align-items: center; gap: 10px; font-weight: 400; font-size: 17px; }
+.az small { display: block; margin-top: 3px; font-size: 14px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.res { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 48px; }
+.rcount { font-size: 15px; color: var(--muted); margin-bottom: 10px; }
+.rr { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 20px; padding: 18px 0; box-shadow: 0 -1px 0 var(--hairline); }
+.rr:first-of-type { box-shadow: none; }
+.rr h3 { font-weight: 300; font-size: 26px; letter-spacing: -.01em; line-height: 1.2; }
+.rr .by { font-size: 15px; color: var(--muted); margin-top: 2px; }
+.rr .snip { grid-column: 1 / -1; display: flex; gap: 14px; align-items: baseline; margin-top: 8px; font-size: 18px; line-height: 1.5; }
+.rr .where { font-size: 13px; color: var(--muted); white-space: nowrap; min-width: 92px; }
+.rr .acts { display: flex; gap: 8px; align-items: center; }
+.facet h4 { font-weight: 400; font-size: 15px; margin: 0 0 10px; }
+.facet { margin-bottom: 24px; }
+.facet .wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+.facet .chip small { font-size: 12px; color: var(--muted); }
+.facet .chip.on small { color: var(--accent-ink); }
+.notfound { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 40px; padding-top: 8px; }
+.notfound h2 { font-weight: 300; font-size: 36px; letter-spacing: -.02em; line-height: 1.15; }
+.notfound p { margin-top: 10px; font-size: 16px; line-height: 1.55; color: var(--muted); max-width: 52ch; }
+.dym { margin-top: 22px; display: flex; align-items: center; gap: 14px; padding: 16px 18px; border-radius: 16px; background: var(--tint); }
+.dym b { font-weight: 400; font-size: 18px; }
+.dym small { display: block; font-size: 14px; color: var(--muted); }
+.dym > div { flex: 1; }
+.req { background: var(--rail); border-radius: 20px; padding: 22px; }
+.req h3 { font-weight: 400; font-size: 18px; }
+.req p { font-size: 14px; color: var(--muted); line-height: 1.5; margin: 6px 0 14px; }
+.req .field { margin-bottom: 10px; background: var(--sheet); }
+.req .later { margin-top: 12px; font-size: 13px; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+.offline { display: flex; gap: 14px; align-items: center; padding: 14px 18px; border-radius: 14px; background: var(--alt); font-size: 15px; font-weight: 400; margin-bottom: 22px; }
+.offline .i { color: var(--primary); }
+
+/* ---------- Song page: the setlist view's reading sheet, for one song ---------- */
+.tbar { display: flex; align-items: center; gap: 8px; padding: 18px 0 16px; }
+.tbar .crumb { flex: 1; }
+.read { flex: 1; padding: 34px 56px 0; }
+.hd { margin-bottom: 26px; }
+.hd .tline { text-wrap: balance; }
+.hd .t-title { display: inline; }
+.ib { display: inline-grid; vertical-align: middle; margin-left: 10px; width: 32px; height: 32px; border-radius: 10px; background: var(--alt); color: var(--primary); }
+.hd .drow { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 6px; }
+.ctl { display: inline-flex; align-items: center; gap: 10px; }
+.read .cols2 .ly { font-size: 22px; }
+.mus .ch { font-size: 19px; line-height: 22px; height: 22px; }
+.mus .cl { font-size: 22px; }
+.mus .lab { font-size: 14px; }
+.pop .lab { text-transform: none; letter-spacing: .02em; font-weight: 400; font-size: 12px; }
+.about { width: 380px; }
+.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+.facts div { background: var(--tint); border-radius: 12px; padding: 10px 12px; }
+.facts small { display: block; font-size: 12px; color: var(--muted); }
+.facts b { font-family: var(--mono); font-weight: 500; font-size: 18px; }
+.about .line { font-size: 14px; color: var(--muted); line-height: 1.55; margin-top: 10px; }
+.about .line a { color: var(--accent-ink); }
+.about .ripple { margin-top: 12px; padding: 12px; border-radius: 12px; background: var(--wash); font-size: 14px; font-weight: 400; line-height: 1.5; }
+.inset { display: flex; align-items: center; gap: 10px; padding: 7px 0; font-size: 14px; }
+.inset .d { font-family: var(--mono); font-size: 12px; color: var(--muted); width: 70px; }
+.inset b { flex: 1; font-weight: 400; }
+.keypanel { width: 360px; }
+.kstep { display: flex; align-items: center; justify-content: center; gap: 22px; margin: 6px 0 14px; }
+.kb { width: 52px; height: 52px; border-radius: 14px; background: var(--alt); font-size: 26px; color: var(--primary); }
+.kbig { text-align: center; }
+.kbig b { display: block; font-family: var(--mono); font-weight: 500; font-size: 40px; color: var(--accent); line-height: 1; }
+.kbig small { display: block; font-size: 13px; color: var(--muted); margin-top: 6px; }
+.kgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.gk { position: relative; height: 50px; border-radius: 12px; background: var(--tint); display: grid; place-items: center; font-family: var(--mono); font-size: 15px; }
+.gk.orig { background: var(--wash); color: var(--accent-ink); }
+.gk.orig i { position: absolute; bottom: 3px; font-style: normal; font-family: var(--sans); font-size: 11px; color: var(--accent-ink); }
+.gk.cur { background: var(--primary); color: var(--on-primary); font-weight: 500; }
+.pacts { display: flex; gap: 8px; margin-top: 12px; }
+.pacts .btn { flex: 1; }
+.aapop { width: 300px; }
+.pair { display: flex; justify-content: space-between; align-items: center; background: var(--tint); border-radius: 12px; padding: 3px; font-size: 14px; font-weight: 400; color: var(--muted); }
+.pair span { padding: 7px 12px; border-radius: 9px; display: inline-flex; align-items: center; gap: 6px; }
+.pair .on { background: var(--sheet); color: var(--text); font-weight: 500; box-shadow: 0 1px 2px var(--shadow); }
+.addpop { width: 400px; padding: 16px; }
+.addpop .field { height: 42px; font-size: 15px; margin: 8px 0; }
+.srow { display: flex; align-items: center; gap: 12px; padding: 10px 6px; border-radius: 10px; }
+.srow .sn { flex: 1; min-width: 0; }
+.srow .sn b { display: block; font-weight: 400; font-size: 15px; }
+.srow .sn small { font-size: 13px; color: var(--muted); }
+.addfoot { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 12px 6px 2px; margin-top: 6px; box-shadow: 0 -1px 0 var(--hairline); font-size: 14px; color: var(--muted); }
+.addfoot b { font-family: var(--mono); color: var(--text); font-weight: 500; }
+.mtop { display: flex; align-items: center; gap: 8px; padding: 14px 14px 12px; }
+.mtop .sp { flex: 1; }
+.msheet { flex: 1; padding: 24px 22px 0; }
+.msheet > * { flex-shrink: 0; }
+.msheet .t-title { font-size: 30px; }
+.msheet .ly { text-wrap: balance; }
+.cbar { display: flex; align-items: center; gap: 10px; margin: 2px 0 22px; padding: 10px; background: var(--tint); border-radius: 14px; }
+.cbar .cspace { flex: 1; }
+.cbar .btn.sm { background: var(--sheet); }
+.mmenu { right: 12px; top: 58px; width: 240px; padding: 8px; }
+.mi { display: flex; align-items: center; gap: 12px; height: 46px; padding: 0 10px; border-radius: 10px; font-size: 16px; font-weight: 400; }
+.mi .i { color: var(--primary); }
+
+/* ---------- Write a song ---------- */
+.wbar2 { display: flex; align-items: center; gap: 10px; padding: 18px 0 16px; }
+.wbar2 .crumb { margin: 0; flex: 1; }
+.saved { font-size: 14px; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; margin-right: 8px; }
+.wgrid { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; min-height: 0; }
+.src { padding: 32px 40px 0; display: flex; flex-direction: column; }
+.src > * { flex-shrink: 0; }
+.tin { font-weight: 300; font-size: 44px; letter-spacing: -.02em; line-height: 1.1; }
+.ain { margin-top: 8px; font-size: 19px; color: var(--muted); }
+.dets { display: flex; flex-wrap: wrap; gap: 8px; margin: 20px 0 16px; }
+.dets .chip b { font-family: var(--mono); font-weight: 500; }
+.dets .chip small { color: var(--muted); font-weight: 400; }
+.paste { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; background: var(--wash); font-size: 15px; font-weight: 400; margin-bottom: 12px; }
+.paste span { flex: 1; }
+.srctabs { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.srctabs .hint { margin-left: auto; font-size: 13px; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; }
+.srctabs .hint code { font-family: var(--mono); color: var(--accent-ink); background: var(--wash); padding: 1px 5px; border-radius: 5px; }
+.code { flex: 1 1 auto !important; display: grid; grid-template-columns: 38px 1fr; border-radius: 14px; background: var(--tint); padding: 14px 16px 0 4px; font-family: var(--mono); font-size: 14px; line-height: 1.8; overflow: hidden; }
+.code .ln { color: var(--muted); text-align: right; padding-right: 12px; white-space: pre; }
+.code .ln .err { color: var(--danger); font-weight: 500; }
+.code .tx { white-space: pre-wrap; color: var(--text); }
+.code .s { color: var(--accent-ink); font-weight: 500; }
+.code .c { color: var(--accent-ink); }
+.code .bad { color: var(--danger); text-decoration: underline wavy; text-underline-offset: 3px; }
+.code .cur { background: var(--wash); display: inline-block; width: 100%; padding: 4px 6px; margin: -4px -6px; border-radius: 6px; }
+.lint { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 12px; background: var(--danger-wash); color: var(--danger); font-size: 14px; font-weight: 400; margin: 10px 0 18px; }
+.lint span { flex: 1; }
+.pv { padding: 32px 48px 0; }
+.pv .pvbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+.pv .sgt { font-weight: 300; font-size: 40px; letter-spacing: -.02em; }
+.mcode { font-size: 13px; }
+
+/* ---------- phone songbook ---------- */
+.mhero { padding: 10px 16px 14px; }
+.mbig { display: flex; align-items: center; gap: 12px; height: 56px; padding: 0 8px 0 16px; border-radius: 16px; background: var(--sheet); }
+.mbig .q { flex: 1; font-size: 19px; font-weight: 300; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mbig .q.ph { color: var(--muted); }
+.mix { display: flex; gap: 4px; margin-top: 12px; overflow: hidden; }
+.mix a { padding: 8px 12px; border-radius: 10px; font-size: 15px; font-weight: 400; color: var(--muted); white-space: nowrap; }
+.mix a.on { background: var(--wash); color: var(--accent-ink); font-weight: 500; }
+.mbook { flex: 1; padding: 22px 20px 0; }
+.mbook > * { flex-shrink: 0; }
+.mte { padding: 14px 0 16px; box-shadow: 0 1px 0 var(--hairline); }
+.mte h3 { display: flex; align-items: baseline; justify-content: space-between; font-weight: 300; font-size: 23px; }
+.mte h3 span { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--accent); }
+.mte p { margin-top: 5px; font-size: 14px; line-height: 1.5; color: var(--muted); }
+.mrr { padding: 14px 0 16px; box-shadow: 0 1px 0 var(--hairline); }
+.mrr .top { display: flex; gap: 10px; align-items: center; }
+.mrr h3 { flex: 1; font-weight: 300; font-size: 22px; }
+.mrr .by { font-size: 14px; color: var(--muted); margin-top: 2px; }
+.mrr .where { display: block; font-size: 12px; color: var(--muted); margin-top: 8px; }
+.mrr .snip { font-size: 17px; line-height: 1.5; margin-top: 2px; }
+.mrow { display: flex; gap: 8px; margin: 16px 0 8px; }
+.mrow .btn { height: 46px; flex: 1; }
+</style>
+</head>
+<body class="doc">
+<section class="page" id="app"></section>
+<script src="../system/kit.js"></script>
+<script>
+const { I, fig, row, sec, sub, browser, mbrowser, webbar, mwebbar, seg, keychip, btn, ibtn, SONGS, THEMES, KEYS, BTV, lyricsOnly, chords } = RO;
+const esc = (s) => s.replace(/&/g, '&amp;');
+const TH = THEMES.map((t) => t.replace(/\s*\/\s*/g, ' / '));
+const COUNTS = [31, 9, 14, 18, 7, 12, 11, 26, 16, 10, 13, 22, 19, 6, 15, 8, 5, 9, 12, 14, 17, 21, 34];
+const ex = (i) => { const t = THEMES[i]; const hits = SONGS.filter((s) => s.th.some((x) => x.replace(/\s/g, '') === t.replace(/\s/g, ''))).map((s) => s.t); const pad = SONGS.map((_, j) => SONGS[(j * 7 + i * 4) % SONGS.length].t); return [...new Set([...hits, ...pad])].slice(0, 3).join(' · '); };
+
+/* ===== songbook ===== */
+const IXS = ['Themes', 'A–Z', 'First lines', 'Keys', 'Recently added'];
+const hero = (q, ix, n = '248 songs', admin = false) => `<div class="hero"><div class="bigsearch">${I('search')}${q ? `<span class="q">${q}<i class="caret"></i></span>` : '<span class="q ph">Find a song by title, artist or a line you remember</span>'}<span class="n">${n}</span></div>
+  <nav class="ix">${IXS.map((t) => `<a class="${t === ix ? 'on' : ''}">${t}</a>`).join('')}${admin ? btn('New song', 'primary r', 'plus') : btn('Request a song', 'r', 'request')}</nav></div>`;
+const weekStrip = `<div class="week"><h3>Sung this week</h3>${[['It Is Well with My Soul', 'in 5 setlists · 4 groups'], ['Be Thou My Vision', 'in 4 setlists · 3 groups'], ['Come Thou Fount', 'in 3 setlists · 3 groups'], ['Holy, Holy, Holy', 'in 3 setlists · 2 groups']].map(([t, m]) => `<div class="wk"><b>${t}</b><small>${m}</small></div>`).join('')}</div>`;
+const page = (theme, path, inner, cls = 'desk') => browser(theme, path, `${webbar('Songbook', { search: false })}<div class="wrapc col">${inner}</div>`, cls);
+function themesDesk(theme = 'light', admin = false) {
+  const grid = TH.map((t, i) => `<div class="te"><h3>${t}<span>${COUNTS[i]}</span></h3><p>${ex(i)}</p></div>`).join('');
+  return page(theme, '/song?index=themes', `${hero('', 'Themes', '248 songs', admin)}<section class="sheet book">${weekStrip}<div class="tgrid">${grid}</div></section>`);
+}
+function azDesk(theme = 'light') {
+  const has = 'ABCDEFGHIJKLMNOPRSTW';
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map((l) => `<span class="${l === 'B' ? 'on' : has.includes(l) ? '' : 'off'}" ${has.includes(l) ? '' : 'aria-disabled="true"'}>${l}</span>`).join('');
+  const groups = ['A', 'B', 'C', 'H'].map((L) => `<div class="azs"><span class="big">${L}</span><div class="azcols">${SONGS.filter((s) => s.t[0] === L).map((s) => `<div class="az"><b>${s.t}<span class="keytag">${s.k}</span></b><small>${s.fl}</small></div>`).join('')}</div></div>`).join('');
+  return page(theme, '/song?index=a-z', `${hero('', 'A–Z')}<section class="sheet book"><div class="letters">${letters}</div>${groups}</section>`);
+}
+const RESULTS = [
+  ['It Is Well with My Soul', 'Horatio Spafford & Philip Bliss', 'C', 'Verse 1', 'When <mark>peace</mark> like a river attendeth my way,'],
+  ['Dear Lord and Father of Mankind', 'John Greenleaf Whittier', 'D♭', 'Verse 4', 'And let our ordered lives confess the beauty of Thy <mark>peace</mark>.'],
+  ['Like a River Glorious', 'Frances Havergal', 'E♭', 'First line', 'Like a river glorious is God’s perfect <mark>peace</mark>,'],
+];
+const keyTag = (k) => `<span class="keytag" title="Key ${k}" aria-label="Key ${k}">Key ${k}</span>`;
+const facet = (h, items) => `<div class="facet"><h4>${h}</h4><div class="wrap">${items.map(([t, n, on]) => `<span class="chip sm ${on ? 'on' : ''}">${t} <small>${n}</small></span>`).join('')}</div></div>`;
+function resultsDesk(theme = 'light') {
+  const rows = RESULTS.slice(0, 2).map(([t, a, k, w, s]) => `<div class="rr"><div><h3>${t}</h3><p class="by">${esc(a)}</p></div><div class="acts">${keyTag(k)}${btn('Add to a setlist', 'sm', 'listPlus')}</div><p class="snip"><span class="where">${w}</span><span>${s}</span></p></div>`).join('');
+  const side = facet('Tempo', [['Slow', 2, 1], ['Medium', 1]]) + facet('Key', [['C', 1], ['D♭', 1]]) + facet('Time', [['4/4', 1], ['6/8', 1]]) + facet('Theme', [['Hope', 1], ['Obedience / Trust', 1], ["God's Presence", 1]]) + btn('Clear filters', 'sm quiet', 'close');
+  return page(theme, '/song?q=peace&tempo=slow', `${hero('peace', '', '2 songs')}<section class="sheet book"><div class="res"><div><p class="rcount">2 slow songs mention “peace”. Best matches first.</p>${rows}</div><aside>${side}</aside></div></section>`);
+}
+function notFoundDesk(theme = 'light') {
+  return page(theme, '/song?q=it+is+well+with+my+sole', `${hero('it is well with my sole', '', 'No exact match')}<section class="sheet book"><div class="notfound"><div><h2>No song called “it is well with my sole”</h2><p>Check the spelling, or try a line you remember from the song.</p>
+    <div class="dym"><div><small>Did you mean</small><b>It Is Well with My Soul</b><small>Horatio Spafford &amp; Philip Bliss · key C</small></div>${btn('Open', '', 'arrowR')}</div></div>
+    <div class="req"><h3>Not the one you meant?</h3><p>Ask for a song to be added. An admin checks its lyrics and chords before it joins the songbook for everyone.</p>${btn('Request a different song', '', 'request')}</div></div></section>`);
+}
+function requestSentDesk(theme = 'light') {
+  return page(theme, '/song?q=oceans', `${hero('oceans', '', 'No match')}<section class="sheet book"><div class="notfound"><div><h2>Requested: “Oceans”</h2><p>An admin will check the lyrics and chords. You’ll see it in the songbook once it’s added, and in Home under New in the songbook.</p><div class="dym"><div><small>Your requests</small><b>Oceans</b><small>Waiting for review · sent just now</small></div>${btn('Cancel request', 'sm quiet')}</div></div>
+    <div class="req"><h3>Request a song</h3><p>Title and artist are enough. Add a link or the first line if you have them.</p><div class="field"><span>Oceans</span></div><div class="field"><span>Hillsong UNITED</span></div><div class="field"><span class="ph">First line or a link (optional)</span></div>${btn('Request', 'primary', 'request')}</div></div></section>`);
+}
+function loadingDesk(theme = 'light') {
+  const sk = (w, h = 14) => `<div class="sk" style="width:${w}%;height:${h}px"></div>`;
+  const grid = Array.from({ length: 9 }, (_, i) => `<div class="te" style="display:flex;flex-direction:column;gap:10px">${sk([62, 48, 70, 55, 66, 44, 58, 50, 64][i], 22)}${sk(90)}${sk(70)}</div>`).join('');
+  return page(theme, '/song?index=themes', `${hero('', 'Themes', 'Loading…')}<section class="sheet book"><div class="tgrid">${grid}</div></section>`);
+}
+function offlineDesk(theme = 'light') {
+  return page(theme, '/song?q=crown', `${hero('crown', '', '')}<section class="sheet book"><div class="offline">${I('alert')}<span style="flex:1">You’re offline, so search can’t reach the songbook. Songs you opened recently still work.</span>${btn('Try again', 'sm')}</div>
+    <p class="rcount">Opened recently, available offline</p>${[SONGS[3], SONGS[9], SONGS[5]].map((s) => `<div class="rr"><div><h3>${s.t}</h3><p class="by">${esc(s.a)}</p></div><div class="acts"><span class="keytag">${s.k}</span></div></div>`).join('')}</section>`);
+}
+function themesPhone(theme = 'light') {
+  const list = TH.slice(0, 8).map((t, i) => `<div class="mte"><h3>${t}<span>${COUNTS[i]}</span></h3><p>${ex(i)}</p></div>`).join('');
+  return mbrowser(theme, '/song', `${mwebbar()}<div class="mhero"><div class="mbig">${I('search')}<span class="q ph">Find a song or a line</span></div><nav class="mix">${['Themes', 'A–Z', 'First lines', 'Keys'].map((t, i) => `<a class="${i === 0 ? 'on' : ''}">${t}</a>`).join('')}</nav></div><section class="sheet mbook"><div class="mrr" style="padding-top:0"><p class="by" style="margin:0 0 6px">Sung this week</p><p class="snip" style="margin:0">It Is Well with My Soul · Be Thou My Vision · Come Thou Fount</p></div>${list}</section>`);
+}
+function resultsPhone(theme = 'light') {
+  const list = RESULTS.slice(0, 2).map(([t, a, k, w, s]) => `<div class="mrr"><div class="top"><h3>${t}</h3><span class="keytag">${k}</span>${ibtn('listPlus', 'Add to a setlist', 'sm')}</div><p class="by">${esc(a)}</p><span class="where">${w}</span><p class="snip">${s}</p></div>`).join('');
+  return mbrowser(theme, '/song?q=peace', `${mwebbar()}<div class="mhero"><div class="mbig">${I('search')}<span class="q">peace</span>${ibtn('close', 'Clear search', 'sm quiet')}</div><nav class="mix"><span class="t-small" style="padding:8px 6px 0 2px">2 slow songs</span><a>Key</a><a class="on">Tempo · Slow</a><a>Theme</a></nav></div><section class="sheet mbook">${list}</section>`);
+}
+function notFoundPhone(theme = 'light') {
+  return mbrowser(theme, '/song?q=it+is+well+with+my+sole', `${mwebbar()}<div class="mhero"><div class="mbig">${I('search')}<span class="q">it is well with my sole</span></div></div><section class="sheet mbook"><h2 style="font-weight:300;font-size:26px;line-height:1.2">No song called “it is well with my sole”</h2>
+    <div class="dym" style="margin-top:16px"><div><small>Did you mean</small><b>It Is Well with My Soul</b></div>${ibtn('arrowR', 'Open')}</div>
+    <div class="req" style="margin-top:16px"><h3>Not the one you meant?</h3><p>Ask for a song to be added. An admin checks it first.</p>${btn('Request a different song', '', 'request')}</div></section>`);
+}
+
+/* ===== song page: the reading sheet, for one song ===== */
+const songTools = (musician, admin = true, add = false, guest = false) => `<div class="tbar"><p class="crumb"><a>${I('back', 's16')}Results for “vision”</a></p>${seg(['Lyrics', 'Chords'], musician ? 1 : 0)}<button class="aa">Aa</button>${ibtn('link', 'Copy link')}${btn(guest ? 'Sign in to add to a setlist' : 'Add to a setlist', add ? 'on' : '', 'listPlus')}${admin ? ibtn('edit', 'Edit song') : ''}</div>`;
+const header = (musician, key = 'E', delta = '+2') => `<div class="hd"><div class="tline"><h1 class="t-title">Be Thou My Vision</h1><button class="ib" aria-label="About this song">${I('info', 's18')}</button></div>
+  <div class="drow"><span class="t-meta">Irish hymn</span>${musician ? `<span class="ctl">${keychip(key, delta)}${seg(['1 4 5', 'A B C'], 0, 'soft mini')}<button class="btn sm icon" aria-label="Chord settings">${I('sliders', 's18')}</button></span>` : ''}</div></div>`;
+const ABOUT = `<div class="pop about" style="left:56px;top:142px"><p class="lab">About this song</p><div class="facts"><div><small>Original key</small><b>D</b></div><div><small>Time</small><b>3/4</b></div><div><small>Tempo</small><b>Slow</b></div></div>
+  <p class="line">Irish hymn, 8th century. Translated by Mary Byrne, 1905. Song code B2.</p><p class="line">Themes: <a>Intimacy / Love for God</a>, <a>Dependence</a></p>
+  <div class="ripple">Sung 14 times by 6 groups this year.</div><p class="lab" style="margin-top:14px">In your setlists</p>${[['SAT 17 OCT', 'Living room night', 'D'], ['SUN 18 OCT', 'Sunday Morning', 'E'], ['THU 22 OCT', 'Thursday night', 'E']].map(([d, n, k]) => `<div class="inset"><span class="d">${d}</span><b>${n}</b><span class="keytag">${k}</span></div>`).join('')}</div>`;
+const KEYPANEL = `<div class="pop keypanel" style="right:56px;top:196px"><p class="lab">Key · Be Thou My Vision</p><div class="kstep"><button class="kb" aria-label="Down a semitone">−</button><div class="kbig"><b>E</b><small>+2 from the original key, D</small></div><button class="kb" aria-label="Up a semitone">+</button></div>
+  <div class="kgrid">${KEYS.map((k) => `<span class="gk ${k === 'E' ? 'cur' : ''} ${k === 'D' ? 'orig' : ''}">${k}${k === 'D' ? '<i>original</i>' : ''}</span>`).join('')}</div><div class="pacts">${btn('Back to D')}${btn('Done', 'primary')}</div></div>`;
+const AAPOP = `<div class="pop aapop" style="right:180px;top:84px"><p class="lab">Text size</p><div class="pair"><span>A−</span><span class="mono" style="font-size:12px">100%</span><span>A+</span></div><p class="lab" style="margin-top:14px">Layout</p><div class="pair"><span class="on">${I('auto', 's16')}Auto</span><span>${I('one', 's16')}One</span><span>${I('two', 's16')}Two</span></div><p class="lab" style="margin-top:14px">Theme</p><div class="pair"><span class="on" style="flex:1;justify-content:center">${I('sun', 's16')}Light</span><span style="flex:1;justify-content:center">${I('moon', 's16')}Dark</span></div></div>`;
+const ADDPOP = `<div class="pop addpop" style="right:96px;top:84px"><p class="lab">Add to a setlist</p><div class="field on-sheet">${I('search', 's18')}<span class="ph">Find a setlist</span></div>
+  ${[['SAT 17 OCT', 'Living room night', 'Just me', 1], ['SUN 18 OCT', 'Sunday Morning', 'Sunday Service Team', 1], ['THU 22 OCT', 'Thursday night', 'Thursday Care Group', 1], ['FRI 23 OCT', 'Youth Night', 'Youth Worship', 0]].map(([d, n, g, on]) => `<div class="srow"><span class="sn"><b>${n}</b><small class="mono">${d}</small><small> · ${g}</small></span>${on ? btn('Remove', 'sm quiet') : btn('Add', 'sm', 'plus')}</div>`).join('')}
+  <div class="addfoot"><span>Adds in <b>E</b>, the key you’re playing in</span>${btn('New setlist', 'sm quiet', 'plus')}</div></div>`;
+function songDesk({ theme = 'light', musician = true, pop = '' } = {}) {
+  const body = musician ? chords(BTV, 4) : lyricsOnly(BTV, 4);
+  const pops = { about: ABOUT, key: KEYPANEL, aa: AAPOP, add: ADDPOP }[pop] || '';
+  const toast = pop === 'added' ? `<div class="toast" style="right:24px;bottom:24px">${I('check', 's18')}<span>Added to Youth Night in E</span>${btn('Undo', 'sm')}</div>` : '';
+  return browser(theme, '/song/66f2a9c4e1b0', `${webbar('Songbook')}<div class="wrapc col ${musician ? 'mus' : ''}">${songTools(musician, true, pop === 'add')}<section class="sheet read">${header(musician)}<div class="cols2">${body}</div></section>${pops}${toast}</div>`);
+}
+function songGuest(theme = 'light') {
+  return browser(theme, '/song/66f2a9c4e1b0', `${webbar('Songbook', { guest: true })}<div class="wrapc col">${songTools(false, false, false, true)}<section class="sheet read">${header(false)}<div class="cols2">${lyricsOnly(BTV, 4)}</div></section></div>`);
+}
+function songPhone(theme = 'light', musician = false, menu = false) {
+  const body = musician ? chords(BTV, 2, 'num', true) : lyricsOnly(BTV, 3, true);
+  const top = `<header class="mtop">${ibtn('back', 'Back to the songbook', 'quiet')}${seg(['Lyrics', 'Chords'], musician ? 1 : 0)}<span class="sp"></span><button class="aa">Aa</button>${ibtn('more', 'More')}</header>`;
+  const cbar = musician ? `<div class="cbar">${keychip('E', '+2')}<span class="cspace"></span>${seg(['1 4 5', 'A B C'], 0, 'soft mini')}<button class="btn sm icon" aria-label="Chord settings">${I('sliders', 's18')}</button></div>` : '';
+  const m = menu ? `<div class="pop mmenu">${[['listPlus', 'Add to a setlist'], ['link', 'Copy link'], ['info', 'About this song'], ['edit', 'Edit song']].map(([ic, t]) => `<div class="mi">${I(ic)}${t}</div>`).join('')}</div>` : '';
+  return mbrowser(theme, '/song/66f2a9c4e1b0', `${top}<main class="sheet msheet ${musician ? 'mus' : ''}"><div class="hd" style="margin-bottom:${musician ? 16 : 22}px"><div class="tline"><h1 class="t-title">Be Thou My Vision</h1><button class="ib" aria-label="About this song">${I('info', 's18')}</button></div><p class="t-meta" style="margin-top:4px">Irish hymn</p></div>${cbar}${body}</main>${m}`);
+}
+
+/* ===== write a song ===== */
+const SRC = [
+  ['s', '{Verse 1}'], ['', '<span class="c">[D]</span>Be Thou my <span class="c">[G]</span>vision, O <span class="c">[D]</span>Lord of my <span class="c">[A]</span>heart'],
+  ['', 'Naught be all <span class="c">[D]</span>else to me, <span class="c">[G]</span>save that Thou <span class="c">[A]</span>art'],
+  ['', 'Thou my best <span class="c">[Bm]</span>thought, by <span class="c">[A]</span>day or by <span class="c">[D]</span>night'],
+  ['', 'Waking or <span class="c">[G]</span>sleeping, Thy <span class="c">[A]</span>presence my <span class="c">[D]</span>light'], ['', ''],
+  ['s', '{Verse 2}'], ['cur', '<span class="c">[D]</span>Be Thou my <span class="c">[G]</span>wisdom, and <span class="c">[D]</span>Thou my true <span class="c">[A]</span>word'],
+  ['bad', 'I ever <span class="c">[D]</span>with Thee and <span class="c">[G]</span>Thou with me, <span class="bad">[Hm]</span>Lord'],
+  ['', 'Thou my great <span class="c">[Bm]</span>Father, I <span class="c">[A]</span>Thy true <span class="c">[D]</span>son'],
+  ['', 'Thou in me <span class="c">[G]</span>dwelling, and <span class="c">[A]</span>I with Thee <span class="c">[D]</span>one'],
+];
+const codeBlock = (lines, cls = '') => `<div class="code ${cls}"><div class="ln">${lines.map(([k], i) => k === 'bad' ? `<span class="err">${i + 1}</span>` : i + 1).join('\n')}</div><div class="tx">${lines.map(([k, t]) => k === 's' ? `<span class="s">${t}</span>` : k === 'cur' ? `<span class="cur">${t}</span>` : t).join('\n')}</div></div>`;
+function writeDesk(theme = 'light', paste = true) {
+  const src = `<section class="sheet src"><p class="tin">Be Thou My Vision<i class="caret"></i></p><p class="ain">Irish hymn</p>
+    <div class="dets"><span class="chip">Key <b>D</b>${I('chev', 's16')}</span><span class="chip">Time <b>3/4</b>${I('chev', 's16')}</span><span class="chip">Tempo · Slow${I('chev', 's16')}</span><span class="chip">Themes <small>Dependence, Intimacy</small>${I('chev', 's16')}</span><span class="chip">Year <small>8th century</small></span><span class="chip">Song code <b>B2</b></span></div>
+    ${paste ? `<div class="paste">${I('inline')}<span>That paste has chords written above the lyrics. Move them inline?</span>${btn('Keep as is', 'sm quiet')}${btn('Move inline', 'sm')}</div>` : ''}
+    <div class="srctabs">${seg(['Full chords', 'Simplified'], 0, 'soft mini')}<span class="hint">Sections <code>{Verse 1}</code> · chords <code>[D]</code> before the syllable</span></div>${codeBlock(SRC)}
+    <div class="lint">${I('alert', 's18')}<span>Line 9: “Hm” isn’t a chord. Did you mean Bm?</span>${btn('Change to Bm', 'sm')}</div></section>`;
+  const pv = `<section class="sheet pv mus"><div class="pvbar"><span class="t-small" style="font-size:15px">Preview of the full chords, as it will look</span></div><h2 class="sgt">Be Thou My Vision</h2><p class="t-meta" style="margin:6px 0 24px">Irish hymn</p>${chords(BTV, 2, 'let')}</section>`;
+  return browser(theme, '/song/add', `${webbar('Songbook')}<div class="wrapc col"><div class="wbar2"><p class="crumb"><a>Songbook</a>${I('next', 's16')}New song</p><span class="saved">${I('check', 's16')}Draft saved on this device</span>${btn('Cancel')}${btn('Save song', 'primary')}</div><div class="wgrid">${src}${pv}</div></div>`, 'desk tall');
+}
+function writePhone(theme = 'light') {
+  return mbrowser(theme, '/song/add', `${mwebbar()}<section class="sheet msheet" style="padding-top:20px"><p class="tin" style="font-size:32px">Be Thou My Vision<i class="caret"></i></p><p class="ain" style="font-size:17px">Irish hymn</p>
+    <div class="dets" style="margin:14px 0 12px"><span class="chip">Key <b>D</b></span><span class="chip">3/4</span><span class="chip">Slow</span><span class="chip">2 themes</span></div>
+    <div class="paste" style="font-size:14px">${I('inline')}<span>Chords are above the lyrics. Move them inline?</span>${btn('Move', 'sm')}</div>
+    <div class="srctabs">${seg(['Write', 'Preview'], 0, 'soft mini')}${seg(['Full', 'Simplified'], 0, 'soft mini')}<span class="hint">${I('check', 's16')} Saved</span></div>${codeBlock(SRC.slice(0, 8), 'mcode')}
+    <div class="mrow">${btn('Cancel')}${btn('Save song', 'primary')}</div></section>`);
+}
+
+/* ===== page ===== */
+const nav = [['ripple-out-desktop.html', 'Setlist view'], ['ripple-out-songs.html', 'Songs', 1], ['ripple-out-setlists.html', 'Setlists'], ['ripple-out-home.html', 'Home and profile'], ['ripple-out-signin.html', 'Sign-in and errors']].map(([h, t, on]) => `<a class="${on ? 'on' : ''}" href="${h}">${t}</a>`).join('');
+document.getElementById('app').innerHTML = `
+<header class="ph"><h1>Songs</h1><p class="lead">The songbook, a song’s own page, and writing a song. Round 4 answers two rounds of design critique: the song page now uses the setlist view’s reading sheet and controls, so a song reads the same everywhere; members see Request a song instead of New song; every list action is visible without hovering; and the missing states (did you mean, request, offline, loading, chart errors) are drawn. Desktop at 55%, phone at 80%.</p><nav class="topnav">${nav}</nav></header>
+
+${sec('Songbook', 'Search by title, artist or a remembered line, or browse the indexes a hymnal prints at the back. Above the themes, “Sung this week” shows what groups everywhere are singing, counted from setlists: the one place the songbook shows worship rippling out. Result rows keep their key and an Add to a setlist button in view, so nothing depends on hover.')}
+${row(fig('Themes index (member) · /song?index=themes', themesDesk()), fig('A–Z index · /song?index=a-z', azDesk()))}
+${row(fig('Search across titles and lyrics · /song?q=peace', resultsDesk()), fig('Themes index · dark', themesDesk('dark')))}
+${row(fig('No match: did you mean (request is secondary)', notFoundDesk()), fig('Request sent', requestSentDesk()))}
+${row(fig('Offline', offlineDesk()), fig('Loading', loadingDesk()))}
+${row(fig('Phone · themes', themesPhone()), fig('Phone · search', resultsPhone()), fig('Phone · no match', notFoundPhone()), fig('Phone · dark', themesPhone('dark')))}
+
+${sec('Song page', 'A song reads exactly like a song in a setlist: the same sheet, header D (title and ⓘ, then artist with the chord controls), the same key chip and key panel (stepper and 4 × 3 grid, with the original key marked), the same Aa menu. The facts, themes, “sung by” count and your setlists live in ⓘ. Add to a setlist is a soft button with the group shown for each setlist, Remove instead of an unchecked box, and a confirmation with Undo.')}
+${row(fig('Chords in E · /song/:id', songDesk()), fig('Key panel', songDesk({ pop: 'key' })))}
+${row(fig('ⓘ About this song', songDesk({ pop: 'about' })), fig('Add to a setlist', songDesk({ pop: 'add' })))}
+${row(fig('Added, with Undo', songDesk({ pop: 'added' })), fig('Aa menu', songDesk({ pop: 'aa', musician: false })))}
+${row(fig('Lyrics · dark', songDesk({ theme: 'dark', musician: false })), fig('Guest from a shared link (no Edit, sign in to add)', songGuest()))}
+${row(fig('Phone · lyrics (they start under the title)', songPhone()), fig('Phone · chords', songPhone('light', true)), fig('Phone · ⋯ menu', songPhone('light', false, true)), fig('Phone · chords · dark', songPhone('dark', true)))}
+
+${sec('Write a song (admins)', 'Typing a song should feel like writing. The title is typed in place, details are small pickers, and the chart is plain text with {sections} and [chords] highlighted, a format hint always in view, and the finished sheet updating on the right. Mistakes are caught as you type: the line number turns red and the fix is one click. Pasting a chart with chords above the lyrics offers to move them inline, on phone too.')}
+${row(fig('New song · /song/add', writeDesk()), fig('Phone', writePhone()))}
+`;
+</script>
+</body>
+</html>

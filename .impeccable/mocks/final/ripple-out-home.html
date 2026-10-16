@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ripple Out · Home and profile</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<style>
+.col { flex: 1; display: flex; flex-direction: column; min-height: 0; position: relative; }
+.when { color: var(--accent-ink); font-weight: 400; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 15px; color: var(--muted); align-items: center; }
+.meta span { display: inline-flex; align-items: center; gap: 6px; }
+.meta .i { width: 16px; height: 16px; }
+.flow { font-size: 16px; line-height: 1.6; text-wrap: pretty; }
+.flow .ar::before { content: '→'; color: var(--muted); margin: 0 7px; }
+
+/* ---------- Home ---------- */
+.homegrid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 20px; padding: 26px 0 0; }
+.nextup { border-radius: 28px; background: var(--wash); padding: 36px 40px; display: flex; flex-direction: column; }
+.nextup h2 { font-weight: 300; font-size: 18px; color: var(--accent-ink); }
+.nextup h3 { font-weight: 300; font-size: 54px; letter-spacing: -.03em; line-height: 1.02; margin: 0 0 10px; }
+.nextup .whenl { font-size: 19px; margin-bottom: 10px; }
+.nextup .flow { margin-top: 14px; max-width: 56ch; }
+.order { list-style: none; margin-top: 18px; counter-reset: o; }
+.order li { counter-increment: o; display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 10px; align-items: center; min-height: 42px; box-shadow: 0 -1px 0 var(--hairline); font-size: 18px; font-weight: 300; }
+.order li:first-child { box-shadow: none; }
+.order .keytag { background: var(--sheet); }
+.order li::before { content: counter(o); color: var(--accent-ink); font-size: 20px; }
+.verse { margin-top: 22px; font-size: 26px; line-height: 1.45; font-weight: 300; letter-spacing: -.01em; max-width: 26ch; }
+.nextup .acts { display: flex; gap: 8px; margin-top: 24px; }
+.weekmap { position: relative; overflow: hidden; border-radius: 28px; background: var(--rail); min-height: 520px; }
+.weekmap h2 { position: absolute; left: 28px; top: 24px; font-weight: 300; font-size: 22px; letter-spacing: -.01em; z-index: 2; }
+.weekmap h2 small { display: block; font-size: 14px; color: var(--muted); margin-top: 4px; letter-spacing: 0; }
+.weekmap svg { position: absolute; inset: 0; width: 100%; height: 100%; color: var(--accent); }
+.dot { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); transform: translate(-50%, -50%); box-shadow: 0 0 0 4px var(--rail); z-index: 1; }
+.dot.g { background: var(--sheet); box-shadow: inset 0 0 0 2px var(--accent), 0 0 0 4px var(--rail); }
+.dot.soft { background: var(--rail); box-shadow: inset 0 0 0 2px var(--accent); opacity: .8; }
+.wl { position: absolute; transform: translateY(-50%); background: var(--sheet); border-radius: 10px; padding: 5px 10px; font-size: 14px; font-weight: 400; white-space: nowrap; box-shadow: 0 1px 2px var(--shadow); color: var(--text); text-decoration: none; z-index: 2; }
+.wl.below { transform: translateX(-50%); }
+.wl b { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--accent-ink); margin-right: 6px; letter-spacing: .06em; }
+.wl.invite { background: transparent; box-shadow: inset 0 0 0 1px var(--accent); color: var(--accent-ink); }
+.me { position: absolute; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 6px; z-index: 2; }
+.me .avatar { width: 44px; height: 44px; background: var(--accent); color: var(--on-primary); box-shadow: 0 0 0 6px var(--rail); }
+.me span:last-child { font-size: 14px; font-weight: 400; }
+.legend { position: absolute; left: 28px; bottom: 22px; display: flex; gap: 16px; font-size: 13px; color: var(--muted); z-index: 2; }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.legend i { width: 11px; height: 11px; border-radius: 50%; background: var(--accent); }
+.legend i.g { background: var(--sheet); box-shadow: inset 0 0 0 2px var(--accent); }
+.quick { display: flex; gap: 8px; padding: 16px 0 20px; }
+.lower { flex: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 56px; padding: 30px 44px 0; }
+.lower h3 { font-weight: 300; font-size: 20px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: baseline; }
+.lower h3 a { font-size: 14px; color: var(--accent-ink); font-weight: 400; text-decoration: none; }
+.it { display: flex; align-items: center; gap: 14px; padding: 11px 0; box-shadow: 0 -1px 0 var(--hairline); }
+.lower h3 + .it { box-shadow: none; }
+.it > div { flex: 1; min-width: 0; }
+.it b { display: block; font-weight: 400; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.it small { display: block; font-size: 14px; color: var(--muted); margin-top: 2px; }
+.it .i { color: var(--primary); }
+
+/* first visit */
+.welcome { position: relative; overflow: hidden; border-radius: 28px; background: var(--wash); margin: 26px 0 20px; min-height: 560px; }
+.welcome .lr { left: -270px; bottom: -270px; }
+.welcome .lr-l { background: var(--wash); }
+.welcome .copy { position: absolute; right: 64px; top: 64px; width: 520px; }
+.welcome h1 { font-weight: 300; font-size: 60px; letter-spacing: -.03em; line-height: 1.02; text-wrap: balance; }
+.welcome p { margin-top: 18px; font-size: 18px; line-height: 1.55; color: var(--muted); }
+.welcome .acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
+
+/* ---------- Search ---------- */
+.cmdk { position: absolute; z-index: 6; top: 88px; left: 50%; transform: translateX(-50%); width: 760px; background: var(--sheet); border-radius: 24px; box-shadow: 0 30px 80px var(--shadow), 0 2px 6px var(--shadow); overflow: hidden; }
+.cmdk .in { display: flex; align-items: center; gap: 14px; height: 72px; padding: 0 24px; box-shadow: 0 1px 0 var(--hairline); font-size: 24px; font-weight: 300; }
+.cmdk .in .i { width: 22px; height: 22px; color: var(--primary); }
+.caret { display: inline-block; width: 2px; height: 1em; background: var(--accent); vertical-align: -.12em; margin-left: 1px; }
+.cmdk .in kbd { margin-left: auto; }
+.cmdk .body { padding: 8px 12px 6px; }
+.grp { font-size: 13px; color: var(--muted); padding: 12px 12px 6px; }
+.hit { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 14px; align-items: center; min-height: 52px; padding: 8px 12px; border-radius: 12px; }
+.hit .i { color: var(--primary); opacity: .8; }
+.hit b { display: block; font-weight: 400; font-size: 16px; }
+.hit small { display: block; font-size: 14px; color: var(--muted); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.hit.sel { background: var(--wash); }
+.cmdk .foot { display: flex; gap: 18px; padding: 12px 24px; background: var(--tint); font-size: 13px; color: var(--muted); }
+.cmdk .foot span { display: inline-flex; gap: 6px; align-items: center; }
+.cmdk .foot kbd { background: var(--sheet); }
+.none { padding: 26px 24px 22px; text-align: center; }
+.none h3 { font-weight: 300; font-size: 26px; }
+.none p { margin: 8px auto 0; font-size: 15px; color: var(--muted); max-width: 48ch; line-height: 1.55; }
+.none .acts { display: flex; justify-content: center; gap: 8px; margin-top: 18px; }
+.dim { position: absolute; inset: 0; background: var(--scrim); z-index: 5; }
+
+/* ---------- Profile ---------- */
+.phead { display: flex; align-items: center; gap: 22px; padding: 30px 0 26px; }
+.phead .avatar.xl { width: 80px; height: 80px; font-size: 24px; }
+.phead h1 { font-weight: 300; font-size: 44px; letter-spacing: -.02em; }
+.phead .meta { margin-top: 6px; }
+.prefs { flex: 1; padding: 8px 44px 0; }
+.pg { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 40px; padding: 26px 0; }
+.pg + .pg { box-shadow: 0 -1px 0 var(--hairline); }
+.pg h2 { font-weight: 300; font-size: 26px; letter-spacing: -.01em; }
+.pg h2 + p { margin-top: 8px; font-size: 15px; line-height: 1.55; color: var(--muted); }
+.pr { display: flex; align-items: center; justify-content: space-between; gap: 20px; min-height: 56px; padding: 6px 0; }
+.pr > div b { display: block; font-weight: 400; font-size: 16px; }
+.pr > div small { display: block; font-size: 14px; color: var(--muted); margin-top: 2px; }
+.seg.tall > span { padding: 10px 14px; }
+.role { font-size: 14px; color: var(--muted); }
+.dlg { width: 480px; left: 50%; top: 280px; transform: translateX(-50%); }
+.dlg h3 { font-weight: 300; font-size: 28px; line-height: 1.2; }
+.dlg p { margin-top: 10px; font-size: 16px; line-height: 1.55; color: var(--muted); }
+.dlg label { display: block; margin-top: 16px; font-size: 14px; font-weight: 400; }
+.dlg .field { margin-top: 6px; }
+.btn[aria-disabled="true"] { opacity: .45; }
+.dlg .acts { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+
+/* ---------- phone ---------- */
+.mpage { flex: 1; padding: 20px 18px 0; }
+.mpage > * { flex-shrink: 0; }
+.mnext { border-radius: 24px; background: var(--wash); padding: 22px 20px; margin: 6px 14px 0; }
+.mnext h2 { font-weight: 300; font-size: 15px; color: var(--accent-ink); }
+.mnext h3 { font-weight: 300; font-size: 34px; letter-spacing: -.02em; line-height: 1.05; margin: 6px 0; }
+.mnext .acts { display: flex; gap: 8px; margin-top: 16px; }
+.mnext .acts .btn { flex: 1; height: 46px; }
+.mweek { margin: 12px 14px 0; border-radius: 22px; background: var(--rail); padding: 16px 18px; }
+.mweek h2 { font-weight: 300; font-size: 19px; margin-bottom: 6px; }
+.ring { display: flex; align-items: center; gap: 12px; min-height: 32px; }
+.ring i { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); flex: none; margin-left: var(--ind); }
+.ring.g i { background: var(--sheet); box-shadow: inset 0 0 0 2px var(--accent); }
+.ring span { font-size: 15px; font-weight: 400; }
+.ring span b { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--accent-ink); margin-right: 6px; }
+.mquick { display: flex; gap: 8px; margin: 12px 14px 0; }
+.mquick .btn { flex: 1; height: 44px; }
+.ring.grp span { color: var(--muted); font-size: 14px; }
+.mwelcome { position: relative; overflow: hidden; border-radius: 26px; background: var(--wash); margin: 8px 14px 0; padding: 30px 22px 26px; min-height: 600px; }
+.mwelcome h1 { position: relative; font-weight: 300; font-size: 38px; letter-spacing: -.02em; line-height: 1.05; }
+.mwelcome p { position: relative; margin-top: 14px; font-size: 16px; line-height: 1.55; color: var(--muted); }
+.mwelcome .acts { position: relative; display: flex; flex-direction: column; gap: 8px; margin-top: 22px; }
+.mwelcome .acts .btn { height: 48px; justify-content: center; }
+.mh { font-weight: 400; font-size: 17px; margin: 6px 0 2px; }
+.msearch { display: flex; align-items: center; gap: 10px; height: 52px; margin: 10px 14px; padding: 0 6px 0 14px; border-radius: 14px; background: var(--sheet); font-size: 19px; box-shadow: 0 1px 2px var(--shadow); }
+</style>
+</head>
+<body class="doc">
+<section class="page" id="app"></section>
+<script src="../system/kit.js"></script>
+<script>
+const { I, labelledRipple, fig, row, sec, browser, mbrowser, webbar, mwebbar, seg, btn, ibtn, SONGS } = RO;
+const T = (n) => SONGS.find((s) => s.t.startsWith(n));
+const flow = (list) => list.map((n) => T(n).t).join('<span class="ar"></span>');
+
+/* ===== Your week, as a ripple: you at the centre, your groups on the first ring, where you'll sing on the second ===== */
+const polar = (cx, cy, r, deg) => [Math.round(cx + r * Math.cos(deg * Math.PI / 180)), Math.round(cy + r * Math.sin(deg * Math.PI / 180))];
+const CX = 60, CY = 260, R1 = 160, R2 = 310;
+const line = ([x1, y1], [x2, y2], dash = false) => `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="currentColor" stroke-width="1.3" opacity=".55"${dash ? ' stroke-dasharray="4 5"' : ''}/>`;
+/* lab: side 'r' = right of the dot (dy nudges it off the spoke), 'b' = centred below */
+const lab = ([x, y], html, side = 'r', dy = 0, cls = '') => side === 'b'
+  ? `<a class="wl below ${cls}" style="left:${x}px;top:${y + 14}px">${html}</a>`
+  : `<a class="wl ${cls}" style="left:${x + 14}px;top:${y + dy}px">${html}</a>`;
+function weekMap({ empty = false } = {}) {
+  const ringsSvg = (extra) => `<svg aria-hidden="true">${[R1, R2, R2 + 150].map((r, i) => `<circle cx="${CX}" cy="${CY}" r="${r}" fill="none" stroke="currentColor" stroke-width="1.2" opacity="${[0.35, 0.25, 0.12][i]}"/>`).join('')}${extra}</svg>`;
+  const me = `<div class="me" style="left:${CX}px;top:${CY}px"><span class="avatar" title="Joanna L.">JL</span><span>You</span></div>`;
+  if (empty) {
+    const songs = [['It Is Well', -28, 'r', 6], ['Be Thou My Vision', 0, 'b', 0], ['Come Thou Fount', 28, 'r', -6]];
+    const pts = songs.map(([, a]) => polar(CX, CY, R1, a));
+    const inv = polar(CX, CY, R2, 40);
+    const svg = ringsSvg(pts.map((p) => line([CX, CY], p)).join('') + line([CX, CY], inv, true));
+    const nodes = songs.map(([n, , side, dy], i) => `<i class="dot g" style="left:${pts[i][0]}px;top:${pts[i][1]}px"></i>${lab(pts[i], n, side, dy)}`).join('');
+    const invite = `<i class="dot soft" style="left:${inv[0]}px;top:${inv[1]}px"></i>${lab(inv, 'Plan with a group →', 'r', 0, 'invite')}`;
+    const list = `<ul class="sr"><li>Songs you’re learning: It Is Well, Be Thou My Vision, Come Thou Fount</li><li>Plan with a group</li></ul>`;
+    return `<section class="weekmap"><h2>This week<small>What you’re learning, from you outward.</small></h2>${svg}${me}${nodes}${invite}${list}<p class="legend"><span><i class="g"></i>Song you’re learning</span></p></section>`;
+  }
+  /* each gathering sits on its group's line; gatherings with no group join you directly */
+  const groups = [['Sunday Service Team', -28, 'r', 6, [['SUN', 'Sunday Morning']]], ['Thursday Care Group', 0, 'b', 0, [['THU', 'Thursday night']]], ['Youth Worship', 28, 'r', -6, [['FRI', 'Youth Night']]]];
+  const solo = [['SAT', 'Living room night', -44], ['WED', 'Prayer night', 44]];
+  let spokes = '', nodes = '';
+  groups.forEach(([n, a, side, dy, gs]) => {
+    const g = polar(CX, CY, R1, a), t = polar(CX, CY, R2, a);
+    spokes += line([CX, CY], g) + line(g, t);
+    nodes += `<i class="dot g" style="left:${g[0]}px;top:${g[1]}px"></i>${lab(g, n, side, dy)}`;
+    nodes += `<i class="dot" style="left:${t[0]}px;top:${t[1]}px"></i>${lab(t, `<b>${gs[0][0]}</b>${gs[0][1]}`)}`;
+  });
+  solo.forEach(([d, n, a]) => { const t = polar(CX, CY, R2, a); spokes += line([CX, CY], t); nodes += `<i class="dot" style="left:${t[0]}px;top:${t[1]}px"></i>${lab(t, `<b>${d}</b>${n}`)}`; });
+  const list = `<ul class="sr"><li>Just you: Saturday, Living room night; Wednesday, Prayer night</li>${groups.map(([n, , , , gs]) => `<li>${n}: ${gs.map(([d, t]) => `${d}, ${t}`).join('; ')}</li>`).join('')}</ul>`;
+  return `<section class="weekmap"><h2>This week<small>Who you sing with, and where.</small></h2>${ringsSvg(spokes)}${me}${nodes}${list}<p class="legend"><span><i class="g"></i>Group</span><span><i></i>Gathering</span></p></section>`;
+}
+
+/* ===== Home ===== */
+const NEXT = `<section class="nextup"><h2 class="sr">What we’re singing next</h2><h3>Living room night</h3><p class="when whenl">Next up: tomorrow, Saturday 17 October</p>
+  <p class="meta"><span>${I('user')}No group · shared by link</span><span>4 songs</span><span>${I('globe')}Public link on</span></p>
+  <ol class="order">${[['Be Thou My Vision', 'E'], ['It Is Well', 'C'], ['Come Thou Fount', 'D'], ['Blessed Assurance', 'D']].map(([n, k]) => `<li><span>${T(n).t}</span><span class="keytag">${k}</span></li>`).join('')}</ol>
+  <div class="acts">${btn('Sing', 'primary', 'sing')}${btn('Open setlist', '', 'arrowR')}${btn('Share', '', 'qr')}</div></section>`;
+const NEWSONGS = `<div><h3>New in the songbook<a>See all</a></h3>${[['Like a River Glorious', 'Frances Havergal · added 2 days ago'], ['Dear Lord and Father of Mankind', 'John Greenleaf Whittier · added last week'], ['Joyful, Joyful, We Adore Thee', 'Henry van Dyke · added last week']].map(([t, m]) => `<div class="it">${I('music')}<div><b>${t}</b><small>${m}</small></div>${ibtn('listPlus', 'Add ' + t + ' to a setlist', 'quiet')}</div>`).join('')}</div>`;
+const LOWER_LEARN = `<section class="sheet lower"><div><h3>Browse by theme<a>All themes</a></h3>${[['Hope', '12 songs'], ['Dependence', '18 songs'], ["God's Faithfulness", '15 songs']].map(([t, m]) => `<div class="it">${I('music')}<div><b>${t}</b><small>${m}</small></div>${ibtn('arrowR', 'Open ' + t, 'quiet')}</div>`).join('')}</div>${NEWSONGS}</section>`;
+const LOWER = `<section class="sheet lower">
+  <div><h3>Pick up where you left off</h3>${[['Be Thou My Vision', 'Yesterday · chords in E'], ['It Is Well with My Soul', 'Tuesday · lyrics'], ['Come Thou Fount', 'Last week · chords in D']].map(([t, m]) => `<div class="it">${I('music')}<div><b>${t}</b><small>${m}</small></div>${ibtn('arrowR', 'Open ' + t, 'quiet')}</div>`).join('')}</div>
+  <div><h3>New in the songbook<a>See all</a></h3>${[['Like a River Glorious', 'Frances Havergal · added 2 days ago'], ['Dear Lord and Father of Mankind', 'John Greenleaf Whittier · added last week'], ['Joyful, Joyful, We Adore Thee', 'Henry van Dyke · added last week']].map(([t, m]) => `<div class="it">${I('music')}<div><b>${t}</b><small>${m}</small></div>${ibtn('listPlus', 'Add ' + t + ' to a setlist', 'quiet')}</div>`).join('')}</div></section>`;
+const QUICK = (admin = false) => `<div class="quick">${btn('New setlist', '', 'plus')}${btn('Browse themes', '', 'music')}${admin ? btn('Write a song', '', 'edit') : btn('Request a song', '', 'request')}</div>`;
+function homeDesk(theme = 'light') {
+  return browser(theme, '/', `${webbar('Home')}<div class="wrapc col"><div class="homegrid">${NEXT}${weekMap()}</div>${QUICK()}${LOWER}</div>`, 'desk tall');
+}
+function homeLearner(theme = 'light') {
+  const hero = `<section class="nextup"><h2 class="sr">Pick up where you left off</h2><h3>It Is Well with My Soul</h3><p class="when whenl">Pick up where you left off: lyrics, opened Tuesday</p><p class="meta"><span>Horatio Spafford &amp; Philip Bliss</span><span>Key C</span></p>
+    <p class="verse">When peace like a river attendeth my way, when sorrows like sea billows roll…</p><div class="acts">${btn('Open', 'primary', 'arrowR')}${btn('Add to a setlist', '', 'listPlus')}</div></section>`;
+  return browser(theme, '/', `${webbar('Home')}<div class="wrapc col"><div class="homegrid">${hero}${weekMap({ empty: true })}</div>${QUICK()}${LOWER_LEARN}</div>`, 'desk tall');
+}
+function homeFirst(theme = 'light') {
+  return browser(theme, '/', `${webbar('Home', { guest: true })}<div class="wrapc col"><section class="welcome">${labelledRipple(78, 30)}<div class="copy"><h1>Find the song. Plan the set. Sing it anywhere.</h1><p>Worship doesn’t stop at the Sunday stage. Learn a song on your own, sing in a living room, plan for your care group. It’s free, and a shared setlist opens for anyone, no account needed.</p>
+    <div class="acts">${btn('Find a song', 'primary', 'search')}${btn('Plan a setlist', '', 'plus')}${btn('Start a group', '', 'users')}</div></div></section></div>`, 'desk');
+}
+function homePhone(theme = 'light') {
+  const R = (k, t, ind = 0) => k === 'me' ? `<div class="ring"><span class="avatar sm">JL</span><span>You</span></div>` : `<div class="ring ${k}" style="--ind:${ind}px"><i></i><span>${t}</span></div>`;
+  const rows = [R('me'), R('', '<b>SAT</b>Living room night', 18), R('', '<b>WED</b>Prayer night', 18), R('g grp', 'Sunday Service Team', 18), R('', '<b>SUN</b>Sunday Morning', 40), R('g grp', 'Thursday Care Group', 18), R('', '<b>THU</b>Thursday night', 40), R('g grp', 'Youth Worship', 18), R('', '<b>FRI</b>Youth Night', 40)].join('');
+  return mbrowser(theme, '/', `${mwebbar()}<section class="mnext"><h2 class="sr">What we’re singing next</h2><h3>Living room night</h3><p class="when" style="font-size:15px">Next up: tomorrow, Saturday 17 October</p><p class="meta" style="font-size:13px;margin-top:6px"><span>4 songs</span><span>${I('globe')}Public link on</span></p>
+    <div class="acts">${btn('Sing', 'primary', 'sing')}${btn('Open', '', 'arrowR')}${btn('Share', '', 'qr')}</div></section>
+    <div class="mquick">${btn('New setlist', '', 'plus')}${btn('Request a song', '', 'request')}</div>
+    <section class="mweek"><h2>This week</h2>${rows}</section>
+    <section class="sheet mpage" style="margin-top:14px"><p class="mh">New in the songbook</p>${[['Like a River Glorious', 'Frances Havergal · 2 days ago'], ['Dear Lord and Father of Mankind', 'Whittier · last week']].map(([t, m]) => `<div class="it">${I('music')}<div><b>${t}</b><small>${m}</small></div></div>`).join('')}</section>`);
+}
+function homeFirstPhone(theme = 'light') {
+  const bar = mwebbar().replace(/<button class="btn icon quiet" aria-label="Menu">.*?<\/button>/, btn('Sign in', 'sm'));
+  return mbrowser(theme, '/', `${bar}<section class="mwelcome">${RO.rings(5, 44, 24).replace('class="rings"', 'class="rings" style="width:440px;height:440px;right:-200px;bottom:-200px"')}<h1>Find the song. Plan the set. Sing it anywhere.</h1><p>Learn a song on your own, sing in a living room, plan for your care group. It’s free, and a shared setlist opens for anyone, no account needed.</p>
+    <div class="acts">${btn('Find a song', 'primary', 'search')}${btn('Plan a setlist', '', 'plus')}${btn('Start a group', '', 'users')}</div></section>`);
+}
+
+/* ===== Search ===== */
+function searchDesk(theme = 'light', none = false) {
+  const behind = `${webbar('Home')}<div class="wrapc col"><div class="homegrid">${NEXT}${weekMap()}</div>${QUICK()}${LOWER}</div>`;
+  const body = none
+    ? `<div class="none"><h3>“Oceans” isn’t in the songbook yet</h3><p>Ask for it to be added. An admin checks the lyrics and chords before it joins the songbook for everyone.</p><div class="acts">${btn('Request “Oceans”', 'primary', 'plus')}</div></div>`
+    : `<p class="grp">Songs</p><div class="hit sel">${I('music')}<div><b><mark>Amazing Grace</mark></b><small>John Newton</small></div><span class="keytag">G</span></div>
+       <p class="grp">In the lyrics</p><div class="hit">${I('music')}<div><b>Come Thou Fount</b><small>“Tune my heart to sing Thy <mark>grace</mark>”</small></div><span class="keytag">D</span></div><div class="hit">${I('music')}<div><b>Rock of Ages</b><small>“Simply to Thy cross I cling… look to Thee for <mark>grace</mark>”</small></div><span class="keytag">B♭</span></div>
+       <p class="grp">Setlists with these songs</p><div class="hit">${I('setlist')}<div><b>Thursday night</b><small>Thu 22 Oct · Thursday Care Group</small></div><span class="t-small">song 1 of 5</span></div><div class="hit">${I('setlist')}<div><b>Youth Night</b><small>Fri 23 Oct · Youth Worship</small></div><span class="t-small">song 5 of 5</span></div>
+       <div class="hit" style="margin-top:6px">${I('request')}<div><b>Can’t find it? Request a song</b><small>An admin checks it, then it joins the songbook for everyone</small></div><span></span></div>`;
+  const panel = `<div class="dim"></div><div class="cmdk" role="dialog" aria-label="Search"><div class="in">${I('search')}<span>${none ? 'oceans' : 'grace'}<i class="caret"></i></span><kbd>esc</kbd></div><div class="body">${body}</div><div class="foot"><span><kbd>↑</kbd><kbd>↓</kbd>move</span><span><kbd>↵</kbd>open</span><span><kbd>⌘</kbd><kbd>↵</kbd>add to a setlist</span></div></div>`;
+  return browser(theme, '/', `<div class="col">${behind}${panel}</div>`, 'desk tall');
+}
+function searchPhone(theme = 'light') {
+  const h = (ic, t, s, k) => `<div class="hit" style="margin:0 -10px">${I(ic)}<div><b>${t}</b><small>${s}</small></div>${k}</div>`;
+  return mbrowser(theme, '/search?q=grace', `<div class="msearch">${ibtn('back', 'Back', 'quiet sm')}<span style="flex:1">grace<i class="caret"></i></span>${ibtn('close', 'Clear the search', 'quiet sm')}</div><section class="sheet mpage"><p class="grp" style="padding-left:0">Songs</p>${h('music', 'Amazing Grace', 'John Newton', '<span class="keytag">G</span>')}
+    <p class="grp" style="padding-left:0">In the lyrics</p>${h('music', 'Come Thou Fount', '“…to sing Thy <mark>grace</mark>”', '<span class="keytag">D</span>')}${h('music', 'Rock of Ages', '“…look to Thee for <mark>grace</mark>”', '<span class="keytag">B♭</span>')}
+    <p class="grp" style="padding-left:0">Setlists with these songs</p>${h('setlist', 'Thursday night', 'Thu 22 Oct · song 1 of 5', '')}${h('setlist', 'Youth Night', 'Fri 23 Oct · song 5 of 5', '')}${h('request', 'Can’t find it? Request a song', 'An admin adds it for everyone', '')}</section>`);
+}
+
+/* ===== Profile ===== */
+const pr = (b, s, ctl) => `<div class="pr"><div><b>${b}</b>${s ? `<small>${s}</small>` : ''}</div>${ctl}</div>`;
+function profileDesk(theme = 'light', dialog = '') {
+  const body = `<section class="sheet prefs">
+    <div class="pg"><div><h2>Reading</h2><p>How songs and setlists open on every device you sign in on. Text size and light or dark are set per device, from Aa on any song.</p></div><div>
+      ${pr('Songs open with', '', seg(['Lyrics', 'Chords'], 1, 'soft mini tall'))}${pr('Chords as', 'Numbers stay the same in every key. Letters are what most guitarists read.', seg(['Numbers 1 4 5', 'Letters A B C'], 0, 'soft mini tall'))}${pr('Chord detail', 'Simple drops the passing chords', seg(['Full', 'Simple'], 0, 'soft mini tall'))}</div></div>
+    <div class="pg"><div><h2>Groups</h2><p>The people you sing and plan with.</p></div><div>${[['Thursday Care Group', 'Can edit', '8 people'], ['Sunday Service Team', 'Can view', '9 people'], ['Youth Worship', 'Can edit', '6 people']].map(([n, r, c]) => pr(n, c, `<span style="display:flex;align-items:center;gap:10px"><span class="role">${r}</span>${btn('Leave', 'sm')}</span>`)).join('')}</div></div>
+    <div class="pg"><div><h2>Account</h2></div><div>${pr('Signed in with Google', 'joanna.l@example.com', btn('Sign out', 'sm'))}${pr('Your setlists', 'Download every setlist you made, as one file', btn('Download', 'sm', 'download'))}${pr('Delete account', 'Removes your profile. Setlists you shared with a group stay with the group.', btn('Delete account', 'sm danger', 'trash'))}</div></div></section>`;
+  const dlgs = {
+    delete: `<div class="scrim"></div><div class="dialog dlg"><h3>Delete your account?</h3><p>Your profile and the setlists only you can see are deleted. Setlists you shared with a group stay with the group. This can’t be undone.</p><label for="confirm-delete">Type DELETE to confirm</label><div class="field" id="confirm-delete"></div><div class="acts">${btn('Keep my account')}<button class="btn" aria-disabled="true" style="background:var(--danger);color:var(--sheet);font-weight:500">${I('trash', 's18')}Delete account</button></div></div>`,
+    leave: `<div class="scrim"></div><div class="dialog dlg"><h3>Leave Sunday Service Team?</h3><p>You’ll stop seeing the group’s setlists. Setlists you planned for the group stay with it. Someone who can edit can invite you back.</p><div class="acts">${btn('Stay')}<button class="btn" style="background:var(--danger);color:var(--sheet);font-weight:500">Leave group</button></div></div>`,
+  };
+  const dlg = dlgs[dialog] || '';
+  return browser(theme, '/profile', `${webbar('')}<div class="wrapc col"><div class="phead"><span class="avatar xl">JL</span><div><h1>Joanna L.</h1><p class="meta"><span>3 groups</span><span>23 setlists</span></p></div></div>${body}${dlg}</div>`, 'desk tall');
+}
+function profilePhone(theme = 'light') {
+  return mbrowser(theme, '/profile', `${mwebbar()}<section class="sheet mpage"><div style="display:flex;gap:14px;align-items:center;margin-bottom:6px"><span class="avatar" style="width:52px;height:52px;font-size:17px">JL</span><div><h1 style="font-weight:300;font-size:30px">Joanna L.</h1><p class="t-small">3 groups · 23 setlists</p></div></div>
+    <p class="mh" style="margin-top:16px">Reading</p>${pr('Songs open with', '', seg(['Lyrics', 'Chords'], 1, 'soft mini tall'))}${pr('Chords as', '', seg(['1 4 5', 'A B C'], 0, 'soft mini tall'))}${pr('Chord detail', '', seg(['Full', 'Simple'], 0, 'soft mini tall'))}
+    <p class="mh" style="margin-top:12px">Groups</p>${pr('Thursday Care Group', 'Can edit', btn('Leave', 'sm'))}${pr('Sunday Service Team', 'Can view', btn('Leave', 'sm'))}
+    <p class="mh" style="margin-top:12px">Account</p>${pr('Google', 'joanna.l@example.com', btn('Sign out', 'sm'))}${pr('Download setlists', '', btn('Download', 'sm'))}${pr('Delete account', '', btn('Delete', 'sm danger'))}</section>`);
+}
+
+/* ===== page ===== */
+const nav = [['ripple-out-desktop.html', 'Setlist view'], ['ripple-out-songs.html', 'Songs'], ['ripple-out-setlists.html', 'Setlists'], ['ripple-out-home.html', 'Home and profile', 1], ['ripple-out-signin.html', 'Sign-in and errors']].map(([h, t, on]) => `<a class="${on ? 'on' : ''}" href="${h}">${t}</a>`).join('');
+document.getElementById('app').innerHTML = `
+<header class="ph"><h1>Home and profile</h1><p class="lead">Round 3, after the second design critique. Home leads with whatever you’re singing next, in any setting, not a Sunday service. Beside it, the week is drawn as a ripple: you at the centre, your groups on the first ring, and each gathering on the line from the group it belongs to. Gatherings with no group join you directly. The vision becomes the layout instead of an ornament. Search has one shortcut (/). Profile keeps only defaults that follow you (text size and theme stay per device in Aa, as locked). Desktop at 55%, phone at 80%.</p><nav class="topnav">${nav}</nav></header>
+
+${sec('Home', 'The left card is the next thing you’ll sing, with Sing, Open setlist and Share. The right card is your week as a ripple: each gathering sits on the line from its group, gatherings with no group connect straight to you, and every label is a link. A legend names the two kinds of dot. Below, three quick actions (Request a song for members, Write a song for admins), the songs you were last working on, and what is new in the songbook. Someone learning on their own gets their last song instead, the songs they’re learning on the ripple, and a quiet invitation to plan with a group.')}
+${row(fig('Home · /', homeDesk()), fig('Home · dark', homeDesk('dark')))}
+${row(fig('Learning on your own, nothing dated', homeLearner()), fig('First visit', homeFirst()))}
+${row(fig('Phone', homePhone()), fig('Phone · dark', homePhone('dark')), fig('Phone · first visit', homeFirstPhone()))}
+
+${sec('Search', 'Press / anywhere, or click the search bar. One box finds songs by title, songs by a line of lyric (with the match highlighted), and your setlists that contain them. Arrow keys move, Enter opens, and Ctrl or ⌘ Enter adds the song to a setlist. A missing song can be requested in one step.')}
+${row(fig('Search over any page', searchDesk()), fig('Not in the songbook yet', searchDesk('light', true)))}
+${row(fig('Phone · /search', searchPhone()))}
+
+${sec('Profile', 'Reached from your initials in the bar. Reading defaults that follow you between devices, the groups you belong to with your role in each, and the account. Leaving a group asks first. Deleting the account stays disabled until you type DELETE and says exactly what stays.')}
+${row(fig('Profile · /profile', profileDesk()), fig('Delete stays off until you type DELETE', profileDesk('light', 'delete')))}
+${row(fig('Leaving a group asks first', profileDesk('light', 'leave')))}
+${row(fig('Phone', profilePhone()), fig('Phone · dark', profilePhone('dark')))}
+`;
+</script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+{
+  "id": "8e41c44f43607230",
+  "digest": "e760088d3ae652f1",
+  "comps": [],
+  "sketches": [
+    ".impeccable/mocks/decision/assigned.html",
+    ".impeccable/mocks/decision/model-pick.html",
+    ".impeccable/mocks/decision/challenger-tanaka.html",
+    ".impeccable/mocks/decision/challenger-deepdive.html",
+    ".impeccable/mocks/decision/canon.html"
+  ],
+  "pre": {
+    ".impeccable/mocks/decision/assigned.html": "82ad86cef0d3494232490ffec5a55396920ec09f1ceade575e22d7c1f128eb55",
+    ".impeccable/mocks/decision/model-pick.html": "c7ca4cf35c139aa2efd338ce27c4bc817fd0de449da39904d7521e9cc11dd001",
+    ".impeccable/mocks/decision/canon.html": "3f02c19337bb5c931286d948a2dc8028e9f427f775b124f5aa724c44aa3e14af"
+  },
+  "startedAt": 1791822911630,
+  "worlds": [
+    {
+      "id": "hand-drawn-zine-explainer",
+      "board": "https://impeccable.style/worlds/cards/hand-drawn-zine-explainer.webp",
+      "hero": "https://impeccable.style/worlds/cards/hand-drawn-zine-explainer-hero.webp"
+    },
+    {
+      "id": "operate-c-depot-blind-courses",
+      "board": "https://impeccable.style/worlds/cards/operate-c-depot-blind-courses.webp",
+      "hero": "https://impeccable.style/worlds/cards/operate-c-depot-blind-courses-hero.webp"
+    },
+    {
+      "id": "rivers-tides-ocean-depths-mesophotic-deep-dive",
+      "board": "https://impeccable.style/worlds/cards/rivers-tides-ocean-depths-mesophotic-deep-dive.webp",
+      "hero": "https://impeccable.style/worlds/cards/rivers-tides-ocean-depths-mesophotic-deep-dive-hero.webp"
+    },
+    {
+      "id": "kinetic-sculpture-automata-tensegrity-breathing-column",
+      "board": "https://impeccable.style/worlds/cards/kinetic-sculpture-automata-tensegrity-breathing-column.webp",
+      "hero": "https://impeccable.style/worlds/cards/kinetic-sculpture-automata-tensegrity-breathing-column-hero.webp"
+    },
+    {
+      "id": "fly-posted-festival-hoarding-built",
+      "board": "https://impeccable.style/worlds/cards/fly-posted-festival-hoarding-built.webp",
+      "hero": "https://impeccable.style/worlds/cards/fly-posted-festival-hoarding-built-hero.webp"
+    },
+    {
+      "id": "tanaka-plane-portrait",
+      "board": "https://impeccable.style/worlds/cards/tanaka-plane-portrait.webp",
+      "hero": "https://impeccable.style/worlds/cards/tanaka-plane-portrait-hero.webp"
+    }
+  ]
+}

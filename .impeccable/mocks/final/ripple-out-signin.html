@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ripple Out · Sign-in and errors</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<style>
+/* ---------- split page: the vision on the tint, the form on a sheet ---------- */
+.auth { flex: 1; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); min-height: 0; }
+.brandside { position: relative; overflow: hidden; padding: 40px 52px; }
+.brandside .lr { left: -296px; bottom: -296px; }
+.brandside .brand, .solo .brand, .mtopb .brand { position: relative; display: inline-flex; align-items: center; gap: 10px; font-weight: 400; font-size: 21px; z-index: 1; }
+.brand span { color: var(--accent-ink); }
+.brandside h2 { position: relative; margin-top: 56px; font-weight: 300; font-size: 50px; letter-spacing: -.03em; line-height: 1.04; max-width: 13ch; text-wrap: balance; z-index: 1; }
+.brandside p { position: relative; margin-top: 14px; font-size: 17px; line-height: 1.55; color: var(--muted); max-width: 40ch; z-index: 1; }
+.formside { background: var(--sheet); border-radius: 24px 0 0 0; display: flex; align-items: center; justify-content: center; padding: 40px; }
+.form { width: 100%; max-width: 400px; display: flex; flex-direction: column; }
+.form h1 { font-weight: 300; font-size: 42px; letter-spacing: -.02em; line-height: 1.08; text-wrap: balance; }
+.form .lead2 { margin-top: 10px; font-size: 16px; line-height: 1.55; color: var(--muted); }
+.stack { display: flex; flex-direction: column; gap: 10px; margin-top: 26px; }
+.prov { height: 52px; border-radius: 14px; font-size: 16px; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 12px; }
+.prov.google { background: #FFFFFF; color: #1F1F1F; border: 1px solid #747775; }
+.prov.apple { background: #000000; color: #FFFFFF; }
+.theme-dark .prov.apple { background: #FFFFFF; color: #000000; }
+.theme-dark .prov.google { background: #131314; color: #E3E3E3; border-color: #8E918F; }
+.prov.email { background: var(--alt); color: var(--primary); font-weight: 400; }
+.prov .gl { width: 20px; height: 20px; }
+.or { display: flex; align-items: center; gap: 12px; margin: 20px 0 16px; font-size: 13px; color: var(--muted); }
+.or::before, .or::after { content: ''; flex: 1; height: 1px; background: var(--hairline); }
+.fg { margin-bottom: 14px; }
+.fg .field { background: var(--alt); }
+.fg .field .eye { margin-left: auto; width: 40px; height: 40px; margin-right: -10px; color: var(--primary); }
+.below { display: flex; justify-content: flex-end; margin-top: 6px; }
+.below a, .fine a, .back a { color: var(--accent-ink); font-size: 14px; text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.submit { height: 52px; font-size: 16px; margin-top: 4px; width: 100%; }
+.fine { margin-top: 20px; font-size: 14px; line-height: 1.6; color: var(--muted); }
+.legal { margin-top: 16px; font-size: 13px; color: var(--muted); }
+.legal a { color: var(--muted); }
+.back { margin-bottom: 18px; }
+.back a { display: inline-flex; align-items: center; gap: 6px; }
+.legal.links { display: flex; flex-wrap: wrap; gap: 4px 18px; }
+.found { margin-top: 20px; padding: 16px 18px; border-radius: 16px; background: var(--wash); }
+.found b { display: block; font-weight: 400; font-size: 17px; }
+.found small { display: block; margin-top: 4px; font-size: 14px; color: var(--muted); line-height: 1.5; }
+.alert a { color: var(--accent-ink); }
+.ghost { margin-top: 10px; width: 100%; height: 48px; }
+.check2 { display: flex; flex-direction: column; gap: 6px; margin: 2px 0 16px; font-size: 14px; }
+.check2 span { display: inline-flex; align-items: center; gap: 8px; color: var(--muted); }
+.check2 .ok { color: var(--accent-ink); }
+.check2 .todo i { width: 14px; height: 14px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--muted); margin: 0 1px; }
+.alert { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 14px; background: var(--wash); font-size: 15px; line-height: 1.5; margin-top: 22px; }
+.alert.err { background: var(--danger-wash); color: var(--danger); }
+.alert b { font-weight: 500; }
+.spin { width: 18px; height: 18px; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; }
+.invite { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 16px; background: var(--wash); margin-top: 18px; }
+.invite p { font-size: 15px; line-height: 1.5; }
+.invite b { font-weight: 500; }
+.ro { color: var(--muted); }
+
+/* ---------- single-sheet pages (password steps, finding an account) ---------- */
+.solo { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; padding: 34px 40px 0; }
+.solo .lr { right: -480px; top: -480px; opacity: .55; }
+.solo .lr .lr-l { display: none; }
+.solo .brand { align-self: flex-start; }
+.solocard { position: relative; width: 520px; margin-top: 64px; background: var(--sheet); border-radius: 24px; padding: 44px 52px 40px; box-shadow: 0 1px 2px var(--shadow), 0 20px 50px -24px var(--shadow); }
+.sent { width: 64px; height: 64px; border-radius: 50%; background: var(--wash); color: var(--accent-ink); display: grid; place-items: center; margin-bottom: 20px; }
+
+/* ---------- 404 ---------- */
+.lost { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; padding: 0 0 90px; }
+.lost .lr { right: -420px; top: -360px; }
+.lost h1 { position: relative; font-weight: 300; font-size: 64px; max-width: 16ch; text-wrap: balance; letter-spacing: -.035em; line-height: 1; }
+.lost p { position: relative; margin-top: 16px; font-size: 19px; line-height: 1.55; color: var(--muted); max-width: 44ch; }
+.lost .search { position: relative; display: flex; align-items: center; gap: 12px; width: 560px; height: 60px; padding: 0 18px; border-radius: 16px; background: var(--sheet); margin-top: 30px; box-shadow: 0 1px 2px var(--shadow), 0 10px 30px -12px var(--shadow); font-size: 19px; color: var(--muted); }
+.lost .acts { position: relative; display: flex; gap: 8px; margin-top: 16px; align-items: center; }
+.lost .guest { position: relative; margin-top: 22px; font-size: 16px; color: var(--muted); }
+
+/* ---------- phone ---------- */
+.mauth { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.mtopb { position: relative; overflow: hidden; padding: 18px 20px 20px; }
+.mtopb .lr { left: -330px; top: -380px; opacity: .6; }
+.mtopb .lr .lr-l { display: none; }
+.mtopb p { position: relative; margin-top: 10px; font-size: 16px; color: var(--muted); }
+.mform { flex: 1; background: var(--sheet); border-radius: 24px 24px 0 0; padding: 26px 20px 0; }
+.mform .form h1 { font-size: 32px; }
+.mform .stack { margin-top: 20px; }
+.mlost { flex: 1; padding: 44px 22px 0; position: relative; overflow: hidden; }
+.mlost .lr { right: -520px; top: -520px; opacity: .7; }
+.mlost .lr .lr-l { display: none; }
+.mlost h1 { position: relative; font-weight: 300; font-size: 44px; letter-spacing: -.025em; line-height: 1.05; }
+.mlost p { position: relative; margin-top: 12px; font-size: 17px; line-height: 1.55; color: var(--muted); }
+.mlost .search { position: relative; display: flex; align-items: center; gap: 10px; height: 54px; padding: 0 16px; border-radius: 16px; background: var(--sheet); margin-top: 24px; font-size: 17px; color: var(--muted); }
+.mlost .btn { position: relative; width: 100%; height: 48px; margin-top: 12px; }
+</style>
+</head>
+<body class="doc">
+<section class="page" id="app"></section>
+<script src="../system/kit.js"></script>
+<script>
+const { MARK, labelledRipple, I, fig, row, sec, browser, mbrowser, webbar, mwebbar, btn } = RO;
+/* Provider marks: buttons follow Google's and Apple's sign-in button guidelines (an agreed exception to the soft-fill, no-outline rule). */
+const GL = '<svg class="gl" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.5l6.7-6.7C35.6 2.4 30.2 0 24 0 14.6 0 6.6 5.4 2.7 13.2l7.8 6C12.4 13.5 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.5 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.7c-.6 3-2.3 5.5-4.8 7.2l7.6 5.9c4.4-4.1 7-10.1 7-17.6z"/><path fill="#FBBC05" d="M10.5 28.8c-.5-1.5-.8-3.1-.8-4.8s.3-3.3.8-4.8l-7.8-6C1 16.5 0 20.1 0 24s1 7.5 2.7 10.8l7.8-6z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.6-5.9c-2.1 1.4-4.9 2.3-8.3 2.3-6.3 0-11.6-4.2-13.5-9.9l-7.8 6C6.6 42.6 14.6 48 24 48z"/></svg>';
+const AP = '<svg class="gl" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M15.5 4.5c-.9.1-2 .7-2.6 1.5-.6.7-1 1.7-.9 2.7 1 0 2-.6 2.6-1.4.6-.8 1-1.8.9-2.8zM18.6 15.6c-.5 1.1-.7 1.6-1.3 2.6-.9 1.4-2.1 3-3.6 3-1.3 0-1.7-.8-3.5-.8s-2.2.8-3.5.8c-1.5 0-2.6-1.5-3.5-2.9C1 15 .8 10.7 2.5 8.3c1-1.6 2.6-2.6 4.1-2.6 1.6 0 2.5.9 3.8.9 1.2 0 2-.9 3.8-.9 1.4 0 2.8.7 3.8 2-3.3 1.8-2.8 6.6.6 7.9z"/></svg>';
+const PROVIDERS = (email = true) => `<div class="stack"><button class="prov google">${GL}Continue with Google</button><button class="prov apple">${AP}Continue with Apple</button>${email ? `<button class="prov email">${I('arrowR', 's18')}Continue with email</button>` : ''}</div>`;
+const EYE = `<button class="eye" aria-label="Show password">${I('eye', 's18')}</button>`;
+const field = (label, val, { ph = '', cls = '', eye = false, err = '' } = {}) => `<div class="fg"><p class="flabel">${label}</p><div class="field ${cls}">${val ? `<span>${val}</span>` : `<span class="ph">${ph}</span>`}${eye ? EYE : ''}</div>${err ? `<p class="ferr">${err}</p>` : ''}</div>`;
+const LEGAL = '<p class="legal links"><a>Privacy</a><a>Terms</a><span>Free and built by volunteers</span></p>';
+const brandSide = (h = 'Worship, beyond the Sunday stage.', p = 'Lyrics and chords for every song you sing, setlists for every place you gather, and one link that opens for anyone.') => `<div class="brandside">${labelledRipple(74, 26)}<span class="brand">${MARK}Ripple Out <span>Worship</span></span><h2>${h}</h2><p>${p}</p></div>`;
+const split = (theme, path, form, h, p) => browser(theme, path, `<div class="auth">${brandSide(h, p)}<div class="formside"><div class="form">${form}</div></div></div>`);
+const solo = (theme, path, card) => browser(theme, path, `<div class="solo">${labelledRipple(74, 26)}<span class="brand">${MARK}Ripple Out <span>Worship</span></span><div class="solocard"><div class="form" style="max-width:none">${card}</div></div></div>`);
+
+const MIGRATE = `<div class="alert">${I('info')}<span><b>Signed in here before the change?</b> Your setlists are safe. Use the same email you used before and they’ll be waiting. <a>Find your account</a></span></div>`;
+const SIGNIN_AT = (h = 'Sign in', lead = 'To plan setlists and save the keys you play in. Reading a shared setlist never needs an account.', top = '', note = MIGRATE) => `${top}<h1>${h}</h1><p class="lead2">${lead}</p>${PROVIDERS()}
+  <p class="fine">New here? Continuing with Google or Apple creates your account. Prefer a password? <a>Create an account with email</a>.</p>${note}${LEGAL}`;
+const SIGNIN = SIGNIN_AT();
+const SIGNIN_CTX = SIGNIN_AT('Sign in to save your key for Thursday night', 'Your key is kept on this device until you sign in. After that it follows you to every device.', `<p class="back"><a>${I('back', 's16')}Back to the setlist</a></p>`, '');
+const CANCELLED = SIGNIN_AT('Sign in', 'To plan setlists and save the keys you play in. Reading a shared setlist never needs an account.', `<div class="alert" style="margin:0 0 20px">${I('info')}<span>Google sign-in was closed before it finished. Nothing changed. Try again, or pick another way.</span></div>`, '');
+const EMAIL = (state = '') => `<p class="back"><a>${I('back', 's16')}Other ways to sign in</a></p><h1>Sign in with email</h1><div style="height:22px"></div>${state === 'none' ? field('Email', 'joanna.l@exmaple.com', { cls: 'error', err: 'No account uses this email. Check the spelling, or create an account.' }) : field('Email', 'joanna.l@example.com')}
+  ${state === 'none' ? `<button class="btn primary submit">Try again</button><p class="fine"><a>Create an account with this email</a></p>` : `${field('Password', state === 'err' ? '•••••••••' : (state === 'loading' ? '••••••••••' : ''), { ph: '', eye: true, cls: state === 'err' ? 'error' : (state ? '' : 'focus'), err: state === 'err' ? 'That password doesn’t match this account. Try again, or reset it.' : '' })}
+  <p class="below" style="margin:-6px 0 16px"><a>Forgot password?</a></p>
+  ${state === 'loading' ? `<button class="btn primary submit" aria-busy="true"><span class="spin"></span>Signing in…</button>` : `<button class="btn primary submit">Sign in</button>`}`}`;
+const CONFLICT = `<p class="back"><a>${I('back', 's16')}Other ways to sign in</a></p><h1>You sign in with Google</h1><div class="alert">${I('info')}<span><b>joanna.l@example.com</b> is linked to a Google account, so there’s no password to type here.</span></div><div class="stack"><button class="prov google">${GL}Continue with Google</button></div><p class="fine">Not you? <a>Use a different email</a>.</p>`;
+const CONNECT = `<h1>We found your setlists</h1><p class="lead2"><b style="font-weight:500;color:var(--text)">joanna.l@example.com</b> was used with the old sign-in. Connect it to this Google account and everything comes back.</p>
+  <div class="found"><b>23 setlists · 3 groups</b><small>Thursday Care Group, Sunday Service Team and Youth Worship, with the keys you saved.</small></div><div style="height:22px"></div><button class="btn primary submit">Connect and continue</button><button class="btn ghost">Not mine, start fresh</button><p class="fine">Connecting only links the two. You can sign in with Google from now on.</p>`;
+const REGISTER_EXISTS = `<h1>Create an account</h1>${PROVIDERS(false)}<p class="or">or with email and a password</p>
+  ${field('Your name', 'Joanna Lee')}${field('Email', 'joanna.l@example.com')}<div class="alert" style="margin:0 0 16px">${I('info')}<span>There’s already an account for this email, with setlists from before. <a>Sign in instead</a></span></div><button class="btn primary submit" aria-disabled="true" style="opacity:.45">Create account</button>`;
+const REGISTER = `<h1>Create an account</h1>${PROVIDERS(false)}<p class="or">or with email and a password</p>
+  ${field('Your name', 'Joanna Lee', { ph: 'As your group knows you' })}${field('Email', 'joanna.l@example.com')}${field('Password', '••••••••••', { eye: true, cls: 'focus' })}
+  <div class="check2" aria-live="polite"><span class="ok">${I('check', 's16')}At least 8 characters</span><span class="todo"><i></i>Not the same as your email</span></div><button class="btn primary submit">Create account</button><p class="legal">By creating an account you agree to the <a>terms</a> and <a>privacy notice</a>. Already have one? <a>Sign in</a></p>`;
+const INVITE_OLD = `<h1>Join Thursday Care Group</h1><div class="invite"><span class="avs"><span class="avatar">GL</span><span class="avatar">MC</span></span><p><b>Grace L.</b> added <b>joanna.l@example.com</b>. Sign in to see the group’s setlists.</p></div>${PROVIDERS()}<p class="fine">Using a different Google or Apple account? You’ll still join Thursday Care Group.</p><p class="fine" style="margin-top:6px"><a>Not now, just open the group’s next setlist</a></p>`;
+const INVITE_NEW = `<h1>Join Thursday Care Group</h1><div class="invite"><span class="avs"><span class="avatar">GL</span></span><p><b>Grace L.</b> added <b>sam.h@example.com</b>. You’re new here, so choose how you’ll sign in.</p></div>${PROVIDERS(false)}<p class="or">or set a password</p>
+  ${field('Email', 'sam.h@example.com', { cls: '' }).replace('<div class="field ">', '<div class="field" aria-readonly="true" style="color:var(--muted)">')}${field('Your name', '', { ph: 'As your group knows you' })}${field('Choose a password', '••••', { eye: true, cls: 'focus' })}<div class="check2" aria-live="polite"><span class="todo"><i></i>At least 8 characters</span><span class="ok">${I('check', 's16')}Not the same as your email</span></div><button class="btn primary submit">Join the group</button><p class="fine"><a>Not now</a></p>`;
+const FIND = `<h1>Find your account</h1><p class="lead2">Ripple Out Worship used to sign in through another website. Your setlists are still here. Enter the email you used, and we’ll send a link to choose a new way to sign in.</p><div style="height:22px"></div>${field('Email you used before', '', { ph: 'you@example.com', cls: 'focus' })}<button class="btn primary submit">Send the link</button><p class="fine">Not sure which email you used? Someone in your group who can edit sees the group’s people. Still stuck? <a>Contact us</a> and a volunteer will help.</p><p class="fine" style="margin-top:6px"><a>Back to sign in</a></p>`;
+const FORGOT = `<h1>Reset your password</h1><p class="lead2">Enter the email you signed up with and we’ll send a link to choose a new password. If you sign in with Google or Apple, there’s no password to reset: use that button instead.</p><div style="height:22px"></div>${field('Email', 'joanna.l@example.com')}<button class="btn primary submit">Send reset link</button><p class="fine"><a>Back to sign in</a></p>`;
+const SENT = `<span class="sent">${I('check')}</span><h1>Check your email</h1><p class="lead2">If an account uses <b style="font-weight:500;color:var(--text)">joanna.l@example.com</b>, a reset link is on its way. Open it on any device; it works once.</p><p class="fine">Nothing after a few minutes? Check spam, or send it again in 60 seconds.</p><p class="fine" style="margin-top:6px"><a>Back to sign in</a></p>`;
+const RESET = `<h1>Choose a new password</h1><p class="lead2">For joanna.l@example.com</p><div style="height:22px"></div>${field('New password', '••••••••••', { eye: true, cls: 'focus' })}<div class="check2" aria-live="polite"><span class="ok">${I('check', 's16')}At least 8 characters</span><span class="ok">${I('check', 's16')}Not the same as your email</span></div><button class="btn primary submit">Save and sign in</button>`;
+const EXPIRED = `<h1>This link has expired</h1><p class="lead2">Reset links work once, for a short time. Send a new one and use the latest email.</p><div style="height:24px"></div><button class="btn primary submit">Send a new link</button><p class="fine"><a>Back to sign in</a></p>`;
+
+function lostDesk(theme = 'light', guest = true) {
+  let bar = webbar('');
+  if (guest) bar = bar.replace(/<span class="wsearch">.*?<\/span><span class="avatar"[^>]*>JL<\/span>/, `<span class="wsearch">${I('search', 's18')}Search songs<kbd>/</kbd></span>${btn('Sign in')}`);
+  return browser(theme, guest ? '/setlist/view/66f2-old' : '/sogns', `${bar}<div class="wrapc lost">${labelledRipple(84, 30)}<h1>${guest ? 'This setlist link no longer works' : 'Page not found'}</h1><p>${guest ? 'Whoever shared it may have turned the link off or deleted the setlist.' : 'It may have rippled away: the link could be old, or what it pointed to was removed.'}</p><div class="search">${I('search')}Find a song${guest ? '' : ', a lyric or a setlist'}<kbd style="margin-left:auto">/</kbd></div>
+    ${guest ? `<p class="guest">Ask them for a fresh link. Meanwhile, every song is still in the songbook.</p><div class="acts">${btn('Go to the home page', '', 'home')}</div>` : `<div class="acts">${btn('Go to the home page', '', 'home')}</div>`}</div>`);
+}
+const mAuth = (theme, path, form) => mbrowser(theme, path, `<div class="mauth"><div class="mtopb">${labelledRipple(60, 20)}<span class="brand">${MARK}Ripple Out <span>Worship</span></span><p>Worship, beyond the Sunday stage.</p></div><div class="mform"><div class="form">${form}</div></div></div>`);
+const mLost = (theme) => mbrowser(theme, '/setlist/view/66f2-old', `${mwebbar()}<div class="mlost">${labelledRipple(70, 24)}<h1>This setlist link no longer works</h1><p>Whoever shared it may have turned the link off or deleted the setlist. Ask them for a fresh link.</p><div class="search">${I('search')}Find a song</div>${btn('Go to the home page')}</div>`);
+
+const nav = [['ripple-out-desktop.html', 'Setlist view'], ['ripple-out-songs.html', 'Songs'], ['ripple-out-setlists.html', 'Setlists'], ['ripple-out-home.html', 'Home and profile'], ['ripple-out-signin.html', 'Sign-in and errors', 1]].map(([h, t, on]) => `<a class="${on ? 'on' : ''}" href="${h}">${t}</a>`).join('');
+document.getElementById('app').innerHTML = `
+<header class="ph"><h1>Sign-in and errors</h1><p class="lead">Round 3, after the second design critique. The brand side now shows the vision itself: worship rippling out from one person, each ring named, from on your own to beyond the Sunday stage. Google and Apple come first (the likely replacement for the old login, not decided yet), with email one step behind. The states real sign-ins hit are drawn: a wrong password, an email that belongs to Google, an expired link, signing in, joining from an invite as someone new, and finding an account from the old login. Password steps use one calm sheet instead of repeating the brand side. Desktop at 55%, phone at 80%.</p><nav class="topnav">${nav}</nav></header>
+
+${sec('Sign in', 'Two provider buttons in their own required styles, then Continue with email. The page says once that reading a shared setlist never needs an account, and tells anyone who used the old login that their setlists are safe. Sign-in may say an email has no account, so people can fix a typo; a password reset never says, so it can’t be used to check who is here. Arriving from a setlist, the page says why it’s asking and how to go back.')}
+${row(fig('Sign in · /login', split('light', '/login', SIGNIN)), fig('Sign in · dark', split('dark', '/login', SIGNIN)))}
+${row(fig('With email', split('light', '/login?with=email', EMAIL())), fig('Wrong password', split('light', '/login?with=email', EMAIL('err'))))}
+${row(fig('Signing in', split('light', '/login?with=email', EMAIL('loading'))), fig('That email signs in with Google', split('light', '/login?with=email', CONFLICT)))}
+${row(fig('No account with that email', split('light', '/login?with=email', EMAIL('none'))), fig('Google sign-in closed early', split('light', '/login', CANCELLED)))}
+${row(fig('From a setlist: says why, and the way back', split('light', '/login?next=/setlist/details/66f2a9c4e1b0', SIGNIN_CTX)))}
+
+${sec('Coming back from the old login', 'Most people arriving in the first months already have setlists. Signing in with the same email finds them and asks once before connecting. Creating an account with that email points to sign-in instead. Anyone who can’t remember their email has a way to a person.')}
+${row(fig('We found your setlists (after Google)', split('light', '/login/connect', CONNECT)), fig('Create an account · this email has one', split('light', '/register', REGISTER_EXISTS)))}
+${row(fig('Find your account · /login/find-account', solo('light', '/login/find-account', FIND)))}
+
+${sec('New accounts and invites', 'Creating an account offers the providers first. Password rules are a live checklist with a different mark for done and not yet done. An invite works for someone with an account and for someone new, and still adds them if they sign in with a different Google or Apple address.')}
+${row(fig('Create an account · /register', split('light', '/register', REGISTER)), fig('Invite · already has an account', split('light', '/login?invite=…', INVITE_OLD, 'Sing together, wherever you gather.', 'Your group’s setlists, keys and songs, in one place.')))}
+${row(fig('Invite · someone new', split('light', '/register?invite=…', INVITE_NEW, 'Sing together, wherever you gather.', 'Your group’s setlists, keys and songs, in one place.')))}
+
+${sec('Forgotten password', 'One calm sheet per step. The confirmation never reveals whether an account exists, the link works on any device, and an expired link says what to do next.')}
+${row(fig('Ask for a link · /password/recover', solo('light', '/password/recover', FORGOT)), fig('Link sent', solo('light', '/password/recover', SENT)))}
+${row(fig('Choose a new password · /password/new', solo('light', '/password/new?token=…', RESET)), fig('Expired link', solo('light', '/password/new?token=…', EXPIRED)))}
+
+${sec('Page not found', 'Most dead links are old shared setlists opened by guests, so the guest version names that case in its headline, says what to do, and offers one way on. A signed-in visitor gets search across their setlists and a way home.')}
+${row(fig('404 · guest', lostDesk()), fig('404 · signed in · dark', lostDesk('dark', false)))}
+
+${sec('Phone', 'On a phone the brand shrinks to one line so the buttons are in reach straight away.')}
+${row(fig('Sign in', mAuth('light', '/login', SIGNIN)), fig('Wrong password', mAuth('light', '/login?with=email', EMAIL('err'))), fig('Sign in · dark', mAuth('dark', '/login', SIGNIN)), fig('404', mLost('light')))}
+`;
+</script>
+</body>
+</html>

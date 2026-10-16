@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ripple Out · Setlists</title>
+<link rel="stylesheet" href="../system/tokens.css">
+<link rel="stylesheet" href="../system/kit.css">
+<style>
+.col { flex: 1; display: flex; flex-direction: column; min-height: 0; position: relative; }
+.crumb { font-size: 14px; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+.crumb a { color: var(--accent-ink); text-decoration: none; }
+.h1 { font-weight: 300; font-size: 52px; letter-spacing: -.025em; line-height: 1.04; text-wrap: balance; }
+.when { color: var(--accent-ink); font-weight: 400; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 6px; font-size: 14px; color: var(--muted); align-items: center; }
+.meta span { display: inline-flex; align-items: center; gap: 6px; }
+.meta .i { width: 16px; height: 16px; }
+.flow { margin-top: 8px; font-size: 16px; line-height: 1.6; }
+.flow .ar::before { content: '→'; color: var(--muted); margin: 0 6px; }
+.more { width: 44px; height: 44px; }
+.meta a { color: var(--accent-ink); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+.gchips { display: flex; gap: 6px; flex-wrap: wrap; margin: 0 0 18px; }
+.crumb .back { display: inline-flex; align-items: center; gap: 4px; }
+.from { font-style: normal; font-family: var(--sans); font-size: 12px; color: var(--muted); font-weight: 400; margin-left: 2px; }
+.viewnote { font-size: 14px; color: var(--muted); line-height: 1.5; }
+
+/* ---------- Planner ---------- */
+.plan { flex: 1; display: grid; grid-template-columns: 252px minmax(0, 1fr); gap: 20px; min-height: 0; padding-top: 20px; }
+.groups { padding: 6px 0; }
+.groups h2 { font-weight: 400; font-size: 15px; color: var(--muted); padding: 0 12px 8px; }
+.gi { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 0 12px; border-radius: 12px; font-size: 15px; font-weight: 400; }
+.gi .i { color: var(--primary); opacity: .85; }
+.gi span { flex: 1; min-width: 0; }
+.gi span small { display: block; font-size: 12px; color: var(--muted); font-weight: 300; }
+.gi .go { opacity: .5; }
+.gi.add { color: var(--accent-ink); min-height: 44px; }
+.tl { padding: 28px 40px 0; }
+.tl > * { flex-shrink: 0; }
+.tlhead { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; }
+.tlhead h1 { flex: 1; font-weight: 300; font-size: 40px; letter-spacing: -.02em; }
+.wk { font-size: 16px; font-weight: 400; color: var(--muted); margin: 22px 0 6px; }
+.svc { display: grid; grid-template-columns: 76px minmax(0, 1fr) auto; gap: 20px; align-items: start; padding: 16px 0; box-shadow: 0 -1px 0 var(--hairline); }
+.wk + .svc { box-shadow: none; }
+.dt { text-align: center; padding-top: 2px; }
+.dt i { display: block; font-style: normal; font-family: var(--mono); font-size: 12px; letter-spacing: .1em; color: var(--accent-ink); }
+.dt b { display: block; font-weight: 300; font-size: 42px; line-height: 1; margin: 2px 0; }
+.dt em { display: block; font-style: normal; font-family: var(--mono); font-size: 11px; letter-spacing: .1em; color: var(--muted); }
+.dt.none b { font-size: 15px; font-weight: 400; color: var(--muted); padding: 12px 0; }
+.svc h2 { font-weight: 300; font-size: 25px; letter-spacing: -.01em; line-height: 1.2; }
+.next { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 22px; padding: 26px 28px; border-radius: 22px; background: var(--wash); margin-bottom: 4px; }
+.next .dt b { font-size: 60px; }
+.next h2 { font-weight: 300; font-size: 38px; letter-spacing: -.02em; line-height: 1.1; }
+.next .whenl { font-size: 17px; margin: 6px 0 2px; }
+.next .acts { display: flex; gap: 8px; margin-top: 18px; }
+.shelf { margin-top: 18px; display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 14px; background: var(--tint); font-size: 15px; font-weight: 400; }
+.shelf span { flex: 1; }
+.shelf small { color: var(--muted); font-weight: 300; }
+.newmenu { width: 340px; top: 150px; right: 40px; padding: 10px; }
+.nm { display: flex; gap: 12px; align-items: center; padding: 12px 10px; border-radius: 12px; }
+.nm b { display: block; font-weight: 400; font-size: 15px; }
+.nm small { display: block; font-size: 13px; color: var(--muted); }
+.nm .i { color: var(--primary); }
+.nm.hl { background: var(--tint); }
+.nmsub { font-size: 13px; color: var(--muted); padding: 10px 10px 4px; }
+
+/* ---------- Setlist page ---------- */
+.rhead { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end; padding: 22px 0 24px; }
+.rhead .sub2 { margin-top: 10px; font-size: 16px; color: var(--muted); }
+.rhead .sub2 a { color: var(--accent-ink); }
+.hacts { display: flex; gap: 8px; }
+.rbody { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 20px; min-height: 0; }
+.run { padding: 14px 32px 0; }
+.ro { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto 120px 44px; gap: 16px; align-items: center; padding: 16px 0; box-shadow: 0 -1px 0 var(--hairline); }
+.ro:first-child { box-shadow: none; }
+.ro .n { font-weight: 300; font-size: 30px; color: var(--accent); text-align: center; }
+.ro h2 { font-weight: 300; font-size: 24px; line-height: 1.2; }
+.ro p { font-size: 14px; color: var(--muted); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ro .tm { font-size: 14px; color: var(--muted); text-align: right; white-space: nowrap; }
+.kt { display: inline-flex; align-items: center; gap: 5px; height: 30px; padding: 0 10px; border-radius: 9px; background: var(--wash); color: var(--accent-ink); font-family: var(--mono); font-size: 15px; font-weight: 500; }
+.kt i { font-style: normal; font-family: var(--sans); font-size: 12px; font-weight: 400; color: var(--muted); }
+.runhint { margin: 14px 0; font-size: 14px; color: var(--muted); }
+.side { display: flex; flex-direction: column; gap: 14px; }
+.share { background: var(--rail); border-radius: 22px; padding: 20px 22px 22px; }
+.share .state { display: flex; align-items: center; justify-content: space-between; }
+.share .state b { font-weight: 400; font-size: 17px; }
+.share .state b span { color: var(--accent-ink); }
+.share .expl { font-size: 14px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+.share .qrbox { background: #FFFFFF; color: #14223A; border-radius: 18px; padding: 14px; margin: 16px auto 14px; width: max-content; }
+.share .url { display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 6px 0 14px; border-radius: 12px; background: var(--sheet); font-family: var(--mono); font-size: 13px; color: var(--muted); }
+.share .url span { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.share .tv { font-size: 13px; color: var(--muted); margin-top: 10px; line-height: 1.5; }
+.share.off .offbox { margin-top: 16px; padding: 18px; border-radius: 16px; background: var(--sheet); font-size: 15px; line-height: 1.55; color: var(--muted); }
+.share.off .offbox .btn { margin-top: 14px; }
+.pcard { background: var(--rail); border-radius: 22px; padding: 18px 22px; }
+.pcard h2 { font-weight: 400; font-size: 16px; margin-bottom: 8px; }
+.pcard p { font-size: 14px; color: var(--muted); line-height: 1.5; }
+.pcard p a { color: var(--accent-ink); }
+.dlg { width: 460px; left: 50%; top: 300px; transform: translateX(-50%); }
+.dlg h2 { font-weight: 300; font-size: 28px; letter-spacing: -.01em; line-height: 1.2; }
+.dlg p { margin-top: 10px; font-size: 16px; line-height: 1.55; color: var(--muted); }
+.dlg .acts { display: flex; justify-content: flex-end; gap: 8px; margin-top: 22px; }
+.dangerbtn { background: var(--danger) !important; color: var(--sheet) !important; font-weight: 500; }
+
+/* ---------- Builder ---------- */
+.bbar { display: flex; align-items: center; gap: 10px; padding: 18px 0 16px; }
+.bbar .crumb { flex: 1; }
+.saved { font-size: 14px; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; }
+.bgrid { flex: 1; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 20px; min-height: 0; }
+.bset { padding: 28px 32px 0; }
+.bset > * { flex-shrink: 0; }
+.tin { font-weight: 300; font-size: 42px; letter-spacing: -.02em; line-height: 1.1; }
+.caret { display: inline-block; width: 2px; height: 1em; background: var(--accent); vertical-align: -.12em; margin-left: 2px; }
+.dets { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 18px; }
+.dets .chip .i { width: 16px; height: 16px; color: var(--primary); }
+.bro { display: grid; grid-template-columns: 24px 30px minmax(0, 1fr) auto 44px; gap: 12px; align-items: center; padding: 10px 0; box-shadow: 0 -1px 0 var(--hairline); background: var(--sheet); }
+.bro:first-of-type { box-shadow: none; }
+.bro .grip { color: var(--muted); }
+.bro .n { font-weight: 300; font-size: 22px; color: var(--accent); text-align: center; }
+.bro h2 { font-weight: 300; font-size: 20px; }
+.bro p { font-size: 13px; color: var(--muted); }
+.bro.drag { box-shadow: 0 14px 40px var(--shadow), 0 2px 6px var(--shadow); border-radius: 14px; padding: 10px 12px; margin: 4px -12px; position: relative; z-index: 2; }
+.drop { margin-top: 10px; min-height: 56px; border-radius: 14px; background: var(--tint); display: grid; place-items: center; font-size: 14px; color: var(--muted); }
+.khelp { margin-top: 12px; font-size: 13px; color: var(--muted); }
+.bsong { padding: 28px 30px 0; }
+.bsong > * { flex-shrink: 0; }
+.bsong h2 { font-weight: 400; font-size: 18px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+.bsong .chips { display: flex; gap: 6px; margin: 10px 0 12px; flex-wrap: wrap; }
+.br { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 12px; align-items: center; padding: 10px 0; box-shadow: 0 -1px 0 var(--hairline); }
+.br b { display: block; font-weight: 400; font-size: 17px; }
+.br small { font-size: 14px; color: var(--muted); }
+.br .added { font-size: 14px; color: var(--muted); display: inline-flex; gap: 6px; align-items: center; height: 40px; }
+.rowmenu { width: 230px; padding: 8px; }
+.mi { display: flex; align-items: center; gap: 12px; height: 46px; padding: 0 10px; border-radius: 10px; font-size: 16px; font-weight: 400; }
+.mi .i { color: var(--primary); }
+.mi.danger { color: var(--danger); } .mi.danger .i { color: var(--danger); }
+
+/* ---------- Group ---------- */
+.ghead { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end; padding: 22px 0 24px; }
+.people { display: flex; align-items: center; gap: 12px; margin-top: 12px; font-size: 15px; color: var(--muted); }
+.gbody { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 20px; min-height: 0; }
+.pp { display: grid; grid-template-columns: 28px minmax(0, 1fr) auto 40px; min-height: 44px; gap: 10px; align-items: center; padding: 6px 0; font-size: 15px; font-weight: 400; }
+.pp small { display: block; font-size: 13px; color: var(--muted); font-weight: 300; }
+.role { display: inline-flex; align-items: center; gap: 4px; height: 34px; padding: 0 10px; border-radius: 10px; background: var(--sheet); font-size: 13px; font-weight: 400; }
+.invite { display: flex; gap: 8px; margin-top: 14px; }
+.joinrow { display: flex; align-items: center; gap: 10px; margin-top: 14px; padding-top: 14px; box-shadow: 0 -1px 0 var(--hairline); font-size: 14px; color: var(--muted); }
+.joinrow span { flex: 1; }
+.showall { display: inline-block; margin-top: 6px; font-size: 14px; color: var(--accent-ink); }
+.pending { color: var(--muted); }
+.invite .field { flex: 1; height: 44px; font-size: 15px; background: var(--sheet); }
+
+/* ---------- phone ---------- */
+.mpage { flex: 1; padding: 22px 20px 0; }
+.mpage > * { flex-shrink: 0; }
+.mtop { padding: 6px 20px 14px; }
+.mchips { display: flex; gap: 6px; margin-top: 12px; }
+.msvc { display: grid; grid-template-columns: 54px minmax(0, 1fr) 40px; gap: 12px; padding: 14px 0; box-shadow: 0 -1px 0 var(--hairline); }
+.msvc .dt b { font-size: 32px; }
+.msvc h2 { font-weight: 300; font-size: 21px; }
+.msvc .flow { font-size: 14px; color: var(--muted); }
+.mnext { background: var(--wash); border-radius: 20px; padding: 18px; margin-bottom: 4px; }
+.mnext h2 { font-weight: 300; font-size: 28px; }
+.mnext .acts { display: flex; gap: 8px; margin-top: 14px; }
+.mnext .acts .btn { flex: 1; height: 46px; }
+.mro { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 12px 0; box-shadow: 0 -1px 0 var(--hairline); }
+.mro .n { font-weight: 300; font-size: 24px; color: var(--accent); text-align: center; }
+.mro h2 { font-weight: 300; font-size: 19px; }
+.mro p { font-size: 13px; color: var(--muted); margin-top: 2px; }
+.mbro { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto 44px; gap: 10px; align-items: center; padding: 8px 0; box-shadow: 0 -1px 0 var(--hairline); }
+.mbro .n { font-weight: 300; font-size: 21px; color: var(--accent); text-align: center; }
+.mbro h2 { font-weight: 300; font-size: 18px; }
+.mrow { display: flex; gap: 8px; margin: 14px 0 8px; }
+.mrow .btn { height: 46px; flex: 1; }
+.mfoot { position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 22px; background: var(--sheet); box-shadow: 0 -8px 24px var(--shadow); display: flex; gap: 10px; align-items: center; z-index: 3; }
+.mfoot .btn { height: 48px; font-size: 16px; }
+.mfoot .saved { flex: 1; }
+</style>
+</head>
+<body class="doc">
+<section class="page" id="app"></section>
+<script src="../system/kit.js"></script>
+<script>
+const { I, rings, fig, row, sec, browser, mbrowser, webbar, mwebbar, qr, seg, btn, ibtn, SONGS } = RO;
+const T = (n) => SONGS.find((s) => s.t.startsWith(n));
+const esc = (s) => s.replace(/&/g, '&amp;');
+/* Today is Friday 16 October. Gatherings of every size, not only Sunday. */
+const SETS = [
+  { d: ['SAT', '17', 'OCT'], n: 'Living room night', g: 'Just me', songs: ['Be Thou My Vision', 'It Is Well', 'Come Thou Fount', 'Blessed Assurance'], pub: true, when: 'Tomorrow, Saturday 17 October' },
+  { d: ['SUN', '18', 'OCT'], n: 'Sunday Morning', g: 'Sunday Service Team', songs: ['Praise to the Lord', 'Holy, Holy, Holy', 'Be Thou My Vision', 'It Is Well', 'Crown Him'], pub: true },
+  { d: ['WED', '21', 'OCT'], n: 'Prayer night', g: 'Just me', songs: ['Be Thou My Vision', 'Rock of Ages', 'When I Survey', 'How Firm'], pub: false, wk: 'Next week' },
+  { d: ['THU', '22', 'OCT'], n: 'Thursday night', g: 'Thursday Care Group', songs: ['Amazing Grace', 'Come Thou Fount', 'Be Thou My Vision', 'It Is Well', 'To God Be'], pub: true },
+  { d: ['FRI', '23', 'OCT'], n: 'Youth Night', g: 'Youth Worship', songs: ['Joyful, Joyful', 'Crown Him', 'All Creatures', 'A Mighty Fortress', 'Amazing Grace'], pub: true },
+];
+const GROUPS = [['Thursday Care Group', '8 people'], ['Sunday Service Team', '9 people'], ['Youth Worship', '6 people']];
+const PEOPLE = [['JL', 'Joanna L.', 'You', 'Can edit'], ['GL', 'Grace L.', 'Started the group', 'Can edit'], ['DW', 'Daniel W.', '', 'Can edit'], ['MC', 'Mei C.', '', 'Can view'], ['SH', 'Samuel H.', '', 'Can view']];
+const flow = (songs, max = 5) => songs.slice(0, max).map((n) => T(n).t).join('<span class="ar"></span>');
+const dateBlock = ([w, d, m]) => `<div class="dt"><i>${w}</i><b>${d}</b><em>${m}</em></div>`;
+const metaLine = (s) => `<p class="meta">${s.g === 'Just me' ? `<span>${I('user')}Just me</span>` : `<a>${I('users')}${s.g}</a>`}<span>${s.songs.length} songs</span>${s.pub ? `<span>${I('globe')}Public link on</span>` : `<span>Private</span>`}</p>`;
+const moreBtn = (label) => `<button class="btn icon quiet more" aria-label="More for ${label}">${I('more')}</button>`;
+
+/* ===== Planner ===== */
+const groupChips = (on = 0) => `<div class="gchips">${['All', 'Thursday Care Group', 'Sunday Service Team', 'Youth Worship', 'Just me'].map((g, i) => `<span class="chip sm ${i === on ? 'on' : ''}">${g}</span>`).join('')}</div>`;
+const groupCol = `<aside class="groups"><h2>Groups</h2>${GROUPS.map(([n, c]) => `<div class="gi">${I('users')}<span>${n}<small>${c}</small></span>${I('next', 's16 go')}</div>`).join('')}<div class="gi">${I('user')}<span>Just me<small>Setlists only you can edit</small></span>${I('next', 's16 go')}</div><div class="gi add">${I('plus')}<span>Start a group</span></div></aside>`;
+function plannerMain({ menu = false, deleted = '', chips = false } = {}) {
+  const [first, ...rest] = SETS.filter((s) => s.n !== deleted);
+  const next = `<div class="next">${dateBlock(first.d)}<div><h2>${first.n}</h2><p class="when whenl">${first.when}</p>${metaLine(first)}<p class="flow">${flow(first.songs)}</p><div class="acts">${btn('Sing', 'primary', 'sing')}${btn('Open setlist', '', 'arrowR')}${btn('Share', '', 'qr')}</div></div></div>`;
+  let lastWk = '';
+  const items = rest.map((s) => { const wk = s.wk && s.wk !== lastWk ? `<p class="wk">${s.wk}</p>` : ''; if (s.wk) lastWk = s.wk;
+    return `${wk}<div class="svc">${dateBlock(s.d)}<div><h2>${s.n}</h2>${metaLine(s)}<p class="flow">${flow(s.songs)}</p></div>${moreBtn(s.n)}</div>`; }).join('');
+  const shelf = `<div class="shelf">${I('setlist')}<span>2 setlists have no date <small>· Learning: Advent songs · Car worship</small></span>${btn('Show', 'sm', 'arrowR')}</div>`;
+  const nm = menu ? `<div class="pop newmenu"><div class="nm hl">${I('plus')}<div><b>Blank setlist</b><small>Start from nothing</small></div></div><p class="nmsub">Or copy one you sang before</p>${[['Sunday Morning', 'Sun 11 Oct · 5 songs'], ['Thursday night', 'Thu 15 Oct · 5 songs'], ['Youth Night', 'Fri 9 Oct · 6 songs']].map(([n, m]) => `<div class="nm">${I('copy')}<div><b>${n}</b><small>${m}</small></div></div>`).join('')}</div>` : '';
+  return `<section class="sheet tl"><div class="tlhead"><h1>Setlists</h1>${seg(['Coming up', 'Past'], 0, 'soft')}${btn('New setlist', menu ? 'on' : '', 'plus')}</div>${chips ? groupChips() : ''}<p class="wk" style="margin-top:0">This week</p>${next}${items}${shelf}${nm}</section>`;
+}
+function plannerDesk(theme = 'light', o = {}) {
+  return browser(theme, '/setlist', `${webbar('Setlists')}<div class="wrapc col"><div class="plan">${groupCol}${plannerMain(o)}</div></div>`, 'desk xtall');
+}
+function plannerTablet(theme = 'light') {
+  return browser(theme, '/setlist', `${webbar('Setlists')}<div class="wrapc col" style="padding:0 24px"><div class="plan" style="grid-template-columns:minmax(0,1fr)">${plannerMain({ chips: true })}</div></div>`, 'tabl');
+}
+function plannerPhone(theme = 'light') {
+  const [first, ...rest] = SETS;
+  const items = rest.slice(0, 3).map((s) => `${s.wk ? `<p class="wk">${s.wk}</p>` : ''}<div class="msvc">${dateBlock(s.d)}<div><h2>${s.n}</h2>${metaLine(s)}</div>${moreBtn(s.n)}</div>`).join('');
+  return mbrowser(theme, '/setlist', `${mwebbar()}<div class="mtop"><div style="display:flex;align-items:center;gap:10px"><h1 class="h1" style="flex:1;font-size:36px">Setlists</h1>${btn('New', '', 'plus')}</div><div class="mchips">${seg(['Coming up', 'Past'], 0, 'soft')}</div><div class="gchips" style="flex-wrap:nowrap;overflow:hidden;margin:10px -20px 0 0">${['All', 'Thursday Care Group', 'Sunday Service Team', 'Youth Worship'].map((g, i) => `<span class="chip sm ${i === 0 ? 'on' : ''}" style="flex-shrink:0">${g}</span>`).join('')}</div></div>
+    <section class="sheet mpage"><p class="wk" style="margin-top:0">This week</p><div class="mnext"><h2>${first.n}</h2><p class="when" style="font-size:15px;margin-top:2px">${first.when}</p>${metaLine(first)}<div class="acts">${btn('Sing', 'primary', 'sing')}${btn('Open', '', 'arrowR')}${btn('Share', '', 'qr')}</div></div>${items}</section>`);
+}
+
+/* ===== Setlist page ===== */
+const RUN = [['Amazing Grace', 'G', ''], ['Come Thou Fount', 'D', ''], ['Be Thou My Vision', 'E', 'from D'], ['It Is Well', 'D', 'from C'], ['To God Be', 'A♭', '']];
+const runRows = RUN.map(([n, k, d], i) => { const s = T(n); return `<div class="ro"><span class="n">${i + 1}</span><div><h2>${s.t}</h2><p>${esc(s.a)} · ${s.fl}</p></div><span class="kt">${k}${d ? `<i>${d}</i>` : ''}</span><span class="tm">${s.tempo} · ${s.time}</span><button class="btn icon quiet more" aria-label="Sing from ${s.t}" title="Sing from here">${I('sing')}</button></div>`; }).join('');
+const shareOn = `<div class="share"><div class="state"><b>Public link · <span>On</span></b><i class="tog on" role="switch" aria-checked="true" aria-label="Public link"></i></div><p class="expl">Anyone with the link or this code can follow along on their phone. No account needed.</p><div class="qrbox">${qr(168, 11)}</div><div class="url"><span>/setlist/view/66f2a9c4e1b0</span>${btn('Copy link', 'sm', 'copy')}</div><p class="tv">The code also shows on the first screen when you press Sing, so a room can scan it from the TV.</p></div>`;
+const shareOff = `<div class="share off"><div class="state"><b>Public link · Off</b><i class="tog" role="switch" aria-checked="false" aria-label="Public link"></i></div><div class="offbox">Only people in Thursday Care Group can open this setlist. Turn the link on to share it with anyone, including guests who don’t have an account.<br>${btn('Turn on the public link', '', 'globe')}</div></div>`;
+const shareView = `<div class="share"><div class="state"><b>Public link · <span>On</span></b></div><p class="expl">Anyone with the link or this code can follow along on their phone.</p><div class="qrbox">${qr(168, 11)}</div><div class="url"><span>/setlist/view/66f2a9c4e1b0</span>${btn('Copy link', 'sm', 'copy')}</div></div>`;
+const viewCard = `<div class="pcard"><h2>Thursday Care Group</h2><p>Grace L. and Daniel W. can edit this setlist. You can view it and pick your own key while you sing.</p></div>`;
+const whoCard = `<div class="pcard"><h2>Thursday Care Group</h2><p>Grace L., Daniel W. and you can edit. Mei C., Samuel H. and 3 others can view. <a>Manage people</a></p></div>`;
+function setlistDesk(theme = 'light', { off = false, dialog = '', viewer = false } = {}) {
+  const head = `<div class="rhead"><div><p class="crumb"><a>Setlists</a>${I('next', 's16')}<a>Thursday Care Group</a></p><h1 class="h1" style="margin-top:12px">Thursday night</h1><p class="sub2"><b class="when">Thursday 22 October</b> · 5 songs · <a>Thursday Care Group</a> · edited by Grace L. yesterday</p></div>
+    <div class="hacts">${viewer ? btn('Copy link', '', 'copy') : `${moreBtn('Thursday night')}${btn('Edit', '', 'edit')}`}${btn('Sing', 'primary', 'sing')}</div></div>`;
+  const dlgs = {
+    off: `<div class="scrim"></div><div class="dialog dlg"><h2>Turn off the public link?</h2><p>Anyone who scanned the code or saved the link will see “This setlist isn’t available”. Turn it back on later and the same link works again.</p><div class="acts">${btn('Keep it on')}<button class="btn dangerbtn">Turn off</button></div></div>`,
+    del: `<div class="scrim"></div><div class="dialog dlg"><h2>Delete “Thursday night”?</h2><p>It disappears for everyone in Thursday Care Group and its public link stops working. The songs stay in the songbook.</p><div class="acts">${btn('Keep it')}<button class="btn dangerbtn">${I('trash', 's18')}Delete setlist</button></div></div>`,
+  };
+  return browser(theme, '/setlist/details/66f2a9c4e1b0', `${webbar('Setlists')}<div class="wrapc col">${head}<div class="rbody"><section class="sheet run">${runRows}<p class="runhint">Sing starts from the top. Each song’s ${I('sing', 's16')} starts from that song.</p></section><aside class="side">${viewer ? shareView : off ? shareOff : shareOn}${viewer ? viewCard : whoCard}</aside></div>${dlgs[dialog] || ''}</div>`, 'desk tall');
+}
+function setlistPhone(theme = 'light') {
+  const rows = RUN.map(([n, k, d], i) => { const s = T(n); return `<div class="mro"><span class="n">${i + 1}</span><div><h2>${s.t}</h2><p>${s.tempo} · ${s.time}</p></div><span class="kt">${k}${d ? `<i>${d}</i>` : ''}</span></div>`; }).join('');
+  return mbrowser(theme, '/setlist/details/66f2a9c4e1b0', `${mwebbar()}<section class="sheet mpage"><p class="crumb"><a class="back">${I('back', 's16')}Setlists</a></p><h1 class="h1" style="font-size:36px;margin-top:8px">Thursday night</h1><p class="meta" style="font-size:14px"><b class="when">Thu 22 Oct</b><span>Thursday Care Group</span><span>${I('globe')}Public link on</span></p>
+    <div class="mrow">${btn('Sing', 'primary', 'sing')}</div><div class="mrow" style="margin-top:0">${btn('Share', '', 'qr')}${btn('Edit', '', 'edit')}${moreBtn('Thursday night')}</div>${rows}</section>`);
+}
+function sharePhone(theme = 'light', copied = false) {
+  const t = copied ? `<div class="toast" style="left:16px;right:16px;bottom:24px">${I('check', 's18')}<span style="flex:1">Link copied. Paste it into your group chat.</span></div>` : '';
+  return mbrowser(theme, '/setlist/details/66f2a9c4e1b0?share', `${mwebbar()}<section class="sheet mpage"><p class="crumb"><a class="back">${I('back', 's16')}Thursday night</a></p><h1 class="h1" style="font-size:32px;margin:10px 0 16px">Share with the room</h1>${shareOn.replace('qr(168', 'qr(200')}</section>${t}`.replace('qr(168, 11)', 'qr(200, 11)'));
+}
+
+/* ===== Builder ===== */
+const BADD = [['Amazing Grace', 'G', ''], ['Come Thou Fount', 'D', ''], ['Be Thou My Vision', 'E', 'from D'], ['It Is Well', 'D', 'from C']];
+const keyChip = (k, d) => `<button class="keychip" style="height:36px"><b style="font-size:16px">${k}</b>${d ? `<i class="from">${d}</i>` : ''}${I('chev', 's16')}</button>`;
+function builderMain({ drag = true, offline = false } = {}) {
+  const rows = BADD.map(([n, k, d], i) => { const s = T(n); return `<div class="bro ${drag && i === 1 ? 'drag' : ''}"><span class="grip" aria-label="Drag to reorder">${I('grip')}</span><span class="n">${i + 1}</span><div><h2>${s.t}</h2><p>${esc(s.a)}</p></div>${keyChip(k, d)}${moreBtn(s.t)}</div>`; }).join('');
+  const left = `<section class="sheet bset"><p class="tin">Thursday night<i class="caret"></i></p><div class="dets"><span class="chip">${I('calendar')}Thursday 22 October${I('chev', 's16')}</span><span class="chip">${I('users')}Thursday Care Group${I('chev', 's16')}</span><span class="chip">${I('globe')}Public link: On${I('chev', 's16')}</span></div>${rows}<div class="drop">Drag a song here, or use Add on the right</div><p class="khelp">Keyboard: focus a song and press Alt + ↑ or ↓ to move it.</p></section>`;
+  const res = SONGS.slice(4, 12).map((s) => { const added = BADD.some(([b]) => s.t.startsWith(b)); return `<div class="br"><div><b>${s.t}</b><small>${esc(s.a)} · ${s.tempo}</small></div><span class="keytag">${s.k}</span>${added ? `<span class="added">${I('check', 's16')}Added</span>` : btn('Add', '', 'plus')}</div>`; }).join('');
+  const right = `<section class="sheet bsong"><h2>Add songs<span class="t-small">248 in the songbook</span></h2><div class="field on-sheet">${I('search')}<span class="ph">Search title or a line of lyric</span></div><div class="chips"><span class="chip sm on">Theme: Hope${I('close', 's16')}</span><span class="chip sm">Key${I('chev', 's16')}</span><span class="chip sm">Tempo${I('chev', 's16')}</span></div>${res}</section>`;
+  const toast = offline ? `<div class="toast" style="right:24px;bottom:24px">${I('alert', 's18')}<span>You’re offline. Changes are kept on this device and save when you’re back.</span></div>` : '';
+  return { left, right, toast };
+}
+function builderDesk(theme = 'light', o = {}) {
+  const { left, right, toast } = builderMain(o);
+  const status = o.offline ? `<span class="saved">${I('alert', 's16')}Saved on this device</span>` : `<span class="saved">${I('check', 's16')}Saved just now</span>${btn('Undo', 'quiet')}`;
+  return browser(theme, '/setlist/edit/66f2a9c4e1b0', `${webbar('Setlists')}<div class="wrapc col"><div class="bbar"><p class="crumb"><a>Setlists</a>${I('next', 's16')}<a>Thursday night</a>${I('next', 's16')}Edit</p>${status}${btn('Done', 'primary')}</div><div class="bgrid">${left}${right}</div>${toast}</div>`, 'desk tall');
+}
+function builderTablet(theme = 'light') {
+  const { left, right } = builderMain({ drag: false });
+  return browser(theme, '/setlist/edit/66f2a9c4e1b0', `${webbar('Setlists')}<div class="wrapc col" style="padding:0 24px"><div class="bbar"><p class="crumb"><a>Thursday night</a>${I('next', 's16')}Edit</p><span class="saved">${I('check', 's16')}Saved just now</span>${btn('Undo', 'quiet')}${btn('Done', 'primary')}</div><div class="bgrid">${left}${right}</div></div>`, 'tabl');
+}
+function builderPhone(theme = 'light', { menu = false, search = false, removed = false } = {}) {
+  if (search) {
+    const res = SONGS.slice(4, 12).map((s) => { const added = BADD.some(([b]) => s.t.startsWith(b)); return `<div class="br"><div><b>${s.t}</b><small>${s.tempo} · ${s.k}</small></div><span></span>${added ? `<span class="added">${I('check', 's16')}Added</span>` : btn('Add', '', 'plus')}</div>`; }).join('');
+    return mbrowser(theme, '/setlist/edit/66f2a9c4e1b0?add', `${mwebbar()}<section class="sheet mpage bsong" style="padding:22px 20px 0"><h2>Add to Thursday night</h2><div class="field on-sheet">${I('search')}<span class="ph">Search title or lyric</span></div><div class="chips"><span class="chip sm on">Theme: Hope${I('close', 's16')}</span><span class="chip sm">Key</span></div>${res}</section><div class="mfoot"><span class="saved">4 songs</span>${btn('Done', 'primary')}</div>`);
+  }
+  const rows = BADD.filter(([n]) => !(removed && n === 'Come Thou Fount')).map(([n, k, d], i) => { const s = T(n); return `<div class="mbro"><span class="n">${i + 1}</span><div><h2>${s.t}</h2></div>${keyChip(k, d)}${moreBtn(s.t)}</div>`; }).join('');
+  const m = menu ? `<div class="pop rowmenu" style="right:14px;top:430px">${[['up', 'Move up'], ['down', 'Move down'], ['music', 'Change key']].map(([ic, t]) => `<div class="mi">${I(ic)}${t}</div>`).join('')}<div class="mi danger">${I('trash')}Remove from setlist</div></div>` : '';
+  return mbrowser(theme, '/setlist/edit/66f2a9c4e1b0', `${mwebbar()}<section class="sheet mpage"><p class="tin" style="font-size:32px">Thursday night<i class="caret"></i></p><div class="dets" style="margin:12px 0 8px"><span class="chip">${I('calendar')}Thu 22 Oct</span><span class="chip">${I('users')}Thursday Care Group</span></div>${rows}<button class="btn" style="width:100%;height:48px;margin-top:14px">${I('plus')}Add songs</button></section>${m}${removed ? `<div class="toast" style="left:16px;right:16px;bottom:96px">${I('check', 's18')}<span style="flex:1">Removed Come Thou Fount</span>${btn('Undo', 'sm')}</div>` : ''}<div class="mfoot"><span class="saved">${I('check', 's16')}Saved</span>${btn('Undo', 'quiet')}${btn('Done', 'primary')}</div>`);
+}
+
+/* ===== Group ===== */
+function groupDesk(theme = 'light') {
+  const mine = [{ d: ['THU', '22', 'OCT'], n: 'Thursday night', g: 'Thursday Care Group', songs: SETS[3].songs, pub: true }];
+  const past = [{ d: ['THU', '15', 'OCT'], n: 'Thursday night', g: 'Thursday Care Group', songs: ['Amazing Grace', 'Be Thou My Vision', 'It Is Well', 'Holy, Holy, Holy', 'Come Thou Fount'], pub: true }, { d: ['THU', '8', 'OCT'], n: 'Harvest thanksgiving', g: 'Thursday Care Group', songs: ['Praise to the Lord', 'Come Thou Fount', 'To God Be', 'Joyful, Joyful'], pub: false }];
+  const rowOf = (s) => `<div class="svc">${dateBlock(s.d)}<div><h2>${s.n}</h2><p class="meta"><span>${s.songs.length} songs</span>${s.pub ? `<span>${I('globe')}Public link on</span>` : '<span>Group only</span>'}</p><p class="flow">${flow(s.songs, 4)}</p></div>${moreBtn(s.n)}</div>`;
+  const head = `<div class="ghead"><div><p class="crumb"><a>Setlists</a>${I('next', 's16')}Groups</p><h1 class="h1" style="margin-top:12px">Thursday Care Group</h1><div class="people"><span class="avs">${PEOPLE.map(([i]) => `<span class="avatar">${i}</span>`).join('')}</span>Grace L., Daniel W., Mei C. and 5 others</div></div><div class="hacts">${moreBtn('Thursday Care Group')}${btn('New setlist for this group', 'primary', 'plus')}</div></div>`;
+  const side = `<aside class="side"><div class="pcard"><h2>People</h2><p style="margin-bottom:10px">People who can view see the group’s setlists. People who can edit can also plan them.</p>${PEOPLE.map(([i, n, r, role]) => `<div class="pp"><span class="avatar sm">${i}</span><span>${n}${r ? `<small>${r}</small>` : ''}</span><span class="role">${role}${I('chev', 's16')}</span>${i === 'JL' ? '<span></span>' : moreBtn(n).replace('more"', 'more" style="width:40px;height:40px"')}</div>`).join('')}<div class="pp pending"><span class="avatar sm">${I('mail', 's16')}</span><span>new@example.com<small>Invited 2 days ago</small></span><span class="role">Can view${I('chev', 's16')}</span>${moreBtn('the invite').replace('more"', 'more" style="width:40px;height:40px"')}</div><a class="showall">Show all 8 people</a>
+    <div class="invite"><div class="field"><span class="ph">Add by email</span></div><span class="role" style="height:44px">Can view${I('chev', 's16')}</span>${btn('Invite')}</div><div class="joinrow">${I('link', 's18')}<span>Or share an invite link. Anyone who opens it joins as Can view.</span>${btn('Copy invite link', 'sm', 'copy')}</div></div></aside>`;
+  return browser(theme, '/setlist/folder/66e1c0b7a2d4', `${webbar('Setlists')}<div class="wrapc col">${head}<div class="gbody"><section class="sheet tl"><p class="wk" style="margin-top:0">Coming up</p>${mine.map(rowOf).join('')}<p class="wk">Past</p>${past.map(rowOf).join('')}</section>${side}</div></div>`, 'desk tall');
+}
+function groupPhone(theme = 'light') {
+  return mbrowser(theme, '/setlist/folder/66e1c0b7a2d4', `${mwebbar()}<section class="sheet mpage"><p class="crumb"><a class="back">${I('back', 's16')}Setlists</a></p><h1 class="h1" style="font-size:34px;margin-top:8px">Thursday Care Group</h1><div class="people" style="font-size:14px"><span class="avs">${PEOPLE.slice(0, 4).map(([i]) => `<span class="avatar sm">${i}</span>`).join('')}</span>8 people</div>
+    <div class="mrow">${btn('New setlist', 'primary', 'plus')}${btn('Invite', '', 'plus')}</div><p class="wk">Coming up</p><div class="msvc">${dateBlock(['THU', '22', 'OCT'])}<div><h2>Thursday night</h2><p class="meta"><span>5 songs</span><span>${I('globe')}Public link on</span></p></div>${moreBtn('Thursday night')}</div>
+    <p class="wk">People · 8</p>${PEOPLE.slice(0, 4).map(([i, n, r, role]) => `<div class="pp" style="grid-template-columns:28px minmax(0,1fr) auto"><span class="avatar sm">${i}</span><span>${n}${r ? `<small>${r}</small>` : ''}</span><span class="role" style="background:var(--alt)">${role}${I('chev', 's16')}</span></div>`).join('')}<a class="showall" style="display:block;min-height:44px;line-height:44px">Show all 8 people</a></section>`);
+}
+
+/* ===== states ===== */
+function plannerEmpty(theme = 'light') {
+  return browser(theme, '/setlist', `${webbar('Setlists')}<div class="wrapc col"><div class="plan"><aside class="groups"><h2>Groups</h2><div class="gi add">${I('plus')}<span>Start a group</span></div></aside><section class="sheet tl" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;padding-bottom:60px">
+    <div style="position:relative;width:14px;height:14px;margin-bottom:104px">${rings(4, 30, 22).replace('class="rings"', 'class="rings" style="width:288px;height:288px;left:-137px;top:-137px"')}<span style="position:absolute;inset:0;border-radius:50%;background:var(--accent)"></span></div><h1 style="position:relative;font-weight:300;font-size:36px">Nothing planned yet</h1><p style="position:relative;margin:10px 0 22px;font-size:16px;color:var(--muted);max-width:44ch;line-height:1.55">A setlist is the songs for one gathering, in order, with their keys. It can be for a group, a living room or just you. Share it as one link and everyone can sing along.</p><div style="position:relative;display:flex;gap:8px">${btn('New setlist', 'primary', 'plus')}${btn('Browse the songbook', '', 'music')}</div></section></div></div>`);
+}
+function toastDesk(theme = 'light') {
+  const h = plannerDesk(theme, { deleted: 'Youth Night' });
+  return h.replace(/<\/div><\/div><\/div><\/div>$/, `<div class="toast" style="right:24px;bottom:24px">${I('check', 's18')}“Youth Night” deleted${btn('Undo', 'sm')}</div></div></div></div></div>`);
+}
+
+/* ===== page ===== */
+const nav = [['ripple-out-desktop.html', 'Setlist view'], ['ripple-out-songs.html', 'Songs'], ['ripple-out-setlists.html', 'Setlists', 1], ['ripple-out-home.html', 'Home and profile'], ['ripple-out-signin.html', 'Sign-in and errors']].map(([h, t, on]) => `<a class="${on ? 'on' : ''}" href="${h}">${t}</a>`).join('');
+document.getElementById('app').innerHTML = `
+<header class="ph"><h1>Setlists</h1><p class="lead">Round 4, after the second design critique. Setlists are gatherings of any size (a living room, a care group, a youth night, a Sunday, or just you), and a setlist may have no date at all. “Sing” opens the reading view, on a phone or a TV. Every row has a visible ⋯ menu instead of hover actions, the public link shows its state before its effects, there is one place to edit with autosave, and groups have people who can view and people who can edit. Desktop at 55%, tablet at 60%, phone at 80%.</p><nav class="topnav">${nav}</nav></header>
+
+${sec('Planner', 'Coming up and Past are the two views; setlists without a date sit on a shelf at the end, not behind a third tab. The next gathering is pinned with Sing, Open setlist and Share; the rest follow by week, each with a ⋯ menu that is always there (Sing, Edit, Duplicate, Move to group, Delete). Groups in the left column open their group pages; on tablet and phone the same groups are a chip row, and every group name in a row is a link. New setlist offers to copy a past one, since most weekly sets start from last week’s.')}
+${row(fig('Planner · /setlist', plannerDesk()), fig('New setlist: blank, or copy a past one', plannerDesk('light', { menu: true })))}
+${row(fig('Planner · dark', plannerDesk('dark')), fig('Tablet landscape · 1180 × 820', plannerTablet()))}
+${row(fig('Phone', plannerPhone()), fig('Phone · dark', plannerPhone('dark')))}
+
+${sec('Setlist', 'One page per setlist, for reading and singing. Sing starts from the top, and every song has its own Sing from here button. The public link panel starts with its state and switch, then the code and the link, and says the code also appears on the first Sing screen so a room can scan it from the TV. When the link is off, the panel explains who can still open it. Turning it off asks first and says what breaks.')}
+${row(fig('Setlist · /setlist/details/:id', setlistDesk()), fig('Public link off', setlistDesk('light', { off: true })))}
+${row(fig('Someone who can view: no Edit, no switch', setlistDesk('light', { viewer: true })), fig('Turning the link off asks first', setlistDesk('light', { dialog: 'off' })))}
+${row(fig('Delete asks first', setlistDesk('light', { dialog: 'del' })))}
+${row(fig('Phone', setlistPhone()), fig('Phone · share with the room', sharePhone()), fig('Phone · link copied', sharePhone('light', true)), fig('Phone · dark', setlistPhone('dark')))}
+
+${sec('Edit a setlist', 'One place to edit. Changes save as you go, with Undo on every size, and Done returns to the setlist. The running order is on the left with visible drag handles and keyboard moves; each song’s key is a chip you can change; every row has a ⋯ menu with Move up, Move down, Change key and Remove, so a phone needs no dragging. The songbook sits on the right, with 44px Add buttons.')}
+${row(fig('Edit, dragging a song · /setlist/edit/:id', builderDesk()), fig('Offline: kept on this device', builderDesk('light', { drag: false, offline: true })))}
+${row(fig('Tablet landscape', builderTablet()), fig('Phone', builderPhone()), fig('Phone · row menu', builderPhone('light', { menu: true })), fig('Phone · add songs', builderPhone('light', { search: true })), fig('Phone · removed, with Undo', builderPhone('light', { removed: true })))}
+
+${sec('Group', 'A group is the people who sing together. Some plan (can edit), most sing (can view). The page shows the people first, then the group’s setlists. There is one way to invite: by email with a role chosen up front, or by an invite link that joins as Can view. Pending invites show until they are accepted. Shared setlists still open for guests through the public link.')}
+${row(fig('Group · /setlist/folder/:id', groupDesk()), fig('Phone', groupPhone()))}
+
+${sec('Other states', 'An empty planner says what a setlist is and that it can be for anyone. After a delete, a toast offers Undo without covering the list.')}
+${row(fig('No setlists yet', plannerEmpty()), fig('Undo after deleting', toastDesk()))}
+`;
+</script>
+</body>
+</html>

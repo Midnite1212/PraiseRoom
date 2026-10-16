@@ -1,0 +1,91 @@
+/* Ripple Out · Calm × Paper · E4 "Dusty Navy & Powder Sky"
+   Shared design tokens for every HTML mock. A frame opts into a theme with
+   class="theme-light" or class="theme-dark"; nothing reads tokens from :root. */
+
+@import url('https://fonts.googleapis.com/css2?family=Overpass:wght@300;400;500&family=Source+Code+Pro:wght@400;500&display=swap');
+
+.theme-light {
+  --tint: #eff4fa; /* chrome layer */
+  --sheet: #ffffff; /* reading sheet, cards, popovers */
+  --rail: #fafcfd; /* side panels: sheet 70% over tint */
+  --alt: #e2eaf4; /* soft control fill */
+  --wash: #dce9f7; /* accent wash: current item, key chip */
+  --primary: #2a4a72; /* the one navy moment, icons */
+  --on-primary: #ffffff;
+  --accent: #3a72b0; /* accent text, chords, progress */
+  --accent-ink: #2f6299; /* accent text on wash, alt and tint (≥ 5:1) */
+  --text: #14223a;
+  --muted: #56647a;
+  --hairline: #dde4ee;
+  --danger: #a8323e;
+  --danger-wash: #f8e4e6;
+  --shadow: rgba(20, 34, 58, 0.12);
+  --scrim: rgba(15, 24, 38, 0.32);
+  --chord-1: #0b6a8a;
+  --chord-2: #0f7340;
+  --chord-4: #7136a8;
+  --chord-5: #a04a00;
+  --chord-6: #b0243b;
+  --key-w: #ffffff;
+  --key-b: #2a3b57;
+  --on-key-b: #dce9f7;
+  --chrome: #d9dfe7;
+  --chrome-url: #f4f6f9;
+  --chrome-dot: #c2cad5; /* mock browser frame only */
+  color-scheme: light;
+}
+
+.theme-dark {
+  --tint: #16233a;
+  --sheet: #0f1826;
+  --rail: #111b2c;
+  --alt: #1f2f4b;
+  --wash: #22385a;
+  --primary: #b6cdea;
+  --on-primary: #16294a;
+  --accent: #8fb8e6;
+  --accent-ink: #8fb8e6;
+  --text: #e8eef6;
+  --muted: #a3b2c6;
+  --hairline: #26364f;
+  --danger: #ff9aa8;
+  --danger-wash: #3a2130;
+  --shadow: rgba(0, 0, 0, 0.45);
+  --scrim: rgba(0, 0, 0, 0.5);
+  --chord-1: #6fc8e8;
+  --chord-2: #6fd39d;
+  --chord-4: #c9a3f2;
+  --chord-5: #f2b36b;
+  --chord-6: #ff9aa8;
+  --key-w: #40597f;
+  --key-b: #0b121d;
+  --on-key-b: #a3b2c6;
+  --chrome: #070d16;
+  --chrome-url: #18212f;
+  --chrome-dot: #2a3546; /* mock browser frame only */
+  color-scheme: dark;
+}
+
+:root {
+  /* type */
+  --sans: 'Overpass', system-ui, sans-serif;
+  --mono: 'Source Code Pro', ui-monospace, monospace;
+  /* shape */
+  --r-xs: 6px;
+  --r-sm: 9px;
+  --r-md: 12px;
+  --r-lg: 14px;
+  --r-card: 18px;
+  --r-sheet: 24px;
+  /* doc page (the presentation around the frames, not part of the product) */
+  --doc-bg: #e6ebf1;
+  --doc-text: #14223a;
+  --doc-muted: #46536a;
+  --doc-accent: #3a72b0;
+  --doc-rule: #c9d3df;
+  --doc-chip: #dce9f7;
+  --doc-chip-text: #2a4a72;
+  --doc-chip-on: #2a4a72;
+  --doc-chip-on-text: #ffffff;
+  --doc-cap: #56647a;
+}

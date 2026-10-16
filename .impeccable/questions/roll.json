@@ -1,0 +1,38 @@
+{
+  "scope": "direction",
+  "key": "bae738a4",
+  "reroll": 1,
+  "at": 1791823543984,
+  "worlds": [
+    {
+      "id": "hand-drawn-zine-explainer",
+      "board": "https://impeccable.style/worlds/cards/hand-drawn-zine-explainer.webp",
+      "hero": "https://impeccable.style/worlds/cards/hand-drawn-zine-explainer-hero.webp"
+    },
+    {
+      "id": "operate-c-depot-blind-courses",
+      "board": "https://impeccable.style/worlds/cards/operate-c-depot-blind-courses.webp",
+      "hero": "https://impeccable.style/worlds/cards/operate-c-depot-blind-courses-hero.webp"
+    },
+    {
+      "id": "rivers-tides-ocean-depths-mesophotic-deep-dive",
+      "board": "https://impeccable.style/worlds/cards/rivers-tides-ocean-depths-mesophotic-deep-dive.webp",
+      "hero": "https://impeccable.style/worlds/cards/rivers-tides-ocean-depths-mesophotic-deep-dive-hero.webp"
+    },
+    {
+      "id": "kinetic-sculpture-automata-tensegrity-breathing-column",
+      "board": "https://impeccable.style/worlds/cards/kinetic-sculpture-automata-tensegrity-breathing-column.webp",
+      "hero": "https://impeccable.style/worlds/cards/kinetic-sculpture-automata-tensegrity-breathing-column-hero.webp"
+    },
+    {
+      "id": "fly-posted-festival-hoarding-built",
+      "board": "https://impeccable.style/worlds/cards/fly-posted-festival-hoarding-built.webp",
+      "hero": "https://impeccable.style/worlds/cards/fly-posted-festival-hoarding-built-hero.webp"
+    },
+    {
+      "id": "tanaka-plane-portrait",
+      "board": "https://impeccable.style/worlds/cards/tanaka-plane-portrait.webp",
+      "hero": "https://impeccable.style/worlds/cards/tanaka-plane-portrait-hero.webp"
+    }
+  ]
+}

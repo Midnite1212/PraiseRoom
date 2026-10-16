@@ -19,7 +19,11 @@
     "prepare": "husky install"
   },
   "lint-staged": {
-    "**/*.{js,jsx,ts,tsx}": [
+    "{ui,server}/**/*.{js,jsx,ts,tsx}": [
+      "prettier --write --config .prettierrc.json",
+      "eslint --max-warnings=0"
+    ],
+    "commitlint.config.js": [
       "prettier --write --config .prettierrc.json",
       "eslint --max-warnings=0"
     ],

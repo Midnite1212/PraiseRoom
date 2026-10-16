@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390">
+<title>Sea Glass</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@500;600;700&family=Atkinson+Hyperlegible+Next:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sea:#0C2A33; --foam:#EAF4F1; --mist:#A3C6C1; --aqua:#8FD3C7;
+    --g-cobalt:#93B2F0; --g-amber:#E3B577; --g-seafoam:#A2DBAC; --g-aqua:#8FD3C7;
+    --g-lavender:#BBAAE8; --g-frost:#D7E3E0; --g-olive:#C8CD80;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { width:390px; height:844px; overflow:hidden; background:var(--sea); color:var(--foam); }
+  body { font-family:'Atkinson Hyperlegible Next', sans-serif; }
+  .head { padding:22px 20px 0; }
+  .brand { display:flex; justify-content:space-between; align-items:center; font-family:'Figtree'; font-weight:500; font-size:14px; color:var(--mist); }
+  .brand a { color:var(--foam); text-decoration:none; border:1px solid rgba(143,211,199,.45); border-radius:14px; padding:7px 12px; }
+  h1 { font-family:'Figtree'; font-weight:600; font-size:34px; line-height:1.05; letter-spacing:-.015em; margin-top:24px; }
+  .meta { font-family:'Figtree'; font-size:16px; color:var(--mist); margin-top:8px; }
+  .shore { position:relative; margin-top:26px; padding:0 20px 26px; }
+  .tide { position:absolute; left:0; bottom:6px; width:390px; height:24px; }
+  .pieces { position:relative; display:flex; gap:12px; overflow:hidden; }
+  .piece { flex:none; width:132px; height:92px; border-radius:18px 22px 16px 24px; padding:12px 14px; background:rgba(143,211,199,.10); border:1px solid rgba(143,211,199,.40); display:flex; flex-direction:column; justify-content:space-between; }
+  .piece b { font-family:'Figtree'; font-weight:700; font-size:26px; line-height:1; }
+  .piece span { font-family:'Figtree'; font-weight:500; font-size:15px; line-height:1.15; color:var(--foam); }
+  .piece.now { background:var(--aqua); border-color:var(--aqua); color:var(--sea); }
+  .piece.now span { color:var(--sea); }
+  .controls { display:flex; gap:12px; padding:4px 20px 18px; border-bottom:1px solid rgba(143,211,199,.25); }
+  .ctl { display:flex; align-items:center; gap:10px; height:46px; padding:0 14px; border-radius:16px; border:1px solid rgba(143,211,199,.40); font-family:'Figtree'; font-weight:600; font-size:16px; }
+  .sw { width:38px; height:22px; border-radius:11px; background:var(--aqua); position:relative; }
+  .sw::after { content:''; position:absolute; right:3px; top:3px; width:16px; height:16px; border-radius:50%; background:var(--sea); }
+  .ctl i { font-style:normal; color:var(--mist); font-weight:500; font-size:22px; padding:0 4px; }
+  .ctl em { font-style:normal; font-size:20px; color:var(--g-cobalt); }
+  .read { padding:22px 20px 0; }
+  .song { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:18px; }
+  .song h2 { font-family:'Figtree'; font-weight:600; font-size:24px; }
+  .song span { font-family:'Figtree'; font-size:15px; color:var(--mist); }
+  .sec { font-family:'Figtree'; font-weight:600; font-size:14px; letter-spacing:.14em; text-transform:uppercase; color:var(--mist); margin-bottom:12px; }
+  .line { display:flex; flex-wrap:wrap; margin-bottom:12px; }
+  .seg { display:flex; flex-direction:column; }
+  .c { font-family:'Figtree'; font-weight:700; font-size:17px; height:22px; }
+  .G { color:var(--g-cobalt); } .C { color:var(--g-amber); } .D { color:var(--g-seafoam); } .E { color:var(--g-aqua); }
+  .l { font-size:21px; line-height:1.3; white-space:pre; }
+</style>
+</head>
+<body>
+  <header class="head">
+    <p class="brand"><span>Ripple Out Worship</span><a href="#">Copy link</a></p>
+    <h1>Thursday Care Group</h1>
+    <p class="meta">Thu 15 Oct · 4 songs</p>
+  </header>
+  <nav class="shore" aria-label="Songs in this setlist">
+    <svg class="tide" viewBox="0 0 390 24" aria-hidden="true"><path d="M0 12 C 40 2, 80 2, 120 12 S 200 22, 240 12 S 320 2, 390 12" fill="none" stroke="#EAF4F1" stroke-opacity=".35" stroke-width="1.5"/></svg>
+    <div class="pieces">
+      <div class="piece now"><b>1</b><span>Amazing Grace</span></div>
+      <div class="piece"><b>2</b><span>Be Thou My Vision</span></div>
+      <div class="piece"><b>3</b><span>It Is Well</span></div>
+    </div>
+  </nav>
+  <div class="controls">
+    <span class="ctl"><span class="sw"></span>Chords</span>
+    <span class="ctl">Key <i>−</i><em>G</em><i>+</i></span>
+  </div>
+  <main class="read">
+    <div class="song"><h2>Amazing Grace</h2><span>John Newton · 1779</span></div>
+    <p class="sec">Verse 1</p>
+    <div class="line"><span class="seg"><span class="c G">G</span><span class="l">Amazing </span></span><span class="seg"><span class="c G">G7</span><span class="l">grace, how </span></span><span class="seg"><span class="c C">C</span><span class="l">sweet the </span></span><span class="seg"><span class="c G">G</span><span class="l">sound</span></span></div>
+    <div class="line"><span class="seg"><span class="c"></span><span class="l">That </span></span><span class="seg"><span class="c G">G</span><span class="l">saved a wretch like </span></span><span class="seg"><span class="c D">D</span><span class="l">me</span></span></div>
+    <div class="line"><span class="seg"><span class="c"></span><span class="l">I </span></span><span class="seg"><span class="c G">G</span><span class="l">once was </span></span><span class="seg"><span class="c G">G7</span><span class="l">lost, but </span></span><span class="seg"><span class="c C">C</span><span class="l">now am </span></span><span class="seg"><span class="c G">G</span><span class="l">found</span></span></div>
+    <div class="line"><span class="seg"><span class="c"></span><span class="l">Was </span></span><span class="seg"><span class="c E">Em</span><span class="l">blind but </span></span><span class="seg"><span class="c D">D</span><span class="l">now I </span></span><span class="seg"><span class="c G">G</span><span class="l">see</span></span></div>
+  </main>
+</body>
+</html>

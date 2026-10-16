@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deep Dive type pairings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500&family=Sora:wght@300;400;500&family=Urbanist:wght@300;400;500;600&family=Red+Hat+Display:wght@300;400;500&family=Geist+Mono:wght@400;500&family=JetBrains+Mono:wght@400;500&family=Red+Hat+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --abyss:#061226; --ink:#0B2547; --therm:#5CC8D6; --chalk:#F0F4F5; --dim:#9DB2C4; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:#E7ECEF; color:#14202B; font-family:'Plus Jakarta Sans', sans-serif; padding:32px 16px 48px; }
+  .intro { max-width:1250px; margin:0 auto 24px; }
+  .intro h1 { font-family:'Sora'; font-weight:400; font-size:28px; letter-spacing:-.01em; }
+  .intro p { margin-top:8px; font-size:16px; color:#3D4B57; max-width:70ch; line-height:1.5; }
+  .row { display:flex; flex-wrap:wrap; gap:28px; justify-content:center; }
+  figure { width:390px; }
+  figcaption { font-size:15px; line-height:1.5; margin-bottom:12px; }
+  figcaption b { display:block; font-weight:500; font-size:17px; }
+  .phone { width:390px; height:844px; overflow:hidden; position:relative; color:var(--chalk); border-radius:28px; background:linear-gradient(180deg, #123A5E 0%, var(--ink) 34%, var(--abyss) 100%); font-family:'Plus Jakarta Sans', sans-serif; }
+  .phone::before { content:''; position:absolute; inset:0; background-image:radial-gradient(rgba(240,244,245,.08) 1px, transparent 1.4px); background-size:23px 29px; pointer-events:none; }
+  .head { position:relative; padding:24px 22px 0; }
+  .brand { display:flex; justify-content:space-between; font-family:var(--mono); font-size:12px; letter-spacing:.08em; color:var(--dim); text-transform:uppercase; }
+  .brand a { color:var(--chalk); text-decoration:none; text-transform:none; letter-spacing:.02em; }
+  h2 { font-family:var(--display); font-weight:var(--dw); font-size:34px; line-height:1.08; letter-spacing:var(--dls); margin-top:24px; }
+  .meta { font-family:var(--mono); font-size:13px; color:var(--dim); margin-top:10px; letter-spacing:.02em; }
+  .dive { position:relative; margin-top:26px; height:196px; }
+  .axis { position:absolute; left:36px; top:0; bottom:0; width:1px; background:rgba(240,244,245,.28); }
+  .stop { position:absolute; left:0; right:0; height:44px; display:flex; align-items:center; gap:22px; padding-left:22px; }
+  .stop i { width:29px; height:29px; border-radius:50%; border:1px solid rgba(240,244,245,.42); background:var(--abyss); font-style:normal; font-family:var(--mono); font-size:13px; display:grid; place-items:center; }
+  .stop span { font-size:16px; font-weight:300; color:var(--dim); }
+  .stop.now { background:rgba(92,200,214,.12); border-top:1px solid rgba(92,200,214,.7); border-bottom:1px solid rgba(92,200,214,.7); }
+  .stop.now i { background:var(--therm); border-color:var(--therm); color:var(--abyss); }
+  .stop.now span { color:var(--chalk); font-weight:400; }
+  .s1 { top:0; } .s2 { top:50px; } .s3 { top:100px; } .s4 { top:150px; }
+  .ctl { position:relative; display:flex; gap:10px; padding:18px 22px; font-family:var(--mono); font-size:13px; }
+  .ctl span { border:1px solid rgba(240,244,245,.28); padding:8px 12px; border-radius:6px; }
+  .ctl span.on { border-color:var(--therm); color:var(--therm); }
+  .read { position:relative; padding:2px 22px 0; }
+  .song { font-family:var(--display); font-weight:var(--dw); font-size:22px; letter-spacing:var(--dls); }
+  .sec { font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--therm); margin:14px 0 10px; }
+  .line { display:flex; flex-wrap:wrap; margin-bottom:12px; }
+  .seg { display:flex; flex-direction:column; }
+  .c { font-family:var(--mono); font-weight:500; font-size:15px; height:21px; color:var(--therm); }
+  .l { font-size:20px; font-weight:400; line-height:1.35; white-space:pre; }
+  .a { --display:'Sora', sans-serif; --dw:300; --dls:-.02em; --mono:'Geist Mono', monospace; }
+  .b { --display:'Urbanist', sans-serif; --dw:400; --dls:-.01em; --mono:'JetBrains Mono', monospace; }
+  .c2 { --display:'Red Hat Display', sans-serif; --dw:400; --dls:-.015em; --mono:'Red Hat Mono', monospace; }
+</style>
+</head>
+<body>
+  <header class="intro">
+    <h1>Deep Dive: three type pairings, all with Plus Jakarta Sans body</h1>
+    <p>Same screen and palette in each. Only the heading face, the mono face and their weights change. The lyrics, song names and body copy are Plus Jakarta Sans at 300–400 throughout.</p>
+  </header>
+  <div class="row">
+    <figure class="a">
+      <figcaption><b>A · Sora + Geist Mono (my recommendation)</b>Sora is a true geometric sans that stays crisp at Light 300, so headings read big without looking heavy. Geist Mono is neutral and quiet for keys, chords and labels.</figcaption>
+      <div class="phone">
+        <div class="head"><p class="brand"><span>Ripple Out Worship</span><a href="#">Copy link</a></p><h2>Thursday Care Group</h2><p class="meta">Thu 15 Oct · 4 songs</p></div>
+        <div class="dive"><div class="axis"></div><div class="stop s1 now"><i>1</i><span>Amazing Grace · G</span></div><div class="stop s2"><i>2</i><span>Be Thou My Vision · D</span></div><div class="stop s3"><i>3</i><span>It Is Well · C</span></div><div class="stop s4"><i>4</i><span>Holy, Holy, Holy · E♭</span></div></div>
+        <div class="ctl"><span class="on">Chords on</span><span>Key − G +</span><span>Flat</span></div>
+        <div class="read"><p class="song">Amazing Grace</p><p class="sec">Verse 1</p>
+          <div class="line"><span class="seg"><span class="c">G</span><span class="l">Amazing </span></span><span class="seg"><span class="c">G7</span><span class="l">grace, how </span></span><span class="seg"><span class="c">C</span><span class="l">sweet the </span></span><span class="seg"><span class="c">G</span><span class="l">sound</span></span></div>
+          <div class="line"><span class="seg"><span class="c"></span><span class="l">That </span></span><span class="seg"><span class="c">G</span><span class="l">saved a wretch like </span></span><span class="seg"><span class="c">D</span><span class="l">me</span></span></div>
+          <div class="line"><span class="seg"><span class="c"></span><span class="l">I </span></span><span class="seg"><span class="c">G</span><span class="l">once was </span></span><span class="seg"><span class="c">G7</span><span class="l">lost, but </span></span><span class="seg"><span class="c">C</span><span class="l">now am </span></span><span class="seg"><span class="c">G</span><span class="l">found</span></span></div>
+        </div>
+      </div>
+    </figure>
+    <figure class="b">
+      <figcaption><b>B · Urbanist + JetBrains Mono</b>Urbanist has rounder, softer geometry; it's friendlier but sits closer to Plus Jakarta Sans, so headings separate less from body text. JetBrains Mono gives chords a taller, more technical look.</figcaption>
+      <div class="phone">
+        <div class="head"><p class="brand"><span>Ripple Out Worship</span><a href="#">Copy link</a></p><h2>Thursday Care Group</h2><p class="meta">Thu 15 Oct · 4 songs</p></div>
+        <div class="dive"><div class="axis"></div><div class="stop s1 now"><i>1</i><span>Amazing Grace · G</span></div><div class="stop s2"><i>2</i><span>Be Thou My Vision · D</span></div><div class="stop s3"><i>3</i><span>It Is Well · C</span></div><div class="stop s4"><i>4</i><span>Holy, Holy, Holy · E♭</span></div></div>
+        <div class="ctl"><span class="on">Chords on</span><span>Key − G +</span><span>Flat</span></div>
+        <div class="read"><p class="song">Amazing Grace</p><p class="sec">Verse 1</p>
+          <div class="line"><span class="seg"><span class="c">G</span><span class="l">Amazing </span></span><span class="seg"><span class="c">G7</span><span class="l">grace, how </span></span><span class="seg"><span class="c">C</span><span class="l">sweet the </span></span><span class="seg"><span class="c">G</span><span class="l">sound</span></span></div>
+          <div class="line"><span class="seg"><span class="c"></span><span class="l">That </span></span><span class="seg"><span class="c">G</span><span class="l">saved a wretch like </span></span><span class="seg"><span class="c">D</span><span class="l">me</span></span></div>
+          <div class="line"><span class="seg"><span class="c"></span><span class="l">I </span></span><span class="seg"><span class="c">G</span><span class="l">once was </span></span><span class="seg"><span class="c">G7</span><span class="l">lost, but </span></span><span class="seg"><span class="c">C</span><span class="l">now am </span></span><span class="seg"><span class="c">G</span><span class="l">found</span></span></div>
+        </div>
+      </div>
+    </figure>
+    <figure class="c2">
+      <figcaption><b>C · Red Hat Display + Red Hat Mono</b>A matched family: the display and mono faces were drawn together, so the system feels the most unified. The display face is a little warmer and less strictly geometric than Sora.</figcaption>
+      <div class="phone">
+        <div class="head"><p class="brand"><span>Ripple Out Worship</span><a href="#">Copy link</a></p><h2>Thursday Care Group</h2><p class="meta">Thu 15 Oct · 4 songs</p></div>
+        <div class="dive"><div class="axis"></div><div class="stop s1 now"><i>1</i><span>Amazing Grace · G</span></div><div class="stop s2"><i>2</i><span>Be Thou My Vision · D</span></div><div class="stop s3"><i>3</i><span>It Is Well · C</span></div><div class="stop s4"><i>4</i><span>Holy, Holy, Holy · E♭</span></div></div>
+        <div class="ctl"><span class="on">Chords on</span><span>Key − G +</span><span>Flat</span></div>
+        <div class="read"><p class="song">Amazing Grace</p><p class="sec">Verse 1</p>
+          <div class="line"><span class="seg"><span class="c">G</span><span class="l">Amazing </span></span><span class="seg"><span class="c">G7</span><span class="l">grace, how </span></span><span class="seg"><span class="c">C</span><span class="l">sweet the </span></span><span class="seg"><span class="c">G</span><span class="l">sound</span></span></div>
+          <div class="line"><span class="seg"><span class="c"></span><span class="l">That </span></span><span class="seg"><span class="c">G</span><span class="l">saved a wretch like </span></span><span class="seg"><span class="c">D</span><span class="l">me</span></span></div>
+          <div class="line"><span class="seg"><span class="c"></span><span class="l">I </span></span><span class="seg"><span class="c">G</span><span class="l">once was </span></span><span class="seg"><span class="c">G7</span><span class="l">lost, but </span></span><span class="seg"><span class="c">C</span><span class="l">now am </span></span><span class="seg"><span class="c">G</span><span class="l">found</span></span></div>
+        </div>
+      </div>
+    </figure>
+  </div>
+</body>
+</html>

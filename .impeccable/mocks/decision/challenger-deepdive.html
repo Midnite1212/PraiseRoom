@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390">
+<title>Deep Dive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root { --abyss:#061226; --ink:#0B2547; --therm:#5CC8D6; --chalk:#F0F4F5; --dim:#9DB2C4; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { width:390px; height:844px; overflow:hidden; color:var(--chalk); }
+  body { font-family:'Schibsted Grotesk', sans-serif; background:linear-gradient(180deg, #123A5E 0%, var(--ink) 34%, var(--abyss) 100%); position:relative; }
+  body::before { content:''; position:absolute; inset:0; background-image:radial-gradient(rgba(240,244,245,.10) 1px, transparent 1.4px); background-size:23px 29px; pointer-events:none; }
+  .head { position:relative; padding:22px 20px 0; }
+  .brand { display:flex; justify-content:space-between; font-family:'Geist Mono'; font-size:13px; color:var(--dim); letter-spacing:.04em; }
+  .brand a { color:var(--chalk); text-decoration:none; }
+  h1 { font-weight:700; font-size:34px; line-height:1.03; letter-spacing:-.015em; margin-top:22px; }
+  .meta { font-family:'Geist Mono'; font-size:14px; color:var(--dim); margin-top:8px; }
+  .dive { position:relative; margin-top:24px; height:196px; }
+  .axis { position:absolute; left:34px; top:0; bottom:0; width:1px; background:rgba(240,244,245,.35); }
+  .stop { position:absolute; left:0; right:0; height:44px; display:flex; align-items:center; gap:22px; padding-left:20px; }
+  .stop i { width:29px; height:29px; border-radius:50%; border:1px solid rgba(240,244,245,.5); background:var(--abyss); font-style:normal; font-family:'Geist Mono'; font-size:14px; display:grid; place-items:center; position:relative; }
+  .stop span { font-size:17px; color:var(--dim); }
+  .stop.now { background:rgba(92,200,214,.16); border-top:1px solid var(--therm); border-bottom:1px solid var(--therm); }
+  .stop.now i { background:var(--therm); border-color:var(--therm); color:var(--abyss); font-weight:500; }
+  .stop.now span { color:var(--chalk); font-weight:500; }
+  .s1 { top:0; } .s2 { top:50px; } .s3 { top:100px; } .s4 { top:150px; }
+  .ctl { position:relative; display:flex; gap:10px; padding:16px 20px; font-family:'Geist Mono'; font-size:14px; }
+  .ctl span { border:1px solid rgba(240,244,245,.35); padding:8px 12px; border-radius:6px; }
+  .ctl span.on { border-color:var(--therm); color:var(--therm); }
+  .read { position:relative; padding:4px 20px 0; }
+  .sec { font-family:'Geist Mono'; font-size:13px; letter-spacing:.08em; text-transform:uppercase; color:var(--therm); margin:8px 0 10px; }
+  .line { display:flex; flex-wrap:wrap; margin-bottom:12px; }
+  .seg { display:flex; flex-direction:column; }
+  .c { font-family:'Geist Mono'; font-weight:500; font-size:16px; height:22px; color:var(--therm); }
+  .l { font-size:21px; line-height:1.3; white-space:pre; }
+</style>
+</head>
+<body>
+  <header class="head">
+    <p class="brand"><span>RIPPLE OUT WORSHIP</span><a href="#">Copy link</a></p>
+    <h1>Thursday Care Group</h1>
+    <p class="meta">Thu 15 Oct · 4 songs</p>
+  </header>
+  <nav class="dive" aria-label="Songs in this setlist">
+    <div class="axis"></div>
+    <div class="stop s1 now"><i>1</i><span>Amazing Grace · G</span></div>
+    <div class="stop s2"><i>2</i><span>Be Thou My Vision · D</span></div>
+    <div class="stop s3"><i>3</i><span>It Is Well · C</span></div>
+    <div class="stop s4"><i>4</i><span>Holy, Holy, Holy · E♭</span></div>
+  </nav>
+  <div class="ctl"><span class="on">Chords on</span><span>Key − G +</span><span>Flat</span></div>
+  <main class="read">
+    <p class="sec">Verse 1</p>
+    <div class="line"><span class="seg"><span class="c">G</span><span class="l">Amazing </span></span><span class="seg"><span class="c">G7</span><span class="l">grace, how </span></span><span class="seg"><span class="c">C</span><span class="l">sweet the </span></span><span class="seg"><span class="c">G</span><span class="l">sound</span></span></div>
+    <div class="line"><span class="seg"><span class="c"></span><span class="l">That </span></span><span class="seg"><span class="c">G</span><span class="l">saved a wretch like </span></span><span class="seg"><span class="c">D</span><span class="l">me</span></span></div>
+    <div class="line"><span class="seg"><span class="c"></span><span class="l">I </span></span><span class="seg"><span class="c">G</span><span class="l">once was </span></span><span class="seg"><span class="c">G7</span><span class="l">lost, but </span></span><span class="seg"><span class="c">C</span><span class="l">now am </span></span><span class="seg"><span class="c">G</span><span class="l">found</span></span></div>
+  </main>
+</body>
+</html>

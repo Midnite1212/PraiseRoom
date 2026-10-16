@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390">
+<title>Category standard</title>
+<style>
+  :root { --bg:#FFFFFF; --ink:#1B1B1F; --chord:#2563EB; --line:#E5E7EB; --muted:#6B7280; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { width:390px; height:844px; overflow:hidden; background:var(--bg); color:var(--ink); }
+  body { font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+  .bar { height:56px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; border-bottom:1px solid var(--line); }
+  .bar h1 { font-size:17px; font-weight:600; }
+  .bar span { color:var(--chord); font-size:16px; }
+  .tabs { display:flex; gap:8px; padding:12px 16px; border-bottom:1px solid var(--line); overflow:hidden; }
+  .tabs span { flex:none; padding:8px 14px; border-radius:18px; background:#F3F4F6; font-size:15px; }
+  .tabs span.on { background:var(--chord); color:#fff; }
+  .song { padding:20px 16px 0; }
+  .song h2 { font-size:28px; font-weight:700; }
+  .song p { color:var(--muted); font-size:15px; margin-top:4px; }
+  .ctl { display:flex; gap:10px; margin-top:16px; }
+  .ctl span { border:1px solid var(--line); border-radius:10px; padding:8px 12px; font-size:15px; }
+  .ctl b { color:var(--chord); }
+  .sec { font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:24px 16px 10px; }
+  .read { padding:0 16px; }
+  .line { display:flex; flex-wrap:wrap; margin-bottom:12px; }
+  .seg { display:flex; flex-direction:column; }
+  .c { font-weight:700; font-size:17px; height:22px; color:var(--chord); }
+  .l { font-size:20px; line-height:1.3; white-space:pre; }
+</style>
+</head>
+<body>
+  <header class="bar"><span>‹ Setlists</span><h1>Thursday Care Group</h1><span>Share</span></header>
+  <nav class="tabs"><span class="on">1 Amazing Grace</span><span>2 Be Thou My Vision</span><span>3 It Is Well</span></nav>
+  <section class="song">
+    <h2>Amazing Grace</h2>
+    <p>John Newton · Key G · 4/4</p>
+    <div class="ctl"><span>Key <b>− G +</b></span><span>Chords <b>On</b></span><span>Flat</span></div>
+  </section>
+  <p class="sec">Verse 1</p>
+  <main class="read">
+    <div class="line"><span class="seg"><span class="c">G</span><span class="l">Amazing </span></span><span class="seg"><span class="c">G7</span><span class="l">grace, how </span></span><span class="seg"><span class="c">C</span><span class="l">sweet the </span></span><span class="seg"><span class="c">G</span><span class="l">sound</span></span></div>
+    <div class="line"><span class="seg"><span class="c"></span><span class="l">That </span></span><span class="seg"><span class="c">G</span><span class="l">saved a wretch like </span></span><span class="seg"><span class="c">D</span><span class="l">me</span></span></div>
+    <div class="line"><span class="seg"><span class="c"></span><span class="l">I </span></span><span class="seg"><span class="c">G</span><span class="l">once was </span></span><span class="seg"><span class="c">G7</span><span class="l">lost, but </span></span><span class="seg"><span class="c">C</span><span class="l">now am </span></span><span class="seg"><span class="c">G</span><span class="l">found</span></span></div>
+    <div class="line"><span class="seg"><span class="c"></span><span class="l">Was </span></span><span class="seg"><span class="c">Em</span><span class="l">blind but </span></span><span class="seg"><span class="c">D</span><span class="l">now I </span></span><span class="seg"><span class="c">G</span><span class="l">see</span></span></div>
+  </main>
+</body>
+</html>

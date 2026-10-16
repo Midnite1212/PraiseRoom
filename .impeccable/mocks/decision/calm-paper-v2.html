@@ -1,0 +1,189 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Calm × Paper, revised</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Overpass:wght@300;400;500&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#E6EBF1;color:#14223A;font-family:'Overpass',sans-serif;font-weight:300;padding:36px 28px 72px}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;display:inline-grid;place-items:center}
+.intro h1{font-weight:300;font-size:34px}.intro p{margin-top:8px;max-width:92ch;line-height:1.55;color:#46536A}
+section{margin-top:52px}h2{font-weight:400;font-size:28px}.why{margin:6px 0 18px;max-width:100ch;line-height:1.55;color:#46536A}
+.row{display:flex;flex-wrap:wrap;gap:28px;margin-bottom:28px}
+figcaption{font-family:'Source Code Pro';font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#5A6880;margin-bottom:8px}
+.dev{background:var(--bg);color:var(--text);position:relative;overflow:hidden}
+.phone{width:390px;height:844px;border-radius:36px;display:flex;flex-direction:column}
+.desk{width:1440px;height:900px;border-radius:14px;zoom:.6;display:flex;flex-direction:column}
+.lab{font-family:'Source Code Pro';font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.stz{margin-bottom:26px}.ly{font-weight:300;font-size:20px;line-height:1.5}
+.cols{columns:2;column-gap:72px}.cols .stz{break-inside:avoid}.desk .ly{font-size:22px}
+/* ===== PAPER ===== */
+.paper .p-top{display:flex;justify-content:space-between;align-items:center;padding:22px 22px 0}
+.p-count{font-family:'Source Code Pro';font-size:13px;color:var(--muted)}
+.p-acts{display:flex;gap:4px;align-items:center}
+.p-aa{width:40px;height:40px;font-weight:400;font-size:18px;color:var(--primary)}.p-ic{width:40px;height:40px;color:var(--primary)}
+.p-body{flex:1;padding:44px 28px 0;overflow:hidden}
+.p-set{font-size:15px;color:var(--muted)}
+.p-title{font-weight:300;font-size:34px;letter-spacing:-.015em;margin-top:6px}
+.p-meta{font-size:15px;color:var(--muted);margin:4px 0 30px}
+.paper .lab{text-transform:none;letter-spacing:.02em;font-size:13px}
+.p-foot{display:flex;justify-content:space-between;align-items:center;padding:12px 14px 22px;font-size:15px;font-weight:400;color:var(--muted)}.p-foot b{color:var(--text);font-weight:500}
+.p-scrim{position:absolute;inset:0;background:rgba(15,24,38,.12)}.p-menu{position:absolute;right:16px;top:64px;width:236px;background:var(--bg);border-radius:14px;box-shadow:0 10px 36px var(--shadow),0 0 0 1px var(--hair);padding:14px}
+.p-mt{font-family:'Source Code Pro';font-size:12px;color:var(--muted);margin-bottom:10px}
+.p-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-top:1px solid var(--hair);font-size:15px;font-weight:400;color:var(--muted)}.p-row:first-of-type{border-top:none}
+.p-row span{padding:6px 10px;border-radius:8px}.p-row .on{background:var(--tint);color:var(--text);font-weight:500}.p-row .sz{font-family:'Source Code Pro';font-size:13px}
+.p-top.wide{padding:28px 56px 0}.p-body.wide{padding:56px 160px 0}.p-body.wide .p-title{font-size:44px}
+.p-foot.wide{padding:20px 56px 30px}.p-prev{color:var(--muted)}
+
+.p-seg{display:inline-flex;background:var(--tint);border-radius:10px;padding:3px;font-size:14px;font-weight:400}.p-seg span{padding:6px 12px;border-radius:8px;color:var(--muted)}.p-seg .on{background:var(--bg);color:var(--text);font-weight:500;box-shadow:0 1px 2px var(--shadow)}
+.p-prog{display:flex;gap:4px;padding:14px 22px 0}.p-prog i{flex:1;height:3px;border-radius:2px;background:var(--alt)}.p-prog i.done{background:var(--hair)}.p-prog i.now{background:var(--acc)}
+.p-prog.wide{padding:16px 56px 0}
+.p-set{font-family:'Source Code Pro';font-size:12px;letter-spacing:.12em;color:var(--acc)}.p-set b{font-weight:500;color:var(--text)}
+.p-title{font-size:36px}.p-body{padding-top:34px}
+.paper .lab{color:var(--acc)}
+.p-foot{margin:0 14px 18px;padding:8px;background:var(--tint);border-radius:16px}
+.p-foot.wide{margin:0;background:none;border-radius:0}
+/* ===== GRID ===== */
+.g-head{padding:22px 20px 0;border-bottom:1px solid var(--hair)}
+.g-r1{display:flex;justify-content:space-between;align-items:center}
+.g-brand{font-family:'Source Code Pro';font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.g-btn{width:38px;height:38px;border:1px solid var(--hair);border-radius:6px;color:var(--primary)}
+.g-btn.txt{width:auto;padding:0 14px;display:inline-flex;gap:4px;font-weight:500;font-size:14px}
+.g-set{font-weight:300;font-size:30px;letter-spacing:-.015em;margin-top:10px}
+.g-meta{font-family:'Source Code Pro';font-size:12px;color:var(--muted);margin-top:4px}
+.g-ctl{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:16px}
+.g-seg{display:inline-flex;border:1px solid var(--hair);border-radius:6px;overflow:hidden;font-size:14px;font-weight:400}
+.g-seg span{padding:7px 12px;color:var(--muted)}.g-seg span+span{border-left:1px solid var(--hair)}.g-seg .on{background:var(--primary);color:var(--onP);font-weight:500}
+.g-tabs{display:flex;gap:20px;margin-top:14px;white-space:nowrap;overflow:hidden}
+.g-tabs span{display:flex;gap:7px;align-items:baseline;padding:10px 0 11px;font-size:15px;color:var(--muted);border-bottom:2px solid transparent}
+.g-tabs b{font-family:'Source Code Pro';font-weight:500;font-size:12px}.g-tabs .on{color:var(--text);font-weight:500;border-bottom-color:var(--text)}
+.g-body{flex:1;padding:26px 20px 0;overflow:hidden}
+.g-songhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:24px}
+.g-songhead h3{font-weight:300;font-size:24px}.g-songhead span{font-family:'Source Code Pro';font-size:12px;color:var(--muted)}
+
+.g-foot{display:flex;justify-content:space-between;align-items:center;padding:12px 16px 20px;border-top:1px solid var(--hair);font-size:14px;font-weight:400;color:var(--muted)}.g-foot b{font-family:'Source Code Pro';font-weight:500;color:var(--text)}
+.g-head.wide{display:flex;justify-content:space-between;align-items:flex-end;padding:28px 48px 22px}.g-head.wide .g-set{font-size:40px}.g-head.wide .g-ctl{margin:0}
+.g-split{flex:1;display:flex}
+.g-list{width:300px;border-right:1px solid var(--hair);padding:28px 24px}
+.g-row{display:flex;gap:12px;align-items:baseline;padding:11px 0;border-bottom:1px solid var(--hair);font-size:16px}.g-row b{font-family:'Source Code Pro';font-weight:500;font-size:12px;color:var(--muted)}.g-row em{margin-left:auto;font-style:normal;font-family:'Source Code Pro';font-size:12px;color:var(--muted)}
+.g-row.on{font-weight:500}.g-row.on b{color:var(--text)}.g-row.on span{border-bottom:2px solid var(--text)}
+.g-nav{display:flex;gap:8px;margin-top:18px}
+.g-body.wide{padding:28px 64px}.g-body.wide .g-songhead h3{font-size:32px}
+/* ===== CALM ===== */
+.calm{background:var(--tint)}
+.c-head{padding:22px 20px 16px}
+.c-r1{display:flex;justify-content:space-between;align-items:center}
+.c-brand{font-family:'Source Code Pro';font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.c-btn{width:40px;height:40px;border-radius:12px;background:var(--alt);color:var(--primary)}
+.c-btn.txt{width:auto;padding:0 16px;display:inline-flex;gap:4px;font-weight:500;font-size:14px}
+.c-set{font-weight:300;font-size:30px;letter-spacing:-.015em;margin-top:10px}
+.c-ctl{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:16px}
+.c-seg{display:inline-flex;background:var(--alt);border-radius:12px;padding:3px;font-size:14px;font-weight:400}
+.c-seg span{padding:7px 13px;border-radius:9px;color:var(--muted)}.c-seg .on{background:var(--bg);color:var(--text);font-weight:500;box-shadow:0 1px 2px var(--shadow)}
+.c-tabs{display:flex;gap:8px;margin-top:14px;white-space:nowrap;overflow:hidden}
+.c-tabs span{padding:8px 13px;border-radius:10px;font-size:14px;color:var(--muted)}.c-tabs .on{background:var(--primary);color:var(--onP);font-weight:500}
+.c-body{flex:1;padding:18px 24px 0;overflow:hidden}
+.c-title{font-weight:300;font-size:28px;letter-spacing:-.01em}.c-meta{font-size:14px;color:var(--muted);margin:4px 0 22px}
+.c-foot{position:absolute;left:14px;right:14px;bottom:18px;display:flex;justify-content:space-between;align-items:center;padding:8px;background:var(--bg);border-radius:18px;box-shadow:0 8px 28px var(--shadow);font-size:14px;font-weight:400;color:var(--muted)}.c-foot b{color:var(--text);font-weight:500}
+.c-head.wide{display:flex;justify-content:space-between;align-items:flex-end;padding:28px 48px 18px}.c-head.wide .c-set{font-size:40px}.c-head.wide .c-ctl{margin:0}
+.c-split{flex:1;display:flex;gap:8px;padding:0 24px}
+.c-card{width:290px;align-self:flex-start;background:var(--bg);border-radius:18px;padding:20px 12px 16px;margin-top:8px;box-shadow:0 6px 24px var(--shadow)}
+.c-card .lab{padding:0 10px}
+.c-row{display:flex;justify-content:space-between;padding:11px 12px;border-radius:12px;font-size:16px}.c-row em{font-style:normal;font-family:'Source Code Pro';font-size:12px;color:var(--muted)}
+.c-row.on{background:var(--primary);color:var(--onP);font-weight:500}.c-row.on em{color:var(--onP)}
+.c-nav{display:flex;gap:8px;margin-top:12px;padding:0 4px}
+.c-body.wide{padding:20px 48px}.c-body.wide .c-title{font-size:36px}
+.dfig{margin-top:6px}
+
+.k{background:var(--tint)}
+.k-head{padding:20px 20px 14px;display:flex;flex-direction:column;gap:14px}
+.k-r1{display:flex;justify-content:space-between;align-items:center}
+.k-set{font-family:'Source Code Pro';font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.k-btn{width:40px;height:40px;border-radius:12px;color:var(--primary)}
+.k-btn.txt{width:auto;padding:0 14px;display:inline-flex;gap:4px;font-weight:500;font-size:14px;background:var(--alt)}
+.k-tabs{display:flex;gap:6px;white-space:nowrap;overflow:hidden;margin:0 -6px}
+.k-tabs span{padding:7px 10px;border-radius:10px;font-size:15px;color:var(--muted)}.k-tabs .on{background:var(--cont);color:var(--acc);font-weight:500}
+.k-ctl{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.k-seg{display:inline-flex;background:var(--alt);border-radius:12px;padding:3px;font-size:14px;font-weight:400}.k-seg span{padding:7px 14px;border-radius:9px;color:var(--muted)}.k-seg .on{background:var(--primary);color:var(--onP);font-weight:500}
+.k-seg.soft .on{background:var(--bg);color:var(--text);box-shadow:0 1px 2px var(--shadow)}
+.k-aa{width:44px;height:38px;border-radius:12px;background:var(--alt);font-weight:400;font-size:16px;color:var(--primary)}
+.k-sheet{flex:1;background:var(--bg);border-radius:24px 24px 0 0;padding:26px 24px 0;overflow:hidden}
+.k-num{font-family:'Source Code Pro';font-size:13px;color:var(--acc)}
+.k-title{font-weight:300;font-size:32px;letter-spacing:-.015em;margin-top:2px}
+.k-meta{font-size:14px;color:var(--muted);margin:4px 0 24px}
+.k .lab{text-transform:none;letter-spacing:.02em;font-size:13px;color:var(--acc)}
+.k-dock{background:var(--tint);padding:10px 14px 20px}
+.k-prog{display:flex;gap:4px;padding:2px 6px 8px}.k-prog i{flex:1;height:3px;border-radius:2px;background:var(--alt)}.k-prog i.done{background:var(--hair)}.k-prog i.now{background:var(--acc)}
+.k-nav{display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:400;color:var(--muted)}.k-nav b{color:var(--text);font-weight:500}.k-nav .k-btn{background:var(--alt)}
+.k-head.wide{flex-direction:row;justify-content:space-between;align-items:flex-end;padding:28px 40px 22px}
+.k-big{font-weight:300;font-size:40px;letter-spacing:-.015em;margin-top:8px}
+.k-head.wide .k-ctl{gap:12px}.k-head.wide .k-btn{background:var(--alt)}
+.k-split{flex:1;display:flex;gap:24px;padding:0 24px 0 24px}
+.k-list{width:280px;padding:8px 4px}
+.k-list .lab{padding:0 12px}
+.k-row{display:flex;gap:12px;align-items:baseline;padding:11px 12px;border-radius:12px;font-size:16px}.k-row b{font-family:'Source Code Pro';font-weight:500;font-size:12px;color:var(--muted)}.k-row em{margin-left:auto;font-style:normal;font-family:'Source Code Pro';font-size:12px;color:var(--muted)}
+.k-row.on{background:var(--cont);color:var(--acc);font-weight:500}.k-row.on b,.k-row.on em{color:var(--acc)}
+.k-listnav{display:flex;gap:8px;margin-top:14px;padding:0 4px}
+.k-sheet.wide{padding:32px 56px 0;border-radius:24px 24px 0 0}.k-sheet.wide .k-title{font-size:40px}
+
+.m-top{display:flex;justify-content:space-between;align-items:center;padding:20px 20px 0}
+.m-acts{display:flex;gap:8px;align-items:center}
+.m-acts .k-btn{background:var(--alt)}
+.m-prog{display:flex;gap:4px;padding:16px 22px 16px}.m-prog i{flex:1;height:3px;border-radius:2px;background:var(--alt)}.m-prog i.done{background:var(--hair)}.m-prog i.now{background:var(--acc)}
+.m-set{font-family:'Source Code Pro';font-size:12px;letter-spacing:.12em;color:var(--acc)}.m-set b{font-weight:500;color:var(--text)}
+.m .k-sheet{padding-top:28px}
+.m .k-title{font-size:34px;margin-top:6px}
+.m-top.wide{padding:24px 32px 0}
+.m-set.big{font-size:13px}
+.m-prog.wide{padding:18px 32px 18px}
+.m-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;padding:18px 32px 16px}
+.m-seg i{display:block;height:4px;border-radius:2px;background:var(--alt)}.m-seg.done i{background:var(--hair)}.m-seg.now i{background:var(--acc)}
+.m-seg span{display:flex;gap:8px;align-items:baseline;margin-top:9px;font-size:15px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.m-seg b{font-family:'Source Code Pro';font-weight:500;font-size:12px}
+.m-seg.now span{color:var(--text);font-weight:500}.m-seg.now b{color:var(--acc)}
+.m-split{flex:1;display:flex;gap:24px;padding:0 24px}
+.m-sheet{flex:1}
+.m-info{width:300px;padding:6px 8px 0}
+.m-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+.m-facts div{background:var(--bg);border-radius:12px;padding:12px}
+.m-facts small{display:block;font-family:'Source Code Pro';font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}.m-facts b{font-family:'Source Code Pro';font-weight:500;font-size:20px;color:var(--text)}
+.m-credit{font-size:15px;line-height:1.5;color:var(--muted)}
+.m-next{background:var(--bg);border-radius:16px;padding:18px}
+.m-nnum{font-family:'Source Code Pro';font-size:12px;color:var(--acc)}.m-ntitle{font-weight:300;font-size:24px;margin-top:4px}.m-nline{font-size:15px;line-height:1.5;color:var(--muted);margin:8px 0 14px}
+.m-go{height:40px;padding:0 14px;border-radius:12px;background:var(--alt);color:var(--primary);font-weight:500;font-size:14px}
+.m-keys{font-family:'Source Code Pro';font-size:12px;color:var(--muted);margin-top:18px}
+.m .k-list{padding-top:4px}
+.m .cols{column-gap:56px}.one .cols{columns:1;max-width:640px}
+
+.f-float{position:absolute;left:14px;right:14px;bottom:18px;display:flex;justify-content:space-between;align-items:center;padding:8px;background:var(--bg);border-radius:18px;box-shadow:0 8px 28px var(--shadow),0 1px 3px var(--shadow);font-size:14px;font-weight:400;color:var(--muted)}.f-float b{color:var(--text);font-weight:500}.f-float .k-btn{background:var(--alt)}
+.m .k-sheet{padding-bottom:110px}
+.e-rail{width:290px;display:flex;flex-direction:column;padding:4px 4px 24px}
+.e-rhead{display:flex;justify-content:space-between;align-items:center;padding:0 0 4px 12px}.e-rhead .lab{margin:0}
+.e-coll,.e-exp{background:var(--alt)}
+.e-rfoot{margin-top:auto;padding:16px 4px 0}
+.e-rnav{display:flex;gap:8px}
+.e-rfoot .m-keys{margin-top:12px;padding-left:4px}
+.e-stripwrap{display:flex;align-items:flex-start;gap:14px;padding:16px 32px 14px}
+.e-strip{flex:1;padding:0}
+.e-exp{flex:none;margin-top:-2px}
+.e-titlerow{display:flex;align-items:center;gap:16px}
+.e-about{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:12px;background:var(--alt);color:var(--primary);font-weight:500;font-size:14px;margin-top:8px}
+.e-about.on{background:var(--cont);color:var(--acc)}
+.m-sheet{position:relative}
+.e-pop{position:absolute;left:330px;top:116px;width:340px;background:var(--bg);border-radius:16px;padding:18px;box-shadow:0 12px 40px var(--shadow),0 1px 3px var(--shadow);z-index:2}
+.e-pop .m-facts div{background:var(--tint)}
+.two .cols{columns:2}
+</style></head><body>
+<header class="intro"><h1>Calm × Paper, revised</h1><p>Phone: the floating Up next card is back. Desktop: no permanent right sidebar. "About" opens on demand from beside the title; the setlist rail has no Up next section, carries Prev / Next and the ← → hint in its footer, and collapses into the labelled progress strip at the top.</p></header>
+<section><h2>Phone</h2><div class="row"><figure><figcaption>Light</figcaption><div class="dev phone k m" style="--bg:#FFFFFF;--tint:#EFF4FA;--alt:#E2EAF4;--text:#14223A;--muted:#5A6880;--hair:#DDE4EE;--primary:#2A4A72;--onP:#FFFFFF;--acc:#3A72B0;--cont:#DCE9F7;--shadow:rgba(20,34,58,.10)">
+<header class="m-top"><span class="k-seg"><span class="on">Lyrics</span><span>Chords</span></span><span class="m-acts"><button class="k-aa">Aa</button><button class="k-btn"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button></span></header>
+<div class="m-prog"><i class="done"></i><i class="now"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></div>
+<main class="k-sheet"><p class="m-set">THURSDAY CARE GROUP · <b>2 / 6</b></p><h3 class="k-title">Be Thou My Vision</h3><p class="k-meta">Irish hymn</p><div class="stz"><p class="lab">Verse 1</p><p class="ly">Be Thou my vision, O Lord of my heart</p><p class="ly">Naught be all else to me, save that Thou art</p><p class="ly">Thou my best thought, by day or by night</p><p class="ly">Waking or sleeping, Thy presence my light</p></div><div class="stz"><p class="lab">Verse 2</p><p class="ly">Be Thou my wisdom, and Thou my true word</p><p class="ly">I ever with Thee and Thou with me, Lord</p><p class="ly">Thou my great Father, I Thy true son</p><p class="ly">Thou in me dwelling, and I with Thee one</p></div></main>
+<footer class="f-float"><button class="k-btn"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><span>Up next · <b>It Is Well</b></span><button class="k-btn"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button></footer></div></figure><figure><figcaption>Dark</figcaption><div class="dev phone k m" style="--bg:#0F1826;--tint:#16233A;--alt:#1F2F4B;--text:#E8EEF6;--muted:#A3B2C6;--hair:#26364F;--primary:#B6CDEA;--onP:#16294A;--acc:#8FB8E6;--cont:#22385A;--shadow:rgba(0,0,0,.4)">
+<header class="m-top"><span class="k-seg"><span class="on">Lyrics</span><span>Chords</span></span><span class="m-acts"><button class="k-aa">Aa</button><button class="k-btn"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button></span></header>
+<div class="m-prog"><i class="done"></i><i class="now"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></div>
+<main class="k-sheet"><p class="m-set">THURSDAY CARE GROUP · <b>2 / 6</b></p><h3 class="k-title">Be Thou My Vision</h3><p class="k-meta">Irish hymn</p><div class="stz"><p class="lab">Verse 1</p><p class="ly">Be Thou my vision, O Lord of my heart</p><p class="ly">Naught be all else to me, save that Thou art</p><p class="ly">Thou my best thought, by day or by night</p><p class="ly">Waking or sleeping, Thy presence my light</p></div><div class="stz"><p class="lab">Verse 2</p><p class="ly">Be Thou my wisdom, and Thou my true word</p><p class="ly">I ever with Thee and Thou with me, Lord</p><p class="ly">Thou my great Father, I Thy true son</p><p class="ly">Thou in me dwelling, and I with Thee one</p></div></main>
+<footer class="f-float"><button class="k-btn"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button><span>Up next · <b>It Is Well</b></span><button class="k-btn"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button></footer></div></figure></div></section>
+<section><h2>Desktop · setlist rail expanded</h2><figure class="dfig"><figcaption>Light (shown at 60%)</figcaption><div class="dev desk k m" style="--bg:#FFFFFF;--tint:#EFF4FA;--alt:#E2EAF4;--text:#14223A;--muted:#5A6880;--hair:#DDE4EE;--primary:#2A4A72;--onP:#FFFFFF;--acc:#3A72B0;--cont:#DCE9F7;--shadow:rgba(20,34,58,.10)"><header class="m-top wide"><div class="m-left"><span class="m-set big">THURSDAY CARE GROUP · <b>THU 15 OCT</b></span></div><div class="m-acts"><span class="k-seg"><span class="on">Lyrics</span><span>Chords</span></span><span class="k-seg soft"><span class="on">Auto</span><span>1</span><span>2</span></span><button class="k-aa">Aa</button><button class="k-btn"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button></div></header><div class="m-prog wide"><i class="done"></i><i class="now"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></div><div class="m-split"><aside class="e-rail"><div class="e-rhead"><p class="lab">Setlist · 6 songs</p><button class="k-btn e-coll" title="Collapse to the top"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/><path d="M20 4v16"/></svg></button></div><div class="k-row "><b>01</b><span>Amazing Grace</span><em>G</em></div><div class="k-row on"><b>02</b><span>Be Thou My Vision</span><em>D</em></div><div class="k-row "><b>03</b><span>It Is Well</span><em>C</em></div><div class="k-row "><b>04</b><span>Holy, Holy, Holy</span><em>E♭</em></div><div class="k-row "><b>05</b><span>Come Thou Fount</span><em>D</em></div><div class="k-row "><b>06</b><span>Great Is Thy Faithfulness</span><em>E♭</em></div>
+<div class="e-rfoot"><div class="e-rnav"><button class="k-btn txt"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg> Prev</button><button class="k-btn txt">Next <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button></div><p class="m-keys">← → change songs</p></div></aside><main class="k-sheet wide m-sheet two"><p class="m-set">SONG <b>2 / 6</b></p><div class="e-titlerow"><h3 class="k-title">Be Thou My Vision</h3><button class="e-about "><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg> About</button></div><p class="k-meta">Irish hymn</p><div class="cols"><div class="stz"><p class="lab">Verse 1</p><p class="ly">Be Thou my vision, O Lord of my heart</p><p class="ly">Naught be all else to me, save that Thou art</p><p class="ly">Thou my best thought, by day or by night</p><p class="ly">Waking or sleeping, Thy presence my light</p></div><div class="stz"><p class="lab">Verse 2</p><p class="ly">Be Thou my wisdom, and Thou my true word</p><p class="ly">I ever with Thee and Thou with me, Lord</p><p class="ly">Thou my great Father, I Thy true son</p><p class="ly">Thou in me dwelling, and I with Thee one</p></div><div class="stz"><p class="lab">Verse 3</p><p class="ly">Riches I heed not, nor man's empty praise</p><p class="ly">Thou mine inheritance, now and always</p><p class="ly">Thou and Thou only, first in my heart</p><p class="ly">High King of heaven, my treasure Thou art</p></div><div class="stz"><p class="lab">Verse 4</p><p class="ly">High King of heaven, my victory won</p><p class="ly">May I reach heaven's joys, O bright heaven's Sun</p><p class="ly">Heart of my own heart, whatever befall</p><p class="ly">Still be my vision, O Ruler of all</p></div></div></main></div></div></figure><figure class="dfig" style="margin-top:24px"><figcaption>Dark (shown at 60%)</figcaption><div class="dev desk k m" style="--bg:#0F1826;--tint:#16233A;--alt:#1F2F4B;--text:#E8EEF6;--muted:#A3B2C6;--hair:#26364F;--primary:#B6CDEA;--onP:#16294A;--acc:#8FB8E6;--cont:#22385A;--shadow:rgba(0,0,0,.4)"><header class="m-top wide"><div class="m-left"><span class="m-set big">THURSDAY CARE GROUP · <b>THU 15 OCT</b></span></div><div class="m-acts"><span class="k-seg"><span class="on">Lyrics</span><span>Chords</span></span><span class="k-seg soft"><span class="on">Auto</span><span>1</span><span>2</span></span><button class="k-aa">Aa</button><button class="k-btn"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button></div></header><div class="m-prog wide"><i class="done"></i><i class="now"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></div><div class="m-split"><aside class="e-rail"><div class="e-rhead"><p class="lab">Setlist · 6 songs</p><button class="k-btn e-coll" title="Collapse to the top"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/><path d="M20 4v16"/></svg></button></div><div class="k-row "><b>01</b><span>Amazing Grace</span><em>G</em></div><div class="k-row on"><b>02</b><span>Be Thou My Vision</span><em>D</em></div><div class="k-row "><b>03</b><span>It Is Well</span><em>C</em></div><div class="k-row "><b>04</b><span>Holy, Holy, Holy</span><em>E♭</em></div><div class="k-row "><b>05</b><span>Come Thou Fount</span><em>D</em></div><div class="k-row "><b>06</b><span>Great Is Thy Faithfulness</span><em>E♭</em></div>
+<div class="e-rfoot"><div class="e-rnav"><button class="k-btn txt"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg> Prev</button><button class="k-btn txt">Next <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button></div><p class="m-keys">← → change songs</p></div></aside><main class="k-sheet wide m-sheet two"><p class="m-set">SONG <b>2 / 6</b></p><div class="e-titlerow"><h3 class="k-title">Be Thou My Vision</h3><button class="e-about "><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg> About</button></div><p class="k-meta">Irish hymn</p><div class="cols"><div class="stz"><p class="lab">Verse 1</p><p class="ly">Be Thou my vision, O Lord of my heart</p><p class="ly">Naught be all else to me, save that Thou art</p><p class="ly">Thou my best thought, by day or by night</p><p class="ly">Waking or sleeping, Thy presence my light</p></div><div class="stz"><p class="lab">Verse 2</p><p class="ly">Be Thou my wisdom, and Thou my true word</p><p class="ly">I ever with Thee and Thou with me, Lord</p><p class="ly">Thou my great Father, I Thy true son</p><p class="ly">Thou in me dwelling, and I with Thee one</p></div><div class="stz"><p class="lab">Verse 3</p><p class="ly">Riches I heed not, nor man's empty praise</p><p class="ly">Thou mine inheritance, now and always</p><p class="ly">Thou and Thou only, first in my heart</p><p class="ly">High King of heaven, my treasure Thou art</p></div><div class="stz"><p class="lab">Verse 4</p><p class="ly">High King of heaven, my victory won</p><p class="ly">May I reach heaven's joys, O bright heaven's Sun</p><p class="ly">Heart of my own heart, whatever befall</p><p class="ly">Still be my vision, O Ruler of all</p></div></div></main></div></div></figure></section>
+<section><h2>Desktop · rail collapsed</h2><p class="why">The collapse button moves the list into the labelled progress strip, so song names stay visible and the lyrics get the full width. The button at the left of the strip brings the rail back.</p><figure class="dfig"><figcaption>Light (shown at 60%)</figcaption><div class="dev desk k m" style="--bg:#FFFFFF;--tint:#EFF4FA;--alt:#E2EAF4;--text:#14223A;--muted:#5A6880;--hair:#DDE4EE;--primary:#2A4A72;--onP:#FFFFFF;--acc:#3A72B0;--cont:#DCE9F7;--shadow:rgba(20,34,58,.10)"><header class="m-top wide"><div class="m-left"><span class="m-set big">THURSDAY CARE GROUP · <b>THU 15 OCT</b></span></div><div class="m-acts"><span class="k-seg"><span class="on">Lyrics</span><span>Chords</span></span><span class="k-seg soft"><span class="on">Auto</span><span>1</span><span>2</span></span><button class="k-aa">Aa</button><button class="k-btn"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button></div></header><div class="e-stripwrap"><button class="k-btn e-exp" title="Show setlist beside"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/><path d="M4 4v16"/></svg></button><div class="m-strip e-strip"><div class="m-seg done"><i></i><span><b>01</b>Amazing Grace</span></div><div class="m-seg now"><i></i><span><b>02</b>Be Thou My Vision</span></div><div class="m-seg "><i></i><span><b>03</b>It Is Well</span></div><div class="m-seg "><i></i><span><b>04</b>Holy, Holy, Holy</span></div><div class="m-seg "><i></i><span><b>05</b>Come Thou Fount</span></div><div class="m-seg "><i></i><span><b>06</b>Great Is Thy Faithfulness</span></div></div></div><div class="m-split"><main class="k-sheet wide m-sheet two"><p class="m-set">SONG <b>2 / 6</b></p><div class="e-titlerow"><h3 class="k-title">Be Thou My Vision</h3><button class="e-about "><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg> About</button></div><p class="k-meta">Irish hymn</p><div class="cols"><div class="stz"><p class="lab">Verse 1</p><p class="ly">Be Thou my vision, O Lord of my heart</p><p class="ly">Naught be all else to me, save that Thou art</p><p class="ly">Thou my best thought, by day or by night</p><p class="ly">Waking or sleeping, Thy presence my light</p></div><div class="stz"><p class="lab">Verse 2</p><p class="ly">Be Thou my wisdom, and Thou my true word</p><p class="ly">I ever with Thee and Thou with me, Lord</p><p class="ly">Thou my great Father, I Thy true son</p><p class="ly">Thou in me dwelling, and I with Thee one</p></div><div class="stz"><p class="lab">Verse 3</p><p class="ly">Riches I heed not, nor man's empty praise</p><p class="ly">Thou mine inheritance, now and always</p><p class="ly">Thou and Thou only, first in my heart</p><p class="ly">High King of heaven, my treasure Thou art</p></div><div class="stz"><p class="lab">Verse 4</p><p class="ly">High King of heaven, my victory won</p><p class="ly">May I reach heaven's joys, O bright heaven's Sun</p><p class="ly">Heart of my own heart, whatever befall</p><p class="ly">Still be my vision, O Ruler of all</p></div></div></main></div></div></figure></section>
+<section><h2>Desktop · "About" open</h2><p class="why">Song details appear only when asked for, in a popover beside the title, and close again.</p><figure class="dfig"><figcaption>Light (shown at 60%)</figcaption><div class="dev desk k m" style="--bg:#FFFFFF;--tint:#EFF4FA;--alt:#E2EAF4;--text:#14223A;--muted:#5A6880;--hair:#DDE4EE;--primary:#2A4A72;--onP:#FFFFFF;--acc:#3A72B0;--cont:#DCE9F7;--shadow:rgba(20,34,58,.10)"><header class="m-top wide"><div class="m-left"><span class="m-set big">THURSDAY CARE GROUP · <b>THU 15 OCT</b></span></div><div class="m-acts"><span class="k-seg"><span class="on">Lyrics</span><span>Chords</span></span><span class="k-seg soft"><span class="on">Auto</span><span>1</span><span>2</span></span><button class="k-aa">Aa</button><button class="k-btn"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button></div></header><div class="m-prog wide"><i class="done"></i><i class="now"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></div><div class="m-split"><aside class="e-rail"><div class="e-rhead"><p class="lab">Setlist · 6 songs</p><button class="k-btn e-coll" title="Collapse to the top"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/><path d="M20 4v16"/></svg></button></div><div class="k-row "><b>01</b><span>Amazing Grace</span><em>G</em></div><div class="k-row on"><b>02</b><span>Be Thou My Vision</span><em>D</em></div><div class="k-row "><b>03</b><span>It Is Well</span><em>C</em></div><div class="k-row "><b>04</b><span>Holy, Holy, Holy</span><em>E♭</em></div><div class="k-row "><b>05</b><span>Come Thou Fount</span><em>D</em></div><div class="k-row "><b>06</b><span>Great Is Thy Faithfulness</span><em>E♭</em></div>
+<div class="e-rfoot"><div class="e-rnav"><button class="k-btn txt"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg> Prev</button><button class="k-btn txt">Next <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button></div><p class="m-keys">← → change songs</p></div></aside><main class="k-sheet wide m-sheet two"><p class="m-set">SONG <b>2 / 6</b></p><div class="e-titlerow"><h3 class="k-title">Be Thou My Vision</h3><button class="e-about on"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg> About</button></div><p class="k-meta">Irish hymn</p><div class="e-pop"><p class="lab">About this song</p><div class="m-facts"><div><small>Key</small><b>D</b></div><div><small>Time</small><b>3/4</b></div><div><small>Tempo</small><b>Slow</b></div></div><p class="m-credit">Irish hymn, 8th century<br>Translated by Mary Byrne, 1905</p></div><div class="cols"><div class="stz"><p class="lab">Verse 1</p><p class="ly">Be Thou my vision, O Lord of my heart</p><p class="ly">Naught be all else to me, save that Thou art</p><p class="ly">Thou my best thought, by day or by night</p><p class="ly">Waking or sleeping, Thy presence my light</p></div><div class="stz"><p class="lab">Verse 2</p><p class="ly">Be Thou my wisdom, and Thou my true word</p><p class="ly">I ever with Thee and Thou with me, Lord</p><p class="ly">Thou my great Father, I Thy true son</p><p class="ly">Thou in me dwelling, and I with Thee one</p></div><div class="stz"><p class="lab">Verse 3</p><p class="ly">Riches I heed not, nor man's empty praise</p><p class="ly">Thou mine inheritance, now and always</p><p class="ly">Thou and Thou only, first in my heart</p><p class="ly">High King of heaven, my treasure Thou art</p></div><div class="stz"><p class="lab">Verse 4</p><p class="ly">High King of heaven, my victory won</p><p class="ly">May I reach heaven's joys, O bright heaven's Sun</p><p class="ly">Heart of my own heart, whatever befall</p><p class="ly">Still be my vision, O Ruler of all</p></div></div></main></div></div></figure></section>
+</body></html>

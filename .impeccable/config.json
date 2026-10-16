@@ -1,0 +1,30 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "plus jakarta sans",
+        "createdAt": "2026-10-12T16:57:23.864Z",
+        "reason": "user confirmed: chose Plus Jakarta Sans as the body font on 2026-10-13"
+      },
+      {
+        "rule": "overused-font",
+        "value": "geist mono",
+        "createdAt": "2026-10-12T16:57:23.900Z",
+        "reason": "user confirmed: chose the Sora + Plus Jakarta Sans + Geist Mono pairing on 2026-10-13"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "overpass",
+        "createdAt": "2026-10-15T17:17:34.644Z"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "source code pro",
+        "createdAt": "2026-10-15T17:17:34.667Z"
+      }
+    ]
+  }
+}

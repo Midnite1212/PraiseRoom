@@ -1,0 +1,475 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-12T16:16:11+00:00",
+  "title": "Design System: Ripple Out Worship (legacy UI)",
+  "extensions": {
+    "colorMeta": {
+      "primary-main": {
+        "role": "primary",
+        "displayName": "Primary Main",
+        "canonical": "oklch(41.0% 0.134 292.7)",
+        "tonalRamp": ["#141218", "#1D192B", "#4F378B", "#6750A4", "#C9CDFF", "#E6E0E9", "#EADDFF"]
+      },
+      "primary-dark": {
+        "role": "primary",
+        "displayName": "Primary Dark",
+        "canonical": "oklch(49.6% 0.130 293.7)",
+        "tonalRamp": ["#141218", "#1D192B", "#4F378B", "#6750A4", "#C9CDFF", "#E6E0E9", "#EADDFF"]
+      },
+      "primary-light": {
+        "role": "primary",
+        "displayName": "Primary Light",
+        "canonical": "oklch(86.2% 0.069 281.2)",
+        "tonalRamp": ["#141218", "#1D192B", "#4F378B", "#6750A4", "#C9CDFF", "#E6E0E9", "#EADDFF"]
+      },
+      "primary-darkest": {
+        "role": "primary",
+        "displayName": "Primary Darkest",
+        "tonalRamp": ["#141218", "#1D192B", "#4F378B", "#6750A4", "#C9CDFF", "#E6E0E9", "#EADDFF"]
+      },
+      "primary-darker": {
+        "role": "primary",
+        "displayName": "Primary Darker",
+        "tonalRamp": ["#141218", "#1D192B", "#4F378B", "#6750A4", "#C9CDFF", "#E6E0E9", "#EADDFF"]
+      },
+      "primary-lighter": {
+        "role": "primary",
+        "displayName": "Primary Lighter",
+        "tonalRamp": ["#141218", "#1D192B", "#4F378B", "#6750A4", "#C9CDFF", "#E6E0E9", "#EADDFF"]
+      },
+      "primary-lightest": {
+        "role": "primary",
+        "displayName": "Primary Lightest",
+        "tonalRamp": ["#141218", "#1D192B", "#4F378B", "#6750A4", "#C9CDFF", "#E6E0E9", "#EADDFF"]
+      },
+      "secondary-main": {
+        "role": "secondary",
+        "displayName": "Lavender Accent",
+        "canonical": "oklch(83.5% 0.093 298.3)",
+        "tonalRamp": [
+          "#110028",
+          "#2B154A",
+          "#46336A",
+          "#64518B",
+          "#8774B1",
+          "#AC98D8",
+          "#D2BEFF",
+          "#F0EBFF"
+        ]
+      },
+      "secondary-lighter": {
+        "role": "secondary",
+        "displayName": "Muted Plum"
+      },
+      "on-primary": {
+        "role": "primary",
+        "displayName": "On Primary",
+        "canonical": "oklch(32.5% 0.135 291.2)",
+        "tonalRamp": [
+          "#0E002B",
+          "#29075E",
+          "#432C80",
+          "#604CA3",
+          "#826FCA",
+          "#A694F2",
+          "#CAC1FF",
+          "#EEECFF"
+        ]
+      },
+      "error-main": {
+        "role": "tertiary",
+        "displayName": "Rose",
+        "canonical": "oklch(83.7% 0.067 359.4)",
+        "tonalRamp": [
+          "#1D000A",
+          "#3C1423",
+          "#5C303F",
+          "#7D4D5C",
+          "#A2707F",
+          "#C894A3",
+          "#F0B9C9",
+          "#FFE8EE"
+        ]
+      },
+      "error-text": {
+        "role": "tertiary",
+        "displayName": "Error Text",
+        "canonical": "oklch(42.0% 0.147 28.1)",
+        "tonalRamp": [
+          "#1F0000",
+          "#4B0102",
+          "#7B0507",
+          "#A0322A",
+          "#C9574C",
+          "#F37D6F",
+          "#FFB5AB",
+          "#FEE9E6"
+        ]
+      },
+      "background-default": {
+        "role": "neutral",
+        "displayName": "Background",
+        "canonical": "oklch(20.5% 0.000 89.9)",
+        "tonalRamp": ["#0F0D13", "#171717", "#1D1B20", "#211F26", "#2B2930", "#322F35", "#332D41"]
+      },
+      "background-paper": {
+        "role": "neutral",
+        "displayName": "Paper",
+        "tonalRamp": ["#0F0D13", "#171717", "#1D1B20", "#211F26", "#2B2930", "#322F35", "#332D41"]
+      },
+      "input-background": {
+        "role": "neutral",
+        "displayName": "Input Background",
+        "canonical": "oklch(22.7% 0.010 303.7)",
+        "tonalRamp": ["#0F0D13", "#171717", "#1D1B20", "#211F26", "#2B2930", "#322F35", "#332D41"]
+      },
+      "surface-container": {
+        "role": "neutral",
+        "displayName": "Surface Container",
+        "tonalRamp": ["#0F0D13", "#171717", "#1D1B20", "#211F26", "#2B2930", "#322F35", "#332D41"]
+      },
+      "surface-container-high": {
+        "role": "neutral",
+        "displayName": "Surface Container High",
+        "tonalRamp": ["#0F0D13", "#171717", "#1D1B20", "#211F26", "#2B2930", "#322F35", "#332D41"]
+      },
+      "surface-container-highest": {
+        "role": "neutral",
+        "displayName": "Surface Container Highest",
+        "tonalRamp": ["#0F0D13", "#171717", "#1D1B20", "#211F26", "#2B2930", "#322F35", "#332D41"]
+      },
+      "surface-container-active": {
+        "role": "neutral",
+        "displayName": "Surface Container Active",
+        "tonalRamp": ["#0F0D13", "#171717", "#1D1B20", "#211F26", "#2B2930", "#322F35", "#332D41"]
+      },
+      "outline": {
+        "role": "neutral",
+        "displayName": "Outline",
+        "canonical": "oklch(65.7% 0.015 304.0)",
+        "tonalRamp": [
+          "#0C0A10",
+          "#26222A",
+          "#413E46",
+          "#5F5C65",
+          "#827E88",
+          "#A6A2AD",
+          "#CCC8D3",
+          "#F0ECF7"
+        ]
+      },
+      "outline-variant": {
+        "role": "neutral",
+        "displayName": "Outline Variant"
+      },
+      "on-surface-variant": {
+        "role": "neutral",
+        "displayName": "On Surface Variant",
+        "canonical": "oklch(82.9% 0.018 308.2)",
+        "tonalRamp": [
+          "#0D0911",
+          "#26222B",
+          "#423D47",
+          "#605B66",
+          "#837E89",
+          "#A8A2AD",
+          "#CEC8D4",
+          "#F2ECF8"
+        ]
+      },
+      "on-surface-secondary": {
+        "role": "neutral",
+        "displayName": "Lyric Text",
+        "canonical": "oklch(83.0% 0.037 303.0)",
+        "tonalRamp": [
+          "#0E0718",
+          "#281F33",
+          "#443B50",
+          "#62596F",
+          "#847B93",
+          "#A99FB8",
+          "#CFC5DF",
+          "#F2EAFE"
+        ]
+      },
+      "chord-c": {
+        "role": "chord",
+        "displayName": "Chord C",
+        "canonical": "oklch(48.2% 0.108 65.0)",
+        "tonalRamp": [
+          "#150800",
+          "#371D00",
+          "#5D3501",
+          "#864F04",
+          "#AC7132",
+          "#D39658",
+          "#FCBC7D",
+          "#FEEBD9"
+        ]
+      },
+      "chord-d": {
+        "role": "chord",
+        "displayName": "Chord D / D♭",
+        "canonical": "oklch(42.1% 0.122 138.5)",
+        "tonalRamp": [
+          "#020F00",
+          "#0C2C01",
+          "#1A4D01",
+          "#366D22",
+          "#599146",
+          "#7DB76A",
+          "#A2DE8F",
+          "#CEFFBF"
+        ]
+      },
+      "chord-e": {
+        "role": "chord",
+        "displayName": "Chord E / E♭",
+        "canonical": "oklch(44.5% 0.087 229.5)",
+        "tonalRamp": [
+          "#000D15",
+          "#012838",
+          "#01465E",
+          "#176685",
+          "#428AAA",
+          "#67AFD0",
+          "#8DD6F8",
+          "#DCF3FE"
+        ]
+      },
+      "chord-f": {
+        "role": "chord",
+        "displayName": "Chord F",
+        "canonical": "oklch(37.7% 0.176 268.1)",
+        "tonalRamp": [
+          "#020034",
+          "#0B0175",
+          "#1C2E9B",
+          "#3451BF",
+          "#5476E8",
+          "#7E9FFF",
+          "#B5C9FF",
+          "#E8EEFE"
+        ]
+      },
+      "chord-g": {
+        "role": "chord",
+        "displayName": "Chord G / G♭",
+        "canonical": "oklch(34.7% 0.168 297.4)",
+        "tonalRamp": [
+          "#110028",
+          "#2F015D",
+          "#4D1C8A",
+          "#6B40AE",
+          "#8D65D6",
+          "#B18BFE",
+          "#D1BFFE",
+          "#F0EBFE"
+        ]
+      },
+      "chord-a": {
+        "role": "chord",
+        "displayName": "Chord A / A♭",
+        "canonical": "oklch(38.5% 0.158 29.2)",
+        "tonalRamp": [
+          "#1F0000",
+          "#4B0000",
+          "#7D0000",
+          "#A42C22",
+          "#CD5345",
+          "#F87969",
+          "#FFB5A9",
+          "#FEE9E5"
+        ]
+      },
+      "chord-b": {
+        "role": "chord",
+        "displayName": "Chord B / B♭",
+        "canonical": "oklch(46.0% 0.150 38.2)",
+        "tonalRamp": [
+          "#1B0300",
+          "#441000",
+          "#712001",
+          "#A0350A",
+          "#C85A36",
+          "#F2805B",
+          "#FEB7A0",
+          "#FFE9E2"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "headline-lg": {
+        "displayName": "Headline Large",
+        "purpose": "Page titles; 1.875rem at ≥1280px, 1.5rem below 800px."
+      },
+      "title-lg": {
+        "displayName": "Title Large",
+        "purpose": "Card, panel and dialog titles; 600 / 1rem below 800px."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Lyrics and general text; shrinks to 0.875rem below 800px."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Buttons; sentence case, no uppercase transform."
+      },
+      "chord": {
+        "displayName": "Chord",
+        "purpose": "Chord chip labels."
+      }
+    },
+    "shadows": [
+      {
+        "name": "floating-panel",
+        "value": "0px 4px 12px rgba(0, 0, 0, 0.3)",
+        "purpose": "Dialogs, autocomplete dropdowns, date-picker poppers."
+      },
+      {
+        "name": "menu",
+        "value": "0 2px 6px 2px rgba(0, 0, 0, 0.15), 0 1px 2px 0 rgba(0, 0, 0, 0.30)",
+        "purpose": "Context menus (Material 3 level 2)."
+      }
+    ],
+    "motion": [
+      {
+        "name": "hover-quick",
+        "value": "all 0.1s ease-in-out",
+        "purpose": "Hover border and fill changes on cards and buttons."
+      },
+      {
+        "name": "chevron-rotate",
+        "value": "transform 0.2s ease-in-out",
+        "purpose": "Rotating the expand chevron on the setlist 'new' menu button."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "xs",
+        "value": "0px"
+      },
+      {
+        "name": "sm",
+        "value": "800px"
+      },
+      {
+        "name": "md",
+        "value": "960px"
+      },
+      {
+        "name": "lg",
+        "value": "1280px"
+      },
+      {
+        "name": "xl",
+        "value": "1920px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Filled lavender pill; used sparingly for the main confirm action.",
+      "html": "<button class=\"ds-btn-primary\">Change key</button>",
+      "css": ".ds-btn-primary { background: #D0BCFE; color: #381E72; border: none; border-radius: 30px; padding: 6px 16px; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.1s ease-in-out; } .ds-btn-primary:hover { background: #C3ADF5; } .ds-btn-primary:focus-visible { outline: 2px solid #EADDFF; outline-offset: 2px; }"
+    },
+    {
+      "name": "Outlined Button",
+      "kind": "button",
+      "refersTo": "button-outlined",
+      "description": "The default button: grey outline, lavender text, lavender border on hover.",
+      "html": "<button class=\"ds-btn-outlined\">Cancel</button>",
+      "css": ".ds-btn-outlined { background: transparent; color: #D0BCFE; border: 1px solid #938F99; border-radius: 30px; padding: 6px 16px; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: border-color 0.1s ease-in-out, background 0.1s ease-in-out; } .ds-btn-outlined:hover { border-color: #D0BCFE; background: rgba(208, 188, 254, 0.08); } .ds-btn-outlined:focus-visible { outline: 2px solid #D0BCFE; outline-offset: 2px; }"
+    },
+    {
+      "name": "Danger Button",
+      "kind": "button",
+      "refersTo": "button-danger",
+      "description": "Rose fill with dark red text for destructive confirmations; inverts on hover.",
+      "html": "<button class=\"ds-btn-danger\">Delete</button>",
+      "css": ".ds-btn-danger { background: #EFB8C8; color: #8C1D18; border: none; border-radius: 30px; padding: 6px 16px; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all 0.1s ease-in-out; } .ds-btn-danger:hover { background: rgba(239, 184, 200, 0.2); color: #EFB8C8; } .ds-btn-danger:focus-visible { outline: 2px solid #EFB8C8; outline-offset: 2px; }"
+    },
+    {
+      "name": "Search Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Outlined MUI field on a near-black fill with pale lavender text.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">Search songs</span><input class=\"ds-input\" placeholder=\"Title, theme, or first line\" /></label>",
+      "css": ".ds-field { display: inline-flex; flex-direction: column; gap: 4px; font-family: 'DM Sans', sans-serif; } .ds-field-label { color: #E6E0E9; font-size: 0.75rem; } .ds-input { background: #1D1B20; color: #E6E0E9; border: 1px solid #938F99; border-radius: 4px; padding: 14px 12px; font: inherit; font-weight: 500; font-size: 1rem; min-width: 260px; } .ds-input::placeholder { color: #938F99; } .ds-input:hover { border-color: #E6E0E9; } .ds-input:focus-visible { outline: none; border: 2px solid #D0BCFE; padding: 13px 11px; }"
+    },
+    {
+      "name": "Navigation Rail",
+      "kind": "nav",
+      "refersTo": "nav-rail",
+      "description": "100px desktop rail; the active item is a primary-main pill.",
+      "html": "<nav class=\"ds-rail\"><a class=\"ds-rail-item is-active\" href=\"#\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"currentColor\"><path d=\"M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z\"/></svg><span>Home</span></a><a class=\"ds-rail-item\" href=\"#\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"currentColor\"><path d=\"M12 3v10.55A4 4 0 1 0 14 17V7h4V3z\"/></svg><span>Songs</span></a><a class=\"ds-rail-item\" href=\"#\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"currentColor\"><path d=\"M3 13h2v-2H3zm0 4h2v-2H3zm0-8h2V7H3zm4 4h14v-2H7zm0 4h14v-2H7zM7 7v2h14V7z\"/></svg><span>Setlists</span></a></nav>",
+      "css": ".ds-rail { display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100px; padding: 16px 0; background: #141218; font-family: 'DM Sans', sans-serif; } .ds-rail-item { display: flex; flex-direction: column; align-items: center; gap: 2px; color: #E6E0E9; text-decoration: none; font-size: 0.75rem; padding: 6px 14px; border-radius: 100px; transition: background 0.1s ease-in-out; } .ds-rail-item:hover { background: rgba(79, 55, 139, 0.5); } .ds-rail-item.is-active { background: #4F378B; } .ds-rail-item:focus-visible { outline: 2px solid #D0BCFE; outline-offset: 2px; }"
+    },
+    {
+      "name": "Song Card",
+      "kind": "card",
+      "refersTo": "card-song",
+      "description": "Flat bordered card; the border turns lavender on hover.",
+      "html": "<article class=\"ds-card\" tabindex=\"0\"><h3 class=\"ds-card-title\">Amazing Grace</h3><p class=\"ds-card-meta\">Key G · Slow · 4/4</p></article>",
+      "css": ".ds-card { background: #141218; border: 1px solid #49454F; border-radius: 8px; padding: 16px; max-width: 320px; cursor: pointer; transition: all 0.1s ease-in-out; } .ds-card:hover { border-color: #D0BCFE; } .ds-card:focus-visible { outline: 2px solid #D0BCFE; outline-offset: 2px; } .ds-card-title { margin: 0 0 4px; font-family: 'Work Sans', sans-serif; font-size: 1rem; font-weight: 700; color: #FFFFFF; } .ds-card-meta { margin: 0; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: #CAC4D0; }"
+    },
+    {
+      "name": "Chord-Lyric Line",
+      "kind": "custom",
+      "refersTo": "chip-chord",
+      "description": "Signature pattern: a section chip, then chord chips coloured by root note above each syllable.",
+      "html": "<div class=\"ds-chart\"><span class=\"ds-section\">Verse 1</span><div class=\"ds-line\"><span class=\"ds-seg\"><span class=\"ds-chord\" style=\"--c:#471383\">G</span><span class=\"ds-lyric\">Amazing </span></span><span class=\"ds-seg\"><span class=\"ds-chord\" style=\"--c:#874F00\">C</span><span class=\"ds-lyric\">grace how </span></span><span class=\"ds-seg\"><span class=\"ds-chord\" style=\"--c:#471383\">G</span><span class=\"ds-lyric\">sweet the sound</span></span></div></div>",
+      "css": ".ds-chart { font-family: 'DM Sans', sans-serif; } .ds-section { display: inline-flex; align-items: center; height: 30px; padding: 0 10px; margin: 3px 0 10px; border: 1px solid #A9A9A9; border-radius: 4px; color: #D0BCFE; font-size: 14px; } .ds-line { display: flex; flex-wrap: wrap; } .ds-seg { display: flex; flex-direction: column; } .ds-chord { align-self: flex-start; background: var(--c); color: #EADDFF; font-size: 13px; font-weight: 700; border-radius: 4px; padding: 2px 8px; margin: 3px 0 5px; } .ds-lyric { color: #CCC2DC; font-size: 1rem; white-space: pre-wrap; }"
+    },
+    {
+      "name": "Dialog",
+      "kind": "custom",
+      "refersTo": "dialog",
+      "description": "Raised surface with an outline border, Work Sans title, and pill actions.",
+      "html": "<div class=\"ds-dialog\" role=\"dialog\"><h2 class=\"ds-dialog-title\">Delete setlist?</h2><p class=\"ds-dialog-body\">This removes it for everyone in the folder.</p><div class=\"ds-dialog-actions\"><button class=\"ds-dialog-text\">Cancel</button><button class=\"ds-dialog-danger\">Delete</button></div></div>",
+      "css": ".ds-dialog { background: #2B2930; color: #E6E0E9; border: 1px solid #938F99; border-radius: 8px; box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3); max-width: 360px; } .ds-dialog-title { margin: 0; padding: 16px 24px; font-family: 'Work Sans', sans-serif; font-size: 1.25rem; font-weight: 700; color: #FFFFFF; } .ds-dialog-body { margin: 0; padding: 8px 24px; font-family: 'DM Sans', sans-serif; font-size: 1rem; } .ds-dialog-actions { display: flex; justify-content: flex-end; gap: 8px; padding: 8px 24px 16px; } .ds-dialog-text, .ds-dialog-danger { border: none; border-radius: 30px; padding: 6px 16px; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: all 0.1s ease-in-out; } .ds-dialog-text { background: transparent; color: #D0BCFE; } .ds-dialog-text:hover { background: rgba(208, 188, 255, 0.15); } .ds-dialog-danger { background: #EFB8C8; color: #8C1D18; } .ds-dialog-danger:hover { background: rgba(239, 184, 200, 0.2); color: #EFB8C8; } .ds-dialog-text:focus-visible, .ds-dialog-danger:focus-visible { outline: 2px solid #D0BCFE; outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "None. The current interface has no named concept; it is Material 3's baseline dark scheme applied through MUI v5 with few changes.",
+    "overview": "The app is a dark interface throughout. Near-black surfaces (`#0F0D13` to `#332D41`) carry pale lavender text, and one lavender accent (`secondary-main`) does almost all of the signalling: icons, active borders, outlined buttons, and focus. That accent appears about 80 times across the components, far more than any other token. Containers are dark bordered cards, and controls are pills. The layout is a desktop navigation rail on the left that becomes a bottom bar on mobile.\n\nThe one piece of visual language particular to this app is the **chord chip**: every chord sits in a small solid chip above the syllable it lands on, coloured by its root note. The rest of the look is Material defaults.\n\nThis file records that state so the rebrand has an explicit \"before\". It is evidence to learn from, not a direction to extend.",
+    "keyCharacteristics": [
+      "Dark-only. There is no light theme and no theme switch.",
+      "Stock Material 3 baseline dark tokens: `#D0BCFE` / `#4F378B` / `#381E72` / `#EADDFF`.",
+      "One lavender accent carries interaction, selection, and iconography.",
+      "Bordered dark cards, pill-shaped buttons and navigation items.",
+      "Chords are colour-coded by root note in solid chips.",
+      "Work Sans headings over DM Sans body text."
+    ],
+    "rules": [
+      {
+        "name": "The One Accent Rule",
+        "body": "Lavender (`secondary-main`) is the only accent, and it marks everything interactive. Nothing else competes for attention, which also means nothing is singled out.",
+        "section": "colors"
+      },
+      {
+        "name": "The Shrinking Body Rule (observed, not endorsed)",
+        "body": "Body text gets *smaller* on phones: lyrics drop to 14px below the 800px breakpoint. That is the opposite of what PRODUCT.md asks for (lyrics readable on a phone in the hand and on a TV across the room).",
+        "section": "typography"
+      },
+      {
+        "name": "The Border-Not-Shadow Rule",
+        "body": "Resting containers are separated by a 1px border. A shadow means the layer floats above the page.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** treat this file as the \"before\". Read it to understand what exists and what users are used to, not as a style to extend.",
+      "**Do** use the existing palette tokens (`secondary.main`, `outline.variant`, `surface.container*`) rather than raw hex when making a small fix to a legacy screen before the rebrand reaches it.",
+      "**Do** bring the chord colour-by-root behaviour into the rebrand discussion as a functional decision. It is the one piece of interface language here particular to this app."
+    ],
+    "donts": [
+      "**Don't** build new surfaces or the rebrand by extending the stock Material 3 purple. PRODUCT.md requires the design language to reflect the Ripple Out vision.",
+      "**Don't** add another corner radius or another one-off hex value to the legacy screens.",
+      "**Don't** copy the shrinking mobile body size (14px lyrics below 800px) into new work; it conflicts with PRODUCT.md's readability requirement."
+    ]
+  }
+}
