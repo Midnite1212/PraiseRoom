@@ -3,7 +3,7 @@ import path from 'node:path';
 
 const LINT_ARGS = {
   ui: '--type-aware --deny-warnings',
-  server: '--deny-warnings',
+  server: '--type-aware --deny-warnings',
   'old-ui': '--deny-warnings',
   '.': '--deny-warnings',
 };

@@ -18,5 +18,13 @@
       }
     ]
   },
-  "ignorePatterns": ["dist", "drizzle"]
+  "ignorePatterns": ["dist", "drizzle"],
+  "overrides": [
+    {
+      "files": ["**/*.test.ts"],
+      "rules": {
+        "typescript/no-floating-promises": "off"
+      }
+    }
+  ]
 }

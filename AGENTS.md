@@ -43,7 +43,7 @@ Independent packages in one repo, no workspaces wiring:
 
 - `ui/` — **the production UI, still being rebuilt**: React 19 with the React Compiler, TypeScript 7, Vite 8, Tailwind v4 + shadcn/ui, TanStack Router/Query/Form/Table, pnpm. Old routes it doesn't have yet (public setlist links, password reset, sign-up, song and setlist editing, profile) show not-found until rebuilt. Rules in `ui/AGENTS.md`.
 - `old-ui/` — the previous UI, no longer deployed: React 18 TypeScript SPA on Vite 8, MUI v5, Redux Toolkit, react-router-dom v6, pnpm. Kept as the reference for screens not yet rebuilt; frozen. Rules in `old-ui/AGENTS.md`.
-- `server/` — Express 4 + Drizzle ORM on Postgres (Neon) in **TypeScript**, run with `ts-node` through nodemon, pnpm
+- `server/` — Express 4 + Drizzle ORM on Postgres (Neon) in **TypeScript 7**, run with `tsx`, pnpm
 - Root `package.json` — Husky, lint-staged, commitlint, and oxlint and oxfmt for the root files, pnpm
 
 Login, sign-up, and password reset run on Neon Auth (Managed Better Auth) in this app's own Neon project; the app no longer depends on the HMCC HK main site. See `#auth-flow`.
@@ -66,7 +66,7 @@ Tracking is GitHub Issues on `Midnite1212/ripple-out-worship`, a self-hosted for
 pnpm install && (cd server && pnpm install) && (cd ui && pnpm install) && (cd old-ui && pnpm install)
 
 # Run locally (two terminals): the server, plus whichever UI you are working on (both use :3000)
-cd server && pnpm dev           # Express on :1338 via nodemon + ts-node
+cd server && pnpm dev           # Express on :1338 via tsx watch
 cd ui && pnpm dev               # new UI; see ui/AGENTS.md for its other scripts
 cd old-ui && pnpm dev           # old UI; see old-ui/AGENTS.md
 
@@ -79,7 +79,7 @@ pnpm db:migrate                 # drizzle-kit migrate: apply pending migrations 
 pnpm import:songs --file <songs.json> [--apply]  # one-off MongoDB songs import; see #cutover-from-mongodb-songs-only
 
 # Lint and format: each package (root, server/, old-ui/, ui/) runs its own oxlint and oxfmt with its own config
-pnpm lint                       # oxlint --deny-warnings (ui/ adds --type-aware); 0 problems required
+pnpm lint                       # oxlint --deny-warnings (ui/ and server/ add --type-aware); 0 problems required
 pnpm format                     # oxfmt in place; `pnpm format:check` is what CI runs. From the root it formats every package with its own config
 
 # Both Vercel services together, no Vercel login (optional; needs the Vercel CLI)
@@ -92,7 +92,7 @@ Every package has an `.oxfmtrc.json` (2-space, single quotes, semicolons, `print
 
 - **New UI** (`ui/`): see `ui/AGENTS.md`.
 - **Old UI** (`old-ui/`): see `old-ui/AGENTS.md`.
-- **Server**: Express 4, Drizzle ORM (`drizzle-orm`, `drizzle-kit`) over node-postgres (`pg`) on Neon Postgres, `jose` (JWKS verification)
+- **Server**: TypeScript 7 (`tsc` type-checks, `tsx` runs it and the tests), Express 4, Drizzle ORM (`drizzle-orm`, `drizzle-kit`) over node-postgres (`pg`) on Neon Postgres, `jose` (JWKS verification)
 
 Majors only. Each folder's `package.json` is the source of truth for exact versions; check it before relying on an API.
 
@@ -170,7 +170,7 @@ Shared helpers in `src/utils/`: `sendResponse` / `sendError` (`response.ts`; `se
 
 ### Server type-check
 
-`server/tsconfig.json` has `noUnusedLocals` and `noUnusedParameters`. Prefix intentionally unused parameters with `_`. `pnpm exec tsc --noEmit` in `server/` must show 0 errors.
+`server/tsconfig.json` has `noUnusedLocals` and `noUnusedParameters`. Prefix intentionally unused parameters with `_`. `pnpm typecheck` (TypeScript 7) in `server/` must show 0 errors. It uses `module: nodenext` and `package.json` has no `"type"`, so files compile to CommonJS and relative imports stay extensionless.
 
 ### Cutover from MongoDB (songs only)
 

@@ -77,7 +77,7 @@ const fetchFromNeon = (
   headers.set('cookie', neonCookies(req.headers.cookie));
   const body: unknown = req.body;
   const hasBody = method !== 'GET' && method !== 'HEAD' && Buffer.isBuffer(body) && body.length > 0;
-  return fetch(url, { method, headers, ...(hasBody ? { body } : {}) });
+  return fetch(url, { method, headers, ...(hasBody ? { body: new Uint8Array(body) } : {}) });
 };
 
 const setFirstPartyCookies = (res: Response, response: globalThis.Response): void => {

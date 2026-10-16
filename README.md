@@ -41,16 +41,16 @@ Independent packages in one repo, each with its own lockfile (no workspaces):
 
 ## Tech stack
 
-| Layer    | `ui/`                                                                              | `server/`                                                        |
-| -------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| Runtime  | React 19 with the React Compiler                                                   | Node 24, Express 4                                               |
-| Language | TypeScript 7                                                                       | TypeScript 5 (ts-node)                                           |
-| Build    | Vite 8                                                                             | Compiled by Vercel's Express preset                              |
-| Data     | TanStack Query, TanStack Router (file-based), TanStack Form, TanStack Table, Zod 4 | Drizzle ORM over `pg` on Neon Postgres                           |
-| UI       | Tailwind CSS v4, shadcn/ui on Radix, lucide icons, next-themes                     | —                                                                |
-| Auth     | Thin `fetch` client for the server's `/api/auth/*` proxy                           | Neon Auth proxy; JWT verification with `jose`                    |
-| i18n     | i18next + react-i18next (English, 繁體中文)                                        | —                                                                |
-| Quality  | Oxlint (type-aware) and oxfmt; Vitest + Testing Library                            | Oxlint and oxfmt; `node:test`, plus a Postgres integration suite |
+| Layer    | `ui/`                                                                              | `server/`                                                                     |
+| -------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Runtime  | React 19 with the React Compiler                                                   | Node 24, Express 4                                                            |
+| Language | TypeScript 7                                                                       | TypeScript 7 (tsx)                                                            |
+| Build    | Vite 8                                                                             | Compiled by Vercel's Express preset                                           |
+| Data     | TanStack Query, TanStack Router (file-based), TanStack Form, TanStack Table, Zod 4 | Drizzle ORM over `pg` on Neon Postgres                                        |
+| UI       | Tailwind CSS v4, shadcn/ui on Radix, lucide icons, next-themes                     | —                                                                             |
+| Auth     | Thin `fetch` client for the server's `/api/auth/*` proxy                           | Neon Auth proxy; JWT verification with `jose`                                 |
+| i18n     | i18next + react-i18next (English, 繁體中文)                                        | —                                                                             |
+| Quality  | Oxlint (type-aware) and oxfmt; Vitest + Testing Library                            | Oxlint (type-aware) and oxfmt; `node:test`, plus a Postgres integration suite |
 
 ## Getting started
 
