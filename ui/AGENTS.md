@@ -2,7 +2,7 @@
 
 > Read the root `AGENTS.md` first; its Mandatory Procedure, commit rules, server and auth rules, and data handling apply here too. This file covers `ui/` only, and nested-`AGENTS.md`-aware tools load it for files under this folder. `ui/CLAUDE.md` is a symlink to this file.
 
-`ui/` is the rebuilt UI. It is not deployed yet; production still serves `old-ui/` until cutover. Build new screens here, never in `old-ui/`.
+`ui/` is the production UI (the Vercel `ui` service), rebuilt from scratch. Screens the old UI had but this one doesn't yet show not-found until rebuilt; `old-ui/` is the reference for what they did. Build new screens here, never in `old-ui/`.
 
 ## Fixed rules and editable patterns
 

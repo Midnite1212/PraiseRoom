@@ -27,7 +27,7 @@ The bar is the written standard, not "better than before".
 
 ### Old UI (`old-ui/`)
 
-`old-ui/` is frozen except for fixes; flag new features or refactors there. The code is uneven, so calibrate: the bar is "does this PR make its corner better or at least not worse", not "does this file now meet the style guide".
+`old-ui/` is no longer deployed and is frozen; flag any change there that isn't needed as a reference fix. The code is uneven, so calibrate: the bar is "does this PR make its corner better or at least not worse", not "does this file now meet the style guide".
 
 - Flag new code that copies a bad neighbouring pattern: inline hex colours or pixel sizes, a new `*Mobile.tsx` twin, `style={{}}`, `makeStyles`, a new `any` / `as` cast / non-null `!`, index keys on reorderable lists, a bare `axios` import instead of `customAxios`, a `#/` import. Do not flag pre-existing mess the PR did not touch.
 - TypeScript: new `any`, unchecked `axios` responses (no generic), `catch (err: any)`, and casts that hide a wrong type.

@@ -1,5 +1,6 @@
 {
   "private": true,
+  "packageManager": "yarn@1.22.22",
   "devDependencies": {
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",

@@ -41,8 +41,8 @@ The HMCC Hong Kong worship-team app: a song library with chord charts, key trans
 
 Independent packages in one repo, no workspaces wiring:
 
-- `ui/` — **the new UI, under construction**: React 19 with the React Compiler, TypeScript 7, Vite 8, Tailwind v4 + shadcn/ui, TanStack Router/Query/Form/Table, pnpm. Not deployed until cutover. Rules in `ui/AGENTS.md`.
-- `old-ui/` — the production UI: React 18 TypeScript SPA on Vite 8, MUI v5, Redux Toolkit, react-router-dom v6, yarn. Frozen except for fixes. Rules in `old-ui/AGENTS.md`.
+- `ui/` — **the production UI, still being rebuilt**: React 19 with the React Compiler, TypeScript 7, Vite 8, Tailwind v4 + shadcn/ui, TanStack Router/Query/Form/Table, pnpm. Old routes it doesn't have yet (public setlist links, password reset, sign-up, song and setlist editing, profile) show not-found until rebuilt. Rules in `ui/AGENTS.md`.
+- `old-ui/` — the previous UI, no longer deployed: React 18 TypeScript SPA on Vite 8, MUI v5, Redux Toolkit, react-router-dom v6, yarn. Kept as the reference for screens not yet rebuilt; frozen. Rules in `old-ui/AGENTS.md`.
 - `server/` — Express 4 + Drizzle ORM on Postgres (Neon) in **TypeScript**, run with `ts-node` through nodemon, yarn
 - Root `package.json` — ESLint and Prettier for `old-ui/` and `server/`, Husky, lint-staged, and commitlint, yarn
 
@@ -214,7 +214,7 @@ Neon Auth owns user accounts (name, email, password); this repo's own data carri
 
 ## CI / Deploy (`.github/workflows/`)
 
-- Hosting is one Vercel project in [services](https://vercel.com/docs/services) mode, configured by the root `vercel.json`: `server` (`server/`, Express preset, one Vercel Function from `app.ts`) and `ui` (rooted at `old-ui/`, Vite preset, static `dist/`, with a service-level rewrite to `/index.html` for client routes, since the Vite preset has no SPA fallback). The new `ui/` folder is not deployed; at cutover the `ui` service's root moves from `old-ui` to `ui`. Top-level rewrites send `/api/*` to `server` and everything else to `ui`; each service receives the original path, and routing into a service is final. Each service installs with its own lockfile. Vercel deploys from the connected Git repo, and `git.deploymentEnabled` limits automatic deployments to `main`, so PRs get no preview; there is no deploy workflow.
+- Hosting is one Vercel project in [services](https://vercel.com/docs/services) mode, configured by the root `vercel.json`: `server` (`server/`, Express preset, one Vercel Function from `app.ts`) and `ui` (`ui/`, Vite preset, installed with pnpm from `ui/pnpm-lock.yaml`, static `dist/`, with a service-level rewrite to `/index.html` for client routes, since the Vite preset has no SPA fallback). `old-ui/` is not deployed. Top-level rewrites send `/api/*` to `server` and everything else to `ui`; each service receives the original path, and routing into a service is final. Each service installs with its own lockfile. Vercel deploys from the connected Git repo, and `git.deploymentEnabled` limits automatic deployments to `main`, so PRs get no preview; there is no deploy workflow.
 - Node 22 for builds and functions comes from the project's Node.js Version setting; `.nvmrc` pins it for local use.
 - `pr-check.yml` runs on PRs to `main`: root lint, old UI typecheck and tests, new UI checks (pnpm install, typecheck, oxlint, oxfmt check, tests, build), and server typecheck and tests (Node 22). Keep them green.
 - `.github/copilot-instructions.md` and `.github/instructions/*.instructions.md` are Copilot's short summaries; the `AGENTS.md` files are the source of truth when they differ.

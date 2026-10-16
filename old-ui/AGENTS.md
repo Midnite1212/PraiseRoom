@@ -2,7 +2,7 @@
 
 > Read the root `AGENTS.md` first; its Mandatory Procedure, commit rules, server rules, and data handling apply here too. This file covers `old-ui/` only, and nested-`AGENTS.md`-aware tools load it for files under this folder. `old-ui/CLAUDE.md` is a symlink to this file.
 
-`old-ui/` is the production UI until the rebuilt `ui/` replaces it. **It is frozen except for fixes:** no new features, no refactors, no dependency upgrades beyond security patches. New screens go in `ui/` (see `ui/AGENTS.md`).
+`old-ui/` is the previous UI and is **no longer deployed**; production serves the rebuilt `ui/`. It stays as the reference for screens not yet rebuilt and is **frozen**: no new features, refactors, or dependency upgrades. New screens go in `ui/` (see `ui/AGENTS.md`).
 
 ## Stack
 
@@ -16,7 +16,7 @@ cd old-ui && yarn               # install
 yarn dev                        # Vite on :3000; /api is proxied to the server on :1338 (changeOrigin: false)
 yarn typecheck                  # tsc --noEmit; 0 errors required
 yarn test                       # Vitest unit tests (jsdom, globals); all must pass
-yarn build                      # tsc --noEmit, then vite build → old-ui/dist (what the Vercel `ui` service runs)
+yarn build                      # tsc --noEmit, then vite build → old-ui/dist (not deployed)
 yarn preview                    # serve old-ui/dist locally
 ```
 
