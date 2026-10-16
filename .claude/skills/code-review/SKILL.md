@@ -3,7 +3,7 @@ name: code-review
 description: When asked for "code review" of the current branch or a PR in ripple-out-worship.
 ---
 
-- Treat the branch as a feature branch with an open PR. Compare it against its **PR base**: `release` by default, `main` only for a `hotfix` branch, or the parent branch for a stacked PR. Find the base with `gh pr view --json baseRefName` if a PR is open, else ask.
+- Treat the branch as a feature branch with an open PR. Compare it against its **PR base**: `main` by default, or the parent branch for a stacked PR. Find the base with `gh pr view --json baseRefName` if a PR is open, else ask.
 - Review the branch's own changes only and decide whether it is ready to merge into that base.
 - Review as if you are the engineering lead who has to maintain this after the volunteers move on.
 - Use `git diff origin/<base>...HEAD` for the complete set of changes; never rely on individual commit diffs.
@@ -13,7 +13,21 @@ description: When asked for "code review" of the current branch or a PR in rippl
 
 ## What to look for here specifically
 
-This codebase is uneven, so calibrate: the bar is "does this PR make its corner better or at least not worse", not "does this file now meet the style guide".
+The repo has two UIs with different bars. Review each changed file against its own folder's rules: `ui/AGENTS.md` and `ui/docs/patterns/` for `ui/`, `old-ui/AGENTS.md` for `old-ui/`.
+
+### New UI (`ui/`)
+
+The bar is the written standard, not "better than before".
+
+- Fixed rules from `ui/AGENTS.md`: no `any`, `!`, or silencing `as`; outside data parsed with Zod; no manual `useMemo`/`useCallback`/`memo` for performance (React Compiler); render stays pure; no inline styles or raw colours outside `src/styles.css`; data only through `apiRequest` and TanStack Query; every string through `t()` with keys in both locales; one responsive component, no mobile twin.
+- Patterns: the change follows `ui/docs/patterns/`, or updates the matching doc in the same PR and says so in the PR body. A pattern doc must not contradict `ui/AGENTS.md`, and its reference file must actually do what it says.
+- Routes: search params validated with Zod, redirect targets through `toSafeRedirect`, access-gated routes guarded in `beforeLoad` with the matching server rule in place.
+- shadcn files in `src/components/ui/` changed only when unavoidable, and noted.
+- Checks: `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm test`, and `pnpm build` in `ui/` are clean.
+
+### Old UI (`old-ui/`)
+
+`old-ui/` is frozen except for fixes; flag new features or refactors there. The code is uneven, so calibrate: the bar is "does this PR make its corner better or at least not worse", not "does this file now meet the style guide".
 
 - Flag new code that copies a bad neighbouring pattern: inline hex colours or pixel sizes, a new `*Mobile.tsx` twin, `style={{}}`, `makeStyles`, a new `any` / `as` cast / non-null `!`, index keys on reorderable lists, a bare `axios` import instead of `customAxios`, a `#/` import. Do not flag pre-existing mess the PR did not touch.
 - TypeScript: new `any`, unchecked `axios` responses (no generic), `catch (err: any)`, and casts that hide a wrong type.
@@ -24,7 +38,7 @@ This codebase is uneven, so calibrate: the bar is "does this PR make its corner 
 - Backend changes in the same PR: a new endpoint has both a route line and a `ROUTE_PERMISSIONS` entry; writes check that `req.user` owns the target; `req.body` is not passed straight to Mongoose; no `upsert: true` on updates; queries filter `isDeleted: false`; `error.message` is not sent to the client; user input in `$regex` is escaped.
 - Mobile and desktop both covered when layout changed.
 - No member data in the diff, fixtures, or screenshots.
-- Lint and type-check: `yarn lint` and `yarn tsc --noEmit` (ui and server) are clean on the branch.
+- Lint and type-check: `yarn lint` and `yarn tsc --noEmit` (old-ui and server) are clean on the branch.
 
 ## Output
 

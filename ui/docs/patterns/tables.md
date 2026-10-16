@@ -1,0 +1,11 @@
+# Tables
+
+Reference: `src/features/songs/songs-table.tsx`.
+
+- **TanStack Table v9 + shadcn `Table`.** Declare the features a table uses with `tableFeatures({...})` (empty for a plain table; add `rowSortingFeature`, `rowPaginationFeature`, and so on as needed), then build columns with `createColumnHelper<typeof features, Row>()`.
+- **Render** with `table.getHeaderGroups()` and `table.getRowModel().rows`, using `<FlexRender header={header} />` and `<FlexRender cell={cell} />`.
+- **Row ids:** `getRowId: (row) => row._id`, never the index.
+- **Headers** are functions that call `t()`, so they follow the current language.
+- **Server-side paging and search:** the API returns one page; keep `page` and the keyword in the route's search params and page with buttons (see the songs route). Use client-side features only on data that is fully loaded.
+- **Empty state:** one full-width row with a translated message.
+- **Phones:** wrap the table in a bordered `overflow-hidden` container and keep columns few; for wide data, render a card list below `md` instead of a cramped table.

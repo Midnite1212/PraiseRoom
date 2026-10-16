@@ -1,3 +1,4 @@
+import { lstatSync } from 'node:fs';
 import path from 'node:path';
 
 const isNewUi = (file) => path.relative(process.cwd(), file).split(path.sep)[0] === 'ui';
@@ -9,7 +10,11 @@ const inUi = (command) => `sh -c 'cd ui && node_modules/.bin/${command} "$@"' ${
 const OXFMT = inUi('oxfmt --no-error-on-unmatched-pattern');
 const OXLINT = inUi('oxlint --type-aware --deny-warnings');
 
-const byPackage = (files, legacyCommands, newUiCommands) => {
+// CLAUDE.md files are symlinks to AGENTS.md; Prettier refuses symlinks and the target is formatted anyway.
+const isSymlink = (file) => lstatSync(file).isSymbolicLink();
+
+const byPackage = (stagedFiles, legacyCommands, newUiCommands) => {
+  const files = stagedFiles.filter((file) => !isSymlink(file));
   const legacy = files.filter((file) => !isNewUi(file));
   const newUi = files.filter(isNewUi);
   return [
