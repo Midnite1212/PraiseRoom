@@ -115,6 +115,7 @@
       "tempo": "Tempo",
       "timeSignature": "Time signature",
       "themes": "Themes"
-    }
+    },
+    "openInApp": "Open in the app"
   }
 }
