@@ -58,7 +58,19 @@
     "loadFailed": "Could not load songs. Please try again.",
     "page": "Page {{page}} of {{total}}",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "filters": {
+      "button": "Filters",
+      "tempo": "Tempo",
+      "themes": "Themes",
+      "clear": "Clear filters"
+    },
+    "tempo": {
+      "fast": "Fast",
+      "medium": "Medium",
+      "slow": "Slow",
+      "mediumSlow": "Medium slow"
+    }
   },
   "errors": {
     "notFound": "This page doesn't exist.",

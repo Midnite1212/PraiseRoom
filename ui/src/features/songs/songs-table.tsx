@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router';
 import { createColumnHelper, FlexRender, tableFeatures, useTable } from '@tanstack/react-table';
 import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
@@ -25,7 +26,15 @@ const createColumns = (t: TFunction) =>
     }),
     columnHelper.accessor('title', {
       header: () => t('songs.columns.title'),
-      cell: ({ getValue }) => <span className="font-medium">{getValue()}</span>,
+      cell: ({ getValue, row }) => (
+        <Link
+          to="/songs/$songId"
+          params={{ songId: row.original._id }}
+          className="font-medium underline-offset-4 hover:underline"
+        >
+          {getValue()}
+        </Link>
+      ),
     }),
     columnHelper.accessor('artist', { header: () => t('songs.columns.artist') }),
     columnHelper.accessor('originalKey', { header: () => t('songs.columns.key') }),

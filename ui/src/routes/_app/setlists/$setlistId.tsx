@@ -1,11 +1,11 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
-import { createFileRoute, notFound } from '@tanstack/react-router';
+import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
 
 import { Skeleton } from '@/components/ui/skeleton';
 import { setlistQueryOptions } from '@/features/setlists/api';
 import { MusicianView } from '@/features/setlists/musician-view/musician-view';
-import { ApiError } from '@/lib/api-client';
+import { ensureOrNotFound } from '@/lib/ensure-or-not-found';
 
 const musicianSearchSchema = z.object({
   song: z.number().int().min(1).default(1).catch(1),
@@ -13,16 +13,8 @@ const musicianSearchSchema = z.object({
 
 export const Route = createFileRoute('/_app/setlists/$setlistId')({
   validateSearch: musicianSearchSchema,
-  loader: async ({ context, params }) => {
-    try {
-      await context.queryClient.ensureQueryData(setlistQueryOptions(params.setlistId));
-    } catch (error: unknown) {
-      if (error instanceof ApiError && (error.status === 400 || error.status === 404)) {
-        throw notFound();
-      }
-      throw error;
-    }
-  },
+  loader: ({ context, params }) =>
+    ensureOrNotFound(context.queryClient, setlistQueryOptions(params.setlistId)),
   pendingComponent: MusicianPending,
   component: MusicianPage,
 });
@@ -30,8 +22,16 @@ export const Route = createFileRoute('/_app/setlists/$setlistId')({
 function MusicianPage() {
   const { setlistId } = Route.useParams();
   const { song } = Route.useSearch();
+  const navigate = Route.useNavigate();
   const { data: setlist } = useSuspenseQuery(setlistQueryOptions(setlistId));
-  return <MusicianView key={setlist._id} setlist={setlist} songNumber={song} />;
+  return (
+    <MusicianView
+      key={setlist._id}
+      setlist={setlist}
+      songNumber={song}
+      onSongChange={(number) => void navigate({ search: { song: number }, replace: true })}
+    />
+  );
 }
 
 function MusicianPending() {

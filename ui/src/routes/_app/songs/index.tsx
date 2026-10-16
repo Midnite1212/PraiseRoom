@@ -7,12 +7,15 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { songSearchQueryOptions } from '@/features/songs/api';
+import { SongFilters } from '@/features/songs/song-filters';
 import { SongSearchForm } from '@/features/songs/song-search-form';
 import { SongsTable } from '@/features/songs/songs-table';
 
 const songsSearchSchema = z.object({
   q: z.string().default('').catch(''),
   page: z.number().int().min(1).default(1).catch(1),
+  tempo: z.array(z.string()).default([]).catch([]),
+  themes: z.array(z.string()).default([]).catch([]),
 });
 
 export const Route = createFileRoute('/_app/songs/')({
@@ -20,7 +23,12 @@ export const Route = createFileRoute('/_app/songs/')({
   loaderDeps: ({ search }) => search,
   loader: ({ context, deps }) =>
     context.queryClient.ensureQueryData(
-      songSearchQueryOptions({ keyword: deps.q, page: deps.page })
+      songSearchQueryOptions({
+        keyword: deps.q,
+        page: deps.page,
+        tempo: deps.tempo,
+        themes: deps.themes,
+      })
     ),
   pendingComponent: SongsPending,
   component: SongsPage,
@@ -28,24 +36,32 @@ export const Route = createFileRoute('/_app/songs/')({
 
 function SongsPage() {
   const { t } = useTranslation();
-  const { q, page } = Route.useSearch();
+  const search = Route.useSearch();
+  const { q, page, tempo, themes } = search;
   const navigate = Route.useNavigate();
   const { data, isError, isFetching } = useQuery({
-    ...songSearchQueryOptions({ keyword: q, page }),
+    ...songSearchQueryOptions({ keyword: q, page, tempo, themes }),
     placeholderData: keepPreviousData,
   });
 
   const totalPages = Math.max(1, data?.totalPages ?? 1);
-  const goToPage = (nextPage: number) => void navigate({ search: { q, page: nextPage } });
+  const goToPage = (nextPage: number) => void navigate({ search: { ...search, page: nextPage } });
 
   return (
     <section className="mx-auto flex max-w-5xl flex-col gap-4">
       <h1 className="font-heading text-2xl font-semibold">{t('songs.title')}</h1>
-      <SongSearchForm
-        key={q}
-        keyword={q}
-        onSearch={(keyword) => void navigate({ search: { q: keyword, page: 1 } })}
-      />
+      <div className="flex flex-wrap items-end gap-2">
+        <SongSearchForm
+          key={q}
+          keyword={q}
+          onSearch={(keyword) => void navigate({ search: { ...search, q: keyword, page: 1 } })}
+        />
+        <SongFilters
+          tempo={tempo}
+          themes={themes}
+          onChange={(filters) => void navigate({ search: { ...search, ...filters, page: 1 } })}
+        />
+      </div>
       {isError ? (
         <Alert variant="destructive">
           <AlertDescription>{t('songs.loadFailed')}</AlertDescription>
