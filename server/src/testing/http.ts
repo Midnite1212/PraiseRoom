@@ -56,6 +56,6 @@ export const callHandler = async (
   res: FakeResponse
 ): Promise<Mock<NextFunction>> => {
   const next = mock.fn<NextFunction>();
-  await handler(req, res as unknown as Response, next);
+  await Promise.resolve(handler(req, res as unknown as Response, next));
   return next;
 };
