@@ -13,7 +13,7 @@ src/
   components/ui/           shadcn components (vendored; added with `pnpm exec shadcn add`)
   components/layout/       app shell pieces shared by every page
   hooks/                   hooks used by more than one feature
-  lib/                     framework-free helpers: api and auth clients, query client, utils
+  lib/                     framework-free helpers: api and auth clients, query client, stored choices, utils
   i18n/                    i18next setup and locale files
   test/                    Vitest setup
 ```

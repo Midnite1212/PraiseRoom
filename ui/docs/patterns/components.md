@@ -22,4 +22,6 @@
 - **Icons:** `lucide-react`, sized by the component (shadcn sizes icons inside buttons). Icon-only buttons need an `aria-label` from `t()`.
 - **Layout:** the app shell (`AppShell`, `AppSidebar`) owns the sidebar, header, and page padding. Pages render inside `<main>` and set their own max width (`mx-auto max-w-5xl`).
 - **Responsive:** design at 390 px first, then add `md:`/`lg:` classes. The shadcn sidebar becomes a sheet on phones automatically.
+- **Reader preferences** (lyrics size, Lyrics/Chords, 1-4-5/A-B-C) are per-device choices made with `createStoredChoice` (`src/lib/stored-choice.ts`); add a new one the same way instead of a store or context. Reference: `src/features/reader/`.
+- **Musician view:** `src/features/setlists/musician-view/` follows reference layout G: a setlist rail (a sheet on phones), a song header whose title wraps to two balanced lines with the artist below and chord controls top-right, a slim sticky row once the header scrolls away (`useScrolledPast`), and lyrics in one column, or two from `xl`.
 - **Toasts:** `toast.success` / `toast.error` from `sonner` for the result of a user action; inline `Alert` for a page that failed to load.
