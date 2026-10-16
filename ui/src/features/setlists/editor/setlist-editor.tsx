@@ -25,8 +25,9 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import type { Session } from '@/features/auth/session';
 import type { SongSummary } from '@/features/songs/api';
 
-import { createSetlist, deleteSetlist, type SetlistInput, updateSetlist } from '../api';
+import { createSetlist, type SetlistInput, updateSetlist } from '../api';
 import { fromDateInputValue } from '../format-date';
+import { useDeleteSetlist } from '../use-delete-setlist';
 import { type EditorSong, toSongKeys } from './editor-song';
 import { EditorSongList } from './editor-song-list';
 import { FolderPicker } from './folder-picker';
@@ -71,7 +72,7 @@ export function SetlistEditor({
     mutationFn: (input: SetlistInput) =>
       setlistId ? updateSetlist(setlistId, input) : createSetlist(input),
   });
-  const remove = useMutation({ mutationFn: deleteSetlist });
+  const remove = useDeleteSetlist();
 
   const schema = z.object({
     name: z.string().trim().min(1, t('editor.nameRequired')).max(100, t('editor.nameTooLong')),
@@ -112,13 +113,9 @@ export function SetlistEditor({
     try {
       await remove.mutateAsync(setlistId);
     } catch {
-      toast.error(t('editor.deleteFailed'));
       return;
     }
     form.reset();
-    queryClient.removeQueries({ queryKey: ['setlists', 'detail', setlistId] });
-    await queryClient.invalidateQueries({ queryKey: ['setlists'] });
-    toast.success(t('editor.deleted'));
     await navigate({ to: '/setlists' });
   };
 

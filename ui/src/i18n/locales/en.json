@@ -80,7 +80,22 @@
   "setlists": {
     "title": "Setlists",
     "empty": "You have no setlists yet.",
-    "noDate": "No date"
+    "noDate": "No date",
+    "upcoming": "Upcoming",
+    "past": "Past",
+    "undated": "No date",
+    "searchLabel": "Search setlists",
+    "searchPlaceholder": "Search by name",
+    "show": "Show",
+    "ownership": {
+      "all": "All",
+      "mine": "Mine",
+      "shared": "Shared"
+    },
+    "shared": "Shared",
+    "noMatches": "No setlists match.",
+    "open": "Open",
+    "actions": "Actions for {{name}}"
   },
   "reader": {
     "setlist": "Setlist",
