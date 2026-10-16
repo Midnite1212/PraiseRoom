@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "singleQuote": true,
+  "semi": true,
+  "printWidth": 100,
+  "trailingComma": "es5",
+  "sortImports": {},
+  "sortTailwindcss": {},
+  "ignorePatterns": ["dist", "pnpm-lock.yaml", "src/routeTree.gen.ts"]
+}

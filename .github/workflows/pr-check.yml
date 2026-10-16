@@ -2,7 +2,6 @@ name: "PR Check"
 on:
   pull_request:
     branches:
-      - release
       - main
 
 permissions:
@@ -24,11 +23,30 @@ jobs:
           cache: yarn
           cache-dependency-path: |
             yarn.lock
-            ui/yarn.lock
+            old-ui/yarn.lock
       - run: yarn install --frozen-lockfile
-      # eslint-plugin-react detects the React version from ui/node_modules.
-      - run: yarn --cwd ui install --frozen-lockfile
+      # eslint-plugin-react detects the React version from old-ui/node_modules.
+      - run: yarn --cwd old-ui install --frozen-lockfile
       - run: yarn lint
+
+  old-ui:
+    name: 'Old UI'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: old-ui
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: yarn
+          cache-dependency-path: old-ui/yarn.lock
+      - run: yarn install --frozen-lockfile
+      - run: yarn typecheck
+      - run: yarn test
+        env:
+          CI: true
 
   ui:
     name: 'UI'
@@ -38,16 +56,20 @@ jobs:
         working-directory: ui
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          package_json_file: ui/package.json
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: yarn
-          cache-dependency-path: ui/yarn.lock
-      - run: yarn install --frozen-lockfile
-      - run: yarn typecheck
-      - run: yarn test
-        env:
-          CI: true
+          cache: pnpm
+          cache-dependency-path: ui/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm format:check
+      - run: pnpm test
+      - run: pnpm build
 
   server:
     name: 'Server'

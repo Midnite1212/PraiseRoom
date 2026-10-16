@@ -1,4 +1,5 @@
 node_modules
 server/dist
-ui/build
-ui/dist
+old-ui/build
+old-ui/dist
+ui

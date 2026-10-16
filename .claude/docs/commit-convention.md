@@ -40,10 +40,9 @@ No issue yet? Open one first with `gh issue create -R Midnite1212/ripple-out-wor
 
 ## Base branch and flow
 
-- Flow is `feature` → `release` → `main`. Feature branches start from `release`, and their PRs target `release`.
-- `main` is production. Only `hotfix` branches merge straight into `main`; `release` is merged into `main` at the end of a sprint.
+- Branches start from `main` and their PRs target `main`, which is production; there is no `release` branch any more.
 - Dependent PRs are **stacked**: PR2 branches off PR1's branch and sets PR1 as its base, so each diff shows only its own changes. Merge in order.
-- `git pull --rebase` to stay linear. Never merge `release` into a feature branch; rebase onto it.
+- `git pull --rebase` to stay linear. Never merge `main` into a feature branch; rebase onto it.
 
 ## PR title
 

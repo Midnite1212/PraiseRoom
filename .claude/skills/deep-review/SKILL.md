@@ -7,7 +7,7 @@ This is a thorough code review that goes beyond surface-level changes to ensure 
 
 ## Step 1: Identify PR-specific changes
 
-- Determine the PR base: `gh pr view --json baseRefName` if a PR is open, else `release` (or `main` for a `hotfix` branch).
+- Determine the PR base: `gh pr view --json baseRefName` if a PR is open, else `main`.
 - Isolate the branch's own commits: `git log --oneline origin/<base>..HEAD --grep="GH-<issue#>"`, or walk first-parent commits. Exclude merges from the base.
 - List files changed by those commits only; ignore changes that arrived by merging the base.
 
@@ -17,6 +17,18 @@ This is a thorough code review that goes beyond surface-level changes to ensure 
 - `git diff origin/<base>...HEAD` for the complete change set; review the final state of files, not individual commits.
 
 ## Step 3: Deep Analysis - Potential Bugs
+
+Files in `ui/` follow `ui/AGENTS.md` and `ui/docs/patterns/` (see "New UI checks" below); the import, safety, pattern, and routing checks that follow are for `old-ui/`.
+
+### New UI checks (`ui/`)
+
+- `pnpm typecheck`, `pnpm lint` (type-aware), `pnpm format:check`, `pnpm test`, and `pnpm build` pass in `ui/`; no `any`, `!`, silencing `as`, or `oxlint-disable` added to get there.
+- Every API response is parsed by a Zod schema through `apiRequest`; query keys come from the feature's `queryOptions` factory; mutations invalidate the right keys and toast both outcomes.
+- Search params validated with Zod (`.default` + `.catch`); redirects go through `toSafeRedirect`; access-gated routes check the session in `beforeLoad` and the server rule matches.
+- React Compiler safety: no manual memoization for performance, no ref reads or setState during render, effects only for external sync.
+- Every new string has keys in both `en.json` and `zh-Hant.json`; no server text rendered.
+- Styling uses tokens only; new colours are added to `src/styles.css` for light and dark; layout works at 390 px.
+- Pattern changes are written to `ui/docs/patterns/` in the same PR, do not contradict `ui/AGENTS.md`, and match their reference code.
 
 For each changed file, check for:
 
@@ -30,7 +42,7 @@ For each changed file, check for:
 
 ### Type and Runtime Safety
 
-- `yarn tsc --noEmit` passes in `ui/` and `server/`. Check whether the PR passes it by adding `any`, `as`, or `!` rather than by fixing types.
+- `yarn tsc --noEmit` passes in `old-ui/` and `server/`. Check whether the PR passes it by adding `any`, `as`, or `!` rather than by fixing types.
 - Every `.map`, `.filter`, `.length`, and nested property on fetched data is guarded, especially nullable fields (`publicLink`, `date`, `code`, `simplifiedChordLyrics`, populated `songs`).
 - `useParams` values checked before use; `/setlist/:id?` makes `id` optional.
 - Loading, empty, and error states rendered; async work in `try/catch` with user-visible feedback.

@@ -18,18 +18,22 @@ If the request is a bare issue with no task checklist and no plan, stop and writ
 
 ## Before the first task
 
-1. Read `AGENTS.md` and follow its Mandatory Procedure for the kind of change ahead.
-2. Confirm the branch. It must be `<issue#>-<type>-<description>` off `release` (or off the parent branch for a stacked PR). Create it if you are on `release` or `main`; ask if you are on an unrelated branch. The leading issue number is required, or the commitlint hook rejects every commit.
+1. Read `AGENTS.md` and follow its Mandatory Procedure for the kind of change ahead, plus `ui/AGENTS.md` or `old-ui/AGENTS.md` for UI work.
+2. Confirm the branch. It must be `<issue#>-<type>-<description>` off `main` (or off the parent branch for a stacked PR). Create it if you are on `main`; ask if you are on an unrelated branch. The leading issue number is required, or the commitlint hook rejects every commit.
 3. Commits are `GH-<issue#>: <what>` per `.claude/docs/commit-convention.md`. One commit per task or per coherent group of tasks.
 
 ## Working the tasks
 
-Work as a senior React frontend engineer on this project (dispatch the `react-frontend` subagent for the implementation when the task is frontend-only). For backend tasks follow `#backend-express` in `AGENTS.md`.
+Work as a senior frontend engineer on this project: dispatch the `ui-frontend` subagent for new-UI tasks and `old-ui-frontend` for old-UI fixes. For backend tasks follow `#backend-express` in `AGENTS.md`.
 
 For each task in order:
 
 1. Do the work.
-2. Verify it: `yarn tsc --noEmit` in `ui/` and `server/` (0 errors), `yarn lint` from the root (0 errors, no new warnings), the unit tests (`CI=true yarn test --watchAll=false` in `ui/`, `yarn test` in `server/`), `yarn build` in `ui/` for UI changes, and a browser check at desktop and mobile widths for anything visible.
+2. Verify it, for each folder the task touched:
+   - `ui/`: `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm test`, `pnpm build`.
+   - `old-ui/`: `yarn typecheck`, `yarn test`, `yarn build`, plus `yarn lint` from the root.
+   - `server/`: `yarn typecheck`, `yarn test`, plus `yarn lint` from the root.
+   - Anything visible: a browser check at desktop and mobile widths.
 3. Mark it done and add a one-line summary under it:
    - Local plan file: tick the checkbox in the file.
    - GitHub issue: tick the checkbox in the issue body with `gh issue edit <n> -R Midnite1212/ripple-out-worship --body-file`, changing nothing else in the body. Post progress notes as an issue comment rather than editing prose in the body.
@@ -39,4 +43,4 @@ Stop and report if a task turns out to need a decision the plan did not make (a 
 
 ## After the last task
 
-Leave committing and PR creation to the user unless asked. When asked, open the PR with `gh pr create -R Midnite1212/ripple-out-worship --base release` (or the stacked parent), with the title and body per `.claude/docs/pr-description.md`, opening with `Closes #<issue#>`.
+Leave committing and PR creation to the user unless asked. When asked, open the PR with `gh pr create -R Midnite1212/ripple-out-worship --base main` (or the stacked parent), with the title and body per `.claude/docs/pr-description.md`, opening with `Closes #<issue#>`.

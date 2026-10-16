@@ -47,7 +47,8 @@ Closes #<issue#>
 
 - [ ] Open `/setlist/add` → add three songs → save → reopen
 - [ ] Desktop 1440 and mobile 390
-- [ ] `yarn tsc --noEmit` in ui/ and server/, `yarn lint` 0 errors, `yarn build` passes
+- [ ] Checks for each folder touched: `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build` in ui/; `yarn typecheck`, `yarn test`, `yarn build` in old-ui/; `yarn typecheck`, `yarn test` in server/; `yarn lint` from the root
+- [ ] Pattern docs changed (new UI): list them, or "none"
 
 ## Not in this PR
 

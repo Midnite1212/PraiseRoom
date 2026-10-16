@@ -6,7 +6,7 @@
   "services": {
     "server": { "root": "server", "framework": "express" },
     "ui": {
-      "root": "ui",
+      "root": "old-ui",
       "framework": "vite",
       "outputDirectory": "dist",
       "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
