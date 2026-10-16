@@ -57,7 +57,7 @@ Tracking is GitHub Issues on `Midnite1212/ripple-out-worship`, a self-hosted for
 - NEVER proactively create documentation files or READMEs unless asked. The exception is `ui/docs/patterns/`, which you update in the same PR as a pattern change (see the `ui-patterns` skill).
 - Server unit tests cover utils, middleware, and controller input handling (`server/src/**/*.test.ts`, `node:test`); each UI's test scope is in its own `AGENTS.md`. When you change covered logic, keep the tests green and add a case; do not rewrite an expected value to make a test pass unless the behaviour change is intended and stated.
 - Reuse existing components and helpers before inventing new ones.
-- Package managers are per folder: **pnpm** in `ui/`, **yarn** everywhere else (`yarn` to install, `yarn <script>` to run, `yarn tsc` / `yarn eslint` / `yarn prettier` for binaries). Never npm or npx for project work; the only `npx` in these docs is `npx gitnexus` (`#gitnexus-setup`), a per-machine tool that never touches a lockfile.
+- Package managers are per folder: **pnpm** in `ui/`, **yarn** everywhere else (`yarn` to install, `yarn <script>` to run, `yarn tsc` / `yarn eslint` / `yarn prettier` for binaries). Never npm or npx for project work; the only npm use in these docs is the global GitNexus install (`#gitnexus-setup`), a per-machine tool that never touches a lockfile.
 
 ## Development Commands
 
@@ -245,14 +245,15 @@ Read `.claude/docs/commit-convention.md` and `.claude/docs/pr-description.md` be
 
 ## GitNexus Setup
 
-GitNexus gives the agent a call graph of this repo (impact analysis, execution flows, safe renames, taint analysis). The rules in the block below assume it is running. Two one-time steps per clone:
+GitNexus gives the agent a call graph of this repo (impact analysis, execution flows, safe renames, taint analysis, and UI-to-API route links). The rules in the block below assume it is running. It needs GitNexus 1.6.13-rc.109 or later, which links typed wrapper calls such as `axios.get<T>('/api/…')` to their server routes, on Node `^22.18` or `>=24.11`. One-time steps per machine and clone:
 
 ```bash
-npx gitnexus analyze --pdg  # builds the local index into .gitnexus/ (gitignored) and writes .gitnexus/run.cjs; --pdg enables taint analysis
-npx gitnexus setup          # registers the MCP server in your coding tool (Claude Code, Cursor, OpenCode, Codex, …); add -c <tool> to pick one
+npm i -g gitnexus@rc --allow-scripts=gitnexus,@ladybugdb/core  # per-machine CLI; newer npm skips install scripts unless allowed; use gitnexus@latest once 1.6.13 is stable
+gitnexus analyze --pdg      # builds the local index into .gitnexus/ (gitignored) and writes .gitnexus/run.cjs; --pdg enables taint analysis
+gitnexus setup              # registers the MCP server in your coding tool (Claude Code, Cursor, OpenCode, Codex, …); add -c <tool> to pick one
 ```
 
-Re-run `analyze` after pulling large changes or when a tool reports the index is stale. On npm 11 an `npx` install crash (`node.target is null`) is a known issue; `npm i -g gitnexus` then `gitnexus analyze` works around it. Never commit `.gitnexus/`; it contains absolute paths and a machine-local database.
+Re-run `analyze` after pulling large changes or when a tool reports the index is stale, and after upgrading GitNexus. `.gitnexusrc` lists the HTTP client wrappers whose calls link to server routes (`route_map`); add a new wrapper there. Never commit `.gitnexus/`; it contains absolute paths and a machine-local database.
 
 If GitNexus is not installed yet, say so at the start of the task and fall back to grep and file reads; do not pretend to have run `impact`.
 
@@ -260,25 +261,27 @@ If GitNexus is not installed yet, say so at the start of the task and fall back 
 
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **ripple-out-worship** (5050 nodes, 9369 edges, 39 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **ripple-out-worship** (13904 symbols, 27073 relationships, 369 execution flows).
 
-> Index stale? Run `node .gitnexus/run.cjs analyze` from the project root — it auto-selects an available runner. No `.gitnexus/run.cjs` yet? `npx gitnexus analyze` (npm 11 crash → `npm i -g gitnexus`; #1939).
+> Index stale? Run `node .gitnexus/run.cjs analyze --index-only`. No `.gitnexus/run.cjs`? Bootstrap with `npx`, `bunx`, or `pnpm dlx`; e.g. `bunx gitnexus@latest analyze` (#1939).
+> On query/context/impact/cypher object results, read staleness.status and branch/lastCommit. Re-analyze only for behind or diverged — current is clone HEAD, not main.
 
 ## Always Do
 
-- **MUST run impact analysis before editing any symbol.** Before modifying a function, class, or method, run `impact({target: "symbolName", direction: "upstream"})` and report the blast radius (direct callers, affected processes, risk level) to the user.
-- **MUST run `detect_changes()` before committing** to verify your changes only affect expected symbols and execution flows. For regression review, compare against the default branch: `detect_changes({scope: "compare", base_ref: "release"})`.
-- **MUST warn the user** if impact analysis returns HIGH or CRITICAL risk before proceeding with edits.
-- When exploring unfamiliar code, use `query({search_query: "concept"})` to find execution flows instead of grepping. It returns process-grouped results ranked by relevance.
-- When you need full context on a specific symbol — callers, callees, which execution flows it participates in — use `context({name: "symbolName"})`.
+- **MUST run impact before editing.** Use `impact({target: "symbolName", direction: "upstream"})` or `node .gitnexus/run.cjs impact "symbolName" --direction upstream --repo .`; report callers/processes/risk. Never substitute grep for graph analysis. For unified PDG impact, add `mode: "pdg"` with optional `line: <N>` — it returns statement-level `affectedStatements` over CDG + REACHING_DEF and inter-procedural symbols in `interproceduralByDepth`/`byDepth`; no-layer/degraded PDG results are UNKNOWN-risk notes (`--pdg` layer). CLI equivalent: `node .gitnexus/run.cjs impact "symbolName" --direction upstream --mode pdg --line <N> --repo .`.
+- **MUST analyze changes before commit.** Run `detect_changes({scope: "all"})` or `node .gitnexus/run.cjs detect-changes --scope all --repo .`. `partial: true` or `truncated: true` is not a clean check — a zero means unseen, not unaffected; re-run it. For regression review, fetch target branch "main" from its remote; compute its merge base with the reviewed HEAD and pass that SHA to `detect_changes({scope: "compare", base_ref: "<merge-base SHA>"})` or `node .gitnexus/run.cjs detect-changes --scope compare --base-ref "<merge-base SHA>" --repo .`.
+- MUST warn on HIGH/CRITICAL `risk` pre-edit; never use `riskSharedAxes` to waive a HIGH/CRITICAL `risk` warning. Compare File/symbol: MCP File omits axes; Graph-RAG expands File.
+- **MUST treat `risk: UNKNOWN` as unresolved, not as low.** An empty caller set is not evidence the symbol is unused — it can also mean the callers are not resolvable by the index (plain-object property access, dynamic dispatch, cross-language calls). `impact` pairs `UNKNOWN` with a `riskNote` saying so. Confirm with a text search before treating the symbol as safe to change or delete; do not proceed on the strength of a zero.
+- **MUST use `query({search_query: "concept"})` for concepts/flows, `context({name: "symbolName"})` for a named symbol, or `impact` for blast radius, on read-only callers, dependencies, imports, or execution flow.** Graph first; text search only for empty/`UNKNOWN`/literals.
 - For security review, `explain({target: "fileOrSymbol"})` lists taint findings (source→sink flows; needs `analyze --pdg`).
+- For control/data dependence, `pdg_query({mode: "controls", target: "fileOrSymbol"})` answers "under what condition does X run?" (CDG, incl. guard clauses) and `pdg_query({mode: "flows", target, variable})` traces "where does variable Y flow?" (REACHING_DEF). `--pdg` layer.
 
 ## Never Do
 
-- NEVER edit a function, class, or method without first running `impact` on it.
-- NEVER ignore HIGH or CRITICAL risk warnings from impact analysis.
-- NEVER rename symbols with find-and-replace — use `rename` which understands the call graph.
-- NEVER commit changes without running `detect_changes()` to check affected scope.
+- NEVER edit a function, class, or method before MCP/CLI impact analysis.
+- NEVER ignore HIGH or CRITICAL risk warnings from impact analysis, and never read `UNKNOWN` as an all-clear — it means the walk could not answer, which is the one verdict that requires confirming by other means.
+- NEVER rename symbols with find-and-replace — use `rename` with `dry_run: true` first, review the graph-backed semantic spans and coverage, then apply with `dry_run: false`.
+- NEVER commit before MCP/CLI graph change analysis.
 
 ## Resources
 

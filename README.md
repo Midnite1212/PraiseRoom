@@ -139,6 +139,7 @@ The repo carries instructions for Claude Code, Codex, Cursor, OpenCode, and Copi
 - `ui/docs/patterns/`: living component, data, routing, form, table, i18n, and testing patterns that agents and teammates update alongside the code.
 - Agent personas and skills in `.claude/agents/` and `.claude/skills/` (also at `.agents/skills/`), plus OpenCode and Cursor pointers.
 - MCP servers for the shadcn registry and Context7 docs in `.mcp.json`, `.cursor/mcp.json`, `.vscode/mcp.json`, and `opencode.json`.
+- [GitNexus](https://github.com/abhigyanpatwari/GitNexus) for the call graph agents use before editing (impact analysis, execution flows, UI-to-API route links). It is installed per machine; see GitNexus Setup in `AGENTS.md`.
 
 ## Contributors
 
