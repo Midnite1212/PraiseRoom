@@ -29,7 +29,7 @@ Read the pattern doc for the area you are touching before writing code:
 | Framework       | React 19 with the React Compiler (`babel-plugin-react-compiler` 1.0 through `@rolldown/plugin-babel`)                                                  |
 | Language        | TypeScript 7, `strict`, `noUncheckedIndexedAccess`, `verbatimModuleSyntax`                                                                             |
 | Build           | Vite 8, single-page app; dev server on :3000 proxies `/api` to the server on :1338                                                                     |
-| Package manager | pnpm 10 (`packageManager` pins it); never yarn, npm, or npx in `ui/`                                                                                   |
+| Package manager | pnpm 10 (`packageManager` pins it); never yarn, npm, or npx                                                                                            |
 | Lint / format   | Oxlint with type-aware rules (`.oxlintrc.json`) and oxfmt (`.oxfmtrc.json`: single quotes, semicolons, width 100, sorted imports and Tailwind classes) |
 | Styling         | Tailwind v4 + shadcn/ui (Radix, `radix-nova` style), theme tokens as CSS variables in `src/styles.css`                                                 |
 | Theme           | `next-themes`, class strategy, dark by default, light and system available                                                                             |
@@ -47,7 +47,7 @@ Majors only above. `package.json` is the source of truth for exact versions.
 
 ```bash
 pnpm install                    # install (pnpm 10; corepack or a matching global pnpm)
-pnpm dev                        # Vite on :3000; run the server too (cd ../server && yarn dev)
+pnpm dev                        # Vite on :3000; run the server too (cd ../server && pnpm dev)
 pnpm typecheck                  # tsc (TypeScript 7) for src/ and vite.config.ts; 0 errors required
 pnpm lint                       # oxlint --type-aware --deny-warnings; 0 problems required
 pnpm format                     # oxfmt: format in place; `pnpm format:check` is what CI runs

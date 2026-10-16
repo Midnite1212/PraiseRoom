@@ -35,9 +35,9 @@ Independent packages in one repo, each with its own lockfile (no workspaces):
 | Folder    | What it is                                                                          | Package manager |
 | --------- | ----------------------------------------------------------------------------------- | --------------- |
 | `ui/`     | The production UI                                                                   | pnpm            |
-| `server/` | Express API, database access, and the auth proxy                                    | yarn            |
-| `old-ui/` | The previous UI: not deployed, kept as the reference for screens not yet rebuilt    | yarn            |
-| root      | ESLint and Prettier for `old-ui/` and `server/`, Husky, lint-staged, and commitlint | yarn            |
+| `server/` | Express API, database access, and the auth proxy                                    | pnpm            |
+| `old-ui/` | The previous UI: not deployed, kept as the reference for screens not yet rebuilt    | pnpm            |
+| root      | ESLint and Prettier for `old-ui/` and `server/`, Husky, lint-staged, and commitlint | pnpm            |
 
 ## Tech stack
 
@@ -54,18 +54,18 @@ Independent packages in one repo, each with its own lockfile (no workspaces):
 
 ## Getting started
 
-**Prerequisites:** Node 24 (`.nvmrc`), yarn 1, and pnpm 10 (`corepack enable` gives you the pinned version).
+**Prerequisites:** Node 24 (`.nvmrc`) and pnpm 10 (`corepack enable` gives you the pinned version).
 
 ```bash
 # Install: the root install also enables the git hooks
-yarn
-(cd server && yarn)
+pnpm install
+(cd server && pnpm install)
 (cd ui && pnpm install)
 
 # Configure the server: create server/.env with the variables below (never commit it)
 
 # Run (two terminals)
-cd server && yarn dev                 # API on http://localhost:1338
+cd server && pnpm dev                 # API on http://localhost:1338
 cd ui && pnpm dev                     # UI on http://localhost:3000, proxying /api to the server
 ```
 
@@ -86,15 +86,15 @@ Use `http://localhost:3000`, not `127.0.0.1`: Neon Auth's "Allow localhost" sett
 | Where     | Command                                                                           | Does                                                                                                    |
 | --------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
 | `ui/`     | `pnpm typecheck` / `pnpm lint` / `pnpm format:check` / `pnpm test` / `pnpm build` | The checks CI runs                                                                                      |
-| `server/` | `yarn typecheck` / `yarn test`                                                    | Type-check and unit tests; set `DATABASE_URL_TEST` to a throwaway database to add the integration suite |
-| `server/` | `yarn db:generate` / `yarn db:migrate`                                            | Create a migration from `src/db/schema.ts` / apply pending migrations to `DATABASE_URL`                 |
-| root      | `yarn lint`                                                                       | ESLint over `old-ui/` and `server/`                                                                     |
+| `server/` | `pnpm typecheck` / `pnpm test`                                                    | Type-check and unit tests; set `DATABASE_URL_TEST` to a throwaway database to add the integration suite |
+| `server/` | `pnpm db:generate` / `pnpm db:migrate`                                            | Create a migration from `src/db/schema.ts` / apply pending migrations to `DATABASE_URL`                 |
+| root      | `pnpm lint`                                                                       | ESLint over `old-ui/` and `server/`                                                                     |
 
 ## Deployment
 
 - One Vercel project in services mode, configured by `vercel.json`: `/api/*` goes to the `server` service, everything else to the `ui` service (`ui/`, with a fallback to `index.html` for client routes).
 - Only `main` deploys automatically; pull requests get no preview.
-- Vercel never runs migrations. Apply them with `DATABASE_URL='<neon direct url>' yarn db:migrate` from `server/` before merging code that needs them.
+- Vercel never runs migrations. Apply them with `DATABASE_URL='<neon direct url>' pnpm db:migrate` from `server/` before merging code that needs them.
 - Vercel environment variables: `DATABASE_URL`, `NEON_AUTH_BASE_URL`, and `BASE_URL`. The UI needs none.
 - Add the production domain to Neon Auth's trusted domains, or sign-in fails with `INVALID_ORIGIN`.
 

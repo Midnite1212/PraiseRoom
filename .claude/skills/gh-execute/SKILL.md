@@ -31,8 +31,8 @@ For each task in order:
 1. Do the work.
 2. Verify it, for each folder the task touched:
    - `ui/`: `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm test`, `pnpm build`.
-   - `old-ui/`: `yarn typecheck`, `yarn test`, `yarn build`, plus `yarn lint` from the root.
-   - `server/`: `yarn typecheck`, `yarn test`, plus `yarn lint` from the root.
+   - `old-ui/`: `pnpm typecheck`, `pnpm test`, `pnpm build`, plus `pnpm lint` from the root.
+   - `server/`: `pnpm typecheck`, `pnpm test`, plus `pnpm lint` from the root.
    - Anything visible: a browser check at desktop and mobile widths.
 3. Mark it done and add a one-line summary under it:
    - Local plan file: tick the checkbox in the file.

@@ -6,12 +6,12 @@ This project was bootstrapped with
 ## Installation
 
 1. Check out the first README at root directory if you haven't yet
-2. Run `yarn install` at `./ui`
+2. Run `pnpm install` at `./ui`
 
 ## Usage
 
 2.  Open your choice of Terminal/cmd/PowerShell
-3.  Run `yarn start` at `./ui`
+3.  Run `pnpm start` at `./ui`
 
 ## Learn More
 
