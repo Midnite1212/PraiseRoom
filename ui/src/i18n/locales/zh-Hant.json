@@ -1,0 +1,67 @@
+{
+  "app": {
+    "name": "Ripple Out Worship"
+  },
+  "nav": {
+    "home": "首頁",
+    "songs": "詩歌",
+    "toggleSidebar": "切換側邊欄"
+  },
+  "theme": {
+    "label": "主題",
+    "light": "淺色",
+    "dark": "深色",
+    "system": "跟隨系統"
+  },
+  "language": {
+    "label": "語言"
+  },
+  "user": {
+    "menu": "帳戶",
+    "signOut": "登出",
+    "signOutFailed": "未能登出，請再試一次。"
+  },
+  "home": {
+    "greeting": "歡迎，{{name}}",
+    "intro": "搜尋詩歌、編排歌單，並用手機帶領敬拜。",
+    "browseSongs": "瀏覽詩歌"
+  },
+  "login": {
+    "title": "登入",
+    "description": "使用電郵及密碼，或以 Google 繼續。",
+    "email": "電郵",
+    "password": "密碼",
+    "submit": "登入",
+    "google": "以 Google 繼續",
+    "invalidCredentials": "電郵或密碼不正確。",
+    "verifyEmail": "請先驗證你的電郵，然後再登入。",
+    "failed": "未能登入，請再試一次。"
+  },
+  "validation": {
+    "emailInvalid": "請輸入有效的電郵地址。",
+    "passwordRequired": "請輸入密碼。"
+  },
+  "songs": {
+    "title": "詩歌",
+    "searchLabel": "搜尋詩歌",
+    "searchPlaceholder": "歌名、作者或歌詞",
+    "search": "搜尋",
+    "columns": {
+      "code": "編號",
+      "title": "歌名",
+      "artist": "作者",
+      "key": "調",
+      "tempo": "速度"
+    },
+    "empty": "找不到詩歌。",
+    "loadFailed": "未能載入詩歌，請再試一次。",
+    "page": "第 {{page}} 頁，共 {{total}} 頁",
+    "previous": "上一頁",
+    "next": "下一頁"
+  },
+  "errors": {
+    "notFound": "此頁面不存在。",
+    "generic": "發生錯誤，請再試一次。",
+    "goHome": "返回首頁"
+  }
+}
