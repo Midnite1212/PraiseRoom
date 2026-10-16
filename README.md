@@ -43,7 +43,7 @@ Independent packages in one repo, each with its own lockfile (no workspaces):
 
 | Layer    | `ui/`                                                                              | `server/`                                                           |
 | -------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| Runtime  | React 19 with the React Compiler                                                   | Node 22, Express 4                                                  |
+| Runtime  | React 19 with the React Compiler                                                   | Node 24, Express 4                                                  |
 | Language | TypeScript 7                                                                       | TypeScript 5 (ts-node)                                              |
 | Build    | Vite 8                                                                             | Compiled by Vercel's Express preset                                 |
 | Data     | TanStack Query, TanStack Router (file-based), TanStack Form, TanStack Table, Zod 4 | Drizzle ORM over `pg` on Neon Postgres                              |
@@ -54,7 +54,7 @@ Independent packages in one repo, each with its own lockfile (no workspaces):
 
 ## Getting started
 
-**Prerequisites:** Node 22.12 or later (`.nvmrc`), yarn 1, and pnpm 10 (`corepack enable` gives you the pinned version).
+**Prerequisites:** Node 24 (`.nvmrc`), yarn 1, and pnpm 10 (`corepack enable` gives you the pinned version).
 
 ```bash
 # Install: the root install also enables the git hooks
