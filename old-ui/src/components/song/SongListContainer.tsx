@@ -1,3 +1,6 @@
+import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
+import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import {
   Button,
   CircularProgress,
@@ -10,19 +13,10 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react';
 import { isAxiosError } from 'axios';
-import { SongSchema, SongSearchFilter } from '../../types/song.types';
-import SongCard from './SongCard';
-import SongSearch from './SongSearch';
+import { FC, ReactElement, useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import AddIcon from '@mui/icons-material/Add';
-import CloseIcon from '@mui/icons-material/Close';
-import MusicNoteIcon from '@mui/icons-material/MusicNote';
-import PageHeader from '../navigation/PageHeader';
-import { getFirstLineLyrics } from '../../helpers/song';
-import { customAxios as axios } from '../custom/customAxios';
-import { useOwnership } from '../../helpers/customHooks';
+
 import {
   DESKTOP_PAGE_HEADER_HEIGHT,
   MOBILE_NAVBAR_HEIGHT,
@@ -30,8 +24,15 @@ import {
   TABLET_PAGE_HEADER_HEIGHT,
   specificSongsMobileWidth,
 } from '../../constants';
+import { useOwnership } from '../../helpers/customHooks';
 import { logRequestError } from '../../helpers/global';
+import { getFirstLineLyrics } from '../../helpers/song';
+import { SongSchema, SongSearchFilter } from '../../types/song.types';
 import { canWriteSongs } from '../../types/user.types';
+import { customAxios as axios } from '../custom/customAxios';
+import PageHeader from '../navigation/PageHeader';
+import SongCard from './SongCard';
+import SongSearch from './SongSearch';
 
 type SongQuery = {
   search: string;

@@ -1,5 +1,5 @@
-import { ReactNode } from 'react';
 import { Box, Typography } from '@mui/material';
+import { ReactNode } from 'react';
 
 type RadioCardProps = {
   children: ReactNode;

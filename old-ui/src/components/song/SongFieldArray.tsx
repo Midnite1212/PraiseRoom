@@ -1,5 +1,6 @@
-import { FieldArrayProps } from '../../types/song.types';
 import { Typography, Stack, Chip } from '@mui/material';
+
+import { FieldArrayProps } from '../../types/song.types';
 
 const SongFieldArray = ({ data }: FieldArrayProps) => {
   if (Array.isArray(data)) {

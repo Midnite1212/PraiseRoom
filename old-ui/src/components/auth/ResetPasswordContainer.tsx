@@ -1,6 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { authClient } from '../custom/authClient';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Box,
   Button,
@@ -12,11 +10,14 @@ import {
   AlertColor,
   useTheme,
 } from '@mui/material';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { ResetPasswordFields } from '../../types/form.types';
-import { formSpacing } from '../../constants';
+import React, { useEffect, useRef, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { z } from 'zod';
+
+import { formSpacing } from '../../constants';
+import { ResetPasswordFields } from '../../types/form.types';
+import { authClient } from '../custom/authClient';
 import { passwordValidator, stringValidator } from './helpers/zod.validators';
 
 const INVALID_RESET_LINK_MESSAGE = 'This reset link is invalid. Please request a new one.';

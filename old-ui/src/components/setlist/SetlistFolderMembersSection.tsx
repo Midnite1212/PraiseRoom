@@ -1,7 +1,8 @@
-import { Box, Button, List, ListItem, Stack, Typography } from '@mui/material';
 import GroupAdd from '@mui/icons-material/GroupAdd';
-import SetlistFolderPersonListItem from './SetlistFolderPersonListItem';
+import { Box, Button, List, ListItem, Stack, Typography } from '@mui/material';
+
 import { Ownership } from '../../types/ownership.types';
+import SetlistFolderPersonListItem from './SetlistFolderPersonListItem';
 
 type SetlistFolderMembersSectionProps = {
   members: Ownership[];

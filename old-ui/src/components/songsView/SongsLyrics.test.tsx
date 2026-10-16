@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from 'react-dom/server';
-import SongsLyrics from './SongsLyrics';
+
 import { SongViewSchema } from '../../types/song.types';
+import SongsLyrics from './SongsLyrics';
 
 const makeSong = (chordLyrics: string, originalKey: string): SongViewSchema => ({
   _id: 'song-1',

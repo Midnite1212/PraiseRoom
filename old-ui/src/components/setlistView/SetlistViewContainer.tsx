@@ -1,13 +1,14 @@
-import { ReactElement, useEffect, useState } from 'react';
 import { Box, Container, Skeleton, Typography, useMediaQuery, useTheme } from '@mui/material';
+import { ReactElement, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { customAxios as axios } from '../custom/customAxios';
-import { Setlist } from '../../types/setlist.types';
-import { applySongKeys } from '../../helpers/setlist/applySongKeys';
-import SetlistViewSongs from './SetlistViewSongs';
-import { SetlistViewHeader, SetlistViewFooter } from './SetlistViewPaper';
-import SetlistViewHeaderMenu from './SetlistViewHeaderMenu';
+
 import { logRequestError } from '../../helpers/global';
+import { applySongKeys } from '../../helpers/setlist/applySongKeys';
+import { Setlist } from '../../types/setlist.types';
+import { customAxios as axios } from '../custom/customAxios';
+import SetlistViewHeaderMenu from './SetlistViewHeaderMenu';
+import { SetlistViewHeader, SetlistViewFooter } from './SetlistViewPaper';
+import SetlistViewSongs from './SetlistViewSongs';
 
 interface SetlistViewContainerProps {
   isSetlistPreview?: boolean;

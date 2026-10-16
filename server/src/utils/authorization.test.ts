@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { afterEach, describe, it, mock } from 'node:test';
+
 import { setlistRepository } from '../db/repositories/setlist.repository';
 import {
   CallerOwnership,

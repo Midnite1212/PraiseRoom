@@ -1,4 +1,8 @@
-import { FC, ReactElement, useEffect, useState } from 'react';
+import Language from '@mui/icons-material/Language';
+import MusicNoteIcon from '@mui/icons-material/MusicNote';
+import Person from '@mui/icons-material/Person';
+import QueueMusicIcon from '@mui/icons-material/QueueMusic';
+import SearchIcon from '@mui/icons-material/Search';
 import {
   Box,
   Drawer,
@@ -10,17 +14,14 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
+import { FC, ReactElement, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import MusicNoteIcon from '@mui/icons-material/MusicNote';
-import QueueMusicIcon from '@mui/icons-material/QueueMusic';
-import Language from '@mui/icons-material/Language';
-import Person from '@mui/icons-material/Person';
-import GlobalSearchModal from './GlobalSearchModal';
-import SearchIcon from '@mui/icons-material/Search';
+
+import { DESKTOP_SIDEBAR_WIDTH, MOBILE_NAVBAR_HEIGHT } from '../../constants';
 import { useOwnedSetlists, useSongs } from '../../helpers/customHooks';
 import { SongSchema } from '../../types/song.types';
+import GlobalSearchModal from './GlobalSearchModal';
 import { SearchButtonBox } from './NavigationPaper';
-import { DESKTOP_SIDEBAR_WIDTH, MOBILE_NAVBAR_HEIGHT } from '../../constants';
 
 const SideBar: FC = (): ReactElement => {
   const navigate = useNavigate();

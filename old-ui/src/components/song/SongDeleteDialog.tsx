@@ -1,11 +1,12 @@
-import { useState } from 'react';
-import { Box, IconButton, Snackbar, Stack, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { Box, IconButton, Snackbar, Stack, Typography } from '@mui/material';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { logRequestError } from '../../helpers/global';
 import ConfirmationDialog from '../custom/ConfirmationDialog';
 import { customAxios as axios } from '../custom/customAxios';
-import { useNavigate } from 'react-router-dom';
-import { logRequestError } from '../../helpers/global';
 
 const SNACKBAR_AUTO_HIDE_DURATION = 5000;
 

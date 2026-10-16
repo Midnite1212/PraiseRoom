@@ -1,6 +1,8 @@
-import { SignJWT } from 'jose';
 import assert from 'node:assert/strict';
 import { after, before, describe, it } from 'node:test';
+
+import { SignJWT } from 'jose';
+
 import { TestAuthServer, startTestAuthServer } from '../testing/neonAuth';
 import verifyToken from './verify-jwt';
 

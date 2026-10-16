@@ -1,7 +1,8 @@
-import { FC } from 'react';
-import { Typography } from '@mui/material';
-import HelpDialog from '../custom/HelpDialog';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { Typography } from '@mui/material';
+import { FC } from 'react';
+
+import HelpDialog from '../custom/HelpDialog';
 
 const SongHelpDialog: FC = () => {
   return (

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { ScreenRotation, Close, MusicVideoOutlined } from '@mui/icons-material';
 import {
   Box,
   Stack,
@@ -9,7 +9,8 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
-import { ScreenRotation, Close, MusicVideoOutlined } from '@mui/icons-material';
+import { useState, useCallback } from 'react';
+
 import { specificSongsMobileWidth } from '../../constants';
 import { SongViewSchema } from '../../types/song.types';
 import { SetlistViewSongsControlChip } from './SetlistViewPaper';

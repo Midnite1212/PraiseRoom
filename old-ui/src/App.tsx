@@ -1,15 +1,17 @@
-import { Suspense } from 'react';
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
-import { persistor, store } from './store';
 import { CssBaseline, Box, Skeleton } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import { routes as appRoutes } from './routes';
+import { Suspense } from 'react';
+import { Provider } from 'react-redux';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import customTheme from './theme';
-import './styles.css';
+import { PersistGate } from 'redux-persist/integration/react';
+
 import PrivateRouteWrapper from './components/custom/PrivateRouteWrapper';
 import SessionProvider from './components/custom/SessionProvider';
+import { routes as appRoutes } from './routes';
+
+import './styles.css';
+import { persistor, store } from './store';
+import customTheme from './theme';
 
 const enabledRoutes = appRoutes.filter((route) => route.enabled);
 

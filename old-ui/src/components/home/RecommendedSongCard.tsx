@@ -1,5 +1,5 @@
-import { Box, Stack, Typography } from '@mui/material';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
+import { Box, Stack, Typography } from '@mui/material';
 import { FC, ReactElement } from 'react';
 
 type RecommendedSongCardProps = {

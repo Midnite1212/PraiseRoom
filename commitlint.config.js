@@ -14,7 +14,7 @@ module.exports = {
           let branchName = '';
           try {
             branchName = execSync('git rev-parse --abbrev-ref HEAD').toString().trim();
-          } catch (e) {
+          } catch {
             return [false, 'Error getting branch name'];
           }
           const issueNumber = branchName.match(/^(\d+)/)?.[1];

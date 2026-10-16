@@ -2,8 +2,18 @@
   "name": "ui",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@10.33.0",
   "type": "module",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint --deny-warnings",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check"
+  },
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
@@ -32,19 +42,14 @@
     "@types/react-dom": "^18.0.0",
     "@vitejs/plugin-react": "^6.1.2",
     "jsdom": "^29.1.1",
+    "oxfmt": "^0.73.0",
+    "oxlint": "^1.88.0",
     "typescript": "^5.1.6",
     "vite": "^8.3.4",
     "vitest": "^5.0.4"
   },
-  "scripts": {
-    "start": "vite",
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview",
-    "test": "vitest run",
-    "typecheck": "tsc --noEmit"
-  },
   "engines": {
     "node": "24.x"
-  }
+  },
+  "packageManager": "pnpm@10.33.0"
 }

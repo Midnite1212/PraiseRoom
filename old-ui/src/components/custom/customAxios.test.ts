@@ -1,5 +1,6 @@
 import { AxiosAdapter, AxiosHeaders, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { afterEach, describe, expect, it, vi } from 'vitest';
+
 import { getAuthToken } from './authClient';
 import {
   RESPONSE_CACHE_TTL_MS,

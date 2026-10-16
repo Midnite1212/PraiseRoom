@@ -1,4 +1,4 @@
-import { Setlist } from '../../../types/setlist.types';
+import { Edit, Link, Launch, Close } from '@mui/icons-material';
 import {
   Box,
   Typography,
@@ -8,17 +8,18 @@ import {
   SnackbarCloseReason,
   IconButton,
 } from '@mui/material';
-import dayjs from 'dayjs';
-import { customAxios as axios } from '../../custom/customAxios';
-import { FC, ReactElement, useEffect, useState, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { Edit, Link, Launch, Close } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import SetlistSongsTable from '../SetlistSongsTable';
-import MobileBackButton from '../../navigation/MobileBackButton';
-import { applySongKeys } from '../../../helpers/setlist/applySongKeys';
+import dayjs from 'dayjs';
+import { FC, ReactElement, useEffect, useState, useCallback } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+
 import { logRequestError } from '../../../helpers/global';
+import { applySongKeys } from '../../../helpers/setlist/applySongKeys';
+import { Setlist } from '../../../types/setlist.types';
+import { customAxios as axios } from '../../custom/customAxios';
+import MobileBackButton from '../../navigation/MobileBackButton';
+import SetlistSongsTable from '../SetlistSongsTable';
 
 // Styled components
 const ActionButton = styled(Button)(({ theme }) => ({

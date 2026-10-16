@@ -42,7 +42,7 @@ Most of `old-ui/src/components/` was written by junior volunteers. Expect 500–
 - Functional components with hooks, arrow functions, default export per file, a `<Component>Props` type.
 - Destructure props in the signature. Name booleans `is/has/should`, event props `on*`, handlers `handle*`.
 - Ternary for either/or rendering, `&&` only with a boolean left side, and extract complex conditions into a named `const`.
-- Single quotes, semicolons, 2-space, `printWidth: 100`, trailing commas (root `.prettierrc.json`).
+- Single quotes, semicolons, 2-space, `printWidth: 100`, trailing commas (`old-ui/.oxfmtrc.json`).
 - No new `any`, no non-null `!` on fetched data, no `as` casts to hide a wrong type. Type `axios.get<T>()` calls with the types in `types/`. Catch as `unknown` and narrow.
 - Fetched data can be missing fields or `null` (`publicLink`, `date`, `code`, `simplifiedChordLyrics`). Guard with `?.` and `Array.isArray`.
 - Keys from data (`_id`), not indexes, for lists that reorder or filter (setlist songs, folders, search results).
@@ -88,8 +88,8 @@ try {
 
 - Pure logic (chords, lyrics, song codes, `songKeys`, store) has Vitest tests next to it in `helpers/`; run `pnpm test` from `old-ui/` and add a case when you change that logic. Components have no render tests.
 - Verify in the browser: open the page, both widths (1440 and 390), click the flow, check the console and network tabs. Say exactly what you opened and what you saw.
-- From `old-ui/`: `pnpm exec tsc --noEmit` must show 0 errors and `pnpm build` must pass. From the repo root: `pnpm lint` must show 0 errors and no new warnings.
-- Prettier from the repo root on touched files only: `pnpm exec prettier --write "old-ui/src/<touched files>"`.
+- From `old-ui/`: `pnpm exec tsc --noEmit` must show 0 errors and `pnpm build` must pass. `pnpm lint` from `old-ui/` must show 0 problems.
+- `pnpm format` from `old-ui/` (oxfmt).
 
 ## Data handling
 

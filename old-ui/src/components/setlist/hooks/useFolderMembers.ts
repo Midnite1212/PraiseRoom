@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { customAxios as axios } from '../../custom/customAxios';
-import { Ownership } from '../../../types/ownership.types';
+
 import { logRequestError } from '../../../helpers/global';
 import { requestErrorMessage } from '../../../helpers/setlist/requestErrorMessage';
+import { Ownership } from '../../../types/ownership.types';
+import { customAxios as axios } from '../../custom/customAxios';
 
 export type OwnershipRecord = Ownership & { _id: string };
 
@@ -55,8 +56,8 @@ const useFolderMembers = ({
       if (status === 200) {
         setAllPeople(data);
         if (mode !== 'create') {
-          const existingMembers = data.filter(
-            (person) => person.groupIds?.some((group) => group.id === folderId)
+          const existingMembers = data.filter((person) =>
+            person.groupIds?.some((group) => group.id === folderId)
           );
           setAddedPeople(existingMembers.map((person) => person.userId));
         }

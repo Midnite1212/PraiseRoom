@@ -1,3 +1,8 @@
+import ArrowDropDown from '@mui/icons-material/ArrowDropDown';
+import CloseIcon from '@mui/icons-material/Close';
+import Info from '@mui/icons-material/Info';
+import Refresh from '@mui/icons-material/Refresh';
+import Tune from '@mui/icons-material/Tune';
 import {
   Box,
   Button,
@@ -10,15 +15,11 @@ import {
   Typography,
 } from '@mui/material';
 import { Dispatch, SetStateAction, useState } from 'react';
-import ArrowDropDown from '@mui/icons-material/ArrowDropDown';
-import CloseIcon from '@mui/icons-material/Close';
-import Info from '@mui/icons-material/Info';
-import Refresh from '@mui/icons-material/Refresh';
-import Tune from '@mui/icons-material/Tune';
+
+import { displayResultOptions, tempoOptions, themeOptions } from '../../constants';
+import { SongSearchProps } from '../../types/song.types';
 import HeaderWithIcon from '../custom/HeaderWithIcon';
 import useSongFilters from './useSongFilters';
-import { SongSearchProps } from '../../types/song.types';
-import { displayResultOptions, tempoOptions, themeOptions } from '../../constants';
 
 type FilterChipSectionProps = {
   label: string;

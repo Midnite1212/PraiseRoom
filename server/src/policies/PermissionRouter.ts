@@ -1,4 +1,5 @@
 import { RequestHandler, Router } from 'express';
+
 import { createPermissionMiddleware } from './permissionMiddleware';
 
 /**

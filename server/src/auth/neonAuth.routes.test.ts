@@ -1,8 +1,10 @@
-import express from 'express';
 import assert from 'node:assert/strict';
 import { IncomingHttpHeaders, Server, createServer } from 'node:http';
 import { AddressInfo } from 'node:net';
 import { after, afterEach, before, describe, it, mock } from 'node:test';
+
+import express from 'express';
+
 import { createAuthRouter, neonCookies, safeNextPath, toFirstPartyCookie } from './neonAuth.routes';
 
 const SESSION_COOKIE = '__Secure-neon-auth.session_token';

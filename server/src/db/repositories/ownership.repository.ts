@@ -1,4 +1,5 @@
 import { SQL, and, asc, eq, inArray, sql } from 'drizzle-orm';
+
 import {
   OwnershipEntry,
   OwnershipRecord,

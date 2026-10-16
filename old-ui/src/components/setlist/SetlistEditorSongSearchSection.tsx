@@ -1,9 +1,9 @@
-import { UIEvent } from 'react';
-import { Typography } from '@mui/material';
 import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
-import HeaderWithIcon from '../custom/HeaderWithIcon';
-import SetlistEditorSongCard from './SetlistEditorSongCard';
+import { Typography } from '@mui/material';
+import { UIEvent } from 'react';
+
 import { SongSchema, SongSearchFilter } from '../../types/song.types';
+import HeaderWithIcon from '../custom/HeaderWithIcon';
 import {
   SearchContainer,
   SearchIcon,
@@ -13,6 +13,7 @@ import {
   SongSearchInput,
   SongSearchStack,
 } from './SetlistEditor.styles';
+import SetlistEditorSongCard from './SetlistEditorSongCard';
 
 type SetlistEditorSongSearchSectionProps = {
   filterData: SongSearchFilter | undefined;

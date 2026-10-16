@@ -1,26 +1,23 @@
-import { FC, useCallback, useEffect, useState } from 'react';
-import { Alert, Drawer, Typography, useMediaQuery, useTheme } from '@mui/material';
 import AddCircleOutline from '@mui/icons-material/AddCircleOutline';
 import MusicNote from '@mui/icons-material/MusicNote';
 import QueueMusic from '@mui/icons-material/QueueMusic';
+import { Alert, Drawer, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import dayjs, { Dayjs } from 'dayjs';
+import { FC, useCallback, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
+
+import { useOwnership } from '../../helpers/customHooks';
+import { logRequestError } from '../../helpers/global';
+import { requestErrorMessage } from '../../helpers/setlist/requestErrorMessage';
+import { SetlistEditorFields, SetlistEditorProps } from '../../types/setlist.types';
+import { SongSetlistSchema } from '../../types/song.types';
 import { customAxios as axios } from '../custom/customAxios';
 import HeaderWithIcon from '../custom/HeaderWithIcon';
 import PageHeader from '../navigation/PageHeader';
-import SetlistEditorActionButtons from './SetlistEditorActionButtons';
-import SetlistEditorDetailsSection from './SetlistEditorDetailsSection';
-import SetlistEditorMobileActionButtons from './SetlistEditorMobileActionButtons';
-import SetlistEditorSongSearchSection from './SetlistEditorSongSearchSection';
-import SetlistEditorSuccessSnackbar from './SetlistEditorSuccessSnackbar';
-import SetlistSongsTable from './SetlistSongsTable';
 import useSetlistEditorData from './hooks/useSetlistEditorData';
 import useSetlistSongSearch from './hooks/useSetlistSongSearch';
-import { useOwnership } from '../../helpers/customHooks';
-import { SetlistEditorFields, SetlistEditorProps } from '../../types/setlist.types';
-import { SongSetlistSchema } from '../../types/song.types';
 import {
   AddSongsButton,
   AddSongsSection,
@@ -32,8 +29,12 @@ import {
   SectionsContainer,
   StyledButton,
 } from './SetlistEditor.styles';
-import { logRequestError } from '../../helpers/global';
-import { requestErrorMessage } from '../../helpers/setlist/requestErrorMessage';
+import SetlistEditorActionButtons from './SetlistEditorActionButtons';
+import SetlistEditorDetailsSection from './SetlistEditorDetailsSection';
+import SetlistEditorMobileActionButtons from './SetlistEditorMobileActionButtons';
+import SetlistEditorSongSearchSection from './SetlistEditorSongSearchSection';
+import SetlistEditorSuccessSnackbar from './SetlistEditorSuccessSnackbar';
+import SetlistSongsTable from './SetlistSongsTable';
 
 const SetlistEditorContainer: FC<SetlistEditorProps> = () => {
   const navigate = useNavigate();
@@ -194,7 +195,7 @@ const SetlistEditorContainer: FC<SetlistEditorProps> = () => {
             sequence:
               (song.sequence ?? 0) > (removedSong.sequence ?? 0)
                 ? (song.sequence ?? 0) - 1
-                : song.sequence ?? 0,
+                : (song.sequence ?? 0),
           }));
 
         setAddedSongList(updatedList);

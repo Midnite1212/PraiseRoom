@@ -1,8 +1,8 @@
-import { createTheme, PaletteOptions, SimplePaletteColorOptions } from '@mui/material/styles';
+import ExpandMoreRounded from '@mui/icons-material/ExpandMoreRounded';
 import '@fontsource/work-sans';
 import '@fontsource/dm-sans';
+import { createTheme, PaletteOptions, SimplePaletteColorOptions } from '@mui/material/styles';
 import { createBreakpoints } from '@mui/system';
-import ExpandMoreRounded from '@mui/icons-material/ExpandMoreRounded';
 const breakpoints = createBreakpoints({});
 
 const PRIMARY_MAIN = '#4F378B';

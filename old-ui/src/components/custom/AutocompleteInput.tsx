@@ -1,4 +1,3 @@
-import { ReactNode, SyntheticEvent } from 'react';
 import {
   Autocomplete,
   AutocompleteChangeDetails,
@@ -6,6 +5,7 @@ import {
   AutocompleteRenderGetTagProps,
   TextField,
 } from '@mui/material';
+import { ReactNode, SyntheticEvent } from 'react';
 import { FieldValues, Path, UseFormRegister } from 'react-hook-form';
 
 type AutocompleteInputRegistration<T extends FieldValues> =

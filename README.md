@@ -32,25 +32,25 @@ The server proxies `/api/auth/*` to Neon Auth on the app's own domain, so sessio
 
 Independent packages in one repo, each with its own lockfile (no workspaces):
 
-| Folder    | What it is                                                                          | Package manager |
-| --------- | ----------------------------------------------------------------------------------- | --------------- |
-| `ui/`     | The production UI                                                                   | pnpm            |
-| `server/` | Express API, database access, and the auth proxy                                    | pnpm            |
-| `old-ui/` | The previous UI: not deployed, kept as the reference for screens not yet rebuilt    | pnpm            |
-| root      | ESLint and Prettier for `old-ui/` and `server/`, Husky, lint-staged, and commitlint | pnpm            |
+| Folder    | What it is                                                                       | Package manager |
+| --------- | -------------------------------------------------------------------------------- | --------------- |
+| `ui/`     | The production UI                                                                | pnpm            |
+| `server/` | Express API, database access, and the auth proxy                                 | pnpm            |
+| `old-ui/` | The previous UI: not deployed, kept as the reference for screens not yet rebuilt | pnpm            |
+| root      | Husky, lint-staged, and commitlint                                               | pnpm            |
 
 ## Tech stack
 
-| Layer    | `ui/`                                                                              | `server/`                                                           |
-| -------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
-| Runtime  | React 19 with the React Compiler                                                   | Node 24, Express 4                                                  |
-| Language | TypeScript 7                                                                       | TypeScript 5 (ts-node)                                              |
-| Build    | Vite 8                                                                             | Compiled by Vercel's Express preset                                 |
-| Data     | TanStack Query, TanStack Router (file-based), TanStack Form, TanStack Table, Zod 4 | Drizzle ORM over `pg` on Neon Postgres                              |
-| UI       | Tailwind CSS v4, shadcn/ui on Radix, lucide icons, next-themes                     | —                                                                   |
-| Auth     | Thin `fetch` client for the server's `/api/auth/*` proxy                           | Neon Auth proxy; JWT verification with `jose`                       |
-| i18n     | i18next + react-i18next (English, 繁體中文)                                        | —                                                                   |
-| Quality  | Oxlint (type-aware) and oxfmt; Vitest + Testing Library                            | ESLint and Prettier; `node:test`, plus a Postgres integration suite |
+| Layer    | `ui/`                                                                              | `server/`                                                        |
+| -------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Runtime  | React 19 with the React Compiler                                                   | Node 24, Express 4                                               |
+| Language | TypeScript 7                                                                       | TypeScript 5 (ts-node)                                           |
+| Build    | Vite 8                                                                             | Compiled by Vercel's Express preset                              |
+| Data     | TanStack Query, TanStack Router (file-based), TanStack Form, TanStack Table, Zod 4 | Drizzle ORM over `pg` on Neon Postgres                           |
+| UI       | Tailwind CSS v4, shadcn/ui on Radix, lucide icons, next-themes                     | —                                                                |
+| Auth     | Thin `fetch` client for the server's `/api/auth/*` proxy                           | Neon Auth proxy; JWT verification with `jose`                    |
+| i18n     | i18next + react-i18next (English, 繁體中文)                                        | —                                                                |
+| Quality  | Oxlint (type-aware) and oxfmt; Vitest + Testing Library                            | Oxlint and oxfmt; `node:test`, plus a Postgres integration suite |
 
 ## Getting started
 
@@ -86,9 +86,9 @@ Use `http://localhost:3000`, not `127.0.0.1`: Neon Auth's "Allow localhost" sett
 | Where     | Command                                                                           | Does                                                                                                    |
 | --------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
 | `ui/`     | `pnpm typecheck` / `pnpm lint` / `pnpm format:check` / `pnpm test` / `pnpm build` | The checks CI runs                                                                                      |
-| `server/` | `pnpm typecheck` / `pnpm test`                                                    | Type-check and unit tests; set `DATABASE_URL_TEST` to a throwaway database to add the integration suite |
+| `server/` | `pnpm typecheck` / `pnpm lint` / `pnpm format:check` / `pnpm test`                | Type-check and unit tests; set `DATABASE_URL_TEST` to a throwaway database to add the integration suite |
 | `server/` | `pnpm db:generate` / `pnpm db:migrate`                                            | Create a migration from `src/db/schema.ts` / apply pending migrations to `DATABASE_URL`                 |
-| root      | `pnpm lint`                                                                       | ESLint over `old-ui/` and `server/`                                                                     |
+| root      | `pnpm format`                                                                     | Format every package with its own oxfmt config                                                          |
 
 ## Deployment
 

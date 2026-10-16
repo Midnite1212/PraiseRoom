@@ -1,42 +1,43 @@
 import { lstatSync } from 'node:fs';
 import path from 'node:path';
 
-const isNewUi = (file) => path.relative(process.cwd(), file).split(path.sep)[0] === 'ui';
-const quote = (files) => files.map((file) => JSON.stringify(file)).join(' ');
+const LINT_ARGS = {
+  ui: '--type-aware --deny-warnings',
+  server: '--deny-warnings',
+  'old-ui': '--deny-warnings',
+  '.': '--deny-warnings',
+};
 
-// Run from ui/ with its own binaries: type-aware oxlint finds tsgolint there, and the hook
-// does not depend on which pnpm version is on PATH.
-const inUi = (command) => `sh -c 'cd ui && node_modules/.bin/${command} "$@"' ${command.split(' ')[0]}`;
-const OXFMT = inUi('oxfmt --no-error-on-unmatched-pattern');
-const OXLINT = inUi('oxlint --type-aware --deny-warnings');
+const packageOf = (file) => {
+  const top = path.relative(process.cwd(), file).split(path.sep)[0];
+  return top in LINT_ARGS ? top : '.';
+};
 
-// CLAUDE.md files are symlinks to AGENTS.md; Prettier refuses symlinks and the target is formatted anyway.
+// Run inside each package with its own binaries and config; type-aware oxlint finds tsgolint there.
+const inPackage = (dir, binary, args, files) =>
+  `sh -c 'cd ${dir} && node_modules/.bin/${binary} ${args} "$@"' ${binary} ${files
+    .map((file) => JSON.stringify(file))
+    .join(' ')}`;
+
+// CLAUDE.md files are symlinks to AGENTS.md, which is formatted anyway.
 const isSymlink = (file) => lstatSync(file).isSymbolicLink();
 
-const byPackage = (stagedFiles, legacyCommands, newUiCommands) => {
-  const files = stagedFiles.filter((file) => !isSymlink(file));
-  const legacy = files.filter((file) => !isNewUi(file));
-  const newUi = files.filter(isNewUi);
-  return [
-    ...(legacy.length > 0 ? legacyCommands(quote(legacy)) : []),
-    ...(newUi.length > 0 ? newUiCommands(quote(newUi)) : []),
-  ];
+const byPackage = (stagedFiles, commandsFor) => {
+  const groups = Map.groupBy(
+    stagedFiles.filter((file) => !isSymlink(file)),
+    packageOf
+  );
+  return [...groups].flatMap(([dir, files]) => commandsFor(dir, files));
 };
 
 export default {
-  '**/*.{js,jsx,ts,tsx}': (files) =>
-    byPackage(
-      files,
-      (list) => [
-        `prettier --write --config .prettierrc.json ${list}`,
-        `eslint --max-warnings=0 ${list}`,
-      ],
-      (list) => [`${OXFMT} ${list}`, `${OXLINT} ${list}`]
-    ),
-  '**/*.{json,md,css}': (files) =>
-    byPackage(
-      files,
-      (list) => [`prettier --write --config .prettierrc.json ${list}`],
-      (list) => [`${OXFMT} ${list}`]
-    ),
+  '**/*.{js,jsx,ts,tsx,mjs,cjs}': (files) =>
+    byPackage(files, (dir, list) => [
+      inPackage(dir, 'oxfmt', '--no-error-on-unmatched-pattern', list),
+      inPackage(dir, 'oxlint', LINT_ARGS[dir], list),
+    ]),
+  '**/*.{json,md,css,yml,yaml}': (files) =>
+    byPackage(files, (dir, list) => [
+      inPackage(dir, 'oxfmt', '--no-error-on-unmatched-pattern', list),
+    ]),
 };

@@ -1,8 +1,9 @@
 import { useCallback, useState } from 'react';
-import { customAxios as axios } from '../../custom/customAxios';
+
+import { logRequestError } from '../../../helpers/global';
 import { Ownership } from '../../../types/ownership.types';
 import { Setlist, SetlistFolder } from '../../../types/setlist.types';
-import { logRequestError } from '../../../helpers/global';
+import { customAxios as axios } from '../../custom/customAxios';
 
 const useSetlistTabsData = (
   ownership: Ownership,
@@ -27,16 +28,16 @@ const useSetlistTabsData = (
         throw new Error('Failed to fetch setlists');
       }
 
-      const filteredFolders = folderRes.data.filter(
-        (folder) => ownership.groupIds?.some(({ id }) => id === folder._id)
+      const filteredFolders = folderRes.data.filter((folder) =>
+        ownership.groupIds?.some(({ id }) => id === folder._id)
       );
       setOwnedFolders(filteredFolders);
       const foldersSetlistIds = Array.from(
         new Set(filteredFolders.flatMap((folder) => folder.setlistIds ?? []))
       );
 
-      const ownedSetlists = setlistRes.data.filter(
-        (setlist) => ownership.setlistIds?.some(({ id }) => id === setlist._id)
+      const ownedSetlists = setlistRes.data.filter((setlist) =>
+        ownership.setlistIds?.some(({ id }) => id === setlist._id)
       );
       setOwnedSetlists(ownedSetlists);
       const folderSetlists = setlistRes.data.filter((setlist) =>
@@ -59,8 +60,8 @@ const useSetlistTabsData = (
         if (type === 'folders' || type === 'all' || !type) {
           const folderRes = await axios.get<SetlistFolder[]>('/api/groups/get');
           if (folderRes.status === 200 && folderRes.data) {
-            const filteredFolders = folderRes.data.filter(
-              (folder) => ownership.groupIds?.some(({ id }) => id === folder._id)
+            const filteredFolders = folderRes.data.filter((folder) =>
+              ownership.groupIds?.some(({ id }) => id === folder._id)
             );
             setOwnedFolders(filteredFolders);
           }
@@ -69,8 +70,8 @@ const useSetlistTabsData = (
         if (type === 'setlists' || type === 'all' || !type) {
           const setlistRes = await axios.get<Setlist[]>('/api/setlists/get');
           if (setlistRes.status === 200 && setlistRes.data) {
-            const ownedSetlists = setlistRes.data.filter(
-              (setlist) => ownership.setlistIds?.some(({ id }) => id === setlist._id)
+            const ownedSetlists = setlistRes.data.filter((setlist) =>
+              ownership.setlistIds?.some(({ id }) => id === setlist._id)
             );
             setOwnedSetlists(ownedSetlists);
 

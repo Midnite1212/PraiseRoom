@@ -1,20 +1,9 @@
-import { FC, useCallback, useEffect, useState } from 'react';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { customAxios as axios } from '../custom/customAxios';
-import { SongSchema } from '../../types/song.types';
-import { SongEditorFormFields } from '../../types/form.types';
-import {
-  minorMusicKeysOptions,
-  musicKeysOptions,
-  tempoOptions,
-  timeSignatureOptions,
-  themeOptions,
-} from '../../constants';
-import { isMinorKey } from '../../helpers/song/chords';
-import SongHelpDialog from './SongHelpDialog';
+import DeleteIcon from '@mui/icons-material/Delete';
+// ICONS
+import InfoIcon from '@mui/icons-material/Info';
+import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
+import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import {
   Box,
   Container,
@@ -35,18 +24,29 @@ import {
   Divider,
   Theme,
 } from '@mui/material';
-
-// ICONS
-import InfoIcon from '@mui/icons-material/Info';
-import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
-import AutocompleteInput from '../custom/AutocompleteInput';
+import { FC, useCallback, useEffect, useState } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
-import MusicNoteIcon from '@mui/icons-material/MusicNote';
-import PageHeader from '../navigation/PageHeader';
-import HeaderWithIcon from '../custom/HeaderWithIcon';
+import { z } from 'zod';
+
+import {
+  minorMusicKeysOptions,
+  musicKeysOptions,
+  tempoOptions,
+  timeSignatureOptions,
+  themeOptions,
+} from '../../constants';
 import { findFirstLetterLyrics, logRequestError } from '../../helpers/global';
+import { isMinorKey } from '../../helpers/song/chords';
 import { getNextSongCode } from '../../helpers/song/songCode';
+import { SongEditorFormFields } from '../../types/form.types';
+import { SongSchema } from '../../types/song.types';
+import AutocompleteInput from '../custom/AutocompleteInput';
+import { customAxios as axios } from '../custom/customAxios';
+import HeaderWithIcon from '../custom/HeaderWithIcon';
+import PageHeader from '../navigation/PageHeader';
 import SongDeleteDialog from './SongDeleteDialog';
+import SongHelpDialog from './SongHelpDialog';
 
 const requiredString = (message: string) =>
   z.string({ invalid_type_error: message, required_error: message }).min(1, message);

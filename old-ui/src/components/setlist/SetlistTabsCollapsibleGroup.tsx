@@ -1,7 +1,8 @@
-import { ReactNode } from 'react';
-import { Collapse, List, ListItemButton, ListItemText } from '@mui/material';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import { Collapse, List, ListItemButton, ListItemText } from '@mui/material';
+import { ReactNode } from 'react';
+
 import { SMALL_LIST_ITEM_ICON_STYLE } from './SetlistTabs.styles';
 
 type SetlistTabsCollapsibleGroupProps = {

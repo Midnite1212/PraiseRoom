@@ -44,7 +44,7 @@ Independent packages in one repo, no workspaces wiring:
 - `ui/` — **the production UI, still being rebuilt**: React 19 with the React Compiler, TypeScript 7, Vite 8, Tailwind v4 + shadcn/ui, TanStack Router/Query/Form/Table, pnpm. Old routes it doesn't have yet (public setlist links, password reset, sign-up, song and setlist editing, profile) show not-found until rebuilt. Rules in `ui/AGENTS.md`.
 - `old-ui/` — the previous UI, no longer deployed: React 18 TypeScript SPA on Vite 8, MUI v5, Redux Toolkit, react-router-dom v6, pnpm. Kept as the reference for screens not yet rebuilt; frozen. Rules in `old-ui/AGENTS.md`.
 - `server/` — Express 4 + Drizzle ORM on Postgres (Neon) in **TypeScript**, run with `ts-node` through nodemon, pnpm
-- Root `package.json` — ESLint and Prettier for `old-ui/` and `server/`, Husky, lint-staged, and commitlint, pnpm
+- Root `package.json` — Husky, lint-staged, commitlint, and oxlint and oxfmt for the root files, pnpm
 
 Login, sign-up, and password reset run on Neon Auth (Managed Better Auth) in this app's own Neon project; the app no longer depends on the HMCC HK main site. See `#auth-flow`.
 
@@ -78,15 +78,15 @@ pnpm db:generate                # drizzle-kit generate: new SQL migration in ser
 pnpm db:migrate                 # drizzle-kit migrate: apply pending migrations to DATABASE_URL
 pnpm import:songs --file <songs.json> [--apply]  # one-off MongoDB songs import; see #cutover-from-mongodb-songs-only
 
-# Lint and format old-ui/ and server/ (from repo root); ui/ has its own oxlint and oxfmt
-pnpm lint                       # eslint over old-ui/ and server/; 0 errors required, do not add warnings
-pnpm exec prettier --write "<touched files>"
+# Lint and format: each package (root, server/, old-ui/, ui/) runs its own oxlint and oxfmt with its own config
+pnpm lint                       # oxlint --deny-warnings (ui/ adds --type-aware); 0 problems required
+pnpm format                     # oxfmt in place; `pnpm format:check` is what CI runs. From the root it formats every package with its own config
 
 # Both Vercel services together, no Vercel login (optional; needs the Vercel CLI)
 vercel dev -L
 ```
 
-Prettier config for `old-ui/` and `server/`: `.prettierrc.json` — 2-space, single quotes, semicolons, `printWidth: 100`, `trailingComma: 'es5'`. Husky runs lint-staged on commit (`lint-staged.config.mjs`: Prettier + ESLint for `old-ui/` and `server/`, oxfmt + type-aware oxlint for `ui/`, run from `ui/` with its own binaries) and commitlint on the message.
+Every package has an `.oxfmtrc.json` (2-space, single quotes, semicolons, `printWidth: 100`, `trailingComma: 'es5'`, sorted imports; `ui/` also sorts Tailwind classes) and an `.oxlintrc.json`. Husky runs lint-staged on commit (`lint-staged.config.mjs`: oxfmt and oxlint for each staged file, run inside its package with that package's binaries and config) and commitlint on the message.
 
 ## Technology Stack
 

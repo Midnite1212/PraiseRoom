@@ -1,4 +1,5 @@
 import { Request, Response, Router, raw } from 'express';
+
 import { sendResponse } from '../utils/response';
 
 export const AUTH_PATH_PREFIX = '/api/auth/';

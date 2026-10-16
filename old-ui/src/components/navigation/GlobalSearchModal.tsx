@@ -1,13 +1,13 @@
-import React, { useEffect, useState, useMemo, useRef } from 'react';
-import { Box, Fade, InputAdornment, Modal, TextField, Typography, useTheme } from '@mui/material';
-
-import SongSearchResult from './searchModalComponents/SongSearchResult';
-import { useNavigate } from 'react-router-dom';
-import SetlistSearchResult from './searchModalComponents/SetlistSearchResult';
-import { SongSchema } from '../../types/song.types';
-import { Setlist } from '../../types/setlist.types';
 import SearchIcon from '@mui/icons-material/Search';
+import { Box, Fade, InputAdornment, Modal, TextField, Typography, useTheme } from '@mui/material';
+import React, { useEffect, useState, useMemo, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { Setlist } from '../../types/setlist.types';
+import { SongSchema } from '../../types/song.types';
 import RadioCard from './searchModalComponents/RadioCard';
+import SetlistSearchResult from './searchModalComponents/SetlistSearchResult';
+import SongSearchResult from './searchModalComponents/SongSearchResult';
 
 type GlobalSearchModalProps = {
   isOpen: boolean;

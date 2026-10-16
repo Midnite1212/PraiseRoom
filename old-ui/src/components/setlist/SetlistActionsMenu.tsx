@@ -1,17 +1,18 @@
-import { FC, useState } from 'react';
-import { Divider, Menu } from '@mui/material';
 import Delete from '@mui/icons-material/Delete';
 import Edit from '@mui/icons-material/Edit';
 import Folder from '@mui/icons-material/Folder';
 import LinkRounded from '@mui/icons-material/LinkRounded';
-import SetlistDeleteDialog from './SetlistDeleteDialog';
-import SetlistFolderActionsDialog from './SetlistFolderActionsDialog';
-import SetlistMenuActionItem from './SetlistMenuActionItem';
+import { Divider, Menu } from '@mui/material';
+import { FC, useState } from 'react';
+
+import { useOwnership } from '../../helpers/customHooks';
+import { Setlist } from '../../types/setlist.types';
 import useFolderManagement from './hooks/useFolderManagement';
 import useFolders from './hooks/useFolders';
 import useSetlistActions from './hooks/useSetlistActions';
-import { useOwnership } from '../../helpers/customHooks';
-import { Setlist } from '../../types/setlist.types';
+import SetlistDeleteDialog from './SetlistDeleteDialog';
+import SetlistFolderActionsDialog from './SetlistFolderActionsDialog';
+import SetlistMenuActionItem from './SetlistMenuActionItem';
 
 interface SetlistActionsMenuProps {
   anchorEl: HTMLElement | null;

@@ -1,10 +1,11 @@
+import { Box, Stack, Typography } from '@mui/material';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { Box, Stack, Typography } from '@mui/material';
+
 import LoginContainer from './LoginContainer';
+import RecoverPasswordContainer from './RecoverPasswordContainer';
 import RegisterContainer from './RegisterContainer';
 import ResetPasswordContainer from './ResetPasswordContainer';
-import RecoverPasswordContainer from './RecoverPasswordContainer';
 
 const MainLoginContainer: React.FC = () => {
   const location = useLocation();

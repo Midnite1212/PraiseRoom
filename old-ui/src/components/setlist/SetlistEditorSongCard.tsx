@@ -1,8 +1,9 @@
-import { Stack, Typography } from '@mui/material';
 import Add from '@mui/icons-material/Add';
 import Check from '@mui/icons-material/Check';
-import SongFieldArray from '../song/SongFieldArray';
+import { Stack, Typography } from '@mui/material';
+
 import { SongSchema } from '../../types/song.types';
+import SongFieldArray from '../song/SongFieldArray';
 import {
   AddButton,
   DetailField,

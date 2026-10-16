@@ -1,6 +1,7 @@
-import { JWTPayload, SignJWT, exportJWK, generateKeyPair } from 'jose';
 import { createServer } from 'node:http';
 import { AddressInfo } from 'node:net';
+
+import { JWTPayload, SignJWT, exportJWK, generateKeyPair } from 'jose';
 
 const KEY_ID = 'test-key';
 

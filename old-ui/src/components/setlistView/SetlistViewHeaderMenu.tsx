@@ -1,8 +1,8 @@
+import { Edit, Link } from '@mui/icons-material';
+import CloseIcon from '@mui/icons-material/Close';
 import { IconButton, Snackbar, Stack } from '@mui/material';
 import { useState } from 'react';
-import CloseIcon from '@mui/icons-material/Close';
 import { useNavigate } from 'react-router-dom';
-import { Edit, Link } from '@mui/icons-material';
 
 interface SetlistViewHeaderMenuProps {
   setlistId: string;

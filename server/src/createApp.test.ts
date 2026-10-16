@@ -1,8 +1,10 @@
-import { Express } from 'express';
 import assert from 'node:assert/strict';
 import { Server } from 'node:http';
 import { AddressInfo } from 'node:net';
 import { afterEach, beforeEach, describe, it, mock } from 'node:test';
+
+import { Express } from 'express';
+
 import { createApp } from './createApp';
 
 const listen = (app: Express): Promise<Server> =>
@@ -14,7 +16,8 @@ describe('createApp', () => {
   let server: Server | undefined;
 
   const request = (path: string, init?: RequestInit) => {
-    const { port } = server?.address() as AddressInfo;
+    assert.ok(server, 'server not started');
+    const { port } = server.address() as AddressInfo;
     return fetch(`http://127.0.0.1:${port}${path}`, init);
   };
 

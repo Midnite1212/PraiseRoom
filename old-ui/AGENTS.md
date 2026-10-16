@@ -20,7 +20,7 @@ pnpm build                      # tsc --noEmit, then vite build → old-ui/dist 
 pnpm preview                    # serve old-ui/dist locally
 ```
 
-Lint from the repo root: `pnpm lint` (ESLint, 0 errors, no new warnings) and `pnpm exec prettier --write "<touched files>"`.
+Lint and format from `old-ui/`: `pnpm lint` (oxlint, 0 problems) and `pnpm format` (oxfmt).
 
 - Unit tests cover pure logic only: chord parsing and transposition, lyrics helpers, song codes, `songKeys`, the store reset, and the response cache (`old-ui/src/**/*.test.ts(x)`). Components have no render tests; verify them with type-check, lint, build, and the browser.
 
@@ -69,16 +69,16 @@ Imports are **relative** (`'../../helpers/customHooks'`). The `#/*` alias in `ol
 ### Imports
 
 ```tsx
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Box, Stack, Typography } from '@mui/material';
 // 1. React and external packages
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Stack, Typography } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
 
-// 2. Local modules (relative)
-import { customAxios as axios } from '../custom/customAxios';
 import { useOwnership } from '../../helpers/customHooks';
 import { SongSchema } from '../../types/song.types';
+// 2. Local modules (relative)
+import { customAxios as axios } from '../custom/customAxios';
 ```
 
 Import MUI icons by path (`@mui/icons-material/Delete`), not from the package root, to keep dev builds fast.
@@ -111,7 +111,7 @@ export default SongDeleteDialog;
 
 ### TypeScript
 
-- No new `any`. Type API responses with the types in `types/` (`axios.get<SongSchema[]>(…)`) and use `unknown` plus narrowing in `catch`. ESLint enforces `no-explicit-any` as an error.
+- No new `any`. Type API responses with the types in `types/` (`axios.get<SongSchema[]>(…)`) and use `unknown` plus narrowing in `catch`. Oxlint enforces `no-explicit-any` as an error.
 - No non-null assertions (`!`) on fetched data or env vars in new code; guard instead.
 - No `as` casts to paper over a wrong type. Fix the type.
 - `old-ui/tsconfig.json` is strict. Keep `pnpm exec tsc --noEmit` at 0 errors.
@@ -211,7 +211,7 @@ Songs store `chordLyrics` (and optional `simplifiedChordLyrics`) as one plain-te
 2. `customAxios`'s interceptor gets the token from `getAuthToken()` (cached until near `exp`); there is no `updateAxiosClient` to call after sign-in.
 3. `#/` imports resolve through the Vite alias, but the codebase uses relative imports. Keep to that.
 4. `useUser()` reads shared context and never fetches; the session loads once in `SessionProvider`, so a signed-in state change must go through `refreshSession()` or a full page load.
-5. `pnpm build` in `old-ui/` runs `tsc --noEmit` before `vite build`, so a type error fails the `ui` deploy. `old-ui/.eslintrc.cjs` is its own ESLint root (`@typescript-eslint/recommended`, the react, react-hooks, jsx-a11y, and import rules carried over from `eslint-config-react-app`, single quotes and semicolons); its plugins load from the root `node_modules`, so add UI lint plugins to the root `package.json`. Edit it, not the root config, for UI rules.
+5. `pnpm build` in `old-ui/` runs `tsc --noEmit` before `vite build`, so a type error fails the `ui` deploy. `old-ui/.oxlintrc.json` keeps the rules the old ESLint config enforced (correctness, hooks, `no-explicit-any`) and turns off the React Compiler rules this frozen code was never written for.
 6. Route `key`s in `routes.ts` must be unique, and React keys from data (`_id`), not indexes.
 
 - MUI docs: use the MUI MCP server (`useMuiDocs`, then `fetchDocs` with only the URLs it returns) when it is available, and pin answers to v5.

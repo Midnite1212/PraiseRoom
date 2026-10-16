@@ -1,5 +1,5 @@
-import { SyntheticEvent, useCallback, useState } from 'react';
 import { SnackbarCloseReason } from '@mui/material';
+import { SyntheticEvent, useCallback, useState } from 'react';
 
 export type SnackbarState = {
   open: boolean;

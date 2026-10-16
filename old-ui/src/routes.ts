@@ -1,4 +1,5 @@
 import { ComponentType, LazyExoticComponent, lazy } from 'react';
+
 import ErrorPage from './components/custom/ErrorPage';
 import type { RoutePermission } from './components/custom/PrivateRouteWrapper';
 

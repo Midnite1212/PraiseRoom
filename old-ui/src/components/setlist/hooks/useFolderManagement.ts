@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-import { customAxios as axios } from '../../custom/customAxios';
-import { Setlist, SetlistFolder } from '../../../types/setlist.types';
+
 import { logRequestError } from '../../../helpers/global';
 import { requestErrorMessage } from '../../../helpers/setlist/requestErrorMessage';
+import { Setlist, SetlistFolder } from '../../../types/setlist.types';
+import { customAxios as axios } from '../../custom/customAxios';
 
 const useFolderManagement = (
   setlist: Setlist,

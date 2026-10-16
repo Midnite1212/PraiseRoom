@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { authClient } from '../custom/authClient';
+import { zodResolver } from '@hookform/resolvers/zod';
+import GoogleIcon from '@mui/icons-material/Google';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {
   Box,
   Button,
@@ -12,16 +13,16 @@ import {
   Typography,
   useTheme,
 } from '@mui/material';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { LoginFormFields } from '../../types/form.types';
-import { formSpacing } from '../../constants';
-import { emailValidator, passwordValidator } from './helpers/zod.validators';
-import { useUser } from '../../helpers/customHooks';
+import React, { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import GoogleIcon from '@mui/icons-material/Google';
+import { z } from 'zod';
+
+import { formSpacing } from '../../constants';
+import { useUser } from '../../helpers/customHooks';
+import { LoginFormFields } from '../../types/form.types';
+import { authClient } from '../custom/authClient';
+import { emailValidator, passwordValidator } from './helpers/zod.validators';
 
 // zod validation
 const loginValidationSchema = z.object({

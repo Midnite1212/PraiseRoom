@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { authClient } from '../custom/authClient';
+import { zodResolver } from '@hookform/resolvers/zod';
+import ArrowBackRounded from '@mui/icons-material/ArrowBackRounded';
 import {
   Box,
   Button,
@@ -12,12 +11,14 @@ import {
   AlertColor,
   useTheme,
 } from '@mui/material';
+import React, { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { Link as RouterLink } from 'react-router-dom';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { RecoverPasswordFields } from '../../types/form.types';
+
 import { formSpacing } from '../../constants';
-import ArrowBackRounded from '@mui/icons-material/ArrowBackRounded';
+import { RecoverPasswordFields } from '../../types/form.types';
+import { authClient } from '../custom/authClient';
 import { emailValidator } from './helpers/zod.validators';
 
 // zod validation

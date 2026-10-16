@@ -1,5 +1,7 @@
-import { NextFunction, Request, RequestHandler, Response } from 'express';
 import { Mock, mock } from 'node:test';
+
+import { NextFunction, Request, RequestHandler, Response } from 'express';
+
 import { TokenUser } from '../utils/verify-jwt';
 
 export type FakeResponse = {

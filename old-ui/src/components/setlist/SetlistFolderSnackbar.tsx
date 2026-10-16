@@ -52,10 +52,10 @@ const SetlistFolderSnackbar = ({
         {snackbar.severity === 'success'
           ? 'Success'
           : snackbar.severity === 'error'
-          ? 'Error'
-          : snackbar.severity === 'warning'
-          ? 'Warning'
-          : 'Info'}
+            ? 'Error'
+            : snackbar.severity === 'warning'
+              ? 'Warning'
+              : 'Info'}
       </AlertTitle>
       {snackbar.message}
     </Alert>

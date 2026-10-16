@@ -1,11 +1,12 @@
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Container, IconButton, Stack, Typography } from '@mui/material';
-import { SongCardProps, SongSchema } from '../../types/song.types';
-import { CardFields } from '../../constants';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import SongFieldArray from './SongFieldArray';
+
+import { CardFields } from '../../constants';
+import { SongCardProps, SongSchema } from '../../types/song.types';
 import SongPreviewModal from '../utility/SongPreviewModal';
+import SongFieldArray from './SongFieldArray';
 
 const SongCard = (props: SongCardProps) => {
   const {
