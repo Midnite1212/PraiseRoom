@@ -38,7 +38,7 @@ Read the pattern doc for the area you are touching before writing code:
 | Forms           | TanStack Form + Zod 4                                                                                                                                  |
 | Tables          | TanStack Table v9                                                                                                                                      |
 | i18n            | i18next + react-i18next; English (`en`) and Traditional Chinese (`zh-Hant`)                                                                            |
-| Icons / fonts   | lucide-react; DM Sans (body) and Work Sans (headings) variable fonts                                                                                   |
+| Icons / fonts   | lucide-react; font tokens (`--typeface-sans`, `--typeface-mono`, `--typeface-lyrics`) on system stacks until the designer picks typefaces              |
 | Tests           | Vitest + Testing Library on jsdom                                                                                                                      |
 
 Majors only above. `package.json` is the source of truth for exact versions.

@@ -1,4 +1,4 @@
-import { queryOptions } from '@tanstack/react-query';
+import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
 import { z } from 'zod';
 
 import { readerSongSchema } from '@/features/reader/song';
@@ -78,4 +78,17 @@ export const songQueryOptions = (songId: string) =>
     queryKey: ['songs', 'detail', songId],
     queryFn: ({ signal }) =>
       apiRequest('/api/songs/get', songSchema, { query: { id: songId }, signal }),
+  });
+
+export const songSearchInfiniteQueryOptions = (keyword: string) =>
+  infiniteQueryOptions({
+    queryKey: ['songs', 'search', 'infinite', { keyword }],
+    initialPageParam: 1,
+    queryFn: ({ pageParam, signal }) =>
+      apiRequest('/api/songs/search', songSearchResponseSchema, {
+        query: { keyword: keyword || undefined, page: pageParam, limit: SONGS_PAGE_SIZE },
+        signal,
+      }),
+    getNextPageParam: (lastPage) =>
+      lastPage.currentPage < lastPage.totalPages ? lastPage.currentPage + 1 : undefined,
   });

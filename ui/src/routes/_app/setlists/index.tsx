@@ -1,8 +1,9 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Plus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { setlistsQueryOptions } from '@/features/setlists/api';
 import { formatSetlistDate } from '@/features/setlists/format-date';
@@ -19,7 +20,15 @@ function SetlistsPage() {
 
   return (
     <section className="mx-auto flex max-w-3xl flex-col gap-4">
-      <h1 className="text-2xl font-semibold">{t('setlists.title')}</h1>
+      <div className="flex items-center justify-between gap-2">
+        <h1 className="text-2xl font-semibold">{t('setlists.title')}</h1>
+        <Button asChild>
+          <Link to="/setlists/new">
+            <Plus />
+            {t('editor.newTitle')}
+          </Link>
+        </Button>
+      </div>
       {setlists.length === 0 ? (
         <p className="bg-sheet text-muted-foreground rounded-xl border p-8 text-center">
           {t('setlists.empty')}
