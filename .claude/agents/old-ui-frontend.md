@@ -22,7 +22,7 @@ Most of `old-ui/src/components/` was written by junior volunteers. Expect 500–
 ## Project context
 
 - React 18 + TypeScript (`strict`), Vite 8 with `@vitejs/plugin-react`. The `#/*` path alias resolves, but the codebase uses relative imports; keep to that.
-- Vite dev server on :3000; `server.proxy` in `vite.config.ts` sends `/api` (including the `/api/auth/*` Neon Auth proxy) to Express on :1338. Env vars are `VITE_*` through `import.meta.env`, typed in `src/vite-env.d.ts`. Yarn for installs, scripts, and binaries; never npm or npx.
+- Vite dev server on :3000; `server.proxy` in `vite.config.ts` sends `/api` (including the `/api/auth/*` Neon Auth proxy) to Express on :1338. Env vars are `VITE_*` through `import.meta.env`, typed in `src/vite-env.d.ts`. pnpm for installs, scripts, and binaries; never yarn, npm, or npx.
 - MUI **v5** on Emotion, `@mui/icons-material` (import by path), `@mui/x-date-pickers` 6 with dayjs. Custom theme in `old-ui/src/theme.ts` with extra palette shades (`primary.darker`, `primary.lighter`, …) declared through module augmentation.
 - Redux Toolkit + redux-persist; nothing is persisted. Slices: `songs`, `ownership`; the session lives in Neon Auth cookies. Use `useAppSelector` from `store.ts`.
 - react-router-dom **v6**: `useNavigate`, `useParams`, `<Navigate replace>`. No v5 APIs (`useHistory`, `Switch`, `props.history`).
