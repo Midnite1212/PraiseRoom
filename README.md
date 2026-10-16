@@ -7,7 +7,7 @@ A repo built on ExpressJS and React with TypeScript
 1. Clone the repo
 2. Run `yarn install`
 3. Run `cd server && yarn install`
-4. Run `cd ui && yarn install`
+4. Run `cd old-ui && yarn install`
 
 ## Usage
 

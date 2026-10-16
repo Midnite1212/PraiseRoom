@@ -20,12 +20,5 @@
     "lint:fix": "eslint --ignore-path .eslintignore --fix \"**/*.+(js|jsx|ts|tsx)\"",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|jsx|ts|tsx|json|md|css)\" --config .prettierrc.json",
     "prepare": "husky install"
-  },
-  "lint-staged": {
-    "**/*.{js,jsx,ts,tsx}": [
-      "prettier --write --config .prettierrc.json",
-      "eslint --max-warnings=0"
-    ],
-    "**/*.{json,md,css}": "prettier --write --config .prettierrc.json"
   }
 }
