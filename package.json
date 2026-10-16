@@ -21,5 +21,8 @@
     "lint:fix": "eslint --ignore-path .eslintignore --fix \"**/*.+(js|jsx|ts|tsx)\"",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|jsx|ts|tsx|json|md|css)\" --config .prettierrc.json",
     "prepare": "husky install"
+  },
+  "engines": {
+    "node": "24.x"
   }
 }

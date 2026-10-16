@@ -72,7 +72,7 @@ cd old-ui && yarn dev           # old UI; see old-ui/AGENTS.md
 
 # Server (in server/)
 yarn typecheck                  # tsc --noEmit; 0 errors required (noUnusedLocals and noUnusedParameters are on)
-yarn test                       # node:test unit tests, no database needed (Node 21+ for the glob)
+yarn test                       # node:test unit tests, no database needed
 DATABASE_URL_TEST=<url> yarn test  # also runs src/db/integration.test.ts against a disposable Postgres database
 yarn db:generate                # drizzle-kit generate: new SQL migration in server/drizzle/ from src/db/schema.ts
 yarn db:migrate                 # drizzle-kit migrate: apply pending migrations to DATABASE_URL
@@ -215,8 +215,8 @@ Neon Auth owns user accounts (name, email, password); this repo's own data carri
 ## CI / Deploy (`.github/workflows/`)
 
 - Hosting is one Vercel project in [services](https://vercel.com/docs/services) mode, configured by the root `vercel.json`: `server` (`server/`, Express preset, one Vercel Function from `app.ts`) and `ui` (`ui/`, Vite preset, installed with pnpm from `ui/pnpm-lock.yaml`, static `dist/`, with a service-level rewrite to `/index.html` for client routes, since the Vite preset has no SPA fallback). `old-ui/` is not deployed. Top-level rewrites send `/api/*` to `server` and everything else to `ui`; each service receives the original path, and routing into a service is final. Each service installs with its own lockfile. Vercel deploys from the connected Git repo, and `git.deploymentEnabled` limits automatic deployments to `main`, so PRs get no preview; there is no deploy workflow.
-- Node 22 for builds and functions comes from the project's Node.js Version setting; `.nvmrc` pins it for local use.
-- `pr-check.yml` runs on PRs to `main`: root lint, old UI typecheck and tests, new UI checks (pnpm install, typecheck, oxlint, oxfmt check, tests, build), and server typecheck and tests (Node 22). Keep them green.
+- Node 24 everywhere: `engines.node` (`24.x`) in each `package.json` sets the Vercel build and function runtime, and `.nvmrc` and CI match it.
+- `pr-check.yml` runs on PRs to `main`: root lint, old UI typecheck and tests, new UI checks (pnpm install, typecheck, oxlint, oxfmt check, tests, build), and server typecheck and tests (Node 24). Keep them green.
 - `.github/copilot-instructions.md` and `.github/instructions/*.instructions.md` are Copilot's short summaries; the `AGENTS.md` files are the source of truth when they differ.
 
 ## PR and Commit References
@@ -230,7 +230,7 @@ Read `.claude/docs/commit-convention.md` and `.claude/docs/pr-description.md` be
 3. `requireAuth` is authentication, not authorisation. Check ownership on writes with the helpers in `utils/authorization.ts`.
 4. Access types are `member`, `editor`, `admin` (no hierarchy); only `editor` and `admin` can write songs (`SONG_WRITERS` server-side, the `'editor'` route permission client-side). `member` is the default for a new ownership record.
 5. Every top-level table has `is_deleted`; filter it on every read and update. Soft-deleted songs still appear inside a setlist's populated `songs`, as they did under Mongoose `populate`.
-6. Server tests rely on `node --test` expanding `'src/**/*.test.ts'`, which needs Node 21+; on Node 20 pass the files explicitly.
+6. Server tests rely on `node --test` expanding `'src/**/*.test.ts'` itself, so quote the glob in the script.
 7. On Vercel the SPA is the `ui` service, never the Express app, and `express.static` is ignored there. Locally use the Vite dev server on :3000. `server/` must not have a `build` script: Vercel's Express preset would run it, take `dist/app.js` as the handler at the function root, and lose `server/node_modules`, so every request fails with `Cannot find module`. Vercel compiles `app.ts` itself and type-checks it.
 8. `isObjectIdString` requires a 24-character hex string in either case; repositories lowercase ids before querying, so compare stored ids against `toObjectId(id)`, not the raw request value. User ids are a separate shape: `isUserIdString` validates a Neon Auth user id, which is stored and compared as given, never lowercased.
 
