@@ -7,3 +7,4 @@ The HMCC Hong Kong worship-team app: a song library with chord charts, key trans
 - `server/`: Express 4 + Drizzle ORM on Neon Postgres, auth through Neon Auth (Better Auth) proxied at `/api/auth/*`, yarn.
 - Commits and PR titles are `GH-<issue#>: …`; branches are `<issue#>-<type>-<description>`; PRs target `main`.
 - Never put member names, emails, or other personal data in code, tests, logs, or PRs.
+- Use GitNexus (call graph and impact analysis) before editing a symbol when it is installed; setup is in `AGENTS.md` under GitNexus Setup.
