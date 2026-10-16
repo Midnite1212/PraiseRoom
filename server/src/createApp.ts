@@ -1,5 +1,7 @@
-import express, { Express } from 'express';
 import * as path from 'path';
+
+import express, { Express } from 'express';
+
 import { createAuthRouter } from './auth/neonAuth.routes';
 import { getRoutes } from './routes';
 import { errorHandler, sendResponse } from './utils/response';

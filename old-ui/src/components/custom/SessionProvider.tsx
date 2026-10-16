@@ -1,10 +1,11 @@
 import { ReactNode, createContext, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { authClient } from './authClient';
-import { customAxios as axios } from './customAxios';
+
 import { logRequestError } from '../../helpers/global';
 import { fetchOwnership } from '../../reducers';
 import { Ownership } from '../../types/ownership.types';
+import { authClient } from './authClient';
+import { customAxios as axios } from './customAxios';
 
 export type SessionIdentity = {
   id: string;

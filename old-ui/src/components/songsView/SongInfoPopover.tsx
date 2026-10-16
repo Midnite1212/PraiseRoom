@@ -1,6 +1,7 @@
 import { Popover, Typography } from '@mui/material';
-import SongInfoDetails from './SongInfoDetails';
+
 import { SongViewSchema } from '../../types/song.types';
+import SongInfoDetails from './SongInfoDetails';
 
 type SongInfoPopoverProps = {
   song: SongViewSchema | undefined;

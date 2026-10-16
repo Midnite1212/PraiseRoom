@@ -1,4 +1,5 @@
 import { renderToStaticMarkup } from 'react-dom/server';
+
 import getLyricsPreview from './getLyricsPreview';
 
 const renderPreview = (lyrics?: string | null) =>

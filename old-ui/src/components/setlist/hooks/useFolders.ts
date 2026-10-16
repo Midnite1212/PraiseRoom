@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-import { customAxios as axios } from '../../custom/customAxios';
+
+import { logRequestError } from '../../../helpers/global';
 import { Ownership } from '../../../types/ownership.types';
 import { SetlistFolder } from '../../../types/setlist.types';
-import { logRequestError } from '../../../helpers/global';
+import { customAxios as axios } from '../../custom/customAxios';
 
 const useFolders = (
   ownership: Partial<Ownership> | null | undefined,
@@ -21,8 +22,8 @@ const useFolders = (
         throw new Error('Failed to fetch folders');
       }
 
-      const filteredFolders = data.filter(
-        (folder) => ownership?.groupIds?.some(({ id }) => id === folder._id)
+      const filteredFolders = data.filter((folder) =>
+        ownership?.groupIds?.some(({ id }) => id === folder._id)
       );
 
       setOwnedFolders(filteredFolders);

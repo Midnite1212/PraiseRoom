@@ -1,4 +1,4 @@
-import { FC, MouseEvent, ReactNode, SyntheticEvent, useCallback, useEffect, useState } from 'react';
+import Close from '@mui/icons-material/Close';
 import {
   Box,
   Divider,
@@ -12,17 +12,18 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import Close from '@mui/icons-material/Close';
 import { useTheme } from '@mui/material/styles';
+import { FC, MouseEvent, ReactNode, SyntheticEvent, useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+
+import { useOwnership } from '../../helpers/customHooks';
+import { Setlist, SetlistFolder } from '../../types/setlist.types';
+import useSetlistTabsData from './hooks/useSetlistTabsData';
 import SetlistFolderDrawer from './SetlistFolderDrawer';
 import SetlistTabsCollapsibleGroup from './SetlistTabsCollapsibleGroup';
 import SetlistTabsFolderItem from './SetlistTabsFolderItem';
 import SetlistTabsSearchField from './SetlistTabsSearchField';
 import SetlistTabsSetlistItem from './SetlistTabsSetlistItem';
-import useSetlistTabsData from './hooks/useSetlistTabsData';
-import { useOwnership } from '../../helpers/customHooks';
-import { Setlist, SetlistFolder } from '../../types/setlist.types';
 
 interface TabPanelProps {
   children?: ReactNode;

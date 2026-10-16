@@ -1,8 +1,9 @@
-import React from 'react';
 import { Modal, Stack, Typography, Button, Box } from '@mui/material';
-import { SongSchema } from '../../types/song.types';
-import { getLyricsPreview } from '../../helpers/song';
+import React from 'react';
+
 import { formWidth, specificSongsMobileWidth } from '../../constants';
+import { getLyricsPreview } from '../../helpers/song';
+import { SongSchema } from '../../types/song.types';
 
 interface SongPreviewModalProps {
   open: boolean;

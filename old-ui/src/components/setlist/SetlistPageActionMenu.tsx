@@ -1,13 +1,14 @@
-import { Theme, useTheme } from '@mui/material/styles';
 import Add from '@mui/icons-material/Add';
 import Folder from '@mui/icons-material/Folder';
 import QueueMusic from '@mui/icons-material/QueueMusic';
 import { Box, Collapse, Fab, Slide, useMediaQuery } from '@mui/material';
+import { Theme, useTheme } from '@mui/material/styles';
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import SetlistFolderDrawer from './SetlistFolderDrawer';
-import useFolderDrawer from './hooks/useFolderDrawer';
+
 import { MOBILE_NAVBAR_HEIGHT } from '../../constants';
+import useFolderDrawer from './hooks/useFolderDrawer';
+import SetlistFolderDrawer from './SetlistFolderDrawer';
 
 // Types
 interface SetlistPageActionMenuProps {

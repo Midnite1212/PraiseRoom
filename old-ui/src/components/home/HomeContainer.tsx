@@ -1,16 +1,17 @@
-import { Box, IconButton, Stack, Typography } from '@mui/material';
-import { FC, ReactElement } from 'react';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import QueueMusicIcon from '@mui/icons-material/QueueMusic';
-import HomeTab from './HomeTab';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
+import { Box, IconButton, Stack, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { FC, ReactElement } from 'react';
 import { useState } from 'react';
-import GlobalSearchModal from '../navigation/GlobalSearchModal';
+
+import { MAXIMUM_DESKTOP_HEIGHT } from '../../constants';
 import { useOwnedSetlists, useSongs } from '../../helpers/customHooks';
 import { SongSchema } from '../../types/song.types';
-import { MAXIMUM_DESKTOP_HEIGHT } from '../../constants';
+import GlobalSearchModal from '../navigation/GlobalSearchModal';
+import HomeTab from './HomeTab';
 
 const HomeContainer: FC = (): ReactElement => {
   const theme = useTheme();

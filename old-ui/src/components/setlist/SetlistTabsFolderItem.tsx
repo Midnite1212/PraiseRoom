@@ -1,4 +1,7 @@
-import { MouseEvent, ReactNode } from 'react';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import Folder from '@mui/icons-material/Folder';
+import MoreVertRounded from '@mui/icons-material/MoreVertRounded';
 import {
   Box,
   Collapse,
@@ -10,10 +13,8 @@ import {
   ListItemText,
   Typography,
 } from '@mui/material';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import Folder from '@mui/icons-material/Folder';
-import MoreVertRounded from '@mui/icons-material/MoreVertRounded';
+import { MouseEvent, ReactNode } from 'react';
+
 import { SetlistFolder } from '../../types/setlist.types';
 import { LIST_ITEM_ICON_STYLE, LIST_ITEM_TEXT_STYLE } from './SetlistTabs.styles';
 

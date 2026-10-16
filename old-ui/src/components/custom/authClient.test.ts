@@ -1,4 +1,5 @@
 import { AxiosError, AxiosHeaders } from 'axios';
+
 import { authClient, getAuthToken } from './authClient';
 
 const { get, post } = vi.hoisted(() => ({ get: vi.fn(), post: vi.fn() }));

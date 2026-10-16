@@ -1,10 +1,11 @@
+import InfoIcon from '@mui/icons-material/Info';
 import { Container, Box, Typography, IconButton, useMediaQuery, Stack } from '@mui/material';
 import React, { useState } from 'react';
-import { SongViewSchema } from '../../types/song.types';
-import InfoIcon from '@mui/icons-material/Info';
+
 import { specificSongsTabletWidth } from '../../constants';
-import SongsInfoCardMobile from './SongsInfoCardMobile';
+import { SongViewSchema } from '../../types/song.types';
 import SongInfoPopover from './SongInfoPopover';
+import SongsInfoCardMobile from './SongsInfoCardMobile';
 
 type SongTitleCardProps = {
   song: SongViewSchema | undefined;

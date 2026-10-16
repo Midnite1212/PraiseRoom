@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
-import { customAxios as axios } from '../../custom/customAxios';
-import { Setlist, SetlistFolder } from '../../../types/setlist.types';
+
 import { logRequestError } from '../../../helpers/global';
+import { Setlist, SetlistFolder } from '../../../types/setlist.types';
+import { customAxios as axios } from '../../custom/customAxios';
 
 const useFolderData = (id: string | undefined, onError: (message: string) => void) => {
   const [folder, setFolder] = useState<SetlistFolder | null>(null);

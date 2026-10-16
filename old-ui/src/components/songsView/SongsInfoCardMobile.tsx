@@ -1,9 +1,10 @@
-import { Box, CardContent, Drawer, IconButton, Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import InfoIcon from '@mui/icons-material/Info';
-import SongInfoDetails from './SongInfoDetails';
+import { Box, CardContent, Drawer, IconButton, Typography } from '@mui/material';
+
 import { MOBILE_NAVBAR_HEIGHT } from '../../constants';
 import { SongViewSchema } from '../../types/song.types';
+import SongInfoDetails from './SongInfoDetails';
 
 type SongsInfoCardMobileProps = {
   song: SongViewSchema | undefined;

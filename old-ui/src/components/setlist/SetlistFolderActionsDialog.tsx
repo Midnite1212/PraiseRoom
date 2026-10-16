@@ -1,4 +1,7 @@
-import { useMemo, useState } from 'react';
+import Add from '@mui/icons-material/Add';
+import Check from '@mui/icons-material/Check';
+import Close from '@mui/icons-material/Close';
+import Folder from '@mui/icons-material/Folder';
 import {
   Button,
   CircularProgress,
@@ -12,12 +15,10 @@ import {
   ListItem,
   Typography,
 } from '@mui/material';
-import Add from '@mui/icons-material/Add';
-import Check from '@mui/icons-material/Check';
-import Close from '@mui/icons-material/Close';
-import Folder from '@mui/icons-material/Folder';
-import HeaderWithIcon from '../custom/HeaderWithIcon';
+import { useMemo, useState } from 'react';
+
 import { SetlistFolder } from '../../types/setlist.types';
+import HeaderWithIcon from '../custom/HeaderWithIcon';
 
 const DIALOG_STYLES = {
   paper: {

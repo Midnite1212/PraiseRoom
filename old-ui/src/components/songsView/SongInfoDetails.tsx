@@ -1,4 +1,5 @@
 import { Box, Chip, Grid, Typography } from '@mui/material';
+
 import { SongViewSchema } from '../../types/song.types';
 
 type SongInfoDetailsProps = {

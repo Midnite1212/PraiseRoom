@@ -1,6 +1,7 @@
-import { IconButton, ListItem, Stack, Typography } from '@mui/material';
 import Add from '@mui/icons-material/Add';
 import Check from '@mui/icons-material/Check';
+import { IconButton, ListItem, Stack, Typography } from '@mui/material';
+
 import { Ownership } from '../../types/ownership.types';
 
 type SetlistFolderAddPersonListItemProps = {

@@ -1,9 +1,10 @@
 import { Box, Chip, Grid, Stack, Typography, useMediaQuery } from '@mui/material';
-import { SongViewSchema } from '../../types/song.types';
 import { ReactNode, useCallback, useMemo } from 'react';
+
 import { specificSongsMobileWidth } from '../../constants';
 import { isChordLyricsBlockEmpty } from '../../helpers/global';
 import { getColor, getTransposeOffset, transposeChord } from '../../helpers/song/chords';
+import { SongViewSchema } from '../../types/song.types';
 
 interface SongsLyricsProps {
   chordStatus: boolean;

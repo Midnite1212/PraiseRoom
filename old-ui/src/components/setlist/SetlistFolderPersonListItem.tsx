@@ -1,4 +1,5 @@
 import { IconButton, ListItem, Stack, Typography } from '@mui/material';
+
 import { Ownership } from '../../types/ownership.types';
 
 type SetlistFolderPersonListItemProps = {

@@ -1,6 +1,6 @@
-import { FC, ReactNode, useState } from 'react';
-import { IconButton, Dialog, DialogTitle, DialogContent, DialogContentText } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { IconButton, Dialog, DialogTitle, DialogContent, DialogContentText } from '@mui/material';
+import { FC, ReactNode, useState } from 'react';
 
 interface HelpDialogProps {
   icon: ReactNode;

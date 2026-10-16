@@ -1,5 +1,6 @@
 import { DrizzleQueryError } from 'drizzle-orm';
 import { ErrorRequestHandler, Response } from 'express';
+
 import { InvalidInputError } from '../db/cast';
 
 const GENERIC_ERROR = 'Something went wrong';
@@ -22,7 +23,7 @@ export const sendResponse = (res: Response, statusCode: number, payload: unknown
 };
 
 const unwrapQueryError = (error: unknown): unknown =>
-  error instanceof DrizzleQueryError ? error.cause ?? new Error('Database query failed') : error;
+  error instanceof DrizzleQueryError ? (error.cause ?? new Error('Database query failed')) : error;
 
 const isInvalidInput = (error: unknown): boolean => {
   if (error instanceof InvalidInputError) return true;

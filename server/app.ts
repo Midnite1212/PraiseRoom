@@ -1,7 +1,9 @@
+import * as path from 'path';
+
 import dotenv from 'dotenv';
 // Vercel's Express preset only accepts an entrypoint that imports 'express'.
 import { Express } from 'express';
-import * as path from 'path';
+
 import { createApp } from './src/createApp';
 import { ensureDatabase } from './src/db/connect';
 

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import LogoutIcon from '@mui/icons-material/Logout';
+import PersonIcon from '@mui/icons-material/Person';
 import {
   Box,
   Button,
@@ -9,15 +10,15 @@ import {
   Typography,
   styled,
 } from '@mui/material';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import LogoutIcon from '@mui/icons-material/Logout';
-import PersonIcon from '@mui/icons-material/Person';
-import PageHeader from '../navigation/PageHeader';
-import { persistor } from '../../store';
+
+import { useUser } from '../../helpers/customHooks';
 import { signout } from '../../reducers/sessionSlice';
+import { persistor } from '../../store';
 import { authClient } from '../custom/authClient';
 import { clearAuthTokenCache } from '../custom/customAxios';
-import { useUser } from '../../helpers/customHooks';
+import PageHeader from '../navigation/PageHeader';
 
 const FieldLabel = styled(Typography)(({ theme }) => ({
   marginBottom: '6px',

@@ -1,17 +1,18 @@
-import { Container, Box, Stack, Typography, Button } from '@mui/material';
-import { FC, ReactElement, useState, useEffect, useCallback } from 'react';
 import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
-import { useNavigate, useParams } from 'react-router-dom';
-import { SongViewSchema } from '../../types/song.types';
-import { customAxios as axios } from '../custom/customAxios';
-import SongsTitleCard from './SongsTitleCard';
-import SongsButtonCard from './SongsButtonsCard';
-import { useOwnership } from '../../helpers/customHooks';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { specificSongsTabletWidth } from '../../constants';
 import EditIcon from '@mui/icons-material/Edit';
+import { Container, Box, Stack, Typography, Button } from '@mui/material';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { FC, ReactElement, useState, useEffect, useCallback } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+
+import { specificSongsTabletWidth } from '../../constants';
+import { useOwnership } from '../../helpers/customHooks';
 import { logRequestError } from '../../helpers/global';
+import { SongViewSchema } from '../../types/song.types';
 import { canWriteSongs } from '../../types/user.types';
+import { customAxios as axios } from '../custom/customAxios';
+import SongsButtonCard from './SongsButtonsCard';
+import SongsTitleCard from './SongsTitleCard';
 
 const SongsViewContainer: FC = (): ReactElement => {
   const navigate = useNavigate();

@@ -1,6 +1,7 @@
-import { Box, Button, Container, IconButton, InputBase, Stack } from '@mui/material';
 import Search from '@mui/icons-material/Search';
+import { Box, Button, Container, IconButton, InputBase, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
+
 import { MOBILE_ACTION_BUTTONS_HEIGHT, MOBILE_NAVBAR_HEIGHT } from '../../constants';
 
 export const MainContainer = styled(Container)<{ isMobileOrSmallTablet?: boolean }>(

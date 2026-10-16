@@ -10,6 +10,7 @@ import {
   text,
   timestamp,
 } from 'drizzle-orm/pg-core';
+
 import { ACCESS_TYPES, DEFAULT_ACCESS_TYPE } from '../policies/permissions.config';
 
 const MAJOR_KEYS = [

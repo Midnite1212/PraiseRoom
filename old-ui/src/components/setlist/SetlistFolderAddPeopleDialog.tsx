@@ -1,3 +1,5 @@
+import Close from '@mui/icons-material/Close';
+import GroupAdd from '@mui/icons-material/GroupAdd';
 import {
   Dialog,
   DialogContent,
@@ -8,11 +10,10 @@ import {
   ListItem,
   Typography,
 } from '@mui/material';
-import Close from '@mui/icons-material/Close';
-import GroupAdd from '@mui/icons-material/GroupAdd';
+
+import { Ownership } from '../../types/ownership.types';
 import HeaderWithIcon from '../custom/HeaderWithIcon';
 import SetlistFolderAddPersonListItem from './SetlistFolderAddPersonListItem';
-import { Ownership } from '../../types/ownership.types';
 
 type SetlistFolderAddPeopleDialogProps = {
   open: boolean;

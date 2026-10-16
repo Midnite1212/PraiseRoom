@@ -1,5 +1,6 @@
 import { AxiosError, AxiosHeaders } from 'axios';
 import type { MockInstance } from 'vitest';
+
 import { logRequestError } from './logRequestError';
 
 describe('logRequestError', () => {

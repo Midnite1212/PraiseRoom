@@ -1,4 +1,5 @@
-import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import Close from '@mui/icons-material/Close';
+import Folder from '@mui/icons-material/Folder';
 import {
   Box,
   Button,
@@ -11,25 +12,25 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import Close from '@mui/icons-material/Close';
-import Folder from '@mui/icons-material/Folder';
 import { AxiosResponse } from 'axios';
 import dayjs from 'dayjs';
+import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { customAxios as axios } from '../custom/customAxios';
+
+import { useOwnership } from '../../helpers/customHooks';
+import { logRequestError } from '../../helpers/global';
+import { requestErrorMessage } from '../../helpers/setlist/requestErrorMessage';
+import { fetchOwnership } from '../../reducers';
+import { Ownership } from '../../types/ownership.types';
+import { SetlistFolder } from '../../types/setlist.types';
 import ConfirmationDialog from '../custom/ConfirmationDialog';
+import { customAxios as axios } from '../custom/customAxios';
 import HeaderWithIcon from '../custom/HeaderWithIcon';
+import useFolderMembers from './hooks/useFolderMembers';
 import SetlistFolderAddPeopleDialog from './SetlistFolderAddPeopleDialog';
 import SetlistFolderDrawerFooter from './SetlistFolderDrawerFooter';
 import SetlistFolderMembersSection from './SetlistFolderMembersSection';
 import SetlistFolderSnackbar, { SetlistFolderSnackbarState } from './SetlistFolderSnackbar';
-import useFolderMembers from './hooks/useFolderMembers';
-import { useOwnership } from '../../helpers/customHooks';
-import { fetchOwnership } from '../../reducers';
-import { Ownership } from '../../types/ownership.types';
-import { SetlistFolder } from '../../types/setlist.types';
-import { logRequestError } from '../../helpers/global';
-import { requestErrorMessage } from '../../helpers/setlist/requestErrorMessage';
 
 interface SetlistFolderDrawerProps {
   openDrawer: boolean;

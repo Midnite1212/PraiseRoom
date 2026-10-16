@@ -1,4 +1,7 @@
-import { Fragment, MouseEvent, SyntheticEvent, useCallback, useRef } from 'react';
+import Close from '@mui/icons-material/Close';
+import Folder from '@mui/icons-material/Folder';
+import MoreVertRounded from '@mui/icons-material/MoreVertRounded';
+import QueueMusic from '@mui/icons-material/QueueMusic';
 import {
   Box,
   CircularProgress,
@@ -13,20 +16,18 @@ import {
   Typography,
   styled,
 } from '@mui/material';
-import Close from '@mui/icons-material/Close';
-import Folder from '@mui/icons-material/Folder';
-import MoreVertRounded from '@mui/icons-material/MoreVertRounded';
-import QueueMusic from '@mui/icons-material/QueueMusic';
 import dayjs from 'dayjs';
+import { Fragment, MouseEvent, SyntheticEvent, useCallback, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+
+import { Setlist, SetlistFolder } from '../../types/setlist.types';
 import MobileBackButton from '../navigation/MobileBackButton';
-import SetlistActionsMenu from './SetlistActionsMenu';
-import SetlistFolderDrawer from './SetlistFolderDrawer';
 import useFolderData from './hooks/useFolderData';
 import useFolderDrawer from './hooks/useFolderDrawer';
 import useSetlistMenu, { MenuState } from './hooks/useSetlistMenu';
 import useSnackbar, { SnackbarState } from './hooks/useSnackbar';
-import { Setlist, SetlistFolder } from '../../types/setlist.types';
+import SetlistActionsMenu from './SetlistActionsMenu';
+import SetlistFolderDrawer from './SetlistFolderDrawer';
 
 const SNACKBAR_AUTO_HIDE_DURATION = 5000;
 

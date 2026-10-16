@@ -1,4 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from 'express';
+
 import { ownershipRepository } from '../db/repositories/ownership.repository';
 import verifyToken, { TokenUser } from '../utils/verify-jwt';
 import { AccessType, DEFAULT_ACCESS_TYPE, ROUTE_PERMISSIONS } from './permissions.config';

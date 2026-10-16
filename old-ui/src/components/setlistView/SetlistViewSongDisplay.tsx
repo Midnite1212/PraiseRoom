@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
+import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp';
 import {
   Box,
   Chip,
@@ -10,13 +11,13 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUp from '@mui/icons-material/KeyboardArrowUp';
-import SongsLyrics from '../songsView/SongsLyrics';
-import SongsTitleCard from '../songsView/SongsTitleCard';
-import { SongViewSchema } from '../../types/song.types';
+import { useCallback, useEffect, useState } from 'react';
+
 import { specificSongsDesktopWidth } from '../../constants';
 import { getKeyLabel, getSetlistStartingKey, isMinorKey } from '../../helpers/song/chords';
+import { SongViewSchema } from '../../types/song.types';
+import SongsLyrics from '../songsView/SongsLyrics';
+import SongsTitleCard from '../songsView/SongsTitleCard';
 
 const keyStepButtonStyles = {
   borderRadius: '4px',

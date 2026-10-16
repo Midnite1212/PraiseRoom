@@ -1,9 +1,10 @@
+import { Box, Typography } from '@mui/material';
+
 import {
   DESKTOP_PAGE_HEADER_HEIGHT,
   MOBILE_PAGE_HEADER_HEIGHT,
   TABLET_PAGE_HEADER_HEIGHT,
 } from '../../constants';
-import { Box, Typography } from '@mui/material';
 
 type PageHeaderProps = {
   title: string;

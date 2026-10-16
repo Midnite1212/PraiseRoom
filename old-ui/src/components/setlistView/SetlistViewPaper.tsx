@@ -1,5 +1,6 @@
-import { PUBLIC_SETLIST_FOOTER_HEIGHT, PUBLIC_SETLIST_HEADER_HEIGHT } from '../../constants';
 import { Box, styled } from '@mui/material';
+
+import { PUBLIC_SETLIST_FOOTER_HEIGHT, PUBLIC_SETLIST_HEADER_HEIGHT } from '../../constants';
 
 export const SetlistViewHeader = styled(Box)<{ isMobile: boolean }>(({ isMobile }) => ({
   display: 'flex',

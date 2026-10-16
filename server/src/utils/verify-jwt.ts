@@ -1,4 +1,5 @@
 import { JWTVerifyGetKey, createRemoteJWKSet, jwtVerify } from 'jose';
+
 import { isUserIdString } from './validation';
 
 export type TokenIdentity = {

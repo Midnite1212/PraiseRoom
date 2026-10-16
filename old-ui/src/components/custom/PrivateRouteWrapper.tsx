@@ -1,11 +1,12 @@
+import { Box, Skeleton } from '@mui/material';
 import { ReactNode } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { Box, Skeleton } from '@mui/material';
-import ErrorPage from './ErrorPage';
-import Sidebar from '../navigation/Sidebar';
-import { useUser } from '../../helpers/customHooks';
+
 import { DESKTOP_SIDEBAR_WIDTH, MOBILE_NAVBAR_HEIGHT } from '../../constants';
+import { useUser } from '../../helpers/customHooks';
 import { UserAccessType, canWriteSongs } from '../../types/user.types';
+import Sidebar from '../navigation/Sidebar';
+import ErrorPage from './ErrorPage';
 
 export type RoutePermission = 'noUser' | 'user' | 'editor' | 'admin' | 'public';
 

@@ -4,6 +4,7 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
+
 import { getAuthToken } from './authClient';
 
 // Tokens live 15 minutes; refresh a minute early so a request never races the expiry.

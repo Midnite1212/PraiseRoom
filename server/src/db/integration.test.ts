@@ -1,8 +1,10 @@
-import { sql } from 'drizzle-orm';
-import { migrate } from 'drizzle-orm/node-postgres/migrator';
 import assert from 'node:assert/strict';
 import path from 'node:path';
 import { after, before, beforeEach, describe, it, mock } from 'node:test';
+
+import { sql } from 'drizzle-orm';
+import { migrate } from 'drizzle-orm/node-postgres/migrator';
+
 import {
   createGroup,
   deleteGroup,

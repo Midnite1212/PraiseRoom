@@ -1,13 +1,14 @@
-import { Box, Container, Divider, IconButton, Typography, useMediaQuery } from '@mui/material';
-import { useEffect, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import ScreenRotationIcon from '@mui/icons-material/ScreenRotation';
+import { Box, Container, Divider, IconButton, Typography, useMediaQuery } from '@mui/material';
 import Snackbar from '@mui/material/Snackbar';
-import SongKeyControls from './SongKeyControls';
-import SongsLyrics from './SongsLyrics';
-import { SongViewSchema } from '../../types/song.types';
+import { useEffect, useState } from 'react';
+
 import { specificSongsDesktopWidth, specificSongsMobileWidth } from '../../constants';
 import { getInitialSongKey, getKeyLabel, isMinorKey } from '../../helpers/song/chords';
+import { SongViewSchema } from '../../types/song.types';
+import SongKeyControls from './SongKeyControls';
+import SongsLyrics from './SongsLyrics';
 
 type SongsButtonCardProps = {
   song: SongViewSchema | undefined;

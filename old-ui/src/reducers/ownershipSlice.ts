@@ -1,4 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+
 import { Ownership } from '../types/ownership.types';
 
 const initialState: Ownership = {

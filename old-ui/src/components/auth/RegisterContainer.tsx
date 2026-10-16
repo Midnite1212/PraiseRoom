@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { authClient } from '../custom/authClient';
+import { zodResolver } from '@hookform/resolvers/zod';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {
   Alert,
   Box,
@@ -14,19 +14,20 @@ import {
   InputAdornment,
   IconButton,
 } from '@mui/material';
-import { zodResolver } from '@hookform/resolvers/zod';
+import React, { useEffect, useRef, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { z } from 'zod';
-import { RegisterFormFields } from '../../types/form.types';
+
 import { formSpacing } from '../../constants';
+import { RegisterFormFields } from '../../types/form.types';
+import { authClient } from '../custom/authClient';
 import {
   emailValidator,
   fullNameValidator,
   passwordValidator,
   stringValidator,
 } from './helpers/zod.validators';
-import { useNavigate } from 'react-router-dom';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import Visibility from '@mui/icons-material/Visibility';
 
 // zod validation
 const registerValidationSchema = z

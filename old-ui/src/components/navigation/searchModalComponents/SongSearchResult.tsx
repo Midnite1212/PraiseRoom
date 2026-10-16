@@ -1,7 +1,8 @@
-import { Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { forwardRef } from 'react';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
+import { Typography } from '@mui/material';
+import { forwardRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import SearchResultRow from './SearchResultRow';
 
 type SongSearchResultProps = {

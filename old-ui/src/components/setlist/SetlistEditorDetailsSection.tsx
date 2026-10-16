@@ -1,17 +1,18 @@
-import { Dispatch, SetStateAction } from 'react';
-import { Box, FormControl, Stack, TextField } from '@mui/material';
 import Info from '@mui/icons-material/Info';
 import MusicNote from '@mui/icons-material/MusicNote';
+import { Box, FormControl, Stack, TextField } from '@mui/material';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { Dayjs } from 'dayjs';
+import { Dispatch, SetStateAction } from 'react';
 import { Control, Controller, FieldErrors } from 'react-hook-form';
-import AutocompleteInput from '../custom/AutocompleteInput';
-import HeaderWithIcon from '../custom/HeaderWithIcon';
-import SetlistSongsTable from './SetlistSongsTable';
+
 import { SetlistEditorFields, SetlistFolder } from '../../types/setlist.types';
 import { SongSetlistSchema } from '../../types/song.types';
+import AutocompleteInput from '../custom/AutocompleteInput';
+import HeaderWithIcon from '../custom/HeaderWithIcon';
 import { SetlistDetailsBox, SetlistDetailsContent } from './SetlistEditor.styles';
+import SetlistSongsTable from './SetlistSongsTable';
 
 type SetlistEditorDetailsSectionProps = {
   control: Control<SetlistEditorFields>;

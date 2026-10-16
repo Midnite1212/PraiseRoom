@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
 import { Box, Divider } from '@mui/material';
-import SetlistViewSongsHeader from './SetlistViewSongsHeader';
-import SetlistViewSongDisplay from './SetlistViewSongDisplay';
+import { useState, useRef, useEffect, useCallback } from 'react';
+
 import { SongSetlistSchema, SongViewSchema } from '../../types/song.types';
+import SetlistViewSongDisplay from './SetlistViewSongDisplay';
+import SetlistViewSongsHeader from './SetlistViewSongsHeader';
 
 interface SetlistViewSongsProps {
   songs: SongSetlistSchema[];

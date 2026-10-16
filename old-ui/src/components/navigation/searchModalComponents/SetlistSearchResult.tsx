@@ -1,7 +1,8 @@
-import { Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
-import { forwardRef } from 'react';
 import QueueMusicIcon from '@mui/icons-material/QueueMusic';
+import { Typography } from '@mui/material';
+import { forwardRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import SearchResultRow from './SearchResultRow';
 
 type SetlistSearchResultProps = {

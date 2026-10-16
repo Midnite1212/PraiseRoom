@@ -2,11 +2,7 @@ import { Add, ExpandMore, QueueMusic } from '@mui/icons-material';
 import { Box, Button, Container, Stack, Typography, useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { FC, ReactElement, useState, MouseEvent, useMemo } from 'react';
-import SetlistAdminViewContainer from './adminView/SetlistAdminViewContainer';
-import SetlistTabsContainer from './SetlistTabsContainer';
-import PageHeader from '../navigation/PageHeader';
-import SetlistPreview from './adminView/SetlistPreview';
-import SetlistActionMenu from './SetlistPageActionMenu';
+
 import {
   DESKTOP_PAGE_HEADER_HEIGHT,
   DESKTOP_SIDEBAR_WIDTH,
@@ -14,6 +10,11 @@ import {
   MOBILE_PAGE_HEADER_HEIGHT,
   TABLET_PAGE_HEADER_HEIGHT,
 } from '../../constants';
+import PageHeader from '../navigation/PageHeader';
+import SetlistAdminViewContainer from './adminView/SetlistAdminViewContainer';
+import SetlistPreview from './adminView/SetlistPreview';
+import SetlistActionMenu from './SetlistPageActionMenu';
+import SetlistTabsContainer from './SetlistTabsContainer';
 
 // Separate component for the "New" button
 const CreateButton: FC<{ onClick: (e: MouseEvent<HTMLElement>) => void; isOpen: boolean }> = ({

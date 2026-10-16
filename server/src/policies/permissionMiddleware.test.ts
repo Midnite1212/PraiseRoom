@@ -1,6 +1,8 @@
-import { RequestHandler } from 'express';
 import assert from 'node:assert/strict';
 import { after, afterEach, before, beforeEach, describe, it, mock } from 'node:test';
+
+import { RequestHandler } from 'express';
+
 import { ownershipRepository } from '../db/repositories/ownership.repository';
 import { callHandler, createRequest, createResponse } from '../testing/http';
 import { TestAuthServer, startTestAuthServer } from '../testing/neonAuth';

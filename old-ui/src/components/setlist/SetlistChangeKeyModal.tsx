@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { Close, KeyboardArrowDown, KeyboardArrowUp, Tune } from '@mui/icons-material';
 import {
   Modal,
   Stack,
@@ -9,10 +9,11 @@ import {
   FormControlLabel,
   Switch,
 } from '@mui/material';
-import { SongSetlistSchema } from '../../types/song.types';
-import { Close, KeyboardArrowDown, KeyboardArrowUp, Tune } from '@mui/icons-material';
-import HeaderWithIcon from '../custom/HeaderWithIcon';
+import React, { useEffect, useState } from 'react';
+
 import { getKeyLabel, getSetlistStartingKey, isMinorKey } from '../../helpers/song/chords';
+import { SongSetlistSchema } from '../../types/song.types';
+import HeaderWithIcon from '../custom/HeaderWithIcon';
 
 interface SetlistChangeKeyModalProps {
   open: boolean;
