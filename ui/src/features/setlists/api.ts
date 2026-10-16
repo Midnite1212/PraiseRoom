@@ -27,6 +27,7 @@ const setlistSummarySchema = z.object({
   _id: z.string(),
   name: z.string(),
   date: z.string().nullish(),
+  publicLink: z.string().nullish(),
   createdBy: z.string().nullish(),
   groupIds: z.array(z.string()).default([]),
   songs: z.array(z.object({ _id: z.string() })),

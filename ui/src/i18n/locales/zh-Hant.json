@@ -80,7 +80,22 @@
   "setlists": {
     "title": "歌單",
     "empty": "你還沒有歌單。",
-    "noDate": "未定日期"
+    "noDate": "未定日期",
+    "upcoming": "即將舉行",
+    "past": "過往",
+    "undated": "未定日期",
+    "searchLabel": "搜尋歌單",
+    "searchPlaceholder": "按名稱搜尋",
+    "show": "顯示",
+    "ownership": {
+      "all": "全部",
+      "mine": "我的",
+      "shared": "共享"
+    },
+    "shared": "共享",
+    "noMatches": "沒有相符的歌單。",
+    "open": "開啟",
+    "actions": "{{name}}的操作"
   },
   "reader": {
     "setlist": "歌單",
