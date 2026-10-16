@@ -1,20 +1,10 @@
 import { queryOptions } from '@tanstack/react-query';
 import { z } from 'zod';
 
+import { readerSongSchema } from '@/features/reader/song';
 import { apiRequest } from '@/lib/api-client';
 
-const setlistSongSchema = z.object({
-  _id: z.string(),
-  title: z.string(),
-  artist: z.string(),
-  originalKey: z.string(),
-  chordLyrics: z.string(),
-  code: z.string().nullish(),
-  year: z.string().nullish(),
-  tempo: z.array(z.string()),
-  timeSignature: z.array(z.string()),
-  themes: z.array(z.string()),
-});
+const setlistSongSchema = readerSongSchema;
 
 export type SetlistSong = z.infer<typeof setlistSongSchema>;
 

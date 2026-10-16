@@ -1,4 +1,3 @@
-import { Link } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
 import { cn } from '@/lib/utils';
@@ -9,14 +8,14 @@ type SetlistRailProps = {
   setlist: Setlist;
   currentIndex: number;
   currentKeyLabel: string;
-  onNavigate?: () => void;
+  onSelect: (songNumber: number) => void;
 };
 
 export function SetlistRail({
   setlist,
   currentIndex,
   currentKeyLabel,
-  onNavigate,
+  onSelect,
 }: SetlistRailProps) {
   const { t } = useTranslation();
 
@@ -33,15 +32,12 @@ export function SetlistRail({
           const isCurrent = index === currentIndex;
           return (
             <li key={song._id}>
-              <Link
-                to="/setlists/$setlistId"
-                params={{ setlistId: setlist._id }}
-                search={{ song: index + 1 }}
-                replace
-                onClick={onNavigate}
-                aria-current={isCurrent ? 'page' : undefined}
+              <button
+                type="button"
+                onClick={() => onSelect(index + 1)}
+                aria-current={isCurrent ? 'true' : undefined}
                 className={cn(
-                  'flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition-colors hover:bg-accent/60',
+                  'flex w-full items-center gap-2 rounded-lg text-left px-2 py-1.5 text-sm transition-colors hover:bg-accent/60',
                   isCurrent && 'bg-accent font-medium text-accent-foreground'
                 )}
               >
@@ -52,7 +48,7 @@ export function SetlistRail({
                 <span className="bg-sheet shrink-0 rounded border px-1.5 font-mono text-xs">
                   {isCurrent ? currentKeyLabel : keyForSong(setlist, song)}
                 </span>
-              </Link>
+              </button>
             </li>
           );
         })}

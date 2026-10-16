@@ -14,7 +14,7 @@ import {
 import { LYRICS_SIZES, type LyricsSize, stepLyricsSize } from '@/features/reader/lyrics-size';
 import { cn } from '@/lib/utils';
 
-import type { SetlistSong } from '../api';
+import type { ReaderSong } from './song';
 
 const SIZE_METER_HEIGHTS = ['h-2', 'h-3', 'h-4', 'h-5', 'h-6'];
 
@@ -164,7 +164,7 @@ export function ShareButton({ link }: { link: string | null | undefined }) {
   );
 }
 
-export function SongInfo({ song }: { song: SetlistSong }) {
+export function SongInfo({ song }: { song: ReaderSong }) {
   const { t } = useTranslation();
   const details = [
     { label: t('reader.info.artist'), value: song.artist },
