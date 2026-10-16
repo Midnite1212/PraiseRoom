@@ -1,59 +1,145 @@
-# Psalted 2 Repo
-
-A repo built on ExpressJS and React with TypeScript
-
-## Installation
-
-1. Clone the repo
-2. Run `yarn install`
-3. Run `cd server && yarn install`
-4. Run `cd old-ui && yarn install`
-
-## Usage
-
-1. Open your choice of Terminal/cmd/PowerShell
-2. Run `cd server && yarn dev`
-
-### Branch Prefix Definitions
-
-`main` - Our Production branch. This is what our production server will always be hosting
-
-`release` - This is the branch that our local development will rebase off and merge into. Every end of sprint, this branch will be merged into master
-
-`feature` - This is a branch for our own personal features/task that we will be working on
-
-`hotfix` - This is a branch for hotfixes that will directly be merged into `main` regardless of release/sprint cycle
-
-#### Branch Best Practices
-
-1. Branch naming convention: `(issueNumber)-(branchName)-description-of-task` (e.g `4-feature-chords-ui-improvement`)
-   - issueNumber: this can be found beside the issue title when you click into an issue, or the number at the end of the issue link (eg. https://github.com/hmcc-global/psalted-2/issues/1 <--- #1)
-     - This is helpful so that we can keep track of what issue a branch is working on without having to look up list of issues etc.
-   - branchName: refer to Branch Prefix Definitions
-2. When working on your own `feature` branch, do not forget to periodically update your local branch with the `release` branch to reduce likelikehood/size of merge conflicts
-   - Instead of `git pull` we use `git pull --rebase` to pull changes from remote branch to our local branch. Rebasing helps to keep our Gitflow neat and linear which makes it easy to keep track of and trace
-3. When all code changes have been finished in your `feature` branch, create a Pull Request and your peers review it before merging.
-4. Branch merge flow should be: `feature`->`release`->`main` - i.e `feature` branches should always Pull Request and merge into `release`
-
-## Commit Practices
-
-1. Run `yarn format` in the root directory
-2. Use the _command line_ for commits
-   - e.g. `git commit -m "GH-8: Some commit message"`
-   - doing so will run the git hooks that we have set-up (i.e. pre-commit formatting & linting, commit message format validation)
-   - remember to use `git add` to stage your changes
-3. Attach Issue number to the commit message
-   - e.g. Issue number = #8
-   - commit message: "GH-8: Some commit message"
-   - note that issue number must be prefixed with 'GH-' in order to properly connect commit messages with issues
-4. When opening a PR, attach the same issue number to the PR title
-   - e.g. PR title: "GH-8: Some PR title"
-   - the PR title should summarize what the purpose of the changes made are in a clear and concise manner
-
-### Contributors
-
-Jesus' disciples
-
----
+# Ripple Out Worship
 
 _A song library, chord charts, and setlists for worship teams._
+
+Ripple Out Worship (formerly "Psalted 2") is the HMCC Hong Kong worship team's app. Musicians open a setlist on their phone during worship and read lyrics with chords in any key; worship leaders build those setlists and share them with their team.
+
+## What it does
+
+| Area          | Features                                                                                                                                                                                   |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Songs         | Search by title, artist, or lyrics; filter by tempo and theme; open any song to read it                                                                                                    |
+| Reading       | Chords above the lyrics, transposed to any key (major or minor), as letters or Nashville numbers (`1 4 5`, `6m`); lyrics-only mode; five lyrics sizes; a sticky title row while you scroll |
+| Setlists      | Create, edit, and delete setlists with a date, ordered songs, and a key per song; grouped into upcoming, undated, and past; search and Mine / Shared filters                               |
+| Musician view | One setlist on screen: song rail, progress strip, per-song keys, and ← / → to change songs                                                                                                 |
+| Sharing       | Folders share setlists with their members; every setlist has a public link that opens a signed-out reading view                                                                            |
+| Everyone      | Light and dark themes, English and 繁體中文, built for phones first                                                                                                                        |
+
+## This fork
+
+This repository is a self-hosted fork of [`Harvest-Mission-Global/ripple-out-worship`](https://github.com/Harvest-Mission-Global/ripple-out-worship). It runs on its own and no longer depends on the HMCC HK main site:
+
+| Concern              | Before                                             | Now                                                                                                                                                                                             |
+| -------------------- | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Accounts and sign-in | The HMCC HK main site's login and a shared JWT key | [Neon Auth](https://neon.com/docs/auth/overview) (managed Better Auth) in this app's own Neon project, with email and password or Google sign-in                                                |
+| Database             | MongoDB with Mongoose                              | [Neon](https://neon.com) Postgres with Drizzle ORM and versioned SQL migrations; songs were imported once from the MongoDB export, while setlists, folders, and ownership records started fresh |
+| Hosting              | DreamHost, deployed by GitHub Actions              | [Vercel](https://vercel.com) services: the Express API as one function and the UI as a static site behind one domain, deploying only from `main`                                                |
+| UI                   | Create React App, MUI, Redux                       | Rebuilt from scratch (see below); the previous UI is kept in `old-ui/` as a frozen reference                                                                                                    |
+
+The server proxies `/api/auth/*` to Neon Auth on the app's own domain, so session cookies are first-party (which keeps Safari working) and the browser never talks to Neon directly. API requests carry a short-lived JWT that the server verifies against Neon Auth's public keys.
+
+## Repository layout
+
+Independent packages in one repo, each with its own lockfile (no workspaces):
+
+| Folder    | What it is                                                                          | Package manager |
+| --------- | ----------------------------------------------------------------------------------- | --------------- |
+| `ui/`     | The production UI                                                                   | pnpm            |
+| `server/` | Express API, database access, and the auth proxy                                    | yarn            |
+| `old-ui/` | The previous UI: not deployed, kept as the reference for screens not yet rebuilt    | yarn            |
+| root      | ESLint and Prettier for `old-ui/` and `server/`, Husky, lint-staged, and commitlint | yarn            |
+
+## Tech stack
+
+| Layer    | `ui/`                                                                              | `server/`                                                           |
+| -------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Runtime  | React 19 with the React Compiler                                                   | Node 22, Express 4                                                  |
+| Language | TypeScript 7                                                                       | TypeScript 5 (ts-node)                                              |
+| Build    | Vite 8                                                                             | Compiled by Vercel's Express preset                                 |
+| Data     | TanStack Query, TanStack Router (file-based), TanStack Form, TanStack Table, Zod 4 | Drizzle ORM over `pg` on Neon Postgres                              |
+| UI       | Tailwind CSS v4, shadcn/ui on Radix, lucide icons, next-themes                     | —                                                                   |
+| Auth     | Thin `fetch` client for the server's `/api/auth/*` proxy                           | Neon Auth proxy; JWT verification with `jose`                       |
+| i18n     | i18next + react-i18next (English, 繁體中文)                                        | —                                                                   |
+| Quality  | Oxlint (type-aware) and oxfmt; Vitest + Testing Library                            | ESLint and Prettier; `node:test`, plus a Postgres integration suite |
+
+## Getting started
+
+**Prerequisites:** Node 22.12 or later (`.nvmrc`), yarn 1, and pnpm 10 (`corepack enable` gives you the pinned version).
+
+```bash
+# Install: the root install also enables the git hooks
+yarn
+(cd server && yarn)
+(cd ui && pnpm install)
+
+# Configure the server: create server/.env with the variables below (never commit it)
+
+# Run (two terminals)
+cd server && yarn dev                 # API on http://localhost:1338
+cd ui && pnpm dev                     # UI on http://localhost:3000, proxying /api to the server
+```
+
+`server/.env`:
+
+| Variable             | Purpose                                                                                 |
+| -------------------- | --------------------------------------------------------------------------------------- |
+| `DATABASE_URL`       | Neon Postgres connection string (the pooled `-pooler` URL with `sslmode=require` works) |
+| `NEON_AUTH_BASE_URL` | Neon Auth base URL from the Neon console (Auth → Configuration)                         |
+| `BASE_URL`           | Public origin used to build setlists' public links                                      |
+| `PORT`               | Local port, default `1338`                                                              |
+| `DATABASE_POOL_MAX`  | Optional; connections per instance, default `3`                                         |
+
+Use `http://localhost:3000`, not `127.0.0.1`: Neon Auth's "Allow localhost" setting only trusts `localhost`.
+
+### Useful scripts
+
+| Where     | Command                                                                           | Does                                                                                                    |
+| --------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `ui/`     | `pnpm typecheck` / `pnpm lint` / `pnpm format:check` / `pnpm test` / `pnpm build` | The checks CI runs                                                                                      |
+| `server/` | `yarn typecheck` / `yarn test`                                                    | Type-check and unit tests; set `DATABASE_URL_TEST` to a throwaway database to add the integration suite |
+| `server/` | `yarn db:generate` / `yarn db:migrate`                                            | Create a migration from `src/db/schema.ts` / apply pending migrations to `DATABASE_URL`                 |
+| root      | `yarn lint`                                                                       | ESLint over `old-ui/` and `server/`                                                                     |
+
+## Deployment
+
+- One Vercel project in services mode, configured by `vercel.json`: `/api/*` goes to the `server` service, everything else to the `ui` service (`ui/`, with a fallback to `index.html` for client routes).
+- Only `main` deploys automatically; pull requests get no preview.
+- Vercel never runs migrations. Apply them with `DATABASE_URL='<neon direct url>' yarn db:migrate` from `server/` before merging code that needs them.
+- Vercel environment variables: `DATABASE_URL`, `NEON_AUTH_BASE_URL`, and `BASE_URL`. The UI needs none.
+- Add the production domain to Neon Auth's trusted domains, or sign-in fails with `INVALID_ORIGIN`.
+
+## Access
+
+Everyone who signs in gets an ownership record with an access type:
+
+| Access type        | Can                                                                                                       |
+| ------------------ | --------------------------------------------------------------------------------------------------------- |
+| `member` (default) | Read songs; create setlists and folders; edit setlists they created or that are shared with their folders |
+| `editor`           | Everything a member can, plus add, edit, and delete songs                                                 |
+| `admin`            | Everything, on every setlist and folder                                                                   |
+
+Promote someone in the database (their user id is in Neon Auth's user table):
+
+```sql
+update ownerships set access_type = 'admin' where user_id = '<neon auth user id>';
+```
+
+The UI hides what you can't do, but the server enforces every rule.
+
+## Still to rebuild
+
+The new UI doesn't have these old-UI screens yet; their URLs show "not found" until they're rebuilt (`old-ui/` shows how they worked): sign-up, password reset, adding and editing songs, and the profile page.
+
+## Contributing
+
+Issues live on this fork: [`Midnite1212/ripple-out-worship`](https://github.com/Midnite1212/ripple-out-worship/issues).
+
+1. **Branch** from `main` as `<issue#>-<type>-<description>`, for example `80-feature-setlist-editor`. Types: `feature`, `hotfix`, `docs`, `chore`.
+2. **Commit** from the command line so the hooks run (formatting, linting, and the message check). Every message starts with the branch's issue number: `GH-80: add the song search panel`.
+3. **Open a pull request** into `main` titled `GH-<issue#>: …`, with `Closes #<issue#>` on the first line of the description; see `.claude/docs/pr-description.md` for the format. The PR checks run lint, both UIs' checks, and the server's.
+4. **Stacked pull requests:** retarget each one to `main` before merging, so its issue closes automatically.
+
+Rebase onto `main` (`git pull --rebase`) instead of merging it into your branch.
+
+### Working with AI coding agents
+
+The repo carries instructions for Claude Code, Codex, Cursor, OpenCode, and Copilot:
+
+- `AGENTS.md` (shared rules), `ui/AGENTS.md` (new UI), and `old-ui/AGENTS.md` (old UI), each with a `CLAUDE.md` symlink.
+- `ui/docs/patterns/`: living component, data, routing, form, table, i18n, and testing patterns that agents and teammates update alongside the code.
+- Agent personas and skills in `.claude/agents/` and `.claude/skills/` (also at `.agents/skills/`), plus OpenCode and Cursor pointers.
+- MCP servers for the shadcn registry and Context7 docs in `.mcp.json`, `.cursor/mcp.json`, `.vscode/mcp.json`, and `opencode.json`.
+
+## Contributors
+
+Jesus' disciples
