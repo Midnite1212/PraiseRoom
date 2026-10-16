@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { Home, ListMusic, Music } from 'lucide-react';
+import { Folder, Home, ListMusic, Music } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -16,6 +16,7 @@ import {
 const NAV_ITEMS = [
   { to: '/', labelKey: 'nav.home', icon: Home },
   { to: '/setlists', labelKey: 'nav.setlists', icon: ListMusic },
+  { to: '/folders', labelKey: 'nav.folders', icon: Folder },
   { to: '/songs', labelKey: 'nav.songs', icon: Music },
 ] as const;
 
