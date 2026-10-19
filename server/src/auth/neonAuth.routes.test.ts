@@ -5,7 +5,13 @@ import { after, afterEach, before, describe, it, mock } from 'node:test';
 
 import express from 'express';
 
-import { createAuthRouter, neonCookies, safeNextPath, toFirstPartyCookie } from './neonAuth.routes';
+import {
+  createAuthRouter,
+  neonCookies,
+  readCallbackParams,
+  safeNextPath,
+  toFirstPartyCookie,
+} from './neonAuth.routes';
 
 const SESSION_COOKIE = '__Secure-neon-auth.session_token';
 const CHALLENGE_COOKIE = '__Secure-neon-auth.session_challenge';
@@ -173,6 +179,23 @@ describe('Neon Auth routes', () => {
     assert.equal(exchange?.headers.cookie, `${CHALLENGE_COOKIE}=challenge-1`);
   });
 
+  it('finds the verifier Neon Auth appends inside next with a second "?"', async () => {
+    const res = await fetch(
+      `${appUrl}/api/auth-callback?next=/setlist?neon_auth_session_verifier=verifier-2`,
+      { redirect: 'manual', headers: { cookie: `${CHALLENGE_COOKIE}=challenge-1` } }
+    );
+    assert.equal(res.status, 302);
+    assert.equal(res.headers.get('location'), '/setlist');
+    assert.match(
+      res.headers.getSetCookie().join(' | '),
+      new RegExp(`${SESSION_COOKIE}=session-from-neon`)
+    );
+    assert.equal(
+      recorded[0]?.url,
+      '/neondb/auth/get-session?neon_auth_session_verifier=verifier-2'
+    );
+  });
+
   it('skips the exchange without a challenge cookie', async () => {
     const res = await fetch(
       `${appUrl}/api/auth-callback?next=/setlist&neon_auth_session_verifier=verifier-1`,
@@ -188,6 +211,21 @@ describe('Neon Auth routes', () => {
       for (const value of ['//evil.example', '/\\evil.example', 'https://evil.example', '', 5]) {
         assert.equal(safeNextPath(value), '/', String(value));
       }
+    });
+
+    it('reads the verifier from its own param or from inside next', () => {
+      assert.deepEqual(readCallbackParams({ next: '/a', neon_auth_session_verifier: 'v1' }), {
+        next: '/a',
+        verifier: 'v1',
+      });
+      assert.deepEqual(readCallbackParams({ next: '/a?neon_auth_session_verifier=v2' }), {
+        next: '/a',
+        verifier: 'v2',
+      });
+      assert.deepEqual(readCallbackParams({ next: '/a?x=1' }), {
+        next: '/a?x=1',
+        verifier: undefined,
+      });
     });
 
     it('keeps only Neon Auth cookies', () => {
