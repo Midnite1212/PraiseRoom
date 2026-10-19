@@ -5,20 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
-import { TEMPO_OPTIONS, THEME_OPTIONS } from './api';
+import { TEMPO_LABEL_KEYS, TEMPO_OPTIONS, THEME_OPTIONS } from './api';
 
 export type SongFilterValues = { tempo: string[]; themes: string[] };
 
 type SongFiltersProps = SongFilterValues & {
   onChange: (filters: SongFilterValues) => void;
 };
-
-const TEMPO_LABEL_KEYS = {
-  Fast: 'songs.tempo.fast',
-  Medium: 'songs.tempo.medium',
-  Slow: 'songs.tempo.slow',
-  'Medium Slow': 'songs.tempo.mediumSlow',
-} as const;
 
 export function SongFilters({ tempo, themes, onChange }: SongFiltersProps) {
   const { t } = useTranslation();
