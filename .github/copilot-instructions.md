@@ -1,4 +1,4 @@
-# Ripple Out Worship
+# Praise Room
 
 The HMCC Hong Kong worship-team app: a song library with chord charts, key transposition, and setlists shared through folders and public links, used on phones during worship. The full rules are in `AGENTS.md` (shared), `ui/AGENTS.md` (new UI), and `old-ui/AGENTS.md` (old UI); they win when this summary differs.
 

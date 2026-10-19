@@ -135,7 +135,7 @@ const SetlistViewContainer = ({
 
       {/* Footer - only show in full view */}
       {!isSetlistPreview && (
-        <SetlistViewFooter sx={{ flexShrink: 0 }}>Created by Ripple Out Worship</SetlistViewFooter>
+        <SetlistViewFooter sx={{ flexShrink: 0 }}>Created by Praise Room</SetlistViewFooter>
       )}
     </Box>
   );

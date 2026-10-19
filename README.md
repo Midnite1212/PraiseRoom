@@ -1,8 +1,8 @@
-# Ripple Out Worship
+# Praise Room
 
 _A song library, chord charts, and setlists for worship teams._
 
-Ripple Out Worship (formerly "Psalted 2") is the HMCC Hong Kong worship team's app. Musicians open a setlist on their phone during worship and read lyrics with chords in any key; worship leaders build those setlists and share them with their team.
+Praise Room (formerly "Psalted 2") is the HMCC Hong Kong worship team's app. Musicians open a setlist on their phone during worship and read lyrics with chords in any key; worship leaders build those setlists and share them with their team.
 
 ## What it does
 
@@ -15,9 +15,9 @@ Ripple Out Worship (formerly "Psalted 2") is the HMCC Hong Kong worship team's a
 | Sharing       | Folders share setlists with their members; every setlist has a public link that opens a signed-out reading view                                                                            |
 | Everyone      | Light and dark themes, English and 繁體中文, built for phones first                                                                                                                        |
 
-## This fork
+## How it runs
 
-This repository is a self-hosted fork of [`Harvest-Mission-Global/ripple-out-worship`](https://github.com/Harvest-Mission-Global/ripple-out-worship). It runs on its own and no longer depends on the HMCC HK main site:
+Praise Room runs on its own and no longer depends on the HMCC HK main site:
 
 | Concern              | Before                                             | Now                                                                                                                                                                                             |
 | -------------------- | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -122,7 +122,7 @@ The new UI doesn't have these old-UI screens yet; their URLs show "not found" un
 
 ## Contributing
 
-Issues live on this fork: [`Midnite1212/ripple-out-worship`](https://github.com/Midnite1212/ripple-out-worship/issues).
+Issues live on GitHub: [`Midnite1212/PraiseRoom`](https://github.com/Midnite1212/PraiseRoom/issues).
 
 1. **Branch** from `main` as `<issue#>-<type>-<description>`, for example `80-feature-setlist-editor`. Types: `feature`, `hotfix`, `docs`, `chore`.
 2. **Commit** from the command line so the hooks run (formatting, linting, and the message check). Every message starts with the branch's issue number: `GH-80: add the song search panel`.

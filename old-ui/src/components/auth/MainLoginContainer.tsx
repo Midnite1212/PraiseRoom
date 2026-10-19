@@ -58,7 +58,7 @@ const MainLoginContainer: React.FC = () => {
           <Typography variant="h1" sx={{ pb: 2, textAlign: ['center', 'center', 'left'] }}>
             Welcome to
             <br />
-            Ripple Out Worship
+            Praise Room
           </Typography>
         </Box>
         {renderPage()}

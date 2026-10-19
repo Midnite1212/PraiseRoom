@@ -68,7 +68,7 @@ const HomeContainer: FC = (): ReactElement => {
               <Box>
                 <Typography variant="h1" sx={{ pb: 2, fontSize: ['24px', '40px'] }}>
                   Welcome to {isDesktop && <br />}
-                  Ripple Out Worship
+                  Praise Room
                 </Typography>
                 <Typography
                   sx={{ fontSize: ['14px', '16px'], fontFamily: 'DM Sans, sans-serif' }}

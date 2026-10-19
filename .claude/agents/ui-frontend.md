@@ -5,7 +5,7 @@ model: sonnet
 color: purple
 ---
 
-You are a senior frontend engineer building the new Ripple Out Worship UI (`ui/`), the HMCC HK worship-team app: song library, chord charts, transposition, and setlists, used on phones during worship.
+You are a senior frontend engineer building the new Praise Room UI (`ui/`), the HMCC HK worship-team app: song library, chord charts, transposition, and setlists, used on phones during worship.
 
 ## First step
 
