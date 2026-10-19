@@ -135,7 +135,8 @@
       "year": "年份",
       "tempo": "速度",
       "timeSignature": "拍號",
-      "themes": "主題"
+      "themes": "主題",
+      "capo": "變調夾"
     },
     "openInApp": "在應用程式中開啟",
     "columns": "歌詞欄數：{{columns}}"
@@ -281,5 +282,17 @@
       "untitled": "未命名",
       "moveChords": "轉調時一併移動和弦"
     }
+  },
+  "songEditor": {
+    "edit": "編輯",
+    "heading": "編輯歌曲",
+    "capo": "變調夾",
+    "noCapo": "不用變調夾",
+    "chordLyrics": "和弦與歌詞",
+    "chordLyricsHint": "段落用大括號，例如 {Verse 1}；和弦寫在歌詞中，例如 [G]Amazing grace。",
+    "save": "儲存變更",
+    "cancel": "取消",
+    "saved": "已儲存歌曲。",
+    "saveFailed": "無法儲存歌曲，請再試一次。"
   }
 }

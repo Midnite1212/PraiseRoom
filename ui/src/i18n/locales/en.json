@@ -135,7 +135,8 @@
       "year": "Year",
       "tempo": "Tempo",
       "timeSignature": "Time signature",
-      "themes": "Themes"
+      "themes": "Themes",
+      "capo": "Capo"
     },
     "openInApp": "Open in the app",
     "columns": "Lyric columns: {{columns}}"
@@ -281,5 +282,17 @@
       "untitled": "Untitled",
       "moveChords": "Move the chords with the key"
     }
+  },
+  "songEditor": {
+    "edit": "Edit",
+    "heading": "Edit song",
+    "capo": "Capo",
+    "noCapo": "No capo",
+    "chordLyrics": "Chords and lyrics",
+    "chordLyricsHint": "Sections in braces like {Verse 1}, chords inline like [G]Amazing grace.",
+    "save": "Save changes",
+    "cancel": "Cancel",
+    "saved": "Song saved.",
+    "saveFailed": "Could not save the song. Please try again."
   }
 }

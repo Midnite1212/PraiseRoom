@@ -25,6 +25,19 @@ export const castOptionalString = (path: string, value: unknown): string | null 
   return text;
 };
 
+export const castOptionalInteger = (
+  path: string,
+  value: unknown,
+  { min, max }: { min: number; max: number }
+): number | null => {
+  if (value === undefined || value === null || value === '') return null;
+  const number = typeof value === 'string' ? Number(value.trim()) : value;
+  if (typeof number !== 'number' || !Number.isInteger(number) || number < min || number > max) {
+    throw new InvalidInputError(path);
+  }
+  return number;
+};
+
 export const castRequiredString = (path: string, value: unknown): string => {
   const cast = castOptionalString(path, value);
   if (cast === null || cast === '') throw new InvalidInputError(path);

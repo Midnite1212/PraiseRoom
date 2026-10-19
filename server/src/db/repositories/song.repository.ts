@@ -3,6 +3,7 @@ import { SQL, and, arrayOverlaps, asc, count, eq, ilike, or, sql } from 'drizzle
 import { PublicSongRecord, SongRecord, SongViewRecord } from '../../types/song.types';
 import {
   InvalidInputError,
+  castOptionalInteger,
   castOptionalString,
   castRequiredString,
   castStringArray,
@@ -19,6 +20,7 @@ export const SONG_FIELDS = [
   'themes',
   'tempo',
   'year',
+  'capo',
   'code',
   'timeSignature',
   'simplifiedChordLyrics',
@@ -47,6 +49,7 @@ export type SongValues = Partial<Omit<typeof songs.$inferInsert, 'id' | 'created
 const REQUIRED_STRING_FIELDS = ['title', 'originalKey', 'artist', 'chordLyrics'] as const;
 const OPTIONAL_STRING_FIELDS = ['year', 'code', 'simplifiedChordLyrics'] as const;
 const STRING_ARRAY_FIELDS = ['tempo', 'recommendedKeys', 'timeSignature'] as const;
+const MAX_CAPO = 11;
 
 const toSongViewRecord = (row: SongRow): SongViewRecord => ({
   _id: row.id,
@@ -56,6 +59,7 @@ const toSongViewRecord = (row: SongRow): SongViewRecord => ({
   themes: row.themes,
   artist: row.artist,
   ...presentFields({ year: row.year, code: row.code }),
+  ...(row.capo === null ? {} : { capo: row.capo }),
   timeSignature: row.timeSignature,
   isVerified: row.isVerified,
   ...presentFields({ simplifiedChordLyrics: row.simplifiedChordLyrics }),
@@ -89,6 +93,9 @@ export const toSongValues = (fields: SongFields): SongValues => {
   if (has(fields, 'themes')) {
     values.themes = castStringArray('themes', fields.themes, { itemsRequired: true });
   }
+  // Capo 0 means no capo, so it is stored as null like an empty value.
+  if (has(fields, 'capo'))
+    values.capo = castOptionalInteger('capo', fields.capo, { min: 0, max: MAX_CAPO }) || null;
   return values;
 };
 
