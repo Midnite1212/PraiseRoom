@@ -52,6 +52,10 @@ export const setlistQueryOptions = (setlistId: string) =>
 export const keyForSong = (setlist: Setlist, song: SetlistSong): string =>
   setlist.songKeys.find(({ songId }) => songId === song._id)?.key ?? song.originalKey;
 
+// Built from the current origin rather than the stored publicLink, which keeps the domain it was created on.
+export const publicSetlistUrl = (setlistId: string, origin = window.location.origin): string =>
+  new URL(`/setlist/view/${setlistId}`, origin).href;
+
 export const folderSchema = z.object({
   _id: z.string(),
   groupName: z.string(),

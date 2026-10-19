@@ -35,7 +35,8 @@ export function KeyPicker({ originalKey, playKey, onChange }: KeyPickerProps) {
           {formatOffset(offset)}
         </span>
       </SelectTrigger>
-      <SelectContent>
+      {/* item-aligned positioning needs a SelectValue in the trigger; without one the list renders off-screen. */}
+      <SelectContent position="popper" align="end">
         {options.map((option) => (
           <SelectItem key={option.root} value={String(option.root)} className="font-mono">
             {keyLabel(option)}
