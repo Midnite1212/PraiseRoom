@@ -203,7 +203,10 @@ export const parseUltimateGuitar = (html: string, url: string): SourceChart | nu
   const store = ugStore(html);
   const content = asString(at(store, 'store', 'page', 'data', 'tab_view', 'wiki_tab', 'content'));
   if (!content) return null;
-  const capo = asNumber(at(store, 'store', 'page', 'data', 'tab_view', 'meta', 'capo'));
+  // A capo written only in the chart text means its chords are shapes too.
+  const capo =
+    asNumber(at(store, 'store', 'page', 'data', 'tab_view', 'meta', 'capo')) ||
+    Number(/^\s*\(?\s*capo\s*(?:on\s*)?(\d{1,2})\b/im.exec(content)?.[1] ?? 0);
   const shapes = toChordLyrics(ultimateGuitarContentToText(content));
   return {
     source: 'ultimate-guitar',

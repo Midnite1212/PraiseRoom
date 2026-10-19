@@ -139,3 +139,31 @@ describe('decodeEntities', () => {
     assert.equal(decodeEntities('Amen &#128591;&#0;&#xD800;!'), 'Amen 🙏!');
   });
 });
+
+describe('site notes', () => {
+  it('drops tabber contact details, tab notes, links, capo lines, and the title line', () => {
+    const chart = [
+      'Morning Light - Invented Band',
+      'Tabber: Someone',
+      'e-mail: someone@example.com',
+      'This is my first tab, I hope it is right.',
+      'Strumming Pattern: dudu',
+      'found on YouTube.',
+      'Capo 2 (Key: A)',
+      '{Verse 1}',
+      '[G]Light on the [C]hill',
+    ].join('\n');
+    assert.equal(cleanChart(chart, 'Morning Light'), '{Verse 1}\n[G]Light on the [C]hill');
+  });
+
+  it('keeps lyric lines that mention the title without a dash', () => {
+    assert.equal(
+      cleanChart('{Chorus}\n[G]Morning light is breaking', 'Morning Light'),
+      '{Chorus}\n[G]Morning light is breaking'
+    );
+  });
+
+  it('decodes double-encoded and ellipsis entities', () => {
+    assert.equal(decodeEntities('hands &amp;amp; feet &hellip;'), 'hands & feet …');
+  });
+});
