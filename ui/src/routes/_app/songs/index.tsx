@@ -6,6 +6,8 @@ import { z } from 'zod';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { canWriteSongs } from '@/features/auth/session';
+import { SongImportFlow } from '@/features/song-import/song-import-flow';
 import { songSearchQueryOptions } from '@/features/songs/api';
 import { SongFilters } from '@/features/songs/song-filters';
 import { SongSearchForm } from '@/features/songs/song-search-form';
@@ -16,6 +18,7 @@ const songsSearchSchema = z.object({
   page: z.number().int().min(1).default(1).catch(1),
   tempo: z.array(z.string()).default([]).catch([]),
   themes: z.array(z.string()).default([]).catch([]),
+  web: z.boolean().default(false).catch(false),
 });
 
 export const Route = createFileRoute('/_app/songs/')({
@@ -36,14 +39,16 @@ export const Route = createFileRoute('/_app/songs/')({
 
 function SongsPage() {
   const { t } = useTranslation();
+  const { session } = Route.useRouteContext();
   const search = Route.useSearch();
-  const { q, page, tempo, themes } = search;
+  const { q, page, tempo, themes, web } = search;
   const navigate = Route.useNavigate();
   const { data, isError, isFetching } = useQuery({
     ...songSearchQueryOptions({ keyword: q, page, tempo, themes }),
     placeholderData: keepPreviousData,
   });
 
+  const canSearchWeb = canWriteSongs(session);
   const totalPages = Math.max(1, data?.totalPages ?? 1);
   const goToPage = (nextPage: number) => void navigate({ search: { ...search, page: nextPage } });
 
@@ -55,6 +60,9 @@ function SongsPage() {
           key={q}
           keyword={q}
           onSearch={(keyword) => void navigate({ search: { ...search, q: keyword, page: 1 } })}
+          canSearchWeb={canSearchWeb}
+          web={web}
+          onWebChange={(value) => void navigate({ search: { ...search, web: value } })}
         />
         <SongFilters
           tempo={tempo}
@@ -82,6 +90,7 @@ function SongsPage() {
           {t('songs.next')}
         </Button>
       </nav>
+      {canSearchWeb && web && q.trim() !== '' ? <SongImportFlow key={q} q={q} /> : null}
     </section>
   );
 }

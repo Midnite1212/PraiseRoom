@@ -69,3 +69,11 @@ export const transposeChord = (chord: string, semitones: number, useFlats: boole
 };
 
 export const ALL_KEY_ROOTS = SHARP_NOTES.map((_, index) => index);
+
+// Transposes every `[chord]` token in chord/lyrics text; section headers, lyrics, and
+// unparseable cues (such as "[x2]") pass through untouched via `transposeChord`.
+export const transposeChordLyrics = (text: string, semitones: number, useFlats: boolean): string =>
+  text.replace(
+    /\[([^[\]]*)\]/g,
+    (_match, chord) => `[${transposeChord(chord, semitones, useFlats)}]`
+  );

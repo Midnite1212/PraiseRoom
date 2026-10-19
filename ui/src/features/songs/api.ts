@@ -8,6 +8,13 @@ export const SONGS_PAGE_SIZE = 20;
 
 export const TEMPO_OPTIONS = ['Fast', 'Medium', 'Slow', 'Medium Slow'] as const;
 
+export const TEMPO_LABEL_KEYS = {
+  Fast: 'songs.tempo.fast',
+  Medium: 'songs.tempo.medium',
+  Slow: 'songs.tempo.slow',
+  'Medium Slow': 'songs.tempo.mediumSlow',
+} as const;
+
 export const THEME_OPTIONS = [
   'Attributes of God',
   'Declaration (Victorious/Kingdom)',

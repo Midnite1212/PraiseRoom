@@ -1,3 +1,4 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import {
   createMemoryHistory,
   createRootRoute,
@@ -15,4 +16,10 @@ export const renderWithRouter = (ui: ReactNode) => {
     history: createMemoryHistory({ initialEntries: ['/'] }),
   });
   return render(<RouterProvider router={router} />);
+};
+
+// Same, plus a throwaway QueryClient for components that call `useQuery` or `useMutation` directly.
+export const renderWithQueryAndRouter = (ui: ReactNode) => {
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  return renderWithRouter(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>);
 };

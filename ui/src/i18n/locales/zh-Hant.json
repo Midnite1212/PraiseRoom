@@ -71,7 +71,9 @@
       "medium": "中",
       "slow": "慢",
       "mediumSlow": "中慢"
-    }
+    },
+    "searchWeb": "同時搜尋網上資源",
+    "searchTooLong": "搜尋內容請少於 100 個字元。"
   },
   "errors": {
     "notFound": "此頁面不存在。",
@@ -210,5 +212,70 @@
     "deleteDescription": "歌單會保留，但成員將失去透過此資料夾獲得的存取權。",
     "deleted": "已刪除資料夾。",
     "deleteFailed": "未能刪除資料夾，請再試一次。"
+  },
+  "songImport": {
+    "web": {
+      "heading": "網上資源",
+      "importLink": "匯入此連結",
+      "pasteButton": "貼上詩歌譜"
+    },
+    "search": {
+      "failed": "未能搜尋網上資源，請再試一次。",
+      "empty": "網上找不到和弦譜。",
+      "unknownArtist": "作者不詳",
+      "votes_one": "{{count}} 票",
+      "votes_other": "{{count}} 票",
+      "sourceUnavailable": "{{sources}} 暫時未能搜尋。"
+    },
+    "sources": {
+      "worshiptogether": "WorshipTogether",
+      "ultimate-guitar": "Ultimate Guitar",
+      "pnwchords": "PNW Chords"
+    },
+    "paste": {
+      "label": "貼上和弦歌詞",
+      "placeholder": "貼上連同和弦的歌詞，格式例如：[G]歌詞內容",
+      "button": "轉換",
+      "textRequired": "請先貼上詩歌譜內容。"
+    },
+    "errors": {
+      "unsupportedLink": "此連結並非我們支援的和弦網站。",
+      "noChart": "在該頁面找不到和弦譜。",
+      "siteUnavailable": "該和弦網站暫時無法回應，請稍後再試。",
+      "invalidText": "無法將內容讀取為和弦譜。",
+      "generic": "發生錯誤，請再試一次。"
+    },
+    "dialog": {
+      "title": "匯入詩歌",
+      "discardTitle": "放棄此次匯入？",
+      "discardDescription": "此詩歌的變更尚未儲存。",
+      "keepEditing": "繼續編輯",
+      "discard": "放棄"
+    },
+    "form": {
+      "title": "歌名",
+      "titleRequired": "請輸入歌名。",
+      "artist": "作者",
+      "artistRequired": "請輸入作者。",
+      "key": "原調",
+      "tempo": "速度",
+      "tempoPlaceholder": "選擇速度",
+      "timeSignature": "拍號",
+      "timeSignaturePlaceholder": "選擇拍號",
+      "year": "年份",
+      "yearInvalid": "請輸入 3 或 4 位數字的年份。",
+      "metadataLoading": "正在查詢調性、速度及年份…",
+      "recordingKeySuggestion": "原唱調性：{{key}} — 採用此調",
+      "doubleTimeHint": "速度為 {{bpm}} BPM，可能是以雙倍速度計算。",
+      "editRaw": "編輯原始譜文字",
+      "save": "儲存詩歌",
+      "saved": "已匯入詩歌。",
+      "saveFailed": "未能儲存詩歌，請再試一次。",
+      "duplicateWarning": "已有一首名為「{{title}}」的詩歌。",
+      "duplicateLink": "查看詩歌",
+      "viewSource": "在 {{source}} 查看",
+      "untitled": "未命名",
+      "moveChords": "轉調時一併移動和弦"
+    }
   }
 }

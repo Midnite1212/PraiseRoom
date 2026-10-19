@@ -7,6 +7,7 @@ import {
   parseKey,
   semitonesBetween,
   transposeChord,
+  transposeChordLyrics,
   transposeKey,
 } from './theory';
 
@@ -68,5 +69,22 @@ describe('keys', () => {
     expect(a && g && semitonesBetween(a, g)).toBe(10);
     const raised = g && transposeKey(g, 3, true);
     expect(raised && keyLabel(raised)).toBe('Bb');
+  });
+});
+
+describe('transposeChordLyrics', () => {
+  it('transposes chord tokens and leaves section labels and lyrics untouched', () => {
+    const chart = '{Verse 1}\n[G]Amazing [D]grace, how [Em]sweet the [C]sound';
+    expect(transposeChordLyrics(chart, 2, false)).toBe(
+      '{Verse 1}\n[A]Amazing [E]grace, how [F#m]sweet the [D]sound'
+    );
+  });
+
+  it('leaves unparseable bracketed cues untouched', () => {
+    expect(transposeChordLyrics('[G][x2]', 2, false)).toBe('[A][x2]');
+  });
+
+  it('respells with flats when asked, even with no shift', () => {
+    expect(transposeChordLyrics('[G#]', 0, true)).toBe('[Ab]');
   });
 });

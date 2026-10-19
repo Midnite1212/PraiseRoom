@@ -71,7 +71,9 @@
       "medium": "Medium",
       "slow": "Slow",
       "mediumSlow": "Medium slow"
-    }
+    },
+    "searchWeb": "Search the web too",
+    "searchTooLong": "Keep the search under 100 characters."
   },
   "errors": {
     "notFound": "This page doesn't exist.",
@@ -210,5 +212,70 @@
     "deleteDescription": "Its setlists stay, but members lose the access the folder gave them.",
     "deleted": "Folder deleted.",
     "deleteFailed": "Could not delete the folder. Please try again."
+  },
+  "songImport": {
+    "web": {
+      "heading": "From the web",
+      "importLink": "Import from this link",
+      "pasteButton": "Paste a chart"
+    },
+    "search": {
+      "failed": "Could not search the web. Please try again.",
+      "empty": "No chord charts found online.",
+      "unknownArtist": "Unknown artist",
+      "votes_one": "{{count}} vote",
+      "votes_other": "{{count}} votes",
+      "sourceUnavailable": "{{sources}} could not be searched right now."
+    },
+    "sources": {
+      "worshiptogether": "WorshipTogether",
+      "ultimate-guitar": "Ultimate Guitar",
+      "pnwchords": "PNW Chords"
+    },
+    "paste": {
+      "label": "Paste the chord chart text",
+      "placeholder": "Paste lyrics with chords, such as [G]Amazing grace, how [D]sweet the sound",
+      "button": "Convert",
+      "textRequired": "Paste some chart text first."
+    },
+    "errors": {
+      "unsupportedLink": "That link isn't from a chord site we support.",
+      "noChart": "Couldn't find a chord chart on that page.",
+      "siteUnavailable": "That chord site isn't responding right now. Please try again later.",
+      "invalidText": "Couldn't read that as a chord chart.",
+      "generic": "Something went wrong. Please try again."
+    },
+    "dialog": {
+      "title": "Import song",
+      "discardTitle": "Discard this import?",
+      "discardDescription": "Your changes to this song haven't been saved.",
+      "keepEditing": "Keep editing",
+      "discard": "Discard"
+    },
+    "form": {
+      "title": "Title",
+      "titleRequired": "Give the song a title.",
+      "artist": "Artist",
+      "artistRequired": "Give the song an artist.",
+      "key": "Original key",
+      "tempo": "Tempo",
+      "tempoPlaceholder": "Select a tempo",
+      "timeSignature": "Time signature",
+      "timeSignaturePlaceholder": "Select a time signature",
+      "year": "Year",
+      "yearInvalid": "Enter a 3 or 4 digit year.",
+      "metadataLoading": "Looking up key, tempo, and year…",
+      "recordingKeySuggestion": "Recording key: {{key}} — use it",
+      "doubleTimeHint": "At {{bpm}} BPM, this may be counted as double time.",
+      "editRaw": "Edit raw chart text",
+      "save": "Save song",
+      "saved": "Song imported.",
+      "saveFailed": "Could not save the song. Please try again.",
+      "duplicateWarning": "A song called \"{{title}}\" already exists.",
+      "duplicateLink": "View it",
+      "viewSource": "View on {{source}}",
+      "untitled": "Untitled",
+      "moveChords": "Move the chords with the key"
+    }
   }
 }
