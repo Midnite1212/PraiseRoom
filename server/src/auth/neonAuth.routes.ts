@@ -64,10 +64,11 @@ const fetchFromNeon = (
   baseUrl: string,
   req: Request,
   path: string,
-  method: string
+  method: string,
+  search = new URL(req.originalUrl, 'http://localhost').search
 ): Promise<globalThis.Response> => {
   const url = new URL(`${baseUrl}/${path}`);
-  url.search = new URL(req.originalUrl, 'http://localhost').search;
+  url.search = search;
   const headers = new Headers();
   for (const name of FORWARDED_REQUEST_HEADERS) {
     const value = req.get(name);
@@ -114,24 +115,39 @@ const proxyAuth = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+// Neon Auth appends its verifier with "?" even though callbackURL already has `?next=`, so it can arrive inside next.
+export const readCallbackParams = (
+  query: Request['query']
+): { next: unknown; verifier: unknown } => {
+  const { next } = query;
+  if (query[VERIFIER_PARAM] !== undefined || typeof next !== 'string') {
+    return { next, verifier: query[VERIFIER_PARAM] };
+  }
+  const queryStart = next.indexOf('?');
+  const verifier =
+    queryStart === -1 ? null : new URLSearchParams(next.slice(queryStart + 1)).get(VERIFIER_PARAM);
+  return verifier ? { next: next.slice(0, queryStart), verifier } : { next, verifier: undefined };
+};
+
 // Google returns here with a one-time verifier, which Neon Auth swaps for session cookies.
 const finishSignIn = async (req: Request, res: Response): Promise<void> => {
   const baseUrl = readAuthBaseUrl();
-  const verifier = req.query[VERIFIER_PARAM];
+  const { next, verifier } = readCallbackParams(req.query);
   const cookies = neonCookies(req.headers.cookie);
   const hasChallenge = CHALLENGE_COOKIES.some((name) => cookies.includes(`${name}=`));
   if (!baseUrl || typeof verifier !== 'string' || !hasChallenge) {
-    res.redirect(302, safeNextPath(req.query.next));
+    res.redirect(302, safeNextPath(next));
     return;
   }
   try {
-    const response = await fetchFromNeon(baseUrl, req, 'get-session', 'GET');
+    const search = `?${new URLSearchParams({ [VERIFIER_PARAM]: verifier })}`;
+    const response = await fetchFromNeon(baseUrl, req, 'get-session', 'GET', search);
     if (!response.ok) {
       res.redirect(302, LOGIN_PATH);
       return;
     }
     setFirstPartyCookies(res, response);
-    res.redirect(302, safeNextPath(req.query.next));
+    res.redirect(302, safeNextPath(next));
   } catch (error: unknown) {
     logUnreachable(error);
     res.redirect(302, LOGIN_PATH);
