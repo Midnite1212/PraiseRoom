@@ -12,7 +12,7 @@ Execute according to the plan, working through its tasks one by one.
 Take the plan from the user's request. As a slash command the form is `/gh-execute <path-or-issue>`; otherwise read it from the message. The **plan is required**; if it is missing, ask for it. It can be:
 
 - A path to a markdown plan file, or
-- A GitHub issue: a number (`192`), `#192`, or an issue URL. Issues live on the fork: `gh issue view <n> -R Midnite1212/ripple-out-worship --comments`.
+- A GitHub issue: a number (`192`), `#192`, or an issue URL. Issues live on GitHub: `gh issue view <n> -R Midnite1212/PraiseRoom --comments`.
 
 If the request is a bare issue with no task checklist and no plan, stop and write the plan first (or ask the user to). This skill works through an existing checklist; it does not invent one.
 
@@ -36,11 +36,11 @@ For each task in order:
    - Anything visible: a browser check at desktop and mobile widths.
 3. Mark it done and add a one-line summary under it:
    - Local plan file: tick the checkbox in the file.
-   - GitHub issue: tick the checkbox in the issue body with `gh issue edit <n> -R Midnite1212/ripple-out-worship --body-file`, changing nothing else in the body. Post progress notes as an issue comment rather than editing prose in the body.
+   - GitHub issue: tick the checkbox in the issue body with `gh issue edit <n> -R Midnite1212/PraiseRoom --body-file`, changing nothing else in the body. Post progress notes as an issue comment rather than editing prose in the body.
 4. Commit.
 
 Stop and report if a task turns out to need a decision the plan did not make (a new route's permissions, a server access type, a data shape the backend does not return, a design gap). Do not guess on those.
 
 ## After the last task
 
-Leave committing and PR creation to the user unless asked. When asked, open the PR with `gh pr create -R Midnite1212/ripple-out-worship --base main` (or the stacked parent), with the title and body per `.claude/docs/pr-description.md`, opening with `Closes #<issue#>`.
+Leave committing and PR creation to the user unless asked. When asked, open the PR with `gh pr create -R Midnite1212/PraiseRoom --base main` (or the stacked parent), with the title and body per `.claude/docs/pr-description.md`, opening with `Closes #<issue#>`.

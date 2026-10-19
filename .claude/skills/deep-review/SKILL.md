@@ -1,6 +1,6 @@
 ---
 name: deep-review
-description: When asked for "deep review" or "deep code review" of a branch or PR in ripple-out-worship.
+description: When asked for "deep review" or "deep code review" of a branch or PR in praise-room.
 ---
 
 This is a thorough code review that goes beyond surface-level changes to ensure the PR will not introduce bugs or break existing functionality.

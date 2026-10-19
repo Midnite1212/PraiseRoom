@@ -1,6 +1,6 @@
 ---
 name: code-review
-description: When asked for "code review" of the current branch or a PR in ripple-out-worship.
+description: When asked for "code review" of the current branch or a PR in praise-room.
 ---
 
 - Treat the branch as a feature branch with an open PR. Compare it against its **PR base**: `main` by default, or the parent branch for a stacked PR. Find the base with `gh pr view --json baseRefName` if a PR is open, else ask.
