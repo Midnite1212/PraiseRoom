@@ -25,7 +25,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import type { Session } from '@/features/auth/session';
 import type { SongSummary } from '@/features/songs/api';
 
-import { createSetlist, type SetlistInput, updateSetlist } from '../api';
+import { createSetlist, type SetlistInput, setlistQueryOptions, updateSetlist } from '../api';
 import { fromDateInputValue } from '../format-date';
 import { useDeleteSetlist } from '../use-delete-setlist';
 import { type EditorSong, toSongKeys } from './editor-song';
@@ -94,7 +94,10 @@ export function SetlistEditor({
           groupIds: value.groupIds,
         });
         formApi.reset(value);
-        await queryClient.invalidateQueries({ queryKey: ['setlists'] });
+        // Mark everything stale but only wait for the setlist being opened, so the detail page
+        // renders the saved version immediately instead of the editor lingering while it loads.
+        await queryClient.invalidateQueries({ queryKey: ['setlists'], refetchType: 'none' });
+        await queryClient.fetchQuery({ ...setlistQueryOptions(saved._id), staleTime: 0 });
         toast.success(t(isEditing ? 'editor.saved' : 'editor.created'));
         await navigate({ to: '/setlists/$setlistId', params: { setlistId: saved._id } });
       } catch {

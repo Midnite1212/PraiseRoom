@@ -1,5 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "regions": ["sin1"],
   "git": {
     "deploymentEnabled": { "*": false, "main": true }
   },
@@ -9,7 +10,7 @@
       "root": "ui",
       "framework": "vite",
       "outputDirectory": "dist",
-      "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+      "rewrites": [{ "source": "/((?!assets/).*)", "destination": "/index.html" }]
     }
   },
   "rewrites": [

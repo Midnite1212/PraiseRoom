@@ -78,7 +78,8 @@
   "errors": {
     "notFound": "This page doesn't exist.",
     "generic": "Something went wrong. Please try again.",
-    "goHome": "Go home"
+    "goHome": "Go home",
+    "reload": "Reload"
   },
   "setlists": {
     "title": "Setlists",

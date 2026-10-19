@@ -60,4 +60,19 @@ describe('LyricsSheet', () => {
     expect(screen.getByText('Be Thou my vision')).toBeInTheDocument();
     expect(screen.queryByText('A')).not.toBeInTheDocument();
   });
+
+  it('keeps the lyrics size class alongside the column classes', () => {
+    const { container } = render(
+      <LyricsSheet
+        chordLyrics={LYRICS}
+        mode="chords"
+        notation="letters"
+        originalKey={G}
+        playKey={A}
+        columns="3"
+      />
+    );
+    const sheet = container.firstElementChild;
+    expect(sheet).toHaveClass('text-lyrics', 'text-sheet-foreground', 'lg:columns-3');
+  });
 });
