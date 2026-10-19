@@ -105,7 +105,9 @@ const proxyAuth = async (req: Request, res: Response): Promise<void> => {
       if (value) res.setHeader(name, value);
     }
     setFirstPartyCookies(res, response);
-    res.send(body);
+    // res.send would add an ETag, and a 304 makes the browser reuse a cached, expired set-auth-jwt.
+    res.setHeader('cache-control', 'no-store');
+    res.end(body);
   } catch (error: unknown) {
     logUnreachable(error);
     sendResponse(res, 502, 'Sign-in is unavailable');

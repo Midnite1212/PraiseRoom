@@ -106,6 +106,17 @@ describe('Neon Auth routes', () => {
     ]);
   });
 
+  it('never lets the browser revalidate a session into a stale JWT', async () => {
+    const first = await fetch(`${appUrl}/api/auth/get-session`);
+    assert.equal(first.headers.get('cache-control'), 'no-store');
+    assert.equal(first.headers.get('etag'), null);
+    const revalidated = await fetch(`${appUrl}/api/auth/get-session`, {
+      headers: { 'if-none-match': '*' },
+    });
+    assert.equal(revalidated.status, 200);
+    assert.equal(revalidated.headers.get('set-auth-jwt'), 'jwt-from-neon');
+  });
+
   it('returns every Set-Cookie header separately and drops unlisted headers', async () => {
     const res = await fetch(`${appUrl}/api/auth/sign-out`, { method: 'POST' });
     const cookies = res.headers.getSetCookie().map((cookie) => cookie.split(';')[0]);
