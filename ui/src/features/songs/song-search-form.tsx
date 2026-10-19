@@ -1,5 +1,5 @@
 import { useForm } from '@tanstack/react-form';
-import { Search } from 'lucide-react';
+import { Search } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 

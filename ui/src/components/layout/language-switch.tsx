@@ -1,4 +1,4 @@
-import { Languages } from 'lucide-react';
+import { Languages } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';

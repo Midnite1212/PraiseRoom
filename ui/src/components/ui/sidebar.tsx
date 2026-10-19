@@ -2,7 +2,7 @@
 
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from 'cn';
-import { PanelLeftIcon } from 'lucide-react';
+import { Layout } from 'pixelarticons/react';
 import { Slot } from 'radix-ui';
 import * as React from 'react';
 
@@ -259,7 +259,7 @@ function SidebarTrigger({ className, onClick, ...props }: React.ComponentProps<t
       }}
       {...props}
     >
-      <PanelLeftIcon />
+      <Layout />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   );

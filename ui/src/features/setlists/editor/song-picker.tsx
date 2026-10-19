@@ -1,5 +1,5 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { Check, Plus, Search } from 'lucide-react';
+import { Check, Plus, Search } from 'pixelarticons/react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

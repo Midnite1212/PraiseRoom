@@ -19,7 +19,7 @@
 - **Fonts:** `font-sans` (UI), `font-mono` (labels, keys, numbers), and `font-lyrics` (lyrics) map to `--typeface-*` variables on system stacks with Traditional Chinese fallbacks. When the designer picks typefaces, change those three variables only.
 - **Lyrics size:** `text-lyrics` reads `--lyrics-size`, which `data-lyrics-size="sm|md|lg|xl|2xl"` on the reading sheet sets. The reader picks the size with `useLyricsSize()` (`src/features/reader/lyrics-size.ts`), stored per device.
 - **Theme:** `next-themes` sets the `dark` class on `<html>`; use `dark:` variants only when a token can't express the difference. `ThemeToggle` is in the app shell.
-- **Icons:** `lucide-react`, sized by the component (shadcn sizes icons inside buttons). Icon-only buttons need an `aria-label` from `t()`.
+- **Icons:** `pixelarticons/react` (the free pixel set), sized by the component (shadcn sizes icons inside buttons). Icon-only buttons need an `aria-label` from `t()`.
 - **Layout:** the app shell (`AppShell`, `AppSidebar`) owns the sidebar, header, and page padding. Pages render inside `<main>` and set their own max width (`mx-auto max-w-5xl`).
 - **Responsive:** design at 390 px first, then add `md:`/`lg:` classes. The shadcn sidebar becomes a sheet on phones automatically.
 - **Reader preferences** (lyrics size, Lyrics/Chords, 1-4-5/A-B-C) are per-device choices made with `createStoredChoice` (`src/lib/stored-choice.ts`); add a new one the same way instead of a store or context. Reference: `src/features/reader/`.

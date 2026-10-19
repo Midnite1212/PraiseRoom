@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { LogOut } from 'lucide-react';
+import { Logout } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
@@ -53,7 +53,7 @@ export function UserMenu({ session }: { session: Session }) {
         <DropdownMenuLabel className="truncate">{session.fullName}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={() => void handleSignOut()}>
-          <LogOut />
+          <Logout />
           {t('user.signOut')}
         </DropdownMenuItem>
       </DropdownMenuContent>

@@ -1,6 +1,6 @@
 import { useForm } from '@tanstack/react-form';
 import { useMutation } from '@tanstack/react-query';
-import { ClipboardPaste } from 'lucide-react';
+import { Clipboard } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
@@ -75,7 +75,7 @@ export function PasteChartForm({ onImported }: PasteChartFormProps) {
       <form.Subscribe selector={(state) => state.isSubmitting}>
         {(isSubmitting) => (
           <Button type="submit" disabled={isSubmitting} className="self-start">
-            <ClipboardPaste />
+            <Clipboard />
             {t('songImport.paste.button')}
           </Button>
         )}

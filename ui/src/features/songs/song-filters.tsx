@@ -1,4 +1,4 @@
-import { SlidersHorizontal } from 'lucide-react';
+import { SlidersHorizontal } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';

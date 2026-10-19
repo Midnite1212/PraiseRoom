@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Folder } from 'lucide-react';
+import { Folder } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';

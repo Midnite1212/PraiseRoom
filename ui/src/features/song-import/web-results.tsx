@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { ClipboardPaste } from 'lucide-react';
+import { Clipboard } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -52,7 +52,7 @@ export function WebResults({ q, onPickUrl, onPaste }: WebResultsProps) {
       )}
 
       <Button type="button" variant="outline" size="sm" className="self-start" onClick={onPaste}>
-        <ClipboardPaste />
+        <Clipboard />
         {t('songImport.web.pasteButton')}
       </Button>
     </section>

@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp, X } from 'lucide-react';
+import { ArrowDown, ArrowUp, Close } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
@@ -96,7 +96,7 @@ export function EditorSongList({ songs, onChange }: EditorSongListProps) {
                 aria-label={t('editor.removeSong', { title: song.title })}
                 onClick={() => onChange(songs.filter((entry) => entry._id !== song._id))}
               >
-                <X />
+                <Close />
               </Button>
             </div>
           </li>
