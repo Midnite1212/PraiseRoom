@@ -134,7 +134,8 @@
       "timeSignature": "拍號",
       "themes": "主題"
     },
-    "openInApp": "在應用程式中開啟"
+    "openInApp": "在應用程式中開啟",
+    "columns": "歌詞欄數：{{columns}}"
   },
   "editor": {
     "newTitle": "新增歌單",

@@ -6,12 +6,19 @@ import { type MusicKey, semitonesBetween, transposeChord } from '@/features/chor
 import type { ChordNotation, ReaderMode } from '@/features/reader/chord-display';
 import { cn } from '@/lib/utils';
 
+import {
+  DEFAULT_LYRICS_COLUMNS,
+  LYRICS_COLUMN_CLASSES,
+  type LyricsColumns,
+} from './lyrics-columns';
+
 type LyricsSheetProps = {
   chordLyrics: string;
   mode: ReaderMode;
   notation: ChordNotation;
   originalKey: MusicKey | null;
   playKey: MusicKey | null;
+  columns?: LyricsColumns;
 };
 
 type ChordRenderer = (chord: string) => ReactNode;
@@ -76,13 +83,19 @@ export function LyricsSheet({
   notation,
   originalKey,
   playKey,
+  columns = DEFAULT_LYRICS_COLUMNS,
 }: LyricsSheetProps) {
   const sections = parseChordLyrics(chordLyrics);
   const renderChord = createChordRenderer(notation, originalKey, playKey);
   const showChords = mode === 'chords';
 
   return (
-    <div className="font-lyrics text-lyrics text-sheet-foreground columns-1 gap-12 leading-snug xl:columns-2">
+    <div
+      className={cn(
+        'font-lyrics text-lyrics text-sheet-foreground gap-12 leading-snug',
+        LYRICS_COLUMN_CLASSES[columns]
+      )}
+    >
       {sections.map((section) => (
         <section
           key={section.id}

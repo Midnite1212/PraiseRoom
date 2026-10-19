@@ -134,7 +134,8 @@
       "timeSignature": "Time signature",
       "themes": "Themes"
     },
-    "openInApp": "Open in the app"
+    "openInApp": "Open in the app",
+    "columns": "Lyric columns: {{columns}}"
   },
   "editor": {
     "newTitle": "New setlist",

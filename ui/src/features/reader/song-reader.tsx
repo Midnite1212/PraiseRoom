@@ -6,10 +6,12 @@ import { cn } from '@/lib/utils';
 
 import { useChordNotation, useReaderMode } from './chord-display';
 import { KeyPicker } from './key-picker';
+import { useLyricsColumns } from './lyrics-columns';
 import { LyricsSheet } from './lyrics-sheet';
 import { useLyricsSize } from './lyrics-size';
 import {
   ChordNotationToggle,
+  LyricsColumnsControl,
   LyricsSizeControl,
   ReaderModeToggle,
   SongInfo,
@@ -44,6 +46,7 @@ export function SongReader({
   const [mode] = useReaderMode();
   const [notation, setNotation] = useChordNotation();
   const [lyricsSize] = useLyricsSize();
+  const [lyricsColumns] = useLyricsColumns();
   const sticky = STICKY_OFFSETS[stickyUnder];
   const [headerRef, isHeaderScrolledPast] = useScrolledPast(sticky.px);
   const originalKey = parseKey(song.originalKey);
@@ -103,6 +106,7 @@ export function SongReader({
           notation={notation}
           originalKey={originalKey}
           playKey={playKey}
+          columns={lyricsColumns}
         />
       )}
 
@@ -115,9 +119,11 @@ export function SongReader({
 export function ReaderPreferenceControls() {
   const [mode, setMode] = useReaderMode();
   const [lyricsSize, setLyricsSize] = useLyricsSize();
+  const [lyricsColumns, setLyricsColumns] = useLyricsColumns();
   return (
     <>
       <ReaderModeToggle mode={mode} onChange={setMode} />
+      <LyricsColumnsControl columns={lyricsColumns} onChange={setLyricsColumns} />
       <LyricsSizeControl size={lyricsSize} onChange={setLyricsSize} />
     </>
   );
