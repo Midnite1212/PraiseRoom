@@ -43,8 +43,8 @@ export const isImportableUrl = (url: string): boolean =>
 // charts it in A), so a chart moves to the source's recording key only when its chords fit that key clearly worse.
 const KEY_FIT_MARGIN = 0.1;
 
-const finishChart = (chart: string, recordingKey: string | null) => {
-  const cleaned = cleanChart(chart);
+const finishChart = (chart: string, recordingKey: string | null, title = '') => {
+  const cleaned = cleanChart(chart, title);
   const inferred = inferKey(cleaned);
   if (recordingKey && inferred) {
     const semitones = semitonesBetween(inferred.key, recordingKey);
@@ -72,7 +72,7 @@ export const importFromUrl = async (url: string): Promise<ImportedChart> => {
     title: chart.title,
     artist: chart.artist,
     bpm: chart.bpm,
-    ...finishChart(chart.chordLyrics, chart.recordingKey),
+    ...finishChart(chart.chordLyrics, chart.recordingKey, chart.title),
   };
 };
 

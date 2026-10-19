@@ -156,6 +156,30 @@ describe('Ultimate Guitar capo spelling', () => {
   });
 });
 
+describe('Ultimate Guitar capo in the text only', () => {
+  it('applies a capo that is only written in the chart', () => {
+    const html = encodeStore({
+      store: {
+        page: {
+          data: {
+            tab: { song_name: 'Morning Light', artist_name: 'Invented Band' },
+            tab_view: {
+              meta: { capo: 0 },
+              wiki_tab: {
+                content: 'Capo 2\n[tab][ch]G[/ch]   [ch]C[/ch]   [ch]D[/ch]   [ch]G[/ch][/tab]',
+              },
+            },
+          },
+        },
+      },
+    });
+    assert.equal(
+      parseUltimateGuitar(html, 'https://x')?.chordLyrics,
+      'Capo 2\n[A]   [D]   [E]   [A]'
+    );
+  });
+});
+
 describe('PNW Chords', () => {
   it('reads search result titles and artists', () => {
     const html =

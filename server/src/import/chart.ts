@@ -5,7 +5,7 @@ const fromCodePoint = (code: number): string =>
     ? String.fromCodePoint(code)
     : '';
 
-export const decodeEntities = (text: string): string =>
+const decodeOnce = (text: string): string =>
   text
     .replace(/&#xD;/gi, '')
     .replace(/&nbsp;/g, ' ')
@@ -14,11 +14,23 @@ export const decodeEntities = (text: string): string =>
     .replace(/&ldquo;|&rdquo;/g, '"')
     .replace(/&ndash;|&#8211;/g, '–')
     .replace(/&mdash;|&#8212;/g, '—')
+    .replace(/&hellip;|&#8230;/g, '…')
     .replace(/&lt;/g, '<')
     .replace(/&gt;/g, '>')
     .replace(/&#(\d{1,7});/g, (_, code: string) => fromCodePoint(Number(code)))
     .replace(/&#x([0-9a-f]{1,6});/gi, (_, code: string) => fromCodePoint(parseInt(code, 16)))
     .replace(/&amp;/g, '&');
+
+// Chart sites sometimes double-encode (`&amp;amp;`), so decoding repeats until the text settles.
+export const decodeEntities = (text: string): string => {
+  let decoded = text;
+  for (let pass = 0; pass < 3; pass++) {
+    const next = decodeOnce(decoded);
+    if (next === decoded) break;
+    decoded = next;
+  }
+  return decoded;
+};
 
 const SECTION_NAMES: ReadonlyArray<readonly [RegExp, string]> = [
   [/^pre[\s-]?chorus/i, 'Prechorus'],
@@ -137,7 +149,15 @@ const chordOnlyLine = (line: string): string =>
 const META_LINE =
   /^\s*(song|artist|album|title|key|tempo|bpm|capo|tuning|time signature|ccli|written by|writers?|chords? used)\s*[:#]/i;
 const CREDIT_LINE =
-  /(tabbed|transcribed|submitted|arranged|chords?) by\b|ultimate-guitar|https?:\/\/|www\./i;
+  /(tabbed|transcribed|submitted|arranged|chords?|tab) by\b|ultimate-guitar|https?:\/\/|www\./i;
+// Tabbers' contact details, notes about their tab, and links are not part of the song.
+const SITE_NOTE_LINES: readonly RegExp[] = [
+  /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/,
+  /^\s*\(?\s*(e-?mail|contact|phone|tel|website|web site|facebook|youtube|tabber)\s*[:#]/i,
+  /\b(tabber|tabbed (?:this|it)|my first tab|tablature|rate this tab|this tab|strum(?:ming)? pattern)\b/i,
+  /\b(youtube|friendster|facebook|myspace|instagram)\b/i,
+  /^\s*\(?\s*capo\s*\d+/i,
+];
 const TAB_STAFF = /^\s*[eBGDAE]\s*\|[-\d|hpbr/\\~x ]+/;
 
 const headerFor = (line: string): string | null => {
@@ -234,7 +254,13 @@ const repeatTargets = (line: string): string[] | null => {
 const withoutNumber = (label: string): string => label.replace(/\s*\d+$/, '');
 
 // Strips chart-site residue and expands "Repeat Chorus" directives into a copy of the named section.
-export const cleanChart = (chart: string): string => {
+const isTitleLine = (line: string, title: string): boolean => {
+  const name = title.trim().toLowerCase();
+  const text = line.trim().toLowerCase();
+  return name.length > 0 && text.startsWith(name) && /^\s*[–—-]\s*\S/.test(text.slice(name.length));
+};
+
+export const cleanChart = (chart: string, title = ''): string => {
   const sections = new Map<string, string[]>();
   const out: string[] = [];
   let label: string | null = null;
@@ -251,7 +277,15 @@ export const cleanChart = (chart: string): string => {
   };
 
   for (const line of chart.split('\n')) {
-    if (META_LINE.test(line) || CREDIT_LINE.test(line.replace(/\[[^\]]*\]/g, ''))) continue;
+    const plain = line.replace(/\[[^\]]*\]/g, '');
+    if (
+      META_LINE.test(line) ||
+      CREDIT_LINE.test(plain) ||
+      SITE_NOTE_LINES.some((pattern) => pattern.test(plain)) ||
+      isTitleLine(plain, title)
+    ) {
+      continue;
+    }
     const header = HEADER.exec(line);
     if (header) {
       closeSection();
