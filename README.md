@@ -2,7 +2,7 @@
 
 _A song library, chord charts, and setlists for worship teams._
 
-Praise Room (formerly "Psalted 2") is the HMCC Hong Kong worship team's app. Musicians open a setlist on their phone during worship and read lyrics with chords in any key; worship leaders build those setlists and share them with their team.
+Praise Room (formerly "Psalted 2") is a passion project by a few churchgoers in Hong Kong who love helping people worship and want to make room for the Spirit to minister. Musicians open a setlist on their phone during worship and read lyrics with chords in any key; worship leaders build those setlists and share them with their team.
 
 ## What it does
 
@@ -17,14 +17,14 @@ Praise Room (formerly "Psalted 2") is the HMCC Hong Kong worship team's app. Mus
 
 ## How it runs
 
-Praise Room runs on its own and no longer depends on the HMCC HK main site:
+Praise Room runs on its own, with no outside site behind its sign-in or data:
 
-| Concern              | Before                                             | Now                                                                                                                                                                                             |
-| -------------------- | -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Accounts and sign-in | The HMCC HK main site's login and a shared JWT key | [Neon Auth](https://neon.com/docs/auth/overview) (managed Better Auth) in this app's own Neon project, with email and password or Google sign-in                                                |
-| Database             | MongoDB with Mongoose                              | [Neon](https://neon.com) Postgres with Drizzle ORM and versioned SQL migrations; songs were imported once from the MongoDB export, while setlists, folders, and ownership records started fresh |
-| Hosting              | DreamHost, deployed by GitHub Actions              | [Vercel](https://vercel.com) services: the Express API as one function and the UI as a static site behind one domain, deploying only from `main`                                                |
-| UI                   | Create React App, MUI, Redux                       | Rebuilt from scratch (see below); the previous UI is kept in `old-ui/` as a frozen reference                                                                                                    |
+| Concern              | Before                                        | Now                                                                                                                                                                                             |
+| -------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Accounts and sign-in | An external site's login and a shared JWT key | [Neon Auth](https://neon.com/docs/auth/overview) (managed Better Auth) in this app's own Neon project, with email and password or Google sign-in                                                |
+| Database             | MongoDB with Mongoose                         | [Neon](https://neon.com) Postgres with Drizzle ORM and versioned SQL migrations; songs were imported once from the MongoDB export, while setlists, folders, and ownership records started fresh |
+| Hosting              | DreamHost, deployed by GitHub Actions         | [Vercel](https://vercel.com) services: the Express API as one function and the UI as a static site behind one domain, deploying only from `main`                                                |
+| UI                   | Create React App, MUI, Redux                  | Rebuilt from scratch (see below); the previous UI is kept in `old-ui/` as a frozen reference                                                                                                    |
 
 The server proxies `/api/auth/*` to Neon Auth on the app's own domain, so session cookies are first-party (which keeps Safari working) and the browser never talks to Neon directly. API requests carry a short-lived JWT that the server verifies against Neon Auth's public keys.
 
