@@ -105,4 +105,24 @@ export const ROUTE_PERMISSIONS: Record<string, PermissionConfig> = {
     requiresAuth: false,
     description: 'Search songs',
   },
+  'GET /api/songs/import/search': {
+    requiresAuth: true,
+    allowedAccessTypes: SONG_WRITERS,
+    description: 'Search chord sites for a song to import',
+  },
+  'POST /api/songs/import/fetch': {
+    requiresAuth: true,
+    allowedAccessTypes: SONG_WRITERS,
+    description: 'Fetch and convert a chord chart from an allowlisted chord site',
+  },
+  'POST /api/songs/import/convert': {
+    requiresAuth: true,
+    allowedAccessTypes: SONG_WRITERS,
+    description: 'Convert pasted chart text to chord-lyrics',
+  },
+  'GET /api/songs/import/metadata': {
+    requiresAuth: true,
+    allowedAccessTypes: SONG_WRITERS,
+    description: 'Look up key, tempo, time signature, and year for a song to import',
+  },
 };
