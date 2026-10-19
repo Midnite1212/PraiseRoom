@@ -11,6 +11,7 @@ import {
   READER_MODES,
   type ReaderMode,
 } from '@/features/reader/chord-display';
+import { type LyricsColumns, nextLyricsColumns } from '@/features/reader/lyrics-columns';
 import { LYRICS_SIZES, type LyricsSize, stepLyricsSize } from '@/features/reader/lyrics-size';
 import { cn } from '@/lib/utils';
 
@@ -83,6 +84,34 @@ export function ChordNotationToggle({
         A B C
       </ToggleGroupItem>
     </ToggleGroup>
+  );
+}
+
+// Cycles 1 → 2 → 3 columns; hidden on phones, where the sheet is always one column.
+export function LyricsColumnsControl({
+  columns,
+  onChange,
+}: {
+  columns: LyricsColumns;
+  onChange: (columns: LyricsColumns) => void;
+}) {
+  const { t } = useTranslation();
+  const label = t('reader.columns', { columns });
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      className="hidden md:inline-flex"
+      aria-label={label}
+      title={label}
+      onClick={() => onChange(nextLyricsColumns(columns))}
+    >
+      <span className="flex items-center gap-0.5" aria-hidden>
+        {Array.from({ length: Number(columns) }, (_, bar) => (
+          <span key={bar} className="h-3.5 w-1 rounded-sm bg-current" />
+        ))}
+      </span>
+    </Button>
   );
 }
 
