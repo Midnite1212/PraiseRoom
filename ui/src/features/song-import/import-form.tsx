@@ -23,16 +23,16 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { conventionalKey } from '@/features/chords/key-spelling';
-import {
-  keyLabel,
-  type MusicKey,
-  parseKey,
-  semitonesBetween,
-  transposeChordLyrics,
-} from '@/features/chords/theory';
+import { keyLabel, type MusicKey, parseKey, transposeChordLyrics } from '@/features/chords/theory';
 import type { ReaderSong } from '@/features/reader/song';
 import { ReaderPreferenceControls, SongReader } from '@/features/reader/song-reader';
 import { songSearchQueryOptions, TEMPO_LABEL_KEYS, TEMPO_OPTIONS } from '@/features/songs/api';
+import {
+  initialKey,
+  KEY_OPTIONS,
+  keyOptionValue,
+  semitonesToKey,
+} from '@/features/songs/key-options';
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
 
 import {
@@ -56,21 +56,6 @@ type FormValues = {
   timeSignature: string;
   year: string;
   chordLyrics: string;
-};
-
-const KEY_OPTIONS = [
-  ...Array.from({ length: 12 }, (_, root) => conventionalKey(root, false)),
-  ...Array.from({ length: 12 }, (_, root) => conventionalKey(root, true)),
-];
-
-const keyOptionValue = (key: MusicKey): string => `${key.root}-${key.isMinor ? 'm' : 'M'}`;
-
-const relativeMajor = (key: MusicKey): MusicKey =>
-  key.isMinor ? { ...key, root: (key.root + 3) % 12, isMinor: false } : key;
-
-const initialKey = (originalKey: string | null): MusicKey => {
-  const parsed = parseKey(originalKey);
-  return parsed ? conventionalKey(parsed.root, parsed.isMinor) : conventionalKey(0, false);
 };
 
 // The editable form, preview, and save step shown once a chart has been fetched or converted.
@@ -166,12 +151,9 @@ export function ImportForm({ chart, onDirtyChange, onSaved }: ImportFormProps) {
     }
   }, [metadata.data, touched, form]);
 
-  // Relative keys (G and Em) share their chords, so the distance is measured between relative majors.
   const applyKey = (newKey: MusicKey) => {
     const current = form.getFieldValue('key');
-    const semitones = moveChords
-      ? semitonesBetween(relativeMajor(current), relativeMajor(newKey))
-      : 0;
+    const semitones = moveChords ? semitonesToKey(current, newKey) : 0;
     form.setFieldValue('chordLyrics', (text) =>
       transposeChordLyrics(text, semitones, newKey.prefersFlats)
     );

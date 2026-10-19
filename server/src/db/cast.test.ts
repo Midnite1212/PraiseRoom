@@ -5,6 +5,7 @@ import {
   InvalidInputError,
   castDate,
   castObjectIdArray,
+  castOptionalInteger,
   castOptionalString,
   castRequiredString,
   castStringArray,
@@ -13,6 +14,17 @@ import {
 const ID = '507f1f77bcf86cd799439011';
 
 describe('cast', () => {
+  it('casts optional integers within a range and rejects anything else', () => {
+    const range = { min: 0, max: 11 };
+    assert.equal(castOptionalInteger('capo', 3, range), 3);
+    assert.equal(castOptionalInteger('capo', ' 7 ', range), 7);
+    for (const empty of [undefined, null, ''])
+      assert.equal(castOptionalInteger('capo', empty, range), null);
+    for (const bad of [-1, 12, 2.5, 'two', true, [3]]) {
+      assert.throws(() => castOptionalInteger('capo', bad, range), InvalidInputError, String(bad));
+    }
+  });
+
   it('casts scalars to strings and rejects objects and arrays', () => {
     assert.equal(castOptionalString('year', 2020), '2020');
     assert.equal(castOptionalString('year', true), 'true');

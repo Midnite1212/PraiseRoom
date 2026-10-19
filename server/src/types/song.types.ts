@@ -8,6 +8,7 @@ type SongRecord = RecordFields & {
   themes: string[];
   artist: string;
   year?: string;
+  capo?: number;
   code?: string;
   createdBy?: string;
   lastUpdatedBy?: string;

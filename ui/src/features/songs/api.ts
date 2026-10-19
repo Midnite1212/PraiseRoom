@@ -99,3 +99,22 @@ export const songSearchInfiniteQueryOptions = (keyword: string) =>
     getNextPageParam: (lastPage) =>
       lastPage.currentPage < lastPage.totalPages ? lastPage.currentPage + 1 : undefined,
   });
+
+export type SongInput = {
+  title: string;
+  artist: string;
+  originalKey: string;
+  chordLyrics: string;
+  tempo: string[];
+  timeSignature: string[];
+  year: string | null;
+  capo: number | null;
+};
+
+const updatedSongSchema = z.object({ _id: z.string() });
+
+export const updateSong = (songId: string, input: SongInput) =>
+  apiRequest('/api/songs/update', updatedSongSchema, {
+    method: 'PUT',
+    body: { id: songId, ...input },
+  });

@@ -7,6 +7,7 @@ import {
   integer,
   pgTable,
   primaryKey,
+  smallint,
   text,
   timestamp,
 } from 'drizzle-orm/pg-core';
@@ -62,6 +63,7 @@ export const songs = pgTable(
       .default(sql`'{}'`),
     artist: text('artist').notNull(),
     year: text('year'),
+    capo: smallint('capo'),
     code: text('code'),
     createdBy: text('created_by'),
     lastUpdatedBy: text('last_updated_by'),

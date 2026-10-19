@@ -1,11 +1,12 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { ChevronLeft } from 'lucide-react';
+import { ChevronLeft, Pencil } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { canWriteSongs } from '@/features/auth/session';
 import { type MusicKey, parseKey } from '@/features/chords/theory';
 import { ReaderPreferenceControls, SongReader } from '@/features/reader/song-reader';
 import { type Song, songQueryOptions } from '@/features/songs/api';
@@ -26,6 +27,7 @@ function SongPage() {
 
 function SongView({ song }: { song: Song }) {
   const { t } = useTranslation();
+  const { session } = Route.useRouteContext();
   const [playKey, setPlayKey] = useState<MusicKey | null>(() => parseKey(song.originalKey));
 
   return (
@@ -39,6 +41,14 @@ function SongView({ song }: { song: Song }) {
         </Button>
         <div className="flex items-center gap-1.5">
           <ReaderPreferenceControls />
+          {canWriteSongs(session) ? (
+            <Button asChild variant="outline" size="sm">
+              <Link to="/songs/$songId/edit" params={{ songId: song._id }}>
+                <Pencil />
+                {t('songEditor.edit')}
+              </Link>
+            </Button>
+          ) : null}
         </div>
       </div>
       <SongReader song={song} playKey={playKey} onPlayKeyChange={setPlayKey} />

@@ -198,6 +198,7 @@ export function SongInfo({ song }: { song: ReaderSong }) {
   const details = [
     { label: t('reader.info.artist'), value: song.artist },
     { label: t('reader.info.originalKey'), value: song.originalKey },
+    { label: t('reader.info.capo'), value: song.capo ? String(song.capo) : null },
     { label: t('reader.info.code'), value: song.code },
     { label: t('reader.info.year'), value: song.year },
     { label: t('reader.info.tempo'), value: song.tempo.join(', ') },
