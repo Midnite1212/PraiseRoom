@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router';
-import { Eye, Link2, MoreVertical, Pencil, Trash2 } from 'lucide-react';
+import { Eye, Link as LinkIcon, MoreVertical, Pencil, Trash } from 'pixelarticons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -81,7 +81,7 @@ export function SetlistActions({
           ) : null}
           {publicLink ? (
             <DropdownMenuItem onSelect={() => void copyLink()}>
-              <Link2 />
+              <LinkIcon />
               {t('reader.copyLink')}
             </DropdownMenuItem>
           ) : null}
@@ -89,7 +89,7 @@ export function SetlistActions({
             <>
               <DropdownMenuSeparator />
               <DropdownMenuItem variant="destructive" onSelect={() => setIsConfirmOpen(true)}>
-                <Trash2 />
+                <Trash />
                 {t('editor.delete')}
               </DropdownMenuItem>
             </>

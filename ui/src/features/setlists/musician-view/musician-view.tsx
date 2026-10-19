@@ -1,4 +1,10 @@
-import { ChevronLeft, ChevronRight, ListMusic, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
+import {
+  ArrowBarLeft,
+  ArrowBarRight,
+  Bulletlist,
+  ChevronLeft,
+  ChevronRight,
+} from 'pixelarticons/react';
 import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -96,7 +102,7 @@ export function MusicianView({
         <Sheet open={isRailOpen} onOpenChange={setIsRailOpen}>
           <SheetTrigger asChild>
             <Button variant="outline" size="sm" className="lg:hidden">
-              <ListMusic />
+              <Bulletlist />
               {currentIndex + 1}/{songCount}
             </Button>
           </SheetTrigger>
@@ -115,7 +121,7 @@ export function MusicianView({
           aria-pressed={!isSongListShown}
           onClick={() => setSongList(isSongListShown ? 'hidden' : 'shown')}
         >
-          {isSongListShown ? <PanelLeftClose /> : <PanelLeftOpen />}
+          {isSongListShown ? <ArrowBarLeft /> : <ArrowBarRight />}
         </Button>
         <p className="text-label min-w-0 flex-1 truncate font-mono text-xs tracking-[0.12em] uppercase">
           {setlist.name}

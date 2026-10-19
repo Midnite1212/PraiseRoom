@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { Music } from 'lucide-react';
+import { Music } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';

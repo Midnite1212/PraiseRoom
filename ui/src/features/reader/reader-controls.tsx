@@ -1,4 +1,4 @@
-import { Info, Link2, Minus, Plus } from 'lucide-react';
+import { CircleInfo, Link as LinkIcon, Minus, Plus } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
@@ -188,7 +188,7 @@ export function ShareButton({ link }: { link: string | null | undefined }) {
       aria-label={t('reader.copyLink')}
       onClick={() => void handleCopy()}
     >
-      <Link2 />
+      <LinkIcon />
     </Button>
   );
 }
@@ -215,7 +215,7 @@ export function SongInfo({ song }: { song: ReaderSong }) {
           className="text-muted-foreground"
           aria-label={t('reader.info.title')}
         >
-          <Info />
+          <CircleInfo />
         </Button>
       </PopoverTrigger>
       <PopoverContent align="start" className="w-72">

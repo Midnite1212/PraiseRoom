@@ -1,7 +1,7 @@
 import { useForm } from '@tanstack/react-form';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
-import { ChevronLeft, Trash2 } from 'lucide-react';
+import { ChevronLeft, Trash } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -161,7 +161,7 @@ function DeleteFolderButton({ folder }: { folder: Folder }) {
       <AlertDialog>
         <AlertDialogTrigger asChild>
           <Button variant="ghost" className="text-destructive">
-            <Trash2 />
+            <Trash />
             {t('folders.delete')}
           </Button>
         </AlertDialogTrigger>

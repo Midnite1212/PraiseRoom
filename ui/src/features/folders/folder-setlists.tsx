@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
-import { ListPlus, X } from 'lucide-react';
+import { Close, SectionPlus } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
@@ -56,7 +56,7 @@ export function FolderSetlists({ session, folder, canEdit }: FolderSetlistsProps
           <Popover>
             <PopoverTrigger asChild>
               <Button variant="outline" size="sm">
-                <ListPlus />
+                <SectionPlus />
                 {t('folders.addSetlists')}
               </Button>
             </PopoverTrigger>
@@ -116,7 +116,7 @@ export function FolderSetlists({ session, folder, canEdit }: FolderSetlistsProps
                     update.mutate(folder.setlistIds.filter((id) => id !== setlist._id))
                   }
                 >
-                  <X />
+                  <Close />
                 </Button>
               ) : null}
             </li>

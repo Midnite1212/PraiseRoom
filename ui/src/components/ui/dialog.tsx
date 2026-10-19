@@ -1,5 +1,5 @@
 import { cn } from 'cn';
-import { XIcon } from 'lucide-react';
+import { Close } from 'pixelarticons/react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
 import * as React from 'react';
 
@@ -60,7 +60,7 @@ function DialogContent({
         {showCloseButton && (
           <DialogPrimitive.Close data-slot="dialog-close" asChild>
             <Button variant="ghost" className="absolute top-2 right-2" size="icon-sm">
-              <XIcon />
+              <Close />
               <span className="sr-only">Close</span>
             </Button>
           </DialogPrimitive.Close>

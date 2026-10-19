@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { Pencil } from 'lucide-react';
+import { Pencil } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 

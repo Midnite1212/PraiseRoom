@@ -1,7 +1,7 @@
 import { useForm } from '@tanstack/react-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useBlocker, useNavigate, useRouter } from '@tanstack/react-router';
-import { ListPlus, Trash2 } from 'lucide-react';
+import { SectionPlus, Trash } from 'pixelarticons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -212,7 +212,7 @@ export function SetlistEditor({
                   <Sheet open={isPickerOpen} onOpenChange={setIsPickerOpen}>
                     <SheetTrigger asChild>
                       <Button type="button" variant="outline" size="sm" className="lg:hidden">
-                        <ListPlus />
+                        <SectionPlus />
                         {t('editor.addSongs')}
                       </Button>
                     </SheetTrigger>
@@ -237,7 +237,7 @@ export function SetlistEditor({
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button type="button" variant="ghost" className="text-destructive">
-                    <Trash2 />
+                    <Trash />
                     {t('editor.delete')}
                   </Button>
                 </AlertDialogTrigger>
