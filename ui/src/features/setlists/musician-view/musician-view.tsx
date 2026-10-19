@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, ListMusic } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ListMusic, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -8,11 +8,14 @@ import { conventionalKey } from '@/features/chords/key-spelling';
 import { keyLabel, type MusicKey, parseKey } from '@/features/chords/theory';
 import { ShareButton } from '@/features/reader/reader-controls';
 import { ReaderPreferenceControls, SongReader } from '@/features/reader/song-reader';
+import { createStoredChoice } from '@/lib/stored-choice';
 import { cn } from '@/lib/utils';
 
-import { keyForSong, type Setlist } from '../api';
+import { keyForSong, publicSetlistUrl, type Setlist } from '../api';
 import { formatSetlistDate } from '../format-date';
 import { SetlistRail } from './setlist-rail';
+
+const songListVisibility = createStoredChoice('setlist-song-list', ['shown', 'hidden'], 'shown');
 
 const isTypingTarget = (target: EventTarget | null): boolean =>
   target instanceof HTMLElement &&
@@ -36,6 +39,8 @@ export function MusicianView({
   const { t, i18n } = useTranslation();
   const [chosenKeys, setChosenKeys] = useState<Record<string, number>>({});
   const [isRailOpen, setIsRailOpen] = useState(false);
+  const [songList, setSongList] = songListVisibility.use();
+  const isSongListShown = songList === 'shown';
 
   const songCount = setlist.songs.length;
   const currentIndex = Math.min(Math.max(songNumber, 1), Math.max(songCount, 1)) - 1;
@@ -102,13 +107,23 @@ export function MusicianView({
             {rail}
           </SheetContent>
         </Sheet>
+        <Button
+          variant="outline"
+          size="icon-sm"
+          className="hidden lg:inline-flex"
+          aria-label={isSongListShown ? t('reader.hideSongList') : t('reader.showSongList')}
+          aria-pressed={!isSongListShown}
+          onClick={() => setSongList(isSongListShown ? 'hidden' : 'shown')}
+        >
+          {isSongListShown ? <PanelLeftClose /> : <PanelLeftOpen />}
+        </Button>
         <p className="text-label min-w-0 flex-1 truncate font-mono text-xs tracking-[0.12em] uppercase">
           {setlist.name}
           {date ? <span className="text-muted-foreground"> · {date}</span> : null}
         </p>
         <div className="flex items-center gap-1.5">
           <ReaderPreferenceControls />
-          <ShareButton link={setlist.publicLink} />
+          <ShareButton link={setlist.publicLink ? publicSetlistUrl(setlist._id) : null} />
           {actions}
         </div>
         <ol className="flex w-full gap-1" aria-label={t('reader.progress')}>
@@ -127,7 +142,8 @@ export function MusicianView({
       <div className="flex items-start gap-4">
         <aside
           className={cn(
-            'sticky hidden max-h-[calc(100svh-6rem)] w-64 shrink-0 overflow-y-auto rounded-xl border bg-sidebar p-3 lg:block',
+            'sticky hidden max-h-[calc(100svh-6rem)] w-64 shrink-0 overflow-y-auto rounded-xl border bg-sidebar p-3',
+            isSongListShown && 'lg:block',
             variant === 'member' ? 'top-[4.5rem]' : 'top-4'
           )}
         >

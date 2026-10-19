@@ -107,6 +107,8 @@
     "songCount_other": "{{count}} 首詩歌",
     "changeSongs": "切換詩歌",
     "progress": "歌單進度",
+    "hideSongList": "隱藏歌曲列表",
+    "showSongList": "顯示歌曲列表",
     "mode": "顯示",
     "lyrics": "歌詞",
     "chords": "和弦",

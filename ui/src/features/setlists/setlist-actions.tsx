@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import type { Session } from '@/features/auth/session';
 
-import type { SetlistSummary } from './api';
+import { publicSetlistUrl, type SetlistSummary } from './api';
 import { canDeleteSetlist, canEditSetlist } from './permissions';
 import { useDeleteSetlist } from './use-delete-setlist';
 
@@ -45,7 +45,7 @@ export function SetlistActions({
   const copyLink = async () => {
     if (!publicLink) return;
     try {
-      await navigator.clipboard.writeText(publicLink);
+      await navigator.clipboard.writeText(publicSetlistUrl(setlist._id));
       toast.success(t('reader.linkCopied'));
     } catch {
       toast.error(t('reader.linkCopyFailed'));

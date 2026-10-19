@@ -107,6 +107,8 @@
     "songCount_other": "{{count}} songs",
     "changeSongs": "change songs",
     "progress": "Setlist progress",
+    "hideSongList": "Hide song list",
+    "showSongList": "Show song list",
     "mode": "Show",
     "lyrics": "Lyrics",
     "chords": "Chords",
