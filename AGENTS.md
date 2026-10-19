@@ -37,7 +37,7 @@ If your work involves the task below, read the corresponding document/section fi
 
 ## Project Overview
 
-The HMCC Hong Kong worship-team app: a song library with chord charts, key transposition, and setlists that can be grouped into folders, shared with teammates, and published as a public link. The README still calls it "Psalted 2", its earlier name.
+A worship app built as a passion project by churchgoers in Hong Kong: a song library with chord charts, key transposition, and setlists that can be grouped into folders, shared with teammates, and published as a public link. The README still calls it "Psalted 2", its earlier name.
 
 Independent packages in one repo, no workspaces wiring:
 
@@ -46,7 +46,7 @@ Independent packages in one repo, no workspaces wiring:
 - `server/` — Express 4 + Drizzle ORM on Postgres (Neon) in **TypeScript 7**, run with `tsx`, pnpm
 - Root `package.json` — Husky, lint-staged, commitlint, and oxlint and oxfmt for the root files, pnpm
 
-Login, sign-up, and password reset run on Neon Auth (Managed Better Auth) in this app's own Neon project; the app no longer depends on the HMCC HK main site. See `#auth-flow`.
+Login, sign-up, and password reset run on Neon Auth (Managed Better Auth) in this app's own Neon project; the app depends on no outside site. See `#auth-flow`.
 
 Tracking is GitHub Issues on `Midnite1212/PraiseRoom`; issue numbers below #2 in history predate this repo. Commits are `GH-<issue#>: …`, branches `<issue#>-<type>-<description>`, and PRs target `main`. See `.claude/docs/commit-convention.md`.
 
@@ -189,7 +189,7 @@ Then set the Vercel `DATABASE_URL` to Neon's pooled `-pooler` URL and redeploy.
 
 ## Auth Flow
 
-- Users, sessions, and sign-in live in Neon Auth (Managed Better Auth) in this app's own Neon project. This repo has no dependency on the HMCC HK main site for auth; there is no `/external-api` proxy and no `MAIN_URL`.
+- Users, sessions, and sign-in live in Neon Auth (Managed Better Auth) in this app's own Neon project. This repo has no dependency on an outside site for auth; there is no `/external-api` proxy and no `MAIN_URL`.
 - This server verifies Neon Auth's EdDSA JWTs against its JWKS (`jose`, `src/utils/verify-jwt.ts`) instead of a shared `JWT_KEY`, and reads **`Authorization: Bearer <token>`**. `req.user` (`AuthenticatedRequest`) holds the decoded `{ id, emailAddress, name }` plus `accessType` loaded from `ownerships.access_type` by the token's `sub` (Neon Auth tokens carry no custom claims). Trust `req.user` for identity; never trust a `userId` or `accessType` sent in the request body.
 - The server proxies every `/api/auth/*` request to `NEON_AUTH_BASE_URL` (`server/src/auth/neonAuth.routes.ts`: Neon cookies only, `set-auth-jwt` passed through, cookies rewritten to first-party) and finishes Google OAuth at `GET /api/auth-callback?next=<path>`. Both UIs talk to this proxy on their own origin and read the API JWT from the `set-auth-jwt` header of `get-session`; neither uses the Neon Auth SDK. Each UI's client is described in its `AGENTS.md`.
 
