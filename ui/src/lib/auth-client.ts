@@ -44,9 +44,10 @@ const post = async (path: string, body: unknown): Promise<unknown> => {
 
 export type FetchedSession = { user: SessionUser | null; jwt: string | null };
 
-// Neon Auth returns the API JWT in the `set-auth-jwt` header of get-session.
+// Neon Auth returns the API JWT in the `set-auth-jwt` header of get-session; a cached response
+// would carry an expired one.
 export const fetchSession = async (): Promise<FetchedSession> => {
-  const response = await fetch(`${AUTH_BASE}/get-session`);
+  const response = await fetch(`${AUTH_BASE}/get-session`, { cache: 'no-store' });
   if (!response.ok) {
     throw new AuthError(response.status, await readErrorCode(response));
   }
