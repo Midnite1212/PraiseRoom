@@ -11,5 +11,5 @@ export const useReaderMode = createStoredChoice('reader-mode', READER_MODES, 'ch
 export const useChordNotation = createStoredChoice(
   'chord-notation',
   CHORD_NOTATIONS,
-  'numbers'
+  'letters'
 ).use;

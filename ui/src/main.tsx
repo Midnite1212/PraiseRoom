@@ -7,11 +7,14 @@ import { createRoot } from 'react-dom/client';
 import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { createQueryClient } from '@/lib/query-client';
+import { listenForStaleChunks } from '@/lib/reload-on-stale-chunk';
 
 import { createAppRouter } from './router';
 import './i18n';
 
 import './styles.css';
+
+listenForStaleChunks();
 
 const queryClient = createQueryClient();
 const router = createAppRouter(queryClient);

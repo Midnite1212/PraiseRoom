@@ -78,7 +78,8 @@
   "errors": {
     "notFound": "此頁面不存在。",
     "generic": "發生錯誤，請再試一次。",
-    "goHome": "返回首頁"
+    "goHome": "返回首頁",
+    "reload": "重新載入"
   },
   "setlists": {
     "title": "歌單",
