@@ -156,6 +156,30 @@ describe('site notes', () => {
     assert.equal(cleanChart(chart, 'Morning Light'), '{Verse 1}\n[G]Light on the [C]hill');
   });
 
+  it('drops playing notes, credits, copyright, chord diagrams, separators, and sign-offs', () => {
+    const chart = [
+      'Invented Band | Key of C | Capo 0 | BPM 120',
+      'Original key is Eb so capo 1.',
+      'Standard Tuning',
+      'Words and Music by Someone',
+      'By: Invented Band',
+      'Time: 4/4',
+      'Am ------- x02210------|',
+      'Cadd9=(x 3 2 x 3 3)',
+      '=========================',
+      '{Verse 1}',
+      '[G]Light on the [C]hill',
+      '[G]--------[D]',
+      'In the key of David we sing',
+      'Copyright © 2001 Invented Music. All rights reserved.',
+      'God Bless!',
+    ].join('\n');
+    assert.equal(
+      cleanChart(chart),
+      '{Verse 1}\n[G]Light on the [C]hill\n[G]--------[D]\nIn the key of David we sing'
+    );
+  });
+
   it('keeps lyric lines that mention the title without a dash', () => {
     assert.equal(
       cleanChart('{Chorus}\n[G]Morning light is breaking', 'Morning Light'),

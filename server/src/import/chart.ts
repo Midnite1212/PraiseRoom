@@ -147,17 +147,23 @@ const chordOnlyLine = (line: string): string =>
     .replace(/\S+/g, (token) => (isChord(token) ? `[${token}]` : token));
 
 const META_LINE =
-  /^\s*(song|artist|album|title|key|tempo|bpm|capo|tuning|time signature|ccli|written by|writers?|chords? used)\s*[:#]/i;
+  /^\s*(song|artist|album|title|key|tempo|bpm|capo|tuning|time|time signature|ccli|written by|writers?|authors?|composers?|band|by|chords? used)\s*[:#]/i;
 const CREDIT_LINE =
   /(tabbed|transcribed|submitted|arranged|chords?|tab) by\b|ultimate-guitar|https?:\/\/|www\./i;
-// Tabbers' contact details, notes about their tab, and links are not part of the song.
+// Tabbers' contact details, notes about their tab, playing notes, credits, and links are not part of the song.
 const SITE_NOTE_LINES: readonly RegExp[] = [
   /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/,
   /^\s*\(?\s*(e-?mail|contact|phone|tel|website|web site|facebook|youtube|tabber)\s*[:#]/i,
   /\b(tabber|tabbed (?:this|it)|my first tab|tablature|rate this tab|this tab|strum(?:ming)? pattern)\b/i,
   /\b(youtube|friendster|facebook|myspace|instagram)\b/i,
-  /^\s*\(?\s*capo\s*\d+/i,
+  /\bcapo\b|\b(standard|traditional|regular) tuning\b|\btuned (down|up)\b|\bkey of [A-G][#b]?m?(?![a-z])|\bbpm\b/i,
+  /copyright|©|all rights reserved|used by permission/i,
+  /^\s*((words|music|lyrics)(\s*(and|&)\s*(music|words|lyrics))?|written|performed|composed|as recorded)\s+by\b/i,
+  /^\s*[A-G][#b]?[\w/#+]*\s*\*?\s*(-{2,}|:|=)\s*\(?[x\d](\s*[x\d]){5}/,
+  /^\s*(god bless|enjoy|thanks)[\s!.:)(=]*$|\b(please rate|read more:)/i,
 ];
+// Tested on the raw line so a chord line drawn with dashes ([G]--------[D]) is kept.
+const SEPARATOR_LINE = /^\s*[=~#*_-]{8,}\s*$/;
 const TAB_STAFF = /^\s*[eBGDAE]\s*\|[-\d|hpbr/\\~x ]+/;
 
 const headerFor = (line: string): string | null => {
@@ -280,6 +286,7 @@ export const cleanChart = (chart: string, title = ''): string => {
     const plain = line.replace(/\[[^\]]*\]/g, '');
     if (
       META_LINE.test(line) ||
+      SEPARATOR_LINE.test(line) ||
       CREDIT_LINE.test(plain) ||
       SITE_NOTE_LINES.some((pattern) => pattern.test(plain)) ||
       isTitleLine(plain, title)
