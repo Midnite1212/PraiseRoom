@@ -8,13 +8,21 @@ import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { createQueryClient } from '@/lib/query-client';
 import { listenForStaleChunks } from '@/lib/reload-on-stale-chunk';
+import { syncTypeface } from '@/lib/typeface';
 
 import { createAppRouter } from './router';
 import './i18n';
 
+import '@fontsource-variable/geist';
+import '@fontsource-variable/geist-mono';
+import '@fontsource-variable/hanken-grotesk';
+import '@fontsource/fusion-pixel-12px-proportional-tc';
+import '@fontsource/geist-pixel';
+
 import './styles.css';
 
 listenForStaleChunks();
+syncTypeface();
 
 const queryClient = createQueryClient();
 const router = createAppRouter(queryClient);

@@ -1,6 +1,6 @@
 import { useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
-import { Logout } from 'pixelarticons/react';
+import { Link, useNavigate } from '@tanstack/react-router';
+import { Logout, SettingsCog } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
@@ -52,6 +52,12 @@ export function UserMenu({ session }: { session: Session }) {
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel className="truncate">{session.fullName}</DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link to="/settings">
+            <SettingsCog />
+            {t('user.settings')}
+          </Link>
+        </DropdownMenuItem>
         <DropdownMenuItem onSelect={() => void handleSignOut()}>
           <Logout />
           {t('user.signOut')}
