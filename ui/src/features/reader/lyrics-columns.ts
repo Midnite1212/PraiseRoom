@@ -14,9 +14,8 @@ export const nextLyricsColumns = (columns: LyricsColumns): LyricsColumns =>
   LYRICS_COLUMNS[(LYRICS_COLUMNS.indexOf(columns) + 1) % LYRICS_COLUMNS.length] ??
   DEFAULT_LYRICS_COLUMNS;
 
-// Phones always read one column; wider screens get the chosen count, and three only from `lg`.
 export const LYRICS_COLUMN_CLASSES: Record<LyricsColumns, string> = {
   '1': 'columns-1',
-  '2': 'columns-1 md:columns-2',
-  '3': 'columns-1 md:columns-2 lg:columns-3',
+  '2': 'columns-2',
+  '3': 'columns-3',
 };

@@ -61,7 +61,7 @@
     'Microsoft JhengHei', sans-serif;
   --typeface-mono: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
   --typeface-lyrics: var(--typeface-sans);
-  --lyrics-size: 1.125rem;
+  --lyrics-size: 1rem;
   --radius: 0.75rem;
 
   --background: oklch(0.945 0.012 255);
@@ -140,19 +140,19 @@
 }
 
 [data-lyrics-size='sm'] {
-  --lyrics-size: 1rem;
+  --lyrics-size: 0.875rem;
 }
 [data-lyrics-size='md'] {
-  --lyrics-size: 1.125rem;
+  --lyrics-size: 1rem;
 }
 [data-lyrics-size='lg'] {
-  --lyrics-size: 1.375rem;
+  --lyrics-size: 1.125rem;
 }
 [data-lyrics-size='xl'] {
-  --lyrics-size: 1.625rem;
+  --lyrics-size: 1.375rem;
 }
 [data-lyrics-size='2xl'] {
-  --lyrics-size: 2rem;
+  --lyrics-size: 1.75rem;
 }
 
 @layer base {
