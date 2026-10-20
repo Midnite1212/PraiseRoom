@@ -3,6 +3,7 @@ import { useSyncExternalStore } from 'react';
 export type StoredChoice<T extends string> = {
   read: () => T;
   write: (value: T) => void;
+  subscribe: (listener: () => void) => () => void;
   use: () => [T, (value: T) => void];
 };
 
@@ -48,6 +49,7 @@ export const createStoredChoice = <const T extends string>(
   return {
     read,
     write,
+    subscribe,
     use: () => [useSyncExternalStore(subscribe, read, () => fallback), write],
   };
 };

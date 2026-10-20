@@ -16,7 +16,7 @@
   | `label`                      | `text-label`                        | Section labels (`VERSE 1`) and small caps metadata |
   | `muted-foreground`           | `text-muted-foreground`             | Secondary text (artist, hints)                     |
 
-- **Fonts:** `font-sans` (UI), `font-mono` (labels, keys, numbers), and `font-lyrics` (lyrics) map to `--typeface-*` variables on system stacks with Traditional Chinese fallbacks. When the designer picks typefaces, change those three variables only.
+- **Fonts:** `font-sans` (UI), `font-mono` (labels, keys, numbers), and `font-lyrics` (lyrics) map to `--typeface-*` variables with Traditional Chinese fallbacks (`--typeface-han`). `--typeface-sans` defaults to Geist; the Settings page's font choice (`useTypeface()`, `src/lib/typeface.ts`, stored per device) sets `data-typeface` on `<html>`, which swaps it for Hanken Grotesk, Pixel (Geist Pixel + Fusion Pixel TC), Mono (Geist Mono), or System. Fonts are self-hosted from Fontsource packages imported in `main.tsx`.
 - **Lyrics size:** `text-lyrics` reads `--lyrics-size`, which `data-lyrics-size="sm|md|lg|xl|2xl"` on the reading sheet sets. The reader picks the size with `useLyricsSize()` (`src/features/reader/lyrics-size.ts`), stored per device.
 - **Theme:** `next-themes` sets the `dark` class on `<html>`; use `dark:` variants only when a token can't express the difference. `ThemeToggle` is in the app shell.
 - **Icons:** `pixelarticons/react` (the free pixel set), sized by the component (shadcn sizes icons inside buttons). Icon-only buttons need an `aria-label` from `t()`.

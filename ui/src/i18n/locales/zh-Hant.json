@@ -20,6 +20,7 @@
   },
   "user": {
     "menu": "帳戶",
+    "settings": "設定",
     "signOut": "登出",
     "signOutFailed": "未能登出，請再試一次。"
   },
@@ -294,5 +295,35 @@
     "cancel": "取消",
     "saved": "已儲存歌曲。",
     "saveFailed": "無法儲存歌曲，請再試一次。"
+  },
+  "settings": {
+    "title": "設定",
+    "language": {
+      "description": "套用於此裝置上的整個應用程式。"
+    },
+    "font": {
+      "title": "字型",
+      "description": "套用於此裝置上的整個應用程式。",
+      "sample": "Aa 讚美祢",
+      "options": {
+        "geist": "Geist",
+        "hanken-grotesk": "Hanken Grotesk",
+        "pixel": "像素",
+        "mono": "等寬",
+        "system": "系統"
+      }
+    },
+    "textSize": {
+      "title": "歌詞大小",
+      "description": "套用於此裝置上閱讀歌曲時。",
+      "preview": "你們要向耶和華唱新歌",
+      "options": {
+        "sm": "小",
+        "md": "中",
+        "lg": "大",
+        "xl": "特大",
+        "2xl": "最大"
+      }
+    }
   }
 }

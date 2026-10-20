@@ -6,7 +6,6 @@ import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/s
 import type { Session } from '@/features/auth/session';
 
 import { AppSidebar } from './app-sidebar';
-import { LanguageSwitch } from './language-switch';
 import { ThemeToggle } from './theme-toggle';
 import { UserMenu } from './user-menu';
 
@@ -21,7 +20,6 @@ export function AppShell({ session, children }: { session: Session; children: Re
           <SidebarTrigger className="-ml-1" aria-label={t('nav.toggleSidebar')} />
           <Separator orientation="vertical" className="mr-2 h-4" />
           <div className="ml-auto flex items-center gap-1">
-            <LanguageSwitch />
             <ThemeToggle />
             <UserMenu session={session} />
           </div>

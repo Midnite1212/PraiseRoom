@@ -56,12 +56,11 @@
 
 /* Provisional palette sampled from the musician-view references; the designer owns the final values. */
 :root {
-  --typeface-sans:
-    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', 'PingFang TC',
-    'Microsoft JhengHei', sans-serif;
+  --typeface-han: 'PingFang TC', 'Microsoft JhengHei', 'Noto Sans TC', sans-serif;
+  --typeface-sans: 'Geist Variable', var(--typeface-han);
   --typeface-mono: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
   --typeface-lyrics: var(--typeface-sans);
-  --lyrics-size: 0.75rem;
+  --lyrics-size: 0.875rem;
   --radius: 0.75rem;
 
   --background: oklch(0.945 0.012 255);
@@ -137,6 +136,23 @@
   --sidebar-accent-foreground: oklch(0.93 0.01 255);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.76 0.12 245);
+}
+
+[data-typeface='geist'] {
+  --typeface-sans: 'Geist Variable', var(--typeface-han);
+}
+[data-typeface='hanken-grotesk'] {
+  --typeface-sans: 'Hanken Grotesk Variable', var(--typeface-han);
+}
+[data-typeface='pixel'] {
+  --typeface-sans: 'Geist Pixel', 'Fusion Pixel 12px Proportional TC', var(--typeface-han);
+}
+[data-typeface='mono'] {
+  --typeface-sans: 'Geist Mono Variable', var(--typeface-han);
+}
+[data-typeface='system'] {
+  --typeface-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', var(--typeface-han);
 }
 
 [data-lyrics-size='sm'] {
