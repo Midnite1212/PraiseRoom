@@ -216,7 +216,7 @@ export function SetlistEditor({
                         {t('editor.addSongs')}
                       </Button>
                     </SheetTrigger>
-                    <SheetContent side="bottom" className="h-[85svh] p-4">
+                    <SheetContent side="bottom" className="p-4 data-[side=bottom]:h-[85svh]">
                       <SheetHeader className="p-0">
                         <SheetTitle>{t('editor.addSongs')}</SheetTitle>
                       </SheetHeader>
