@@ -298,6 +298,9 @@
   },
   "settings": {
     "title": "設定",
+    "language": {
+      "description": "套用於此裝置上的整個應用程式。"
+    },
     "font": {
       "title": "字型",
       "description": "套用於此裝置上的整個應用程式。",

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { LYRICS_SIZES, useLyricsSize } from '@/features/reader/lyrics-size';
+import { changeLanguage, LANGUAGES } from '@/i18n';
 import { TYPEFACES, useTypeface } from '@/lib/typeface';
 import { cn } from '@/lib/utils';
 
@@ -11,14 +12,46 @@ const isOneOf = <T extends string>(values: readonly T[], value: string): value i
 
 const SELECTED = 'data-[state=on]:border-primary data-[state=on]:bg-accent';
 
+const LANGUAGE_CODES = LANGUAGES.map(({ code }) => code);
+
 export function SettingsPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [typeface, setTypeface] = useTypeface();
   const [lyricsSize, setLyricsSize] = useLyricsSize();
 
   return (
     <section className="mx-auto flex max-w-3xl flex-col gap-4">
       <h1 className="text-2xl font-semibold">{t('settings.title')}</h1>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>{t('language.label')}</CardTitle>
+          <CardDescription>{t('settings.language.description')}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ToggleGroup
+            type="single"
+            variant="outline"
+            value={i18n.language}
+            onValueChange={(value) => {
+              if (isOneOf(LANGUAGE_CODES, value)) void changeLanguage(value);
+            }}
+            aria-label={t('language.label')}
+            className="grid w-full grid-cols-2"
+          >
+            {LANGUAGES.map(({ code, label }) => (
+              <ToggleGroupItem
+                key={code}
+                value={code}
+                lang={code}
+                className={cn('h-11 text-base', SELECTED)}
+              >
+                {label}
+              </ToggleGroupItem>
+            ))}
+          </ToggleGroup>
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>
