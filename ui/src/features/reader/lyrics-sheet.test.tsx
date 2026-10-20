@@ -73,6 +73,6 @@ describe('LyricsSheet', () => {
       />
     );
     const sheet = container.firstElementChild;
-    expect(sheet).toHaveClass('text-lyrics', 'text-sheet-foreground', 'lg:columns-3');
+    expect(sheet).toHaveClass('text-lyrics', 'text-sheet-foreground', 'columns-3');
   });
 });

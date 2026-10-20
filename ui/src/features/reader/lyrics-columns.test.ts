@@ -9,9 +9,9 @@ describe('lyrics columns', () => {
     expect(nextLyricsColumns('3')).toBe('1');
   });
 
-  it('keeps phones on one column and only allows three from lg', () => {
+  it('uses the chosen column count at every width, phones included', () => {
     expect(LYRICS_COLUMN_CLASSES['1']).toBe('columns-1');
-    expect(LYRICS_COLUMN_CLASSES['2']).toBe('columns-1 md:columns-2');
-    expect(LYRICS_COLUMN_CLASSES['3']).toBe('columns-1 md:columns-2 lg:columns-3');
+    expect(LYRICS_COLUMN_CLASSES['2']).toBe('columns-2');
+    expect(LYRICS_COLUMN_CLASSES['3']).toBe('columns-3');
   });
 });

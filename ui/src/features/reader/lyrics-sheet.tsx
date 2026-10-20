@@ -66,11 +66,11 @@ function LyricLine({
   return (
     <p className="flex flex-wrap items-end">
       {line.segments.map(({ id, chord, lyric }) => (
-        <span key={id} className="inline-flex flex-col">
+        <span key={id} className="inline-flex max-w-full min-w-0 flex-col">
           <span className="text-chord min-h-[1.25em] pr-[0.35em] leading-tight font-medium">
             {chord ? renderChord(chord) : null}
           </span>
-          <span className="whitespace-pre">{lyric === '' ? ' ' : lyric}</span>
+          <span className="break-words whitespace-pre-wrap">{lyric === '' ? ' ' : lyric}</span>
         </span>
       ))}
     </p>
@@ -93,7 +93,7 @@ export function LyricsSheet({
     // Not merged with cn(): tailwind-merge reads text-lyrics (size) and text-sheet-foreground (colour)
     // as one conflicting text-* group and drops the size.
     <div
-      className={`font-lyrics text-lyrics text-sheet-foreground gap-12 leading-snug ${LYRICS_COLUMN_CLASSES[columns]}`}
+      className={`font-lyrics text-lyrics text-sheet-foreground gap-6 leading-snug md:gap-12 ${LYRICS_COLUMN_CLASSES[columns]}`}
     >
       {sections.map((section) => (
         <section
