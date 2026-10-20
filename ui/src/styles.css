@@ -60,7 +60,7 @@
   --typeface-sans: 'Geist Variable', var(--typeface-han);
   --typeface-mono: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
   --typeface-lyrics: var(--typeface-sans);
-  --lyrics-size: 0.75rem;
+  --lyrics-size: 0.875rem;
   --radius: 0.75rem;
 
   --background: oklch(0.945 0.012 255);

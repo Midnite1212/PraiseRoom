@@ -14,10 +14,10 @@ afterEach(async () => {
 });
 
 describe('SettingsPage', () => {
-  it('selects Geist and medium by default', () => {
+  it('selects Geist and large by default', () => {
     render(<SettingsPage />);
     expect(screen.getByRole('radio', { name: /Geist/ })).toBeChecked();
-    expect(screen.getByRole('radio', { name: 'Medium' })).toBeChecked();
+    expect(screen.getByRole('radio', { name: 'Large' })).toBeChecked();
   });
 
   it('applies the chosen font to the app and keeps it for next time', async () => {

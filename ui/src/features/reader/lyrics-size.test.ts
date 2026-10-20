@@ -14,7 +14,7 @@ afterEach(() => {
 });
 
 describe('lyrics size', () => {
-  it('defaults to medium and ignores unknown stored values', () => {
+  it('defaults to large and ignores unknown stored values', () => {
     expect(readLyricsSize()).toBe(DEFAULT_LYRICS_SIZE);
     localStorage.setItem('lyrics-size', 'huge');
     expect(readLyricsSize()).toBe(DEFAULT_LYRICS_SIZE);

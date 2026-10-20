@@ -87,7 +87,6 @@ export function ChordNotationToggle({
   );
 }
 
-// Cycles 1 → 2 → 3 columns; hidden on phones, where the sheet is always one column.
 export function LyricsColumnsControl({
   columns,
   onChange,
@@ -101,7 +100,6 @@ export function LyricsColumnsControl({
     <Button
       variant="outline"
       size="sm"
-      className="hidden md:inline-flex"
       aria-label={label}
       title={label}
       onClick={() => onChange(nextLyricsColumns(columns))}

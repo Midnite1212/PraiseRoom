@@ -4,7 +4,7 @@ export const LYRICS_SIZES = ['sm', 'md', 'lg', 'xl', '2xl'] as const;
 
 export type LyricsSize = (typeof LYRICS_SIZES)[number];
 
-export const DEFAULT_LYRICS_SIZE: LyricsSize = 'md';
+export const DEFAULT_LYRICS_SIZE: LyricsSize = 'lg';
 
 const lyricsSize = createStoredChoice('lyrics-size', LYRICS_SIZES, DEFAULT_LYRICS_SIZE);
 
