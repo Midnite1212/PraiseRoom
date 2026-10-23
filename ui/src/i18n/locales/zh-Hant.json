@@ -16,6 +16,7 @@
     "label": "主題",
     "light": "淺色",
     "dark": "深色",
+    "matchDevice": "跟隨此裝置",
     "system": "跟隨系統"
   },
   "language": {
@@ -23,6 +24,8 @@
   },
   "user": {
     "menu": "帳戶",
+    "appearance": "外觀",
+    "settingsHint": "字體大小、歌詞及和弦",
     "settings": "設定",
     "signOut": "登出",
     "signOutFailed": "未能登出，請再試一次。",

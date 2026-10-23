@@ -1,4 +1,5 @@
 import { useTheme } from 'next-themes';
+import { Monitor, Moon, Sun } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 
 import { Segmented } from '@/components/primitives/segmented';
@@ -10,10 +11,14 @@ type Theme = (typeof THEMES)[number];
 const isTheme = (value: string | undefined): value is Theme =>
   THEMES.some((theme) => theme === value);
 
-type ChoiceProps = { size?: 'sm' | 'md' | 'lg'; fullWidth?: boolean };
+const THEME_ICONS = { light: Sun, system: Monitor, dark: Moon } as const;
 
-// Light · System · Dark for this device.
-export function ThemeChoice({ size = 'sm', fullWidth = false }: ChoiceProps) {
+const COMPACT_LANGUAGE_LABELS: Record<LanguageCode, string> = { en: 'EN', 'zh-Hant': '繁' };
+
+type ChoiceProps = { size?: 'sm' | 'md' | 'lg'; fullWidth?: boolean; compact?: boolean };
+
+// Light · System · Dark for this device; compact shows icons only.
+export function ThemeChoice({ size = 'sm', fullWidth = false, compact = false }: ChoiceProps) {
   const { t } = useTranslation();
   const { theme, setTheme } = useTheme();
   return (
@@ -23,13 +28,18 @@ export function ThemeChoice({ size = 'sm', fullWidth = false }: ChoiceProps) {
       label={t('theme.label')}
       size={size}
       fullWidth={fullWidth}
-      options={THEMES.map((value) => ({ value, label: t(`theme.${value}`) }))}
+      optionClassName={compact ? 'w-11 px-0' : undefined}
+      options={THEMES.map((value) => {
+        const Icon = THEME_ICONS[value];
+        const name = value === 'system' && compact ? t('theme.matchDevice') : t(`theme.${value}`);
+        return compact ? { value, label: <Icon />, ariaLabel: name } : { value, label: name };
+      })}
     />
   );
 }
 
-// English · 繁體中文, each named in its own language.
-export function LanguageChoice({ size = 'sm', fullWidth = false }: ChoiceProps) {
+// English · 繁體中文, each named in its own language; compact shows EN · 繁.
+export function LanguageChoice({ size = 'sm', fullWidth = false, compact = false }: ChoiceProps) {
   const { t, i18n } = useTranslation();
   const language = LANGUAGES.find(({ code }) => code === i18n.language)?.code ?? 'en';
   return (
@@ -39,7 +49,13 @@ export function LanguageChoice({ size = 'sm', fullWidth = false }: ChoiceProps) 
       label={t('language.label')}
       size={size}
       fullWidth={fullWidth}
-      options={LANGUAGES.map(({ code, label }) => ({ value: code, label, lang: code }))}
+      optionClassName={compact ? 'w-11 px-0' : undefined}
+      options={LANGUAGES.map(({ code, label }) => ({
+        value: code,
+        label: compact ? COMPACT_LANGUAGE_LABELS[code] : label,
+        ariaLabel: compact ? label : undefined,
+        lang: code,
+      }))}
     />
   );
 }
