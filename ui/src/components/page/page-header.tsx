@@ -19,7 +19,12 @@ export function PageHeader({
   className?: string;
 }) {
   return (
-    <header className={cn('wide:mb-6 mb-4 flex items-end justify-between gap-3', className)}>
+    <header
+      className={cn(
+        'wide:mb-2.5 wide:min-h-(--head-h) wide:items-center mb-4 flex items-end justify-between gap-3',
+        className
+      )}
+    >
       <div className="min-w-0">
         <h1 data-page-title className={PAGE_TITLE_CLASSES}>
           {title}
