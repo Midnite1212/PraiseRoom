@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { listRowClasses } from '@/components/page/list-row';
 import { ActionMenu, MenuRow, MenuSeparator } from '@/components/primitives/action-menu';
 import { DateBlock } from '@/components/primitives/date-block';
+import type { SetStatus } from '@/components/primitives/set-status';
 import { type SwipeAction, SwipeRow } from '@/components/primitives/swipe-row';
 import { Tag } from '@/components/primitives/tag';
 import { Button } from '@/components/ui/button';
@@ -32,13 +33,13 @@ type SetlistRowProps = {
   session: Session;
   setlist: SetlistSummary;
   names: SetlistNames;
-  now: number;
+  status: SetStatus;
   actions?: ReactNode;
 };
 
 // A setlist as a row: its date tile, name, when and how many songs, who shared it and its folders.
 // The whole row opens it; `actions` sit above the row's link.
-export function SetlistRow({ session, setlist, names, now, actions }: SetlistRowProps) {
+export function SetlistRow({ session, setlist, names, status, actions }: SetlistRowProps) {
   const { t, i18n } = useTranslation();
   const weekday = setlist.date
     ? new Intl.DateTimeFormat(i18n.language, { weekday: 'short' }).format(new Date(setlist.date))
@@ -54,7 +55,7 @@ export function SetlistRow({ session, setlist, names, now, actions }: SetlistRow
 
   return (
     <div className={listRowClasses('group/row grid-cols-[52px_minmax(0,1fr)_auto]')}>
-      <DateBlock date={setlist.date} now={now} />
+      <DateBlock date={setlist.date} status={status} />
       <span className="min-w-0">
         <Link
           to="/setlists/$setlistId"

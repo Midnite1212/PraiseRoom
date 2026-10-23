@@ -9,6 +9,7 @@ import { GroupTitle } from '@/components/page/group-title';
 import { LIST_CLASSES } from '@/components/page/list-row';
 import { DateBlock } from '@/components/primitives/date-block';
 import { PickRow } from '@/components/primitives/pick-row';
+import { nextSetlistId, setStatus } from '@/components/primitives/set-status';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -64,6 +65,7 @@ export function FolderSetlists({
   const { data: setlists, isPending } = useQuery(setlistsQueryOptions());
   const names = useSetlistNames(session);
   const update = useFolderSetlistsUpdate(folder);
+  const nextId = nextSetlistId(setlists ?? [], now);
   const inFolder = new Set(folder.setlistIds);
   const folderSetlists = (setlists ?? []).filter(({ _id }) => inFolder.has(_id));
 
@@ -94,7 +96,7 @@ export function FolderSetlists({
                 session={session}
                 setlist={setlist}
                 names={names}
-                now={now}
+                status={setStatus(setlist, nextId, now)}
                 actions={
                   canEdit ? (
                     <Button
@@ -145,6 +147,7 @@ export function AddSetlistsDialog({
   const update = useFolderSetlistsUpdate(folder);
   const [search, setSearch] = useState('');
   const [picked, setPicked] = useState<readonly string[]>([]);
+  const nextId = nextSetlistId(setlists ?? [], now);
   const inFolder = new Set(folder.setlistIds);
   const query = search.trim().toLocaleLowerCase();
   const options = (setlists ?? []).filter(
@@ -219,7 +222,13 @@ export function AddSetlistsDialog({
               return (
                 <PickRow
                   key={setlist._id}
-                  leading={<DateBlock date={setlist.date} now={now} size="sm" />}
+                  leading={
+                    <DateBlock
+                      date={setlist.date}
+                      status={setStatus(setlist, nextId, now)}
+                      size="sm"
+                    />
+                  }
                   title={setlist.name}
                   hint={
                     isIn

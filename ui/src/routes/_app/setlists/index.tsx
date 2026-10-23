@@ -12,6 +12,7 @@ import { GroupTitle } from '@/components/page/group-title';
 import { LIST_CLASSES, LIST_COMPACT_CLASSES } from '@/components/page/list-row';
 import { PageHeader } from '@/components/page/page-header';
 import { Fab } from '@/components/primitives/fab';
+import { nextSetlistId, setStatus } from '@/components/primitives/set-status';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { setlistsQueryOptions } from '@/features/setlists/api';
@@ -69,6 +70,7 @@ function SetlistsPage() {
     { key: 'undated', title: t('setlists.undated'), items: groups.undated },
     { key: 'past', title: t('setlists.past'), items: groups.past },
   ].filter(({ items }) => items.length > 0);
+  const nextId = nextSetlistId(setlists, now);
 
   const activeFilters: ActiveFilter[] = [
     ...(search.show === 'all'
@@ -159,7 +161,7 @@ function SetlistsPage() {
                       session={session}
                       setlist={setlist}
                       names={names}
-                      now={now}
+                      status={setStatus(setlist, nextId, now)}
                     />
                   ))}
                 </ul>
