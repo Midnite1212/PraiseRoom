@@ -104,7 +104,7 @@ function HomePage() {
             <ul className={LIST_CLASSES}>
               {myFolders.map((folder) => (
                 <li key={folder._id}>
-                  <FolderRow session={session} folder={folder} people={people} />
+                  <FolderRow session={session} folder={folder} people={people} now={now} />
                 </li>
               ))}
             </ul>

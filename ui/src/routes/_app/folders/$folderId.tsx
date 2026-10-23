@@ -50,6 +50,7 @@ import {
 import { AddSetlistsDialog, FolderSetlists } from '@/features/folders/folder-setlists';
 import { FolderSleeve } from '@/features/folders/folder-sleeve';
 import { canDeleteFolder, canEditFolder } from '@/features/folders/permissions';
+import { useFolderCover } from '@/features/folders/use-folder-cover';
 import type { Folder } from '@/features/setlists/api';
 import { ensureOrNotFound } from '@/lib/ensure-or-not-found';
 
@@ -71,6 +72,7 @@ function FolderPage() {
   const { now } = Route.useLoaderData();
   const { data: folder } = useSuspenseQuery(folderQueryOptions(folderId));
   const { people, members } = useFolderMembers(folder);
+  const { cells } = useFolderCover(folder, now);
   const [sheet, setSheet] = useState<Sheet>(null);
   const [isRenaming, setIsRenaming] = useState(false);
   const [removing, setRemoving] = useState<Pick<Person, 'userId' | 'fullName'> | null>(null);
@@ -143,7 +145,7 @@ function FolderPage() {
         <BackLabel>{t('folders.title')}</BackLabel>
       </Link>
       <div className="mb-2 flex items-end gap-[22px]">
-        <FolderSleeve folderId={folder._id} name={folder.groupName} size="hero" />
+        <FolderSleeve cells={cells} size="hero" />
         <div className="min-w-0 flex-1">
           {isRenaming ? (
             <RenameFolderForm folder={folder} onDone={() => setIsRenaming(false)} />
