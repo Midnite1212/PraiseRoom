@@ -9,7 +9,8 @@ export function ReaderBack({ to, label }: { to: '/songs' | '/setlists'; label: s
     <Button
       asChild
       variant="glass"
-      className="wide:w-auto wide:pr-4 wide:pl-2 wide:text-[0.9375rem] size-12 gap-0.5 px-0"
+      size="icon-lg"
+      className="wide:w-auto wide:pr-4 wide:pl-3 wide:text-[0.9375rem] gap-0.5"
     >
       <Link to={to} aria-label={label}>
         <ChevronLeft />
