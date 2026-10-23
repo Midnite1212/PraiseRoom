@@ -7,7 +7,10 @@
     "songs": "詩歌",
     "toggleSidebar": "切換側邊欄",
     "setlists": "歌單",
-    "folders": "資料夾"
+    "folders": "資料夾",
+    "pages": "頁面",
+    "collapseSidebar": "收合側欄",
+    "expandSidebar": "展開側欄"
   },
   "theme": {
     "label": "主題",
@@ -22,7 +25,13 @@
     "menu": "帳戶",
     "settings": "設定",
     "signOut": "登出",
-    "signOutFailed": "未能登出，請再試一次。"
+    "signOutFailed": "未能登出，請再試一次。",
+    "profile": "個人檔案",
+    "accessType": {
+      "member": "成員",
+      "editor": "編輯",
+      "admin": "管理員"
+    }
   },
   "home": {
     "greeting": "歡迎，{{name}}",

@@ -7,7 +7,10 @@
     "songs": "Songs",
     "toggleSidebar": "Toggle sidebar",
     "setlists": "Setlists",
-    "folders": "Folders"
+    "folders": "Folders",
+    "pages": "Pages",
+    "collapseSidebar": "Collapse sidebar",
+    "expandSidebar": "Expand sidebar"
   },
   "theme": {
     "label": "Theme",
@@ -22,7 +25,13 @@
     "menu": "Account",
     "settings": "Settings",
     "signOut": "Sign out",
-    "signOutFailed": "Could not sign out. Please try again."
+    "signOutFailed": "Could not sign out. Please try again.",
+    "profile": "Profile",
+    "accessType": {
+      "member": "Member",
+      "editor": "Editor",
+      "admin": "Admin"
+    }
   },
   "home": {
     "greeting": "Welcome, {{name}}",
