@@ -140,7 +140,8 @@
       "capo": "Capo"
     },
     "openInApp": "Open in the app",
-    "columns": "Lyric columns: {{columns}}"
+    "columns": "Lyric columns: {{columns}}",
+    "close": "Close"
   },
   "editor": {
     "newTitle": "New setlist",
@@ -324,6 +325,24 @@
         "xl": "Extra large",
         "2xl": "Largest"
       }
+    },
+    "accent": {
+      "title": "Accent colour",
+      "description": "Black and white with one colour, on this device.",
+      "options": {
+        "electric": "Electric blue",
+        "violet": "Ultraviolet",
+        "volt": "Volt",
+        "signal": "Signal orange"
+      }
     }
+  },
+  "filters": {
+    "button": "Filter",
+    "buttonWithCount": "Filter ({{count}} on)",
+    "remove": "Remove {{name}}",
+    "clearSearch": "Clear search",
+    "reset": "Reset",
+    "clear": "Clear"
   }
 }

@@ -6,6 +6,7 @@ import { createRoot } from 'react-dom/client';
 
 import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { syncAccent } from '@/lib/accent';
 import { createQueryClient } from '@/lib/query-client';
 import { listenForStaleChunks } from '@/lib/reload-on-stale-chunk';
 import { syncTypeface } from '@/lib/typeface';
@@ -23,6 +24,7 @@ import './styles.css';
 
 listenForStaleChunks();
 syncTypeface();
+syncAccent();
 
 const queryClient = createQueryClient();
 const router = createAppRouter(queryClient);

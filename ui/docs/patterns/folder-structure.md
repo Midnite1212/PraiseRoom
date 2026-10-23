@@ -10,7 +10,9 @@ src/
     _app/<page>/index.tsx  signed-in pages
     login.tsx              signed-out pages sit beside _app
   features/<feature>/      everything one feature owns: api.ts, components, schemas, hooks
-  components/ui/           shadcn components (vendored; added with `pnpm exec shadcn add`)
+  components/ui/           shadcn components (vendored; added with `pnpm exec shadcn add`), restyled to the design
+  components/primitives/   design pieces any feature uses: segmented control, vinyl, date tile, menus, panels
+  components/page/         page structure: header, finder, group titles, rows, filter sheet, empty state
   components/layout/       app shell pieces shared by every page
   hooks/                   hooks used by more than one feature
   lib/                     framework-free helpers: api and auth clients, query client, stored choices, utils

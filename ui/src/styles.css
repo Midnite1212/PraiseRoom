@@ -4,12 +4,98 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Wide screens get the floating rail and anchored menus; everything narrower gets the phone layout. */
+@custom-variant wide {
+  @media (min-width: 900px) and (orientation: landscape) {
+    @slot;
+  }
+}
+
+@theme {
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-liquid: cubic-bezier(0.34, 1.32, 0.52, 1);
+
+  --animate-view-in: view-in 360ms var(--ease-out);
+  --animate-spin-slow: spin 3.2s linear infinite;
+  --animate-sheet-in: sheet-in 480ms var(--ease-liquid);
+  --animate-sheet-out: sheet-out 200ms var(--ease-out) forwards;
+  --animate-pop-in: pop-in 420ms var(--ease-liquid);
+  --animate-pop-out: pop-out 160ms var(--ease-out) forwards;
+  --animate-scrim-in: scrim-in 200ms var(--ease-out);
+  --animate-scrim-out: scrim-out 220ms var(--ease-out) forwards;
+
+  @keyframes view-in {
+    from {
+      opacity: 0;
+      translate: 0 8px;
+    }
+  }
+  @keyframes sheet-in {
+    from {
+      opacity: 0;
+      transform: translateY(24px) scale(0.96);
+    }
+  }
+  @keyframes sheet-out {
+    to {
+      opacity: 0;
+      transform: translateY(24px) scale(0.96);
+    }
+  }
+  @keyframes pop-in {
+    from {
+      opacity: 0;
+      transform: translateY(-8px) scale(0.96);
+    }
+  }
+  @keyframes pop-out {
+    to {
+      opacity: 0;
+      transform: translateY(-8px) scale(0.96);
+    }
+  }
+  @keyframes scrim-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes scrim-out {
+    to {
+      opacity: 0;
+    }
+  }
+}
+
 @theme inline {
   --font-sans: var(--typeface-sans);
   --font-heading: var(--typeface-sans);
   --font-mono: var(--typeface-mono);
   --font-lyrics: var(--typeface-lyrics);
   --text-lyrics: var(--lyrics-size);
+  --spacing-icon: var(--icon);
+
+  --color-brand: var(--brand);
+  --color-ground: var(--ground);
+  --color-ground-lift: var(--ground-lift);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-hairline: var(--hairline);
+  --color-fill-hover: var(--fill-hover);
+  --color-fill-press: var(--fill-press);
+  --color-fill-on: var(--fill-on);
+  --color-pixel-off: var(--pixel-off);
+  --color-pixel-played: var(--pixel-played);
+  --color-pixel-on: var(--pixel-on);
+  --color-glass-strong: var(--glass-tint-strong);
+  --color-danger: var(--destructive);
+  --color-danger-tint: var(--danger-tint);
+  --color-scrim: var(--scrim);
+  --color-cover: var(--cover);
+  --color-cover-light: var(--cover-light);
+  --color-cover-dim: var(--cover-dim);
+  --color-on-brand: var(--on-brand);
+
   --color-sheet: var(--sheet);
   --color-sheet-foreground: var(--sheet-foreground);
   --color-chord: var(--chord);
@@ -54,88 +140,189 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-/* Provisional palette sampled from the musician-view references; the designer owns the final values. */
+/* Black and white with one accent (`--brand`). Neutrals carry no hue; the accent lights chords, selection,
+   the current song and focus. Dark is the default: dim rooms and stages. */
 :root {
   --typeface-han: 'PingFang TC', 'Microsoft JhengHei', 'Noto Sans TC', sans-serif;
   --typeface-sans: 'Geist Variable', var(--typeface-han);
-  --typeface-mono: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+  --typeface-mono:
+    'Geist Mono Variable', ui-monospace, 'SF Mono', Menlo, Consolas, var(--typeface-han), monospace;
   --typeface-lyrics: var(--typeface-sans);
   --lyrics-size: 0.875rem;
   --radius: 0.75rem;
+  --icon: 18px;
 
-  --background: oklch(0.945 0.012 255);
-  --foreground: oklch(0.28 0.035 262);
-  --sheet: oklch(1 0 0);
-  --sheet-foreground: oklch(0.28 0.035 262);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.28 0.035 262);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.28 0.035 262);
-  --primary: oklch(0.36 0.075 258);
-  --primary-foreground: oklch(0.98 0.005 255);
-  --secondary: oklch(0.92 0.02 255);
-  --secondary-foreground: oklch(0.36 0.075 258);
-  --muted: oklch(0.95 0.01 255);
-  --muted-foreground: oklch(0.52 0.03 258);
-  --accent: oklch(0.91 0.035 252);
-  --accent-foreground: oklch(0.36 0.075 258);
-  --chord: oklch(0.56 0.14 255);
-  --label: oklch(0.56 0.12 255);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.9 0.015 255);
-  --input: oklch(0.88 0.018 255);
-  --ring: oklch(0.56 0.14 255);
-  --chart-1: oklch(0.56 0.14 255);
-  --chart-2: oklch(0.36 0.075 258);
-  --chart-3: oklch(0.7 0.1 250);
-  --chart-4: oklch(0.52 0.03 258);
-  --chart-5: oklch(0.8 0.05 250);
-  --sidebar: oklch(0.975 0.006 255);
-  --sidebar-foreground: oklch(0.28 0.035 262);
-  --sidebar-primary: oklch(0.36 0.075 258);
-  --sidebar-primary-foreground: oklch(0.98 0.005 255);
-  --sidebar-accent: oklch(0.91 0.035 252);
-  --sidebar-accent-foreground: oklch(0.36 0.075 258);
-  --sidebar-border: oklch(0.9 0.015 255);
-  --sidebar-ring: oklch(0.56 0.14 255);
+  --top: max(10px, env(safe-area-inset-top));
+  --bottom: max(12px, env(safe-area-inset-bottom));
+  --frame-l: max(10px, env(safe-area-inset-left), calc((100vw - 1600px) / 2));
+  --frame-r: max(10px, env(safe-area-inset-right), calc((100vw - 1600px) / 2));
+  --rail-w: 232px;
+  --tab-h: 60px;
+  --top-h: 52px;
+  --dock-h: 60px;
+  --pg: 18px;
+
+  --brand: oklch(0.52 0.26 264);
+  --on-brand: oklch(1 0 0);
+  --ground: oklch(1 0 0);
+  --ground-lift: oklch(0.955 0 0);
+  --ink: oklch(0.13 0 0);
+  --ink-2: oklch(0.38 0 0);
+  --ink-3: oklch(0.5 0 0);
+  --hairline: oklch(0 0 0 / 0.12);
+  --glass-tint: oklch(1 0 0 / 0.42);
+  --glass-tint-strong: oklch(1 0 0 / 0.76);
+  --glass-tint-over: oklch(1 0 0 / 0.64);
+  --rim-hi: oklch(1 0 0 / 0.95);
+  --rim-lo: oklch(1 0 0 / 0.45);
+  --rim-edge: oklch(0 0 0 / 0.14);
+  --shadow: oklch(0 0 0 / 0.18);
+  --fill-hover: oklch(0 0 0 / 0.06);
+  --fill-press: oklch(0 0 0 / 0.11);
+  --fill-on: color-mix(in oklch, var(--brand) 14%, transparent);
+  --pixel-off: oklch(0 0 0 / 0.14);
+  --pixel-played: oklch(0 0 0 / 0.45);
+  --pixel-on: var(--brand);
+  --pixel-glow: color-mix(in oklch, var(--brand) 40%, transparent);
+  --danger-tint: color-mix(in oklch, var(--destructive) 14%, transparent);
+  --scrim: oklch(0 0 0 / 0.45);
+  --cover: oklch(0.16 0 0);
+  --cover-light: oklch(1 0 0 / 0.86);
+  --cover-dim: oklch(1 0 0 / 0.16);
+
+  --background: var(--ground);
+  --foreground: var(--ink);
+  --sheet: var(--ground);
+  --sheet-foreground: var(--ink);
+  --card: var(--ground-lift);
+  --card-foreground: var(--ink);
+  --popover: oklch(0.99 0 0);
+  --popover-foreground: var(--ink);
+  --primary: var(--ink);
+  --primary-foreground: var(--ground);
+  --secondary: var(--fill-hover);
+  --secondary-foreground: var(--ink);
+  --muted: var(--fill-hover);
+  --muted-foreground: var(--ink-2);
+  --accent: var(--fill-hover);
+  --accent-foreground: var(--ink);
+  --chord: var(--brand);
+  --label: oklch(0.34 0 0);
+  --destructive: oklch(0.55 0.21 27);
+  --border: var(--hairline);
+  --input: var(--hairline);
+  --ring: var(--brand);
+  --chart-1: var(--brand);
+  --chart-2: var(--ink-2);
+  --chart-3: var(--ink-3);
+  --chart-4: oklch(0.7 0 0);
+  --chart-5: oklch(0.85 0 0);
+  --sidebar: var(--ground);
+  --sidebar-foreground: var(--ink);
+  --sidebar-primary: var(--ink);
+  --sidebar-primary-foreground: var(--ground);
+  --sidebar-accent: var(--fill-on);
+  --sidebar-accent-foreground: var(--ink);
+  --sidebar-border: var(--hairline);
+  --sidebar-ring: var(--brand);
+
+  color-scheme: light;
 }
 
 .dark {
-  --background: oklch(0.17 0.02 260);
-  --foreground: oklch(0.93 0.01 255);
-  --sheet: oklch(0.21 0.022 260);
-  --sheet-foreground: oklch(0.93 0.01 255);
-  --card: oklch(0.21 0.022 260);
-  --card-foreground: oklch(0.93 0.01 255);
-  --popover: oklch(0.23 0.022 260);
-  --popover-foreground: oklch(0.93 0.01 255);
-  --primary: oklch(0.78 0.09 252);
-  --primary-foreground: oklch(0.2 0.03 260);
-  --secondary: oklch(0.27 0.025 260);
-  --secondary-foreground: oklch(0.93 0.01 255);
-  --muted: oklch(0.25 0.02 260);
-  --muted-foreground: oklch(0.7 0.025 255);
-  --accent: oklch(0.3 0.045 255);
-  --accent-foreground: oklch(0.93 0.01 255);
-  --chord: oklch(0.76 0.12 245);
-  --label: oklch(0.72 0.1 248);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.76 0.12 245);
-  --chart-1: oklch(0.76 0.12 245);
-  --chart-2: oklch(0.78 0.09 252);
-  --chart-3: oklch(0.6 0.1 250);
-  --chart-4: oklch(0.7 0.025 255);
-  --chart-5: oklch(0.45 0.05 255);
-  --sidebar: oklch(0.19 0.02 260);
-  --sidebar-foreground: oklch(0.93 0.01 255);
-  --sidebar-primary: oklch(0.78 0.09 252);
-  --sidebar-primary-foreground: oklch(0.2 0.03 260);
-  --sidebar-accent: oklch(0.3 0.045 255);
-  --sidebar-accent-foreground: oklch(0.93 0.01 255);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.76 0.12 245);
+  --brand: oklch(0.68 0.21 262);
+  --on-brand: oklch(0.12 0 0);
+  --ground: oklch(0 0 0);
+  --ground-lift: oklch(0.17 0 0);
+  --ink: oklch(0.98 0 0);
+  --ink-2: oklch(0.78 0 0);
+  --ink-3: oklch(0.62 0 0);
+  --hairline: oklch(1 0 0 / 0.14);
+  --glass-tint: oklch(0.2 0 0 / 0.36);
+  --glass-tint-strong: oklch(0.15 0 0 / 0.7);
+  --glass-tint-over: oklch(0.16 0 0 / 0.6);
+  --rim-hi: oklch(1 0 0 / 0.78);
+  --rim-lo: oklch(1 0 0 / 0.16);
+  --rim-edge: oklch(1 0 0 / 0.14);
+  --shadow: oklch(0 0 0 / 0.7);
+  --fill-hover: oklch(1 0 0 / 0.09);
+  --fill-press: oklch(1 0 0 / 0.15);
+  --fill-on: color-mix(in oklch, var(--brand) 32%, transparent);
+  --pixel-off: oklch(1 0 0 / 0.18);
+  --pixel-played: oklch(1 0 0 / 0.52);
+  --pixel-glow: color-mix(in oklch, var(--brand) 80%, transparent);
+  --scrim: oklch(0 0 0 / 0.55);
+
+  --card: oklch(0.1 0 0);
+  --popover: oklch(0.14 0 0);
+  --label: oklch(0.74 0 0);
+  --destructive: oklch(0.7 0.19 25);
+
+  color-scheme: dark;
+}
+
+/* Accent palettes: Electric blue is the default; each alternative swaps only `--brand`. A palette set
+   on an element below `<html>` (a swatch on the Settings page) shows that accent there. */
+[data-palette='electric'] {
+  --brand: oklch(0.52 0.26 264);
+}
+[data-palette='electric'].dark,
+.dark [data-palette='electric'] {
+  --brand: oklch(0.68 0.21 262);
+}
+[data-palette='violet'] {
+  --brand: oklch(0.5 0.26 300);
+}
+[data-palette='violet'].dark,
+.dark [data-palette='violet'] {
+  --brand: oklch(0.7 0.2 300);
+}
+[data-palette='volt'] {
+  --brand: oklch(0.55 0.17 140);
+}
+[data-palette='volt'].dark,
+.dark [data-palette='volt'] {
+  --brand: oklch(0.9 0.21 128);
+}
+[data-palette='signal'] {
+  --brand: oklch(0.58 0.21 38);
+}
+[data-palette='signal'].dark,
+.dark [data-palette='signal'] {
+  --brand: oklch(0.73 0.19 45);
+}
+
+/* Increased contrast: near-opaque glass, stronger secondary ink and edges. */
+@media (prefers-contrast: more) {
+  :root {
+    --ink-2: oklch(0.28 0 0);
+    --ink-3: oklch(0.36 0 0);
+    --hairline: oklch(0 0 0 / 0.3);
+    --glass-tint: oklch(1 0 0 / 0.95);
+    --glass-tint-strong: oklch(1 0 0 / 0.97);
+    --glass-tint-over: oklch(1 0 0 / 0.95);
+    --rim-edge: oklch(0 0 0 / 0.45);
+    --fill-on: color-mix(in oklch, var(--brand) 24%, transparent);
+    --pixel-off: oklch(0 0 0 / 0.3);
+  }
+  .dark {
+    --ink-2: oklch(0.88 0 0);
+    --ink-3: oklch(0.8 0 0);
+    --hairline: oklch(1 0 0 / 0.3);
+    --glass-tint: oklch(0.12 0 0 / 0.95);
+    --glass-tint-strong: oklch(0.1 0 0 / 0.97);
+    --glass-tint-over: oklch(0.12 0 0 / 0.95);
+    --rim-edge: oklch(1 0 0 / 0.4);
+    --fill-on: color-mix(in oklch, var(--brand) 44%, transparent);
+    --pixel-off: oklch(1 0 0 / 0.32);
+  }
+}
+
+/* Pixel icons are a 24-unit grid in 2-unit pixels: 18px at 1x, 16px from 2dppx so each pixel snaps cleanly. */
+@media (min-resolution: 2dppx) {
+  :root {
+    --icon: 16px;
+  }
 }
 
 [data-typeface='geist'] {
@@ -175,8 +362,16 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    @apply font-sans;
+    -webkit-text-size-adjust: 100%;
+    scrollbar-color: oklch(0.6 0 0 / 0.5) transparent;
+    scroll-padding-top: calc(var(--top-h) + 24px);
+  }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    min-height: 100svh;
+    text-rendering: optimizeLegibility;
   }
   h1,
   h2,
@@ -186,7 +381,309 @@
   h6 {
     @apply font-heading;
   }
-  html {
-    @apply font-sans;
+  ::selection {
+    background: color-mix(in oklch, var(--brand) 35%, transparent);
+    color: var(--ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--chord);
+    outline-offset: 2px;
+  }
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
+  }
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+  svg[shape-rendering='crispEdges'],
+  [data-pixel-icon] {
+    shape-rendering: crispEdges;
+  }
+}
+
+@layer components {
+  /*
+    Liquid Glass, frosted: the host is an isolated stacking context with no paint of its own.
+    ::after (z −1) carries the backdrop blur and the tint, ::before (z 1) is the specular rim, children sit
+    between. Hosts set `--glass-r`, `--glass-fill` and `--glass-blur` to tune it.
+  */
+  .glass {
+    position: relative;
+    isolation: isolate;
+    border-radius: var(--glass-r, 999px);
+    color: var(--ink);
+    box-shadow:
+      0 12px 32px -10px var(--shadow),
+      0 2px 8px -2px var(--shadow);
+  }
+
+  .glass::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: var(--glass-fill, var(--glass-tint));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 12px)) saturate(185%) brightness(1.04);
+    backdrop-filter: blur(var(--glass-blur, 12px)) saturate(185%) brightness(1.04);
+    pointer-events: none;
+    transition: background-color 300ms var(--ease-out);
+  }
+
+  .glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    padding: 1px;
+    background:
+      linear-gradient(
+        150deg,
+        var(--rim-hi) 0%,
+        var(--rim-lo) 28%,
+        transparent 50%,
+        var(--rim-lo) 74%,
+        color-mix(in oklch, var(--rim-hi) 60%, transparent) 100%
+      ),
+      linear-gradient(var(--rim-edge), var(--rim-edge));
+    -webkit-mask:
+      linear-gradient(black 0 0) content-box,
+      linear-gradient(black 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(black 0 0) content-box exclude,
+      linear-gradient(black 0 0);
+    pointer-events: none;
+  }
+
+  /* Glass that floats over moving content carries a denser tint so its own labels always win. */
+  .glass-over {
+    --glass-fill: var(--glass-tint-over);
+  }
+
+  .glass-strong {
+    --glass-fill: var(--glass-tint-strong);
+    --glass-blur: 24px;
+  }
+
+  .glass-danger {
+    --glass-fill: color-mix(in oklch, var(--destructive) 16%, var(--glass-tint));
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    .glass::after {
+      background: color-mix(in oklch, var(--glass-tint-strong) 100%, var(--ground));
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .glass {
+      border: 1px solid CanvasText;
+    }
+  }
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass::after {
+      background: var(--glass-tint-strong);
+    }
+  }
+
+  /* Segmented control with a liquid thumb. Options share the width evenly, so the thumb's size and place
+     follow from how many options there are and which one is on. */
+  .segmented {
+    --seg-n: 1;
+    --seg-i: 0;
+    position: relative;
+    display: inline-grid;
+    grid-auto-columns: 1fr;
+    grid-auto-flow: column;
+    padding: 3px;
+    border-radius: 999px;
+    background: var(--fill-hover);
+  }
+
+  .segmented:has(> [data-seg-option]:nth-child(2)) {
+    --seg-n: 2;
+  }
+  .segmented:has(> [data-seg-option]:nth-child(3)) {
+    --seg-n: 3;
+  }
+  .segmented:has(> [data-seg-option]:nth-child(4)) {
+    --seg-n: 4;
+  }
+  .segmented:has(> [data-seg-option]:nth-child(5)) {
+    --seg-n: 5;
+  }
+  .segmented:has(> [data-seg-option]:nth-child(2)[data-state='on']) {
+    --seg-i: 1;
+  }
+  .segmented:has(> [data-seg-option]:nth-child(3)[data-state='on']) {
+    --seg-i: 2;
+  }
+  .segmented:has(> [data-seg-option]:nth-child(4)[data-state='on']) {
+    --seg-i: 3;
+  }
+  .segmented:has(> [data-seg-option]:nth-child(5)[data-state='on']) {
+    --seg-i: 4;
+  }
+
+  .segmented-thumb {
+    position: absolute;
+    z-index: 0;
+    top: 3px;
+    bottom: 3px;
+    left: 3px;
+    width: calc((100% - 6px) / var(--seg-n));
+    border-radius: 999px;
+    background: var(--fill-on);
+    box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--brand) 30%, transparent);
+    transform: translateX(calc(var(--seg-i) * 100%));
+    transition: transform 480ms var(--ease-liquid);
+    pointer-events: none;
+  }
+
+  .segmented:not(:has(> [data-state='on'])) > .segmented-thumb {
+    opacity: 0;
+  }
+
+  /* Your profile as a record: fine repeating grooves, a conic sheen, the accent label with your initial,
+     and the ground as the spindle hole. Hosts set `--v` for its size. */
+  .vinyl {
+    position: relative;
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: var(--v, 48px);
+    height: var(--v, 48px);
+    border-radius: 999px;
+    background:
+      conic-gradient(
+        from 210deg,
+        transparent 0deg,
+        oklch(1 0 0 / 0.16) 25deg,
+        transparent 60deg,
+        transparent 180deg,
+        oklch(1 0 0 / 0.1) 205deg,
+        transparent 240deg
+      ),
+      repeating-radial-gradient(circle, oklch(0.16 0 0) 0 1px, oklch(0.09 0 0) 1px 2.4px),
+      oklch(0.1 0 0);
+    box-shadow:
+      inset 0 0 0 1px oklch(1 0 0 / 0.14),
+      0 10px 24px -10px oklch(0 0 0 / 0.8);
+    transition: transform 420ms var(--ease-liquid);
+  }
+
+  .vinyl::before {
+    content: '';
+    position: absolute;
+    inset: var(--vinyl-label-inset, 31%);
+    border-radius: 999px;
+    background: var(--brand);
+    box-shadow: 0 0 0 1px oklch(0 0 0 / 0.4);
+  }
+
+  .vinyl-label {
+    position: relative;
+    z-index: 1;
+    color: oklch(0.12 0 0);
+    font: 700 calc(var(--v, 48px) * 0.2) / 1 var(--typeface-mono);
+  }
+
+  /* The record peeks out of its sleeve and slides further out on hover. */
+  .sleeve-vinyl {
+    --v: 100%;
+    --vinyl-label-inset: 36%;
+    position: absolute;
+    top: 3%;
+    right: -16%;
+    width: 94%;
+    height: 94%;
+    transition: transform 520ms var(--ease-liquid);
+  }
+
+  .sleeve-host:hover .sleeve-vinyl,
+  .sleeve-host:focus-visible .sleeve-vinyl {
+    transform: translateX(8%) rotate(40deg);
+  }
+
+  .sleeve-cover {
+    box-shadow:
+      inset 0 0 0 1px oklch(1 0 0 / 0.1),
+      0 18px 30px -16px oklch(0 0 0 / 0.9);
+  }
+
+  /* One even field, lifted by a single soft wash of light from the top. */
+  .ground-wash {
+    background: linear-gradient(180deg, var(--ground-lift) 0%, transparent 46vh);
+  }
+
+  /* Scroll edges: content dissolves before it reaches the floating bars. */
+  .edge-top {
+    background: color-mix(in oklch, var(--ground) 90%, transparent);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    -webkit-mask-image: linear-gradient(black 76%, transparent);
+    mask-image: linear-gradient(black 76%, transparent);
+  }
+
+  .edge-bottom {
+    background: color-mix(in oklch, var(--ground) 55%, transparent);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    -webkit-mask-image: linear-gradient(transparent, black 50%);
+    mask-image: linear-gradient(transparent, black 50%);
+  }
+
+  /* While the finder sticks it carries its own fade band behind it, up under the top bar. */
+  .finder-band {
+    background: color-mix(in oklch, var(--ground) 97%, transparent);
+    -webkit-mask-image: linear-gradient(black 78%, transparent);
+    mask-image: linear-gradient(black 78%, transparent);
+  }
+
+  .fab-shadow {
+    box-shadow:
+      0 14px 28px -10px oklch(0 0 0 / 0.7),
+      0 2px 6px -2px oklch(0 0 0 / 0.5);
+  }
+
+  .pixel-glow {
+    box-shadow: 0 1px 8px var(--pixel-glow);
+  }
+
+  /* Pixel "grip" for rows that can be dragged. */
+  .grip-dots {
+    width: 3px;
+    height: 3px;
+    background: var(--ink-3);
+    box-shadow:
+      5px 0 var(--ink-3),
+      0 5px var(--ink-3),
+      5px 5px var(--ink-3),
+      0 10px var(--ink-3),
+      5px 10px var(--ink-3);
+    transform: translate(-2.5px, -5px);
+  }
+
+  /* Phones draw no scrollbars. */
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
   }
 }

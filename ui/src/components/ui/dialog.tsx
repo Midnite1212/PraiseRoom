@@ -5,6 +5,14 @@ import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
 
+// Praise Room: dialogs are glass sheets that rise from the bottom on phones and sit in the middle on
+// wide screens. Hosts can widen one with `[--dw:520px]`.
+const SHEET_CLASSES =
+  'glass glass-strong fixed z-50 flex flex-col [--glass-r:32px] right-2.5 bottom-(--bottom) left-2.5 mx-auto max-h-[min(82svh,720px)] max-w-[560px] origin-bottom px-4 pt-[18px] pb-4 text-sm text-ink outline-none data-open:animate-sheet-in data-closed:animate-sheet-out wide:top-1/2 wide:right-auto wide:bottom-auto wide:left-1/2 wide:w-[min(var(--dw,480px),calc(100vw-48px))] wide:max-w-none wide:max-h-[min(80vh,720px)] wide:-translate-x-1/2 wide:-translate-y-1/2 wide:origin-center';
+
+const SCRIM_CLASSES =
+  'fixed inset-0 isolate z-50 bg-scrim data-open:animate-scrim-in data-closed:animate-scrim-out';
+
 function Dialog({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />;
 }
@@ -28,10 +36,7 @@ function DialogOverlay({
   return (
     <DialogPrimitive.Overlay
       data-slot="dialog-overlay"
-      className={cn(
-        'fixed inset-0 isolate z-50 bg-black/10 duration-100 supports-backdrop-filter:backdrop-blur-xs data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0',
-        className
-      )}
+      className={cn(SCRIM_CLASSES, className)}
       {...props}
     />
   );
@@ -41,25 +46,29 @@ function DialogContent({
   className,
   children,
   showCloseButton = true,
+  footer,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean;
+  // Pinned under the scrolling content, so its buttons stay in reach on long sheets.
+  footer?: React.ReactNode;
 }) {
   return (
     <DialogPortal>
       <DialogOverlay />
       <DialogPrimitive.Content
         data-slot="dialog-content"
-        className={cn(
-          'fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl bg-popover p-4 text-sm text-popover-foreground ring-1 ring-foreground/10 duration-100 outline-none sm:max-w-sm data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
-          className
-        )}
+        className={cn(SHEET_CLASSES, className)}
         {...props}
       >
-        {children}
+        {/* The glass rim is drawn on the host, so the content scrolls inside it rather than with it. */}
+        <div className="no-scrollbar -mx-4 -my-1 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 py-1">
+          {children}
+        </div>
+        {footer ? <div className="pt-3.5">{footer}</div> : null}
         {showCloseButton && (
           <DialogPrimitive.Close data-slot="dialog-close" asChild>
-            <Button variant="ghost" className="absolute top-2 right-2" size="icon-sm">
+            <Button variant="ghost" className="absolute top-3.5 right-3.5 z-10" size="icon">
               <Close />
               <span className="sr-only">Close</span>
             </Button>
@@ -70,9 +79,32 @@ function DialogContent({
   );
 }
 
-function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
+function DialogHeader({
+  className,
+  icon,
+  tone = 'default',
+  children,
+  ...props
+}: React.ComponentProps<'div'> & { icon?: React.ReactNode; tone?: 'default' | 'danger' }) {
   return (
-    <div data-slot="dialog-header" className={cn('flex flex-col gap-2', className)} {...props} />
+    <div
+      data-slot="dialog-header"
+      className={cn('flex items-start gap-3 pr-10', className)}
+      {...props}
+    >
+      {icon ? (
+        <span
+          aria-hidden
+          className={cn(
+            'grid size-10 flex-none place-items-center rounded-xl',
+            tone === 'danger' ? 'bg-danger-tint text-destructive' : 'bg-fill-on text-ink'
+          )}
+        >
+          {icon}
+        </span>
+      ) : null}
+      <div className="flex min-w-0 flex-1 flex-col gap-0.5">{children}</div>
+    </div>
   );
 }
 
@@ -85,20 +117,13 @@ function DialogFooter({
   showCloseButton?: boolean;
 }) {
   return (
-    <div
-      data-slot="dialog-footer"
-      className={cn(
-        '-mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4 sm:flex-row sm:justify-end',
-        className
-      )}
-      {...props}
-    >
-      {children}
+    <div data-slot="dialog-footer" className={cn('flex gap-2 *:flex-1', className)} {...props}>
       {showCloseButton && (
         <DialogPrimitive.Close asChild>
-          <Button variant="outline">Close</Button>
+          <Button variant="secondary">Close</Button>
         </DialogPrimitive.Close>
       )}
+      {children}
     </div>
   );
 }
@@ -107,7 +132,7 @@ function DialogTitle({ className, ...props }: React.ComponentProps<typeof Dialog
   return (
     <DialogPrimitive.Title
       data-slot="dialog-title"
-      className={cn('font-heading text-base leading-none font-medium', className)}
+      className={cn('font-heading text-base leading-snug font-semibold', className)}
       {...props}
     />
   );
@@ -121,7 +146,7 @@ function DialogDescription({
     <DialogPrimitive.Description
       data-slot="dialog-description"
       className={cn(
-        'text-sm text-muted-foreground *:[a]:underline *:[a]:underline-offset-3 *:[a]:hover:text-foreground',
+        'text-[0.8125rem] text-ink-2 *:[a]:underline *:[a]:underline-offset-3 *:[a]:hover:text-ink',
         className
       )}
       {...props}
@@ -140,4 +165,6 @@ export {
   DialogPortal,
   DialogTitle,
   DialogTrigger,
+  SCRIM_CLASSES,
+  SHEET_CLASSES,
 };
