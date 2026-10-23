@@ -47,6 +47,7 @@ export const songSummarySchema = z.object({
   artist: z.string(),
   originalKey: z.string(),
   tempo: z.array(z.string()),
+  timeSignature: z.array(z.string()).default([]),
   themes: z.array(z.string()).default([]),
   code: z.string().nullish(),
 });
