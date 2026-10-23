@@ -158,6 +158,7 @@
   --frame-r: max(10px, env(safe-area-inset-right), calc((100vw - 1600px) / 2));
   --rail-w: 232px;
   --tab-h: 60px;
+  --head-h: 64px;
   --top-h: 52px;
   --dock-h: 60px;
   --pg: 18px;
@@ -170,12 +171,12 @@
   --ink-2: oklch(0.38 0 0);
   --ink-3: oklch(0.5 0 0);
   --hairline: oklch(0 0 0 / 0.12);
-  --glass-tint: oklch(1 0 0 / 0.42);
-  --glass-tint-strong: oklch(1 0 0 / 0.76);
-  --glass-tint-over: oklch(1 0 0 / 0.64);
+  --glass-tint: oklch(1 0 0 / 0.6);
+  --glass-tint-strong: oklch(1 0 0 / 0.86);
+  --glass-tint-over: oklch(1 0 0 / 0.76);
   --rim-hi: oklch(1 0 0 / 0.95);
-  --rim-lo: oklch(1 0 0 / 0.45);
-  --rim-edge: oklch(0 0 0 / 0.14);
+  --rim-lo: oklch(1 0 0 / 0.3);
+  --rim-edge: oklch(0 0 0 / 0.1);
   --shadow: oklch(0 0 0 / 0.18);
   --fill-hover: oklch(0 0 0 / 0.06);
   --fill-press: oklch(0 0 0 / 0.11);
@@ -238,12 +239,12 @@
   --ink-2: oklch(0.78 0 0);
   --ink-3: oklch(0.62 0 0);
   --hairline: oklch(1 0 0 / 0.14);
-  --glass-tint: oklch(0.2 0 0 / 0.36);
-  --glass-tint-strong: oklch(0.15 0 0 / 0.7);
-  --glass-tint-over: oklch(0.16 0 0 / 0.6);
-  --rim-hi: oklch(1 0 0 / 0.78);
-  --rim-lo: oklch(1 0 0 / 0.16);
-  --rim-edge: oklch(1 0 0 / 0.14);
+  --glass-tint: oklch(0.2 0 0 / 0.56);
+  --glass-tint-strong: oklch(0.15 0 0 / 0.82);
+  --glass-tint-over: oklch(0.16 0 0 / 0.74);
+  --rim-hi: oklch(1 0 0 / 0.6);
+  --rim-lo: oklch(1 0 0 / 0.08);
+  --rim-edge: oklch(1 0 0 / 0.08);
   --shadow: oklch(0 0 0 / 0.7);
   --fill-hover: oklch(1 0 0 / 0.09);
   --fill-press: oklch(1 0 0 / 0.15);
@@ -456,8 +457,8 @@
     z-index: -1;
     border-radius: inherit;
     background: var(--glass-fill, var(--glass-tint));
-    -webkit-backdrop-filter: blur(var(--glass-blur, 12px)) saturate(185%) brightness(1.04);
-    backdrop-filter: blur(var(--glass-blur, 12px)) saturate(185%) brightness(1.04);
+    -webkit-backdrop-filter: blur(var(--glass-blur, 14px)) saturate(185%) brightness(1.04);
+    backdrop-filter: blur(var(--glass-blur, 14px)) saturate(185%) brightness(1.04);
     pointer-events: none;
     transition: background-color 300ms var(--ease-out);
   }
@@ -499,8 +500,8 @@
         transparent 70%
       ),
       var(--glass-fill, var(--glass-tint));
-    -webkit-backdrop-filter: var(--lg, blur(var(--glass-blur, 12px)) saturate(185%)) var(--lg-tone);
-    backdrop-filter: var(--lg, blur(var(--glass-blur, 12px)) saturate(185%)) var(--lg-tone);
+    -webkit-backdrop-filter: var(--lg, blur(var(--glass-blur, 14px)) saturate(185%)) var(--lg-tone);
+    backdrop-filter: var(--lg, blur(var(--glass-blur, 14px)) saturate(185%)) var(--lg-tone);
     transition:
       background-color 300ms var(--ease-out),
       --sheen 420ms var(--ease-out);
