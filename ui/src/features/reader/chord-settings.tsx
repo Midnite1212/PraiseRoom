@@ -6,6 +6,7 @@ import { Panel } from '@/components/primitives/panel';
 import { Segmented } from '@/components/primitives/segmented';
 import { SetRow } from '@/components/primitives/set-row';
 import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
 
 import {
   ACCIDENTALS,
@@ -15,6 +16,7 @@ import {
   useAccidentals,
   useChordNotation,
   useChordStyle,
+  useColourChords,
 } from './chord-display';
 
 const ACCIDENTAL_LABELS = { sharp: '#', flat: 'b' } as const;
@@ -50,6 +52,7 @@ export function ChordSettingsPanel({ glass = false }: { glass?: boolean }) {
   const [notation, setNotation] = useChordNotation();
   const [chordStyle, setChordStyle] = useChordStyle();
   const [accidentals, setAccidentals] = useAccidentals();
+  const [colourChords, setColourChords] = useColourChords();
 
   return (
     <Panel
@@ -90,6 +93,13 @@ export function ChordSettingsPanel({ glass = false }: { glass?: boolean }) {
             onChange={setChordStyle}
             label={t('reader.chordsStyle')}
             options={CHORD_STYLES.map((value) => ({ value, label: t(`reader.${value}`) }))}
+          />
+        </SetRow>
+        <SetRow label={t('reader.colourChords')} hint={t('reader.colourHint')}>
+          <Switch
+            aria-label={t('reader.colourChords')}
+            checked={colourChords === 'on'}
+            onCheckedChange={(checked) => setColourChords(checked ? 'on' : 'off')}
           />
         </SetRow>
         <SetRow label={t('reader.accidentals')}>

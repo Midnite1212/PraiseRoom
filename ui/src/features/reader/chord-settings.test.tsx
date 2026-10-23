@@ -24,4 +24,16 @@ describe('ChordSettingsPanel', () => {
     await user.click(screen.getByRole('radio', { name: 'Numbers' }));
     expect(localStorage.getItem('chord-notation')).toBe('numbers');
   });
+
+  it('stores the colour chords switch, off by default', async () => {
+    const user = userEvent.setup();
+    render(<ChordSettingsPanel />);
+    await user.click(screen.getByRole('button', { name: 'Chord settings' }));
+
+    const colour = screen.getByRole('switch', { name: 'Colour chords' });
+    expect(colour).not.toBeChecked();
+    await user.click(colour);
+    expect(colour).toBeChecked();
+    expect(localStorage.getItem('chord-colour')).toBe('on');
+  });
 });
