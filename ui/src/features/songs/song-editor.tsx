@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
+import { PAGE_TITLE_CLASSES } from '@/components/page/page-header';
 import { Button } from '@/components/ui/button';
 import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
@@ -20,8 +21,9 @@ import {
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { keyLabel, type MusicKey, transposeChordLyrics } from '@/features/chords/theory';
+import { ReaderPreferenceControls } from '@/features/reader/reader-controls';
 import type { ReaderSong } from '@/features/reader/song';
-import { ReaderPreferenceControls, SongReader } from '@/features/reader/song-reader';
+import { SongReader } from '@/features/reader/song-reader';
 import { TIME_SIGNATURE_OPTIONS } from '@/features/song-import/api';
 
 import { type Song, type SongInput, TEMPO_LABEL_KEYS, TEMPO_OPTIONS, updateSong } from './api';
@@ -116,16 +118,18 @@ export function SongEditor({ song }: { song: Song }) {
   return (
     <form
       noValidate
-      className="mx-auto flex max-w-7xl flex-col gap-4"
+      className="flex flex-col gap-4"
       onSubmit={(event) => {
         event.preventDefault();
         void form.handleSubmit();
       }}
     >
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="text-xl font-semibold">{t('songEditor.heading')}</h1>
+      <div className="mb-1 flex flex-wrap items-end justify-between gap-3">
+        <h1 data-page-title className={PAGE_TITLE_CLASSES}>
+          {t('songEditor.heading')}
+        </h1>
         <div className="flex items-center gap-2">
-          <Button asChild variant="ghost">
+          <Button asChild variant="secondary">
             <Link to="/songs/$songId" params={{ songId: song._id }}>
               {t('songEditor.cancel')}
             </Link>
@@ -336,12 +340,5 @@ function EditorPreview({
     year: values.year || null,
     capo: Number(values.capo) || null,
   };
-  return (
-    <SongReader
-      song={preview}
-      playKey={values.key}
-      onPlayKeyChange={onKeyChange}
-      stickyUnder="app"
-    />
-  );
+  return <SongReader song={preview} playKey={values.key} onPlayKeyChange={onKeyChange} />;
 }

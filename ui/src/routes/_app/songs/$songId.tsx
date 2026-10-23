@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { ChevronLeft, Pencil } from 'pixelarticons/react';
+import { PenSquare } from 'pixelarticons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -8,14 +8,22 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { canWriteSongs } from '@/features/auth/session';
 import { type MusicKey, parseKey } from '@/features/chords/theory';
-import { ReaderPreferenceControls, SongReader } from '@/features/reader/song-reader';
+import { useReaderMode } from '@/features/reader/chord-display';
+import { KeyPicker } from '@/features/reader/key-picker';
+import { ReaderBack } from '@/features/reader/reader-back';
+import { ReadingPanel } from '@/features/reader/reader-controls';
+import { ReaderLayout } from '@/features/reader/reader-layout';
+import { ReaderModes } from '@/features/reader/reader-modes';
+import { SongReader } from '@/features/reader/song-reader';
 import { type Song, songQueryOptions } from '@/features/songs/api';
+import { useIsWide } from '@/hooks/use-wide';
 import { ensureOrNotFound } from '@/lib/ensure-or-not-found';
 
 export const Route = createFileRoute('/_app/songs/$songId')({
+  staticData: { chrome: 'reader' },
   loader: ({ context, params }) =>
     ensureOrNotFound(context.queryClient, songQueryOptions(params.songId)),
-  pendingComponent: () => <Skeleton className="mx-auto h-[70svh] max-w-4xl" />,
+  pendingComponent: () => <Skeleton className="mx-auto mt-24 h-[70svh] max-w-3xl" />,
   component: SongPage,
 });
 
@@ -25,33 +33,59 @@ function SongPage() {
   return <SongView key={song._id} song={song} />;
 }
 
+// One song in the reader on its own, opened from Songs.
 function SongView({ song }: { song: Song }) {
   const { t } = useTranslation();
   const { session } = Route.useRouteContext();
-  const [playKey, setPlayKey] = useState<MusicKey | null>(() => parseKey(song.originalKey));
+  const isWide = useIsWide();
+  const [mode] = useReaderMode();
+  const originalKey = parseKey(song.originalKey);
+  const [playKey, setPlayKey] = useState<MusicKey | null>(originalKey);
+  const readingTrigger = (className: string) => (
+    <Button variant="glass" className={className} aria-label={t('reader.reading')}>
+      Aa
+    </Button>
+  );
 
   return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-3">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <Button asChild variant="ghost" size="sm" className="-ml-2">
-          <Link to="/songs">
-            <ChevronLeft />
-            {t('songs.title')}
-          </Link>
-        </Button>
-        <div className="flex items-center gap-1.5">
-          <ReaderPreferenceControls />
+    <ReaderLayout
+      back={<ReaderBack to="/songs" label={t('songs.title')} />}
+      modes={<ReaderModes />}
+      compactTitle={song.title}
+      actions={
+        <>
+          {isWide ? (
+            <ReadingPanel trigger={readingTrigger('size-12 px-0 text-[0.9375rem]')} />
+          ) : null}
           {canWriteSongs(session) ? (
-            <Button asChild variant="outline" size="sm">
-              <Link to="/songs/$songId/edit" params={{ songId: song._id }}>
-                <Pencil />
-                {t('songEditor.edit')}
+            <Button asChild variant="glass" size="icon-lg" aria-label={t('songEditor.edit')}>
+              <Link
+                to="/songs/$songId/edit"
+                params={{ songId: song._id }}
+                title={t('songEditor.edit')}
+              >
+                <PenSquare />
               </Link>
             </Button>
           ) : null}
-        </div>
-      </div>
+        </>
+      }
+      dock={
+        <>
+          <ReadingPanel trigger={readingTrigger('h-14 w-[52px] px-0 text-[0.9375rem]')} />
+          <span className="flex-1" />
+          {mode === 'chords' && originalKey && playKey ? (
+            <KeyPicker
+              placement="dock"
+              originalKey={originalKey}
+              playKey={playKey}
+              onChange={setPlayKey}
+            />
+          ) : null}
+        </>
+      }
+    >
       <SongReader song={song} playKey={playKey} onPlayKeyChange={setPlayKey} />
-    </div>
+    </ReaderLayout>
   );
 }
