@@ -25,6 +25,12 @@
   --animate-scrim-in: scrim-in 200ms var(--ease-out);
   --animate-scrim-out: scrim-out 220ms var(--ease-out) forwards;
 
+  @keyframes pane-in {
+    from {
+      opacity: 0;
+      translate: 12px 0;
+    }
+  }
   @keyframes view-in {
     from {
       opacity: 0;
