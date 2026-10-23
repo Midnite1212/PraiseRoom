@@ -16,6 +16,7 @@
     "label": "Theme",
     "light": "Light",
     "dark": "Dark",
+    "matchDevice": "Match this device",
     "system": "System"
   },
   "language": {
@@ -23,6 +24,8 @@
   },
   "user": {
     "menu": "Account",
+    "appearance": "Appearance",
+    "settingsHint": "Text size, lyrics and chords",
     "settings": "Settings",
     "signOut": "Sign out",
     "signOutFailed": "Could not sign out. Please try again.",

@@ -20,6 +20,8 @@ type ActionMenuProps = {
   title: ReactNode;
   description?: ReactNode;
   leading?: ReactNode;
+  header?: ReactNode;
+  showCloseButton?: boolean;
   children: ReactNode;
   align?: 'start' | 'center' | 'end';
   className?: string;
@@ -31,6 +33,8 @@ export function ActionMenu({
   title,
   description,
   leading,
+  header,
+  showCloseButton = true,
   children,
   align = 'center',
   className,
@@ -45,15 +49,19 @@ export function ActionMenu({
           align={align}
           className={cn('w-[min(340px,calc(100vw-24px))] gap-0 p-2', className)}
         >
-          <div className="flex items-center gap-3 px-3 pt-1.5 pb-2">
-            {leading}
-            <div className="min-w-0">
-              <p className="leading-snug font-semibold">{title}</p>
-              {description ? (
-                <p className="text-ink-2 mt-0.5 text-[0.8125rem]">{description}</p>
-              ) : null}
+          {header ? (
+            <div className="pb-2">{header}</div>
+          ) : (
+            <div className="flex items-center gap-3 px-3 pt-1.5 pb-2">
+              {leading}
+              <div className="min-w-0">
+                <p className="leading-snug font-semibold">{title}</p>
+                {description ? (
+                  <p className="text-ink-2 mt-0.5 text-[0.8125rem]">{description}</p>
+                ) : null}
+              </div>
             </div>
-          </div>
+          )}
           <SetMenuOpenContext value={setIsOpen}>{children}</SetMenuOpenContext>
         </PopoverContent>
       </Popover>
@@ -63,14 +71,21 @@ export function ActionMenu({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className={cn('gap-0', className)}>
-        <div className="flex items-center gap-3 pr-10">
-          {leading}
-          <DialogHeader className="flex-1 pr-0">
-            <DialogTitle>{title}</DialogTitle>
-            {description ? <DialogDescription>{description}</DialogDescription> : null}
-          </DialogHeader>
-        </div>
+      <DialogContent showCloseButton={showCloseButton} className={cn('gap-0', className)}>
+        {header ? (
+          <>
+            <DialogTitle className="sr-only">{title}</DialogTitle>
+            <div className="-mb-2">{header}</div>
+          </>
+        ) : (
+          <div className={cn('flex items-center gap-3', showCloseButton && 'pr-10')}>
+            {leading}
+            <DialogHeader className="flex-1 pr-0">
+              <DialogTitle>{title}</DialogTitle>
+              {description ? <DialogDescription>{description}</DialogDescription> : null}
+            </DialogHeader>
+          </div>
+        )}
         <div className="-mx-1 flex flex-col">
           <SetMenuOpenContext value={setIsOpen}>{children}</SetMenuOpenContext>
         </div>

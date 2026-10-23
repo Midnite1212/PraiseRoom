@@ -26,6 +26,7 @@ type SegmentedProps<T extends string> = {
   mono?: boolean;
   glass?: boolean;
   fullWidth?: boolean;
+  optionClassName?: string;
   className?: string;
 };
 
@@ -39,6 +40,7 @@ export function Segmented<T extends string>({
   mono = false,
   glass = false,
   fullWidth = false,
+  optionClassName,
   className,
 }: SegmentedProps<T>) {
   return (
@@ -68,7 +70,8 @@ export function Segmented<T extends string>({
           className={cn(
             'relative z-10 inline-flex items-center justify-center gap-1.5 rounded-full font-semibold whitespace-nowrap text-ink-2 transition-colors duration-200 ease-out hover:text-ink data-[state=on]:text-ink [&_svg]:size-icon',
             OPTION_SIZES[size],
-            mono && 'font-mono'
+            mono && 'font-mono',
+            optionClassName
           )}
         >
           {option.label}
