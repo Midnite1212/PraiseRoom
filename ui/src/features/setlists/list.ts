@@ -4,6 +4,8 @@ import { toDateInputValue } from './format-date';
 export type SetlistOwnership = 'all' | 'mine' | 'shared';
 
 export type SetlistGroups = {
+  // The soonest upcoming setlist, split out of `upcoming` when `leadWithNext` is set.
+  next: SetlistSummary | null;
   upcoming: SetlistSummary[];
   past: SetlistSummary[];
   undated: SetlistSummary[];
@@ -22,9 +24,13 @@ const byTime = (direction: 1 | -1) => (a: SetlistSummary, b: SetlistSummary) =>
   direction * ((timeOf(a) ?? 0) - (timeOf(b) ?? 0));
 
 // Upcoming soonest first, past most recent first; undated setlists sit apart.
-export const groupSetlists = (setlists: readonly SetlistSummary[], now: Date): SetlistGroups => {
+export const groupSetlists = (
+  setlists: readonly SetlistSummary[],
+  now: Date,
+  { leadWithNext = false }: { leadWithNext?: boolean } = {}
+): SetlistGroups => {
   const today = startOfToday(now);
-  const groups: SetlistGroups = { upcoming: [], past: [], undated: [] };
+  const groups: SetlistGroups = { next: null, upcoming: [], past: [], undated: [] };
   for (const setlist of setlists) {
     const time = timeOf(setlist);
     if (time === null) groups.undated.push(setlist);
@@ -34,6 +40,7 @@ export const groupSetlists = (setlists: readonly SetlistSummary[], now: Date): S
   groups.upcoming.sort(byTime(1));
   groups.past.sort(byTime(-1));
   groups.undated.sort((a, b) => a.name.localeCompare(b.name));
+  if (leadWithNext) groups.next = groups.upcoming.shift() ?? null;
   return groups;
 };
 

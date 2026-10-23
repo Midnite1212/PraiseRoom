@@ -9,7 +9,7 @@ const setlist = (id: string, date: string | null, songIds: string[]): SetlistSum
   name: id,
   date,
   groupIds: [],
-  songs: songIds.map((songId) => ({ _id: songId })),
+  songs: songIds.map((songId) => ({ _id: songId, title: songId })),
 });
 
 const NOW = new Date('2026-06-10T12:00:00').getTime();

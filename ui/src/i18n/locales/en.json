@@ -146,8 +146,6 @@
     "noDate": "No date",
     "stripEmpty": "No songs yet",
     "stripLabel": "{{songs}}: {{titles}}",
-    "upcoming": "Upcoming",
-    "past": "Past",
     "undated": "No date",
     "searchLabel": "Search setlists",
     "searchPlaceholder": "Search setlists",
@@ -189,7 +187,12 @@
       "nextMonth": "Next month",
       "hint": "Days with a setlist. Click one to show it.",
       "showing": "Showing {{day}}"
-    }
+    },
+    "then": "Then",
+    "comingUp": "Coming up",
+    "played": "Played",
+    "showPlayed": "Show",
+    "hidePlayed": "Hide"
   },
   "reader": {
     "setlist": "Setlist",

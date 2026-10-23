@@ -31,6 +31,28 @@ describe('groupSetlists', () => {
     expect(groups.upcoming.map(({ name }) => name)).toEqual(['Today', 'Next month']);
     expect(groups.past.map(({ name }) => name)).toEqual(['Last week', 'Last year']);
     expect(groups.undated.map(({ name }) => name)).toEqual(['Alpha', 'Zeta']);
+    expect(groups.next).toBeNull();
+  });
+
+  it('splits the soonest upcoming setlist out when leading with it', () => {
+    const groups = groupSetlists(
+      [
+        setlist('Next month', new Date(2026, 10, 1).toISOString()),
+        setlist('Today', new Date(2026, 9, 15).toISOString()),
+      ],
+      NOW,
+      { leadWithNext: true }
+    );
+    expect(groups.next?.name).toBe('Today');
+    expect(groups.upcoming.map(({ name }) => name)).toEqual(['Next month']);
+  });
+
+  it('has no next setlist when nothing is upcoming', () => {
+    const groups = groupSetlists([setlist('Last week', new Date(2026, 9, 8).toISOString())], NOW, {
+      leadWithNext: true,
+    });
+    expect(groups.next).toBeNull();
+    expect(groups.past).toHaveLength(1);
   });
 });
 

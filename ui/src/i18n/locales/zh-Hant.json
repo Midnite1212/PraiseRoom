@@ -146,8 +146,6 @@
     "noDate": "未定日期",
     "stripEmpty": "尚未有歌曲",
     "stripLabel": "{{songs}}：{{titles}}",
-    "upcoming": "即將舉行",
-    "past": "過往",
     "undated": "未定日期",
     "searchLabel": "搜尋歌單",
     "searchPlaceholder": "搜尋歌單",
@@ -189,7 +187,12 @@
       "nextMonth": "下個月",
       "hint": "有歌單的日子。點選即可顯示。",
       "showing": "顯示 {{day}}"
-    }
+    },
+    "then": "接著",
+    "comingUp": "即將到來",
+    "played": "已完成",
+    "showPlayed": "展開",
+    "hidePlayed": "收起"
   },
   "reader": {
     "setlist": "歌單",
