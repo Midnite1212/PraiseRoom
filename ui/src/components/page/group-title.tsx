@@ -2,22 +2,33 @@ import type { ReactNode } from 'react';
 
 import { cn } from '@/lib/utils';
 
-// A list section's heading with its count, and an optional text action at the end.
+// A list section's heading with its count, and an optional hint or text action at the end. `first`
+// is for the section that opens a page, which needs less room above it.
 export function GroupTitle({
   title,
   count,
   action,
+  hint,
+  first = false,
   id,
   className,
 }: {
   title: ReactNode;
   count?: number;
   action?: ReactNode;
+  hint?: ReactNode;
+  first?: boolean;
   id?: string;
   className?: string;
 }) {
   return (
-    <div className={cn('mt-6 mb-1.5 flex items-center justify-between gap-2.5 px-1', className)}>
+    <div
+      className={cn(
+        'mb-2 flex items-center justify-between gap-2.5 px-1',
+        first ? 'mt-4' : 'mt-10',
+        className
+      )}
+    >
       <h2 id={id} className="text-ink-2 m-0 text-[0.9375rem] font-semibold">
         {title}
         {count === undefined ? null : (
@@ -26,6 +37,7 @@ export function GroupTitle({
           </small>
         )}
       </h2>
+      {hint ? <span className="text-ink-3 text-xs">{hint}</span> : null}
       {action}
     </div>
   );

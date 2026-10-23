@@ -75,7 +75,6 @@ function SongsPage() {
     ...songSearchQueryOptions({ keyword: q, page, tempo, themes, sort }),
     placeholderData: keepPreviousData,
   });
-  const { data: library } = useQuery(songSearchQueryOptions({ keyword: '', page: 1 }));
 
   const canAdd = canWriteSongs(session);
   const setSearch = (next: Partial<typeof search>) =>
@@ -123,7 +122,6 @@ function SongsPage() {
     <>
       <PageHeader
         title={t('songs.title')}
-        description={library ? t('songs.libraryCount', { count: library.totalCount }) : undefined}
         actions={
           canAdd ? (
             <Button onClick={() => setIsAddOpen(true)}>
@@ -148,6 +146,8 @@ function SongsPage() {
       <GroupTitle
         title={isFiltered ? t('songs.results') : t('songs.library')}
         count={data?.totalCount}
+        hint={t(`songs.sortHint.${sort}`)}
+        first
       />
       {isError ? (
         <EmptyState title={t('songs.loadFailed')} />

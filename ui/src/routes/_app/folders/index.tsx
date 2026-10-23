@@ -44,7 +44,6 @@ function FoldersPage() {
     <>
       <PageHeader
         title={t('folders.title')}
-        description={t('folders.intro')}
         actions={
           <Button onClick={() => setIsCreateOpen(true)}>
             <FolderPlus />

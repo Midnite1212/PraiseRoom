@@ -9,7 +9,7 @@ import { EmptyState } from '@/components/page/empty-state';
 import { type ActiveFilter, FilterChips } from '@/components/page/filter-chips';
 import { Finder } from '@/components/page/finder';
 import { GroupTitle } from '@/components/page/group-title';
-import { LIST_CLASSES } from '@/components/page/list-row';
+import { LIST_CLASSES, LIST_COMPACT_CLASSES } from '@/components/page/list-row';
 import { PageHeader } from '@/components/page/page-header';
 import { Fab } from '@/components/primitives/fab';
 import { Button } from '@/components/ui/button';
@@ -69,7 +69,6 @@ function SetlistsPage() {
     { key: 'undated', title: t('setlists.undated'), items: groups.undated },
     { key: 'past', title: t('setlists.past'), items: groups.past },
   ].filter(({ items }) => items.length > 0);
-  const comingUp = groupSetlists(setlists, new Date(now)).upcoming.length;
 
   const activeFilters: ActiveFilter[] = [
     ...(search.show === 'all'
@@ -118,7 +117,6 @@ function SetlistsPage() {
     <>
       <PageHeader
         title={t('setlists.title')}
-        description={t('setlists.comingUp', { count: comingUp })}
         actions={
           <Button asChild>
             <Link to="/setlists/new">
@@ -146,14 +144,15 @@ function SetlistsPage() {
               {setlists.length === 0 ? null : t('setlists.noMatchesHint')}
             </EmptyState>
           ) : (
-            sections.map((section) => (
+            sections.map((section, index) => (
               <section key={section.key} aria-labelledby={`setlists-${section.key}`}>
                 <GroupTitle
                   id={`setlists-${section.key}`}
                   title={section.title}
                   count={section.items.length}
+                  first={index === 0}
                 />
-                <ul className={LIST_CLASSES}>
+                <ul className={section.key === 'past' ? LIST_COMPACT_CLASSES : LIST_CLASSES}>
                   {section.items.map((setlist) => (
                     <ManagedSetlistRow
                       key={setlist._id}

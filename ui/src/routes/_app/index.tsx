@@ -60,11 +60,11 @@ function HomePage() {
     <>
       <PageHeader
         title={t('home.welcome', { name: session.fullName })}
-        description={`${new Intl.DateTimeFormat(i18n.language, {
+        description={new Intl.DateTimeFormat(i18n.language, {
           weekday: 'long',
           day: 'numeric',
           month: 'long',
-        }).format(new Date(now))} · ${t('setlists.comingUp', { count: upcoming.length })}`}
+        }).format(new Date(now))}
       />
       <div className="wide:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] wide:items-start grid gap-x-10 gap-y-2">
         <div className="min-w-0">
@@ -95,6 +95,7 @@ function HomePage() {
             title={t('home.yourFolders')}
             count={myFolders.length}
             action={<AllLink to="/folders" label={t('home.all')} />}
+            first
             className="wide:mt-0"
           />
           {myFolders.length === 0 ? (
