@@ -9,8 +9,8 @@
     "setlists": "歌單",
     "folders": "資料夾",
     "pages": "頁面",
-    "collapseSidebar": "收合側欄",
-    "expandSidebar": "展開側欄"
+    "nextUpWhen": "下一個 · {{when}}",
+    "nextUpLabel": "下一個：{{name}}，{{day}}"
   },
   "theme": {
     "label": "主題",

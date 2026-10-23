@@ -9,8 +9,8 @@
     "setlists": "Setlists",
     "folders": "Folders",
     "pages": "Pages",
-    "collapseSidebar": "Collapse sidebar",
-    "expandSidebar": "Expand sidebar"
+    "nextUpWhen": "Next up · {{when}}",
+    "nextUpLabel": "Next up: {{name}}, {{day}}"
   },
   "theme": {
     "label": "Theme",
