@@ -14,6 +14,7 @@ import { Fab } from '@/components/primitives/fab';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { canWriteSongs } from '@/features/auth/session';
+import { setlistsQueryOptions } from '@/features/setlists/api';
 import { useSongImport } from '@/features/song-import/use-song-import';
 import { WebResults } from '@/features/song-import/web-results';
 import { AddSongDialog } from '@/features/songs/add-song-dialog';
@@ -23,6 +24,7 @@ import {
   TEMPO_LABEL_KEYS,
   TEMPO_OPTIONS,
 } from '@/features/songs/api';
+import { nextSetSongIds } from '@/features/songs/next-set';
 import { type SongFilterValues, SongFilterSheet } from '@/features/songs/song-filter-sheet';
 import { SongRows } from '@/features/songs/song-rows';
 import { MAX_KEYWORD_LENGTH, toSearchKeyword } from '@/features/songs/song-search';
@@ -42,8 +44,8 @@ const songsSearchSchema = z.object({
 export const Route = createFileRoute('/_app/songs/')({
   validateSearch: songsSearchSchema,
   loaderDeps: ({ search }) => search,
-  loader: ({ context, deps }) =>
-    context.queryClient.ensureQueryData(
+  loader: async ({ context, deps }) => {
+    await context.queryClient.ensureQueryData(
       songSearchQueryOptions({
         keyword: deps.q,
         page: deps.page,
@@ -51,7 +53,9 @@ export const Route = createFileRoute('/_app/songs/')({
         themes: deps.themes,
         sort: deps.sort,
       })
-    ),
+    );
+    return { now: Date.now() };
+  },
   pendingComponent: SongsPending,
   component: SongsPage,
 });
@@ -62,6 +66,7 @@ const isTempo = (value: string): value is (typeof TEMPO_OPTIONS)[number] =>
 function SongsPage() {
   const { t } = useTranslation();
   const { session } = Route.useRouteContext();
+  const { now } = Route.useLoaderData();
   const search = Route.useSearch();
   const { q, page, tempo, themes, web, sort } = search;
   const navigate = Route.useNavigate();
@@ -75,6 +80,10 @@ function SongsPage() {
     ...songSearchQueryOptions({ keyword: q, page, tempo, themes, sort }),
     placeholderData: keepPreviousData,
   });
+
+  const { data: library } = useQuery(songSearchQueryOptions({ keyword: '', page: 1 }));
+  const { data: setlists } = useQuery(setlistsQueryOptions());
+  const nextSetSongs = nextSetSongIds(setlists ?? [], now);
 
   const canAdd = canWriteSongs(session);
   const setSearch = (next: Partial<typeof search>) =>
@@ -136,7 +145,11 @@ function SongsPage() {
         value={text}
         onChange={setText}
         maxLength={MAX_KEYWORD_LENGTH}
-        placeholder={t('songs.searchPlaceholder')}
+        placeholder={
+          library
+            ? t(isWide ? 'songs.searchWide' : 'songs.searchPhone', { total: library.totalCount })
+            : t('songs.searchPlaceholder')
+        }
         label={t('songs.searchLabel')}
         filterCount={activeFilters.length}
         onFilter={() => setIsFilterOpen(true)}
@@ -153,7 +166,16 @@ function SongsPage() {
         <EmptyState title={t('songs.loadFailed')} />
       ) : (
         <div className={isFetching ? 'opacity-60 transition-opacity' : undefined}>
-          {isWide ? <SongsTable songs={songs} /> : <SongRows songs={songs} />}
+          {isWide ? (
+            <SongsTable songs={songs} />
+          ) : (
+            <SongRows
+              songs={songs}
+              sort={sort}
+              grouped={q.trim() === ''}
+              nextSetSongIds={nextSetSongs}
+            />
+          )}
         </div>
       )}
 

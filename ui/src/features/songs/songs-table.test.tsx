@@ -12,6 +12,7 @@ const song: SongSummary = {
   artist: 'John Newton',
   originalKey: 'G',
   tempo: ['Slow', 'Medium'],
+  timeSignature: ['4/4'],
   themes: ['Grace'],
   code: null,
 };
