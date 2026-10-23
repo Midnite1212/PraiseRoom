@@ -1,10 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { UserMinus, UserPlus } from 'pixelarticons/react';
+import { Close, Logout, Plus, Search, UserPlus, Users } from 'pixelarticons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
+import { GroupTitle } from '@/components/page/group-title';
+import { LIST_CLASSES, listRowClasses, RowText } from '@/components/page/list-row';
+import { InitialAvatar } from '@/components/primitives/avatar';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,13 +21,13 @@ import {
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Session } from '@/features/auth/session';
 import type { Folder } from '@/features/setlists/api';
@@ -37,16 +40,10 @@ import {
   peopleQueryOptions,
 } from './api';
 
-type FolderMembersProps = { session: Session; folder: Folder; canEdit: boolean };
-
-export function FolderMembers({ session, folder, canEdit }: FolderMembersProps) {
+export const useFolderMembers = (folder: Folder) => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
   const { data: people, isPending } = useQuery(peopleQueryOptions());
-  const [search, setSearch] = useState('');
-  const [leaving, setLeaving] = useState<Person | null>(null);
-
   const change = useMutation({
     mutationFn: (members: { add?: string[]; remove?: string[] }) =>
       changeFolderMembers(folder._id, members),
@@ -60,8 +57,141 @@ export function FolderMembers({ session, folder, canEdit }: FolderMembersProps) 
       toast.error(t('folders.membersFailed'));
     },
   });
+  return { people, members: membersOf(people ?? [], folder._id), isPending, change };
+};
 
-  const members = membersOf(people ?? [], folder._id);
+type MembersProps = {
+  session: Session;
+  folder: Folder;
+  canEdit: boolean;
+  onAddPeople: () => void;
+  onRemove: (person: Person) => void;
+};
+
+function MemberRows({ session, folder, canEdit, onRemove }: Omit<MembersProps, 'onAddPeople'>) {
+  const { t } = useTranslation();
+  const { members, isPending } = useFolderMembers(folder);
+  if (isPending) return <Skeleton className="h-24 w-full" />;
+  return (
+    <ul className={LIST_CLASSES}>
+      {members.map((person) => {
+        const isYou = person.userId === session.id;
+        return (
+          <li
+            key={person.userId}
+            className={listRowClasses(
+              'min-h-[52px] grid-cols-[32px_minmax(0,1fr)_auto] px-2 py-1.5'
+            )}
+          >
+            <InitialAvatar name={person.fullName} isYou={isYou} />
+            <RowText
+              title={isYou ? `${person.fullName} · ${t('folders.you')}` : person.fullName}
+              meta={
+                person.userId === folder.createdBy ? t('folders.madeThis') : t('folders.member')
+              }
+            />
+            {isYou ? (
+              <Button
+                variant="link"
+                size="sm"
+                className="text-destructive"
+                onClick={() => onRemove(person)}
+              >
+                {t('folders.leave')}
+              </Button>
+            ) : canEdit ? (
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label={t('folders.removeMember', { name: person.fullName })}
+                title={t('folders.remove')}
+                onClick={() => onRemove(person)}
+              >
+                <Close />
+              </Button>
+            ) : null}
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+// Wide screens: members are secondary, a quiet glass island beside the setlists.
+export function MembersIsland({ onAddPeople, ...props }: MembersProps) {
+  const { t } = useTranslation();
+  const { members } = useFolderMembers(props.folder);
+  return (
+    <aside
+      aria-labelledby="folder-members"
+      className="glass wide:block hidden px-2 pt-3.5 pb-2 [--glass-r:24px]"
+    >
+      <GroupTitle
+        id="folder-members"
+        title={t('folders.membersTitle')}
+        count={members.length}
+        className="mt-0 mb-1 px-2"
+        action={
+          props.canEdit ? (
+            <Button variant="link" size="sm" onClick={onAddPeople}>
+              <UserPlus />
+              {t('editor.add')}
+            </Button>
+          ) : null
+        }
+      />
+      <MemberRows {...props} />
+    </aside>
+  );
+}
+
+// Phones: the same list in a sheet, opened from the people strip or the folder menu.
+export function MembersSheet({
+  open,
+  onOpenChange,
+  onAddPeople,
+  ...props
+}: MembersProps & { open: boolean; onOpenChange: (open: boolean) => void }) {
+  const { t } = useTranslation();
+  const { members } = useFolderMembers(props.folder);
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent
+        footer={
+          props.canEdit ? (
+            <DialogFooter>
+              <Button onClick={onAddPeople}>
+                <UserPlus />
+                {t('folders.addPeople')}
+              </Button>
+            </DialogFooter>
+          ) : null
+        }
+      >
+        <DialogHeader icon={<Users />}>
+          <DialogTitle>{t('folders.membersTitle')}</DialogTitle>
+          <DialogDescription>
+            {t('folders.peopleIn', { count: members.length, name: props.folder.groupName })}
+          </DialogDescription>
+        </DialogHeader>
+        <MemberRows {...props} />
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+export function AddPeopleDialog({
+  folder,
+  open,
+  onOpenChange,
+}: {
+  folder: Folder;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const { t } = useTranslation();
+  const { people, members, change } = useFolderMembers(folder);
+  const [search, setSearch] = useState('');
   const memberIds = new Set(members.map(({ userId }) => userId));
   const query = search.trim().toLocaleLowerCase();
   const candidates = (people ?? []).filter(
@@ -71,136 +201,131 @@ export function FolderMembers({ session, folder, canEdit }: FolderMembersProps) 
       person.fullName.toLocaleLowerCase().includes(query)
   );
 
-  const removeMember = async (person: Person) => {
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (!next) setSearch('');
+        onOpenChange(next);
+      }}
+    >
+      <DialogContent
+        footer={
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button>{t('folders.done')}</Button>
+            </DialogClose>
+          </DialogFooter>
+        }
+      >
+        <DialogHeader icon={<UserPlus />}>
+          <DialogTitle>{t('folders.addPeople')}</DialogTitle>
+          <DialogDescription>
+            {t('folders.addPeopleDescription', { name: folder.groupName })}
+          </DialogDescription>
+        </DialogHeader>
+        <label className="bg-fill-hover [&_svg]:size-icon [&_svg]:text-ink-2 flex h-12 items-center gap-2.5 rounded-2xl px-3.5">
+          <Search />
+          <input
+            type="search"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder={t('folders.searchPeople')}
+            aria-label={t('folders.searchPeople')}
+            autoComplete="off"
+            className="placeholder:text-ink-3 h-full min-w-0 flex-1 bg-transparent outline-none"
+          />
+        </label>
+        <ul className={LIST_CLASSES}>
+          {query === '' ? (
+            <li className="text-ink-2 py-4 text-center text-sm">{t('folders.typeToSearch')}</li>
+          ) : candidates.length === 0 ? (
+            <li className="text-ink-2 py-4 text-center text-sm">{t('folders.noPeople')}</li>
+          ) : (
+            candidates.map((person) => (
+              <li
+                key={person.userId}
+                className="flex min-h-[60px] items-center gap-3 rounded-2xl px-2.5 py-1.5"
+              >
+                <InitialAvatar name={person.fullName} />
+                <span className="min-w-0 flex-1 truncate font-semibold">{person.fullName}</span>
+                <Button
+                  variant="link"
+                  size="sm"
+                  disabled={change.isPending}
+                  onClick={() =>
+                    void change
+                      .mutateAsync({ add: [person.userId] })
+                      .then(() =>
+                        toast.success(t('folders.memberAdded', { name: person.fullName }))
+                      )
+                  }
+                >
+                  <Plus />
+                  {t('editor.add')}
+                </Button>
+              </li>
+            ))
+          )}
+        </ul>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+// Removing someone else, or leaving (removing yourself, which then returns you to Folders).
+export function RemoveMemberDialog({
+  session,
+  folder,
+  person,
+  onClose,
+}: {
+  session: Session;
+  folder: Folder;
+  person: Pick<Person, 'userId' | 'fullName'> | null;
+  onClose: () => void;
+}) {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const { change } = useFolderMembers(folder);
+  const isYou = person?.userId === session.id;
+
+  const remove = async () => {
+    if (!person) return;
     await change.mutateAsync({ remove: [person.userId] });
-    setLeaving(null);
-    toast.success(t('folders.memberRemoved', { name: person.fullName }));
-    if (person.userId === session.id) await navigate({ to: '/folders' });
+    onClose();
+    if (isYou) {
+      toast.success(t('folders.left', { name: folder.groupName }));
+      await navigate({ to: '/folders' });
+    } else {
+      toast.success(t('folders.memberRemoved', { name: person.fullName }));
+    }
   };
 
   return (
-    <section
-      className="bg-sheet flex flex-col gap-3 rounded-xl border p-4"
-      aria-labelledby="folder-members"
-    >
-      <div className="flex items-center justify-between gap-2">
-        <h2 id="folder-members" className="font-medium">
-          {t('folders.members', { count: members.length })}
-        </h2>
-        {canEdit ? (
-          <Dialog onOpenChange={() => setSearch('')}>
-            <DialogTrigger asChild>
-              <Button variant="outline" size="sm">
-                <UserPlus />
-                {t('folders.addPeople')}
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>{t('folders.addPeople')}</DialogTitle>
-                <DialogDescription>{t('folders.addPeopleDescription')}</DialogDescription>
-              </DialogHeader>
-              <Input
-                type="search"
-                value={search}
-                onChange={(event) => setSearch(event.target.value)}
-                placeholder={t('folders.searchPeople')}
-                aria-label={t('folders.searchPeople')}
-              />
-              <ul className="max-h-72 overflow-y-auto">
-                {query === '' ? (
-                  <li className="text-muted-foreground py-4 text-center text-sm">
-                    {t('folders.typeToSearch')}
-                  </li>
-                ) : candidates.length === 0 ? (
-                  <li className="text-muted-foreground py-4 text-center text-sm">
-                    {t('folders.noPeople')}
-                  </li>
-                ) : (
-                  candidates.map((person) => (
-                    <li
-                      key={person.userId}
-                      className="flex items-center gap-2 border-b py-2 last:border-b-0"
-                    >
-                      <span className="min-w-0 flex-1 truncate text-sm">{person.fullName}</span>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        disabled={change.isPending}
-                        onClick={() =>
-                          void change
-                            .mutateAsync({ add: [person.userId] })
-                            .then(() =>
-                              toast.success(t('folders.memberAdded', { name: person.fullName }))
-                            )
-                        }
-                      >
-                        {t('editor.add')}
-                      </Button>
-                    </li>
-                  ))
-                )}
-              </ul>
-            </DialogContent>
-          </Dialog>
-        ) : null}
-      </div>
-
-      {isPending ? (
-        <Skeleton className="h-24 w-full" />
-      ) : (
-        <ul className="divide-y">
-          {members.map((person) => (
-            <li key={person.userId} className="flex items-center gap-2 py-2">
-              <span className="min-w-0 flex-1 truncate text-sm">
-                {person.fullName}
-                {person.userId === session.id ? (
-                  <span className="text-muted-foreground"> · {t('folders.you')}</span>
-                ) : null}
-              </span>
-              {canEdit ? (
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  aria-label={t('folders.removeMember', { name: person.fullName })}
-                  onClick={() => setLeaving(person)}
-                >
-                  <UserMinus />
-                </Button>
-              ) : null}
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <AlertDialog open={leaving !== null} onOpenChange={(open) => !open && setLeaving(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              {leaving?.userId === session.id
-                ? t('folders.leaveTitle')
-                : t('folders.removeTitle', { name: leaving?.fullName ?? '' })}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {leaving?.userId === session.id
-                ? t('folders.leaveDescription')
-                : t('folders.removeDescription')}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{t('editor.cancel')}</AlertDialogCancel>
-            <AlertDialogAction
-              variant="destructive"
-              disabled={change.isPending}
-              onClick={() => {
-                if (leaving) void removeMember(leaving).catch(() => undefined);
-              }}
-            >
-              {t('folders.remove')}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-    </section>
+    <AlertDialog open={person !== null} onOpenChange={(open) => !open && onClose()}>
+      <AlertDialogContent>
+        <AlertDialogHeader icon={isYou ? <Logout /> : <Close />}>
+          <AlertDialogTitle>
+            {isYou
+              ? t('folders.leaveTitle')
+              : t('folders.removeTitle', { name: person?.fullName ?? '' })}
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            {isYou ? t('folders.leaveDescription') : t('folders.removeDescription')}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>{t('editor.cancel')}</AlertDialogCancel>
+          <AlertDialogAction
+            variant="destructive-solid"
+            disabled={change.isPending}
+            onClick={() => void remove().catch(() => undefined)}
+          >
+            {isYou ? t('folders.leave') : t('folders.remove')}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }
