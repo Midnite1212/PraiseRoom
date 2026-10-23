@@ -17,10 +17,12 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { setlistsQueryOptions } from '@/features/setlists/api';
 import { filterSetlists, groupSetlists } from '@/features/setlists/list';
+import { NextSetCard } from '@/features/setlists/next-set-card';
 import { SetlistCalendar } from '@/features/setlists/setlist-calendar';
 import { SetlistFilterSheet } from '@/features/setlists/setlist-filter-sheet';
 import { ManagedSetlistRow } from '@/features/setlists/setlist-row';
 import { useSetlistNames } from '@/features/setlists/use-setlist-names';
+import { useIsWide } from '@/hooks/use-wide';
 
 const setlistsSearchSchema = z.object({
   q: z.string().default('').catch(''),
@@ -52,7 +54,9 @@ function SetlistsPage() {
   const { now } = Route.useLoaderData();
   const { data: setlists } = useSuspenseQuery(setlistsQueryOptions());
   const names = useSetlistNames(session);
+  const isWide = useIsWide();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isPlayedOpen, setIsPlayedOpen] = useState(false);
 
   const setSearch = (next: Partial<typeof search>) =>
     void navigate({ search: (previous) => ({ ...previous, ...next }), replace: true });
@@ -64,12 +68,19 @@ function SetlistsPage() {
     folderIds: search.folders,
     day: search.day,
   });
-  const groups = groupSetlists(visible, new Date(now));
+  const isFiltering =
+    search.q.trim() !== '' || search.show !== 'all' || search.folders.length > 0 || !!search.day;
+  const groups = groupSetlists(visible, new Date(now), { leadWithNext: !isWide && !isFiltering });
   const sections = [
-    { key: 'upcoming', title: t('setlists.upcoming'), items: groups.upcoming },
+    {
+      key: 'upcoming',
+      title: groups.next ? t('setlists.then') : t('setlists.comingUp'),
+      items: groups.upcoming,
+    },
     { key: 'undated', title: t('setlists.undated'), items: groups.undated },
-    { key: 'past', title: t('setlists.past'), items: groups.past },
+    { key: 'past', title: t('setlists.played'), items: groups.past },
   ].filter(({ items }) => items.length > 0);
+  const showPlayed = isPlayedOpen || isFiltering;
   const nextId = nextSetlistId(setlists, now);
 
   const activeFilters: ActiveFilter[] = [
@@ -139,7 +150,8 @@ function SetlistsPage() {
             onFilter={() => setIsFilterOpen(true)}
           />
           <FilterChips filters={activeFilters} />
-          {sections.length === 0 ? (
+          {groups.next ? <NextSetCard session={session} setlist={groups.next} now={now} /> : null}
+          {sections.length === 0 && !groups.next ? (
             <EmptyState
               title={setlists.length === 0 ? t('setlists.empty') : t('setlists.noMatches')}
             >
@@ -152,19 +164,39 @@ function SetlistsPage() {
                   id={`setlists-${section.key}`}
                   title={section.title}
                   count={section.items.length}
-                  first={index === 0}
+                  first={index === 0 && !groups.next}
+                  action={
+                    section.key === 'past' && !isFiltering ? (
+                      <Button
+                        variant="link"
+                        size="sm"
+                        aria-expanded={showPlayed}
+                        aria-controls="setlists-past-list"
+                        aria-describedby="setlists-past"
+                        onClick={() => setIsPlayedOpen(!isPlayedOpen)}
+                      >
+                        {showPlayed ? t('setlists.hidePlayed') : t('setlists.showPlayed')}
+                      </Button>
+                    ) : null
+                  }
                 />
-                <ul className={section.key === 'past' ? LIST_COMPACT_CLASSES : LIST_CLASSES}>
-                  {section.items.map((setlist) => (
-                    <ManagedSetlistRow
-                      key={setlist._id}
-                      session={session}
-                      setlist={setlist}
-                      names={names}
-                      status={setStatus(setlist, nextId, now)}
-                    />
-                  ))}
-                </ul>
+                {section.key === 'past' && !showPlayed ? null : (
+                  <ul
+                    id={`setlists-${section.key}-list`}
+                    className={section.key === 'past' ? LIST_COMPACT_CLASSES : LIST_CLASSES}
+                  >
+                    {section.items.map((setlist) => (
+                      <ManagedSetlistRow
+                        key={setlist._id}
+                        session={session}
+                        setlist={setlist}
+                        names={names}
+                        status={setStatus(setlist, nextId, now)}
+                        compact={section.key === 'past'}
+                      />
+                    ))}
+                  </ul>
+                )}
               </section>
             ))
           )}

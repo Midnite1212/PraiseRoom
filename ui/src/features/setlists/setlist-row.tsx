@@ -6,15 +6,16 @@ import {
   MoreHorizontal,
   PenSquare,
   Trash,
-  Users,
 } from 'pixelarticons/react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { listRowClasses } from '@/components/page/list-row';
 import { ActionMenu, MenuRow, MenuSeparator } from '@/components/primitives/action-menu';
+import { AuthorLine } from '@/components/primitives/author-line';
 import { DateBlock } from '@/components/primitives/date-block';
 import type { SetStatus } from '@/components/primitives/set-status';
+import { SetStrip } from '@/components/primitives/set-strip';
 import { type SwipeAction, SwipeRow } from '@/components/primitives/swipe-row';
 import { Tag } from '@/components/primitives/tag';
 import { Button } from '@/components/ui/button';
@@ -35,11 +36,20 @@ type SetlistRowProps = {
   names: SetlistNames;
   status: SetStatus;
   actions?: ReactNode;
+  // Inside a folder, that folder's own tag is left out.
+  hideFolderId?: string;
 };
 
-// A setlist as a row: its date tile, name, when and how many songs, who shared it and its folders.
-// The whole row opens it; `actions` sit above the row's link.
-export function SetlistRow({ session, setlist, names, status, actions }: SetlistRowProps) {
+// A setlist as a row: its date tile, name, when and how many songs, who shared it, its folders and
+// its songs as a strip of light. The whole row opens it; `actions` sit above the row's link.
+export function SetlistRow({
+  session,
+  setlist,
+  names,
+  status,
+  actions,
+  hideFolderId,
+}: SetlistRowProps) {
   const { t, i18n } = useTranslation();
   const weekday = setlist.date
     ? new Intl.DateTimeFormat(i18n.language, { weekday: 'short' }).format(new Date(setlist.date))
@@ -50,11 +60,11 @@ export function SetlistRow({ session, setlist, names, status, actions }: Setlist
       : null;
   const folders = setlist.groupIds.flatMap((id) => {
     const name = names.folders.get(id);
-    return name ? [{ id, name }] : [];
+    return name && id !== hideFolderId ? [{ id, name }] : [];
   });
 
   return (
-    <div className={listRowClasses('group/row grid-cols-[52px_minmax(0,1fr)_auto]')}>
+    <div className={listRowClasses('group/row grid-cols-[52px_minmax(0,1fr)_auto] items-start')}>
       <DateBlock date={setlist.date} status={status} />
       <span className="min-w-0">
         <Link
@@ -74,12 +84,7 @@ export function SetlistRow({ session, setlist, names, status, actions }: Setlist
             {weekday ? `${weekday} · ` : null}
             {t('reader.songCount', { count: setlist.songs.length })}
           </span>
-          {sharedBy ? (
-            <Tag>
-              <Users />
-              {sharedBy}
-            </Tag>
-          ) : null}
+          {sharedBy ? <AuthorLine name={sharedBy} /> : null}
           {folders.map(({ id, name }) => (
             <Tag key={id}>
               <Folder />
@@ -87,14 +92,52 @@ export function SetlistRow({ session, setlist, names, status, actions }: Setlist
             </Tag>
           ))}
         </span>
+        <SetStrip status={status} titles={setlist.songs.map((song) => song.title)} />
       </span>
-      <span className="relative z-10 flex items-center gap-0.5">{actions}</span>
+      <span className="relative z-10 flex items-center gap-0.5 self-center">{actions}</span>
+    </div>
+  );
+}
+
+// A played setlist as one quiet line: its date, name and strip.
+export function PlayedSetlistRow({ setlist, actions }: SetlistRowProps) {
+  const { i18n } = useTranslation();
+  const date = setlist.date ? new Date(setlist.date) : null;
+  const dateLabel = date
+    ? new Intl.DateTimeFormat(i18n.language, { day: 'numeric', month: 'short' }).format(date)
+    : null;
+  const fullDate = formatSetlistDate(setlist.date, i18n.language);
+
+  return (
+    <div
+      className={listRowClasses('group/row min-h-12 grid-cols-[64px_minmax(0,1fr)_auto] px-3 py-1')}
+    >
+      <span className="text-ink-3 font-mono text-[0.8125rem]">{dateLabel}</span>
+      <Link
+        to="/setlists/$setlistId"
+        params={{ setlistId: setlist._id }}
+        aria-label={fullDate ? `${setlist.name}, ${fullDate}` : setlist.name}
+        className="text-ink-2 truncate font-medium outline-none after:absolute after:inset-0 after:rounded-2xl focus-visible:after:shadow-[inset_2px_0_0_var(--chord)]"
+      >
+        {setlist.name}
+      </Link>
+      <span className="relative z-10 flex items-center gap-0.5">
+        <SetStrip
+          status="past"
+          titles={setlist.songs.map((song) => song.title)}
+          className="mt-0 justify-end"
+        />
+        {actions}
+      </span>
     </div>
   );
 }
 
 // A row in the Setlists list: a ⋯ menu that shows on hover (wide), swipe actions (phones).
-export function ManagedSetlistRow(props: Omit<SetlistRowProps, 'actions'>) {
+export function ManagedSetlistRow({
+  compact = false,
+  ...props
+}: Omit<SetlistRowProps, 'actions'> & { compact?: boolean }) {
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const { setlist } = props;
@@ -187,7 +230,11 @@ export function ManagedSetlistRow(props: Omit<SetlistRowProps, 'actions'>) {
   return (
     <>
       <SwipeRow actions={swipeActions}>
-        <SetlistRow {...props} actions={menu} />
+        {compact ? (
+          <PlayedSetlistRow {...props} actions={menu} />
+        ) : (
+          <SetlistRow {...props} actions={menu} />
+        )}
       </SwipeRow>
       {actions.confirmDelete}
     </>

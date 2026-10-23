@@ -30,7 +30,7 @@ const setlistSummarySchema = z.object({
   publicLink: z.string().nullish(),
   createdBy: z.string().nullish(),
   groupIds: z.array(z.string()).default([]),
-  songs: z.array(z.object({ _id: z.string() })),
+  songs: z.array(z.object({ _id: z.string(), title: z.string() })),
 });
 
 export type SetlistSummary = z.infer<typeof setlistSummarySchema>;

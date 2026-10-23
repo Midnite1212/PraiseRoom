@@ -97,6 +97,7 @@ export function FolderSetlists({
                 setlist={setlist}
                 names={names}
                 status={setStatus(setlist, nextId, now)}
+                hideFolderId={folder._id}
                 actions={
                   canEdit ? (
                     <Button
