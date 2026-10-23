@@ -1,39 +1,62 @@
 import { screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, it, vi } from 'vitest';
 
 import { renderWithRouter } from '@/test/render-with-router';
 
 import type { SongSummary } from './api';
 import { SongsTable } from './songs-table';
 
-const song: SongSummary = {
-  _id: '0123456789abcdef01234567',
-  title: 'Amazing Grace',
-  artist: 'John Newton',
+const song = (id: string, title: string): SongSummary => ({
+  _id: id,
+  title,
+  artist: 'Test Artist',
   originalKey: 'G',
   tempo: ['Slow', 'Medium'],
   timeSignature: ['4/4'],
   themes: ['Grace'],
   code: null,
-};
+});
+
+const songs = [song('a'.repeat(24), 'Song One'), song('b'.repeat(24), 'Song Two')];
 
 describe('SongsTable', () => {
-  it('renders one row per song with translated headers and links each title', async () => {
-    renderWithRouter(<SongsTable songs={[song]} />);
+  it('renders Title, Key, Tempo and Code columns with the artist under each title', async () => {
+    renderWithRouter(<SongsTable songs={songs} onSelect={vi.fn<(songId: string) => void>()} />);
 
-    expect(await screen.findByRole('columnheader', { name: 'Title' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Amazing Grace' })).toHaveAttribute(
-      'href',
-      '/songs/0123456789abcdef01234567'
-    );
-    expect(screen.getByRole('cell', { name: 'Amazing Grace' })).toBeInTheDocument();
-    expect(screen.getByRole('cell', { name: 'Slow, Medium' })).toBeInTheDocument();
-    expect(screen.getByRole('cell', { name: 'Grace' })).toBeInTheDocument();
-    expect(screen.getByRole('cell', { name: '—' })).toBeInTheDocument();
+    await screen.findByRole('columnheader', { name: 'Title' });
+    for (const name of ['Key', 'Tempo', 'Code'])
+      expect(screen.getByRole('columnheader', { name })).toBeInTheDocument();
+    expect(screen.queryByRole('columnheader', { name: 'Artist' })).not.toBeInTheDocument();
+    expect(screen.getByRole('cell', { name: /Song One/ })).toHaveTextContent('Test Artist');
+    expect(screen.getAllByLabelText('Key G')).toHaveLength(2);
+  });
+
+  it('marks the selected row and selects a row on click', async () => {
+    const onSelect = vi.fn<(songId: string) => void>();
+    renderWithRouter(<SongsTable songs={songs} selectedId={songs[1]?._id} onSelect={onSelect} />);
+
+    const one = await screen.findByRole('row', { name: /Song One/ });
+    expect(screen.getByRole('row', { name: /Song Two/ })).toHaveAttribute('aria-selected', 'true');
+    expect(one).toHaveAttribute('aria-selected', 'false');
+
+    await userEvent.click(one);
+    expect(onSelect).toHaveBeenCalledWith(songs[0]?._id);
+  });
+
+  it('moves the selection with the arrow keys', async () => {
+    const onSelect = vi.fn<(songId: string) => void>();
+    renderWithRouter(<SongsTable songs={songs} selectedId={songs[0]?._id} onSelect={onSelect} />);
+
+    (await screen.findByRole('row', { name: /Song One/ })).focus();
+    await userEvent.keyboard('{ArrowDown}');
+
+    expect(onSelect).toHaveBeenCalledWith(songs[1]?._id);
+    expect(screen.getByRole('row', { name: /Song Two/ })).toHaveFocus();
   });
 
   it('shows the empty state when there are no songs', async () => {
-    renderWithRouter(<SongsTable songs={[]} />);
+    renderWithRouter(<SongsTable songs={[]} onSelect={vi.fn<(songId: string) => void>()} />);
 
     expect(await screen.findByText('No songs found.')).toBeInTheDocument();
   });

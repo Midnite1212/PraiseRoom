@@ -1,10 +1,12 @@
-import { Link, useNavigate } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { createColumnHelper, FlexRender, tableFeatures, useTable } from '@tanstack/react-table';
 import type { TFunction } from 'i18next';
+import type { KeyboardEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { EmptyState } from '@/components/page/empty-state';
-import { Tag } from '@/components/primitives/tag';
+import { KeyChip } from '@/components/primitives/key-chip';
+import { TempoMeter } from '@/components/primitives/tempo-meter';
 import { cn } from '@/lib/utils';
 
 import type { SongSummary } from './api';
@@ -13,56 +15,52 @@ const features = tableFeatures({});
 
 const columnHelper = createColumnHelper<typeof features, SongSummary>();
 
+type ColumnMeta = { headClassName?: string; cellClassName?: string };
+
 const createColumns = (t: TFunction) =>
   columnHelper.columns([
     columnHelper.accessor('title', {
       header: () => t('songs.columns.title'),
       cell: ({ getValue, row }) => (
-        <Link
-          to="/songs/$songId"
-          params={{ songId: row.original._id }}
-          className="text-ink block text-[0.9375rem] font-semibold outline-none"
-        >
-          {getValue()}
-        </Link>
+        <>
+          <b className="text-ink block text-[0.9375rem] font-semibold">{getValue()}</b>
+          <small className="text-ink-3 mt-0.5 block text-[0.8125rem]">{row.original.artist}</small>
+        </>
       ),
     }),
-    columnHelper.accessor('artist', { header: () => t('songs.columns.artist') }),
     columnHelper.accessor('originalKey', {
       header: () => t('songs.columns.key'),
-      meta: { className: 'text-ink font-mono text-[0.9375rem] font-bold' },
+      cell: ({ getValue }) => <KeyChip musicKey={getValue()} />,
     }),
     columnHelper.accessor('tempo', {
       header: () => t('songs.columns.tempo'),
-      cell: ({ getValue }) => getValue().join(', '),
-    }),
-    columnHelper.accessor('themes', {
-      header: () => t('songs.columns.themes'),
-      cell: ({ getValue }) => (
-        <span className="flex flex-wrap gap-1">
-          {getValue().map((theme) => (
-            <Tag key={theme}>{theme}</Tag>
-          ))}
-        </span>
-      ),
+      cell: ({ getValue }) => <TempoMeter tempo={getValue()} />,
     }),
     columnHelper.accessor('code', {
       header: () => t('songs.columns.code'),
-      cell: ({ getValue }) => getValue() ?? '—',
-      meta: { className: 'font-mono' },
+      cell: ({ getValue }) => getValue() ?? '',
+      meta: { headClassName: 'text-right', cellClassName: 'text-right font-mono' },
     }),
   ]);
 
-const cellClassName = (meta: unknown): string | undefined =>
-  typeof meta === 'object' &&
-  meta !== null &&
-  'className' in meta &&
-  typeof meta.className === 'string'
-    ? meta.className
-    : undefined;
+const columnMeta = (meta: unknown): ColumnMeta =>
+  typeof meta === 'object' && meta !== null ? meta : {};
 
-// Wide screens: the library as a table; a whole row opens its song.
-export function SongsTable({ songs }: { songs: SongSummary[] }) {
+const isEditable = (target: EventTarget) =>
+  target instanceof Element &&
+  target.closest('input, textarea, select, [contenteditable]') !== null;
+
+// Wide screens: the library as a table. A click selects a row (the page shows it in the preview pane),
+// double-click, Enter or Space opens it, and the arrows move the selection.
+export function SongsTable({
+  songs,
+  selectedId,
+  onSelect,
+}: {
+  songs: SongSummary[];
+  selectedId?: string;
+  onSelect: (songId: string) => void;
+}) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const table = useTable({
@@ -75,6 +73,27 @@ export function SongsTable({ songs }: { songs: SongSummary[] }) {
   if (songs.length === 0)
     return <EmptyState title={t('songs.empty')}>{t('songs.emptyHint')}</EmptyState>;
 
+  const open = (songId: string) => void navigate({ to: '/songs/$songId', params: { songId } });
+
+  const onRowKeyDown = (event: KeyboardEvent<HTMLTableRowElement>, songId: string) => {
+    if (event.target !== event.currentTarget || isEditable(event.target)) return;
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      open(songId);
+      return;
+    }
+    const sibling =
+      event.key === 'ArrowDown'
+        ? event.currentTarget.nextElementSibling
+        : event.key === 'ArrowUp'
+          ? event.currentTarget.previousElementSibling
+          : null;
+    if (!(sibling instanceof HTMLElement) || !sibling.dataset.songId) return;
+    event.preventDefault();
+    onSelect(sibling.dataset.songId);
+    sibling.focus();
+  };
+
   return (
     <table className="w-full border-separate border-spacing-y-0.5">
       <thead>
@@ -83,7 +102,10 @@ export function SongsTable({ songs }: { songs: SongSummary[] }) {
             {headerGroup.headers.map((header) => (
               <th
                 key={header.id}
-                className="text-ink-3 bg-ground/92 sticky top-20 z-[5] h-9 px-3 text-left text-xs font-semibold"
+                className={cn(
+                  'text-ink-3 bg-ground/92 sticky top-20 z-[5] h-9 px-3 text-left text-xs font-semibold',
+                  columnMeta(header.column.columnDef.meta).headClassName
+                )}
               >
                 {header.isPlaceholder ? null : <FlexRender header={header} />}
               </th>
@@ -92,28 +114,34 @@ export function SongsTable({ songs }: { songs: SongSummary[] }) {
         ))}
       </thead>
       <tbody>
-        {table.getRowModel().rows.map((row) => (
-          <tr
-            key={row.id}
-            onClick={(event) => {
-              if (event.target instanceof Element && event.target.closest('a')) return;
-              void navigate({ to: '/songs/$songId', params: { songId: row.original._id } });
-            }}
-            className="group/row cursor-pointer"
-          >
-            {row.getAllCells().map((cell) => (
-              <td
-                key={cell.id}
-                className={cn(
-                  'text-ink-2 group-hover/row:bg-fill-hover group-has-[a:focus-visible]/row:bg-fill-hover h-[58px] px-3 align-middle text-sm transition-colors duration-150 first:rounded-l-2xl last:rounded-r-2xl group-has-[a:focus-visible]/row:first:shadow-[inset_2px_0_0_var(--chord)]',
-                  cellClassName(cell.column.columnDef.meta)
-                )}
-              >
-                <FlexRender cell={cell} />
-              </td>
-            ))}
-          </tr>
-        ))}
+        {table.getRowModel().rows.map((row) => {
+          const selected = row.id === selectedId;
+          return (
+            <tr
+              key={row.id}
+              id={`song-row-${row.id}`}
+              data-song-id={row.id}
+              tabIndex={0}
+              aria-selected={selected}
+              onClick={() => onSelect(row.id)}
+              onDoubleClick={() => open(row.id)}
+              onKeyDown={(event) => onRowKeyDown(event, row.id)}
+              className="group/row cursor-pointer outline-none"
+            >
+              {row.getAllCells().map((cell) => (
+                <td
+                  key={cell.id}
+                  className={cn(
+                    'text-ink-2 group-hover/row:bg-fill-hover group-aria-selected/row:bg-fill-on group-focus-visible/row:bg-fill-hover h-[58px] px-3 align-middle text-sm transition-colors duration-150 first:rounded-l-2xl last:rounded-r-2xl group-focus-visible/row:first:shadow-[inset_2px_0_0_var(--chord)]',
+                    columnMeta(cell.column.columnDef.meta).cellClassName
+                  )}
+                >
+                  <FlexRender cell={cell} />
+                </td>
+              ))}
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );

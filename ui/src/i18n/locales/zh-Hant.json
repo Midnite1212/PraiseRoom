@@ -74,10 +74,8 @@
     "columns": {
       "code": "編號",
       "title": "歌名",
-      "artist": "作者",
       "key": "調",
-      "tempo": "速度",
-      "themes": "主題"
+      "tempo": "速度"
     },
     "empty": "找不到詩歌。",
     "loadFailed": "未能載入詩歌，請再試一次。",
@@ -110,6 +108,15 @@
     "sortHint": {
       "title": "按名稱",
       "code": "按編號"
+    },
+    "previewHint": "按一下預覽 · 連按兩下或按 Enter 開啟",
+    "preview": {
+      "label": "{{title}} 的預覽",
+      "close": "關閉預覽",
+      "closeHint": "關閉預覽（Esc）",
+      "open": "開啟",
+      "edit": "編輯",
+      "time": "拍號"
     },
     "library": "所有詩歌",
     "searchPhone": "搜尋 {{total}} 首詩歌",

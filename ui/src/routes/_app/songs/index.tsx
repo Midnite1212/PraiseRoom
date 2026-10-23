@@ -26,11 +26,13 @@ import {
 } from '@/features/songs/api';
 import { nextSetSongIds } from '@/features/songs/next-set';
 import { type SongFilterValues, SongFilterSheet } from '@/features/songs/song-filter-sheet';
+import { SongPreview } from '@/features/songs/song-preview';
 import { SongRows } from '@/features/songs/song-rows';
 import { MAX_KEYWORD_LENGTH, toSearchKeyword } from '@/features/songs/song-search';
 import { SongsTable } from '@/features/songs/songs-table';
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { useIsWide } from '@/hooks/use-wide';
+import { cn } from '@/lib/utils';
 
 const songsSearchSchema = z.object({
   q: z.string().default('').catch(''),
@@ -39,11 +41,12 @@ const songsSearchSchema = z.object({
   themes: z.array(z.string()).default([]).catch([]),
   web: z.boolean().default(false).catch(false),
   sort: z.enum(SONG_SORTS).default('title').catch('title'),
+  song: z.string().optional().catch(undefined),
 });
 
 export const Route = createFileRoute('/_app/songs/')({
   validateSearch: songsSearchSchema,
-  loaderDeps: ({ search }) => search,
+  loaderDeps: ({ search: { q, page, tempo, themes, sort } }) => ({ q, page, tempo, themes, sort }),
   loader: async ({ context, deps }) => {
     await context.queryClient.ensureQueryData(
       songSearchQueryOptions({
@@ -68,7 +71,7 @@ function SongsPage() {
   const { session } = Route.useRouteContext();
   const { now } = Route.useLoaderData();
   const search = Route.useSearch();
-  const { q, page, tempo, themes, web, sort } = search;
+  const { q, page, tempo, themes, web, sort, song: selectedId } = search;
   const navigate = Route.useNavigate();
   const isWide = useIsWide();
   const searchInput = useRef<HTMLInputElement>(null);
@@ -123,6 +126,33 @@ function SongsPage() {
   ];
 
   const songs = data?.data ?? [];
+  const selectedSong = isWide ? songs.find((song) => song._id === selectedId) : undefined;
+  const hasStaleSelection =
+    isWide && selectedId !== undefined && !selectedSong && !isFetching && data !== undefined;
+  useEffect(() => {
+    if (hasStaleSelection)
+      void navigate({ search: (previous) => ({ ...previous, song: undefined }), replace: true });
+  }, [hasStaleSelection, navigate]);
+
+  const closePreview = () => {
+    if (selectedId) document.getElementById(`song-row-${selectedId}`)?.focus();
+    setSearch({ song: undefined });
+  };
+  const isPreviewOpen = selectedSong !== undefined;
+  useEffect(() => {
+    if (!isPreviewOpen) return undefined;
+    const onKeyDown = (event: globalThis.KeyboardEvent) => {
+      if (event.key !== 'Escape' || event.defaultPrevented) return;
+      if (
+        event.target instanceof Element &&
+        event.target.closest('input, textarea, select, [contenteditable], [role="dialog"]')
+      )
+        return;
+      closePreview();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  });
   const totalPages = Math.max(1, data?.totalPages ?? 1);
   const isFiltered = q !== '' || activeFilters.length > 0;
   const addSongLabel = t('songs.add.button');
@@ -140,74 +170,102 @@ function SongsPage() {
           ) : null
         }
       />
-      <Finder
-        inputRef={searchInput}
-        value={text}
-        onChange={setText}
-        maxLength={MAX_KEYWORD_LENGTH}
-        placeholder={
-          library
-            ? t(isWide ? 'songs.searchWide' : 'songs.searchPhone', { total: library.totalCount })
-            : t('songs.searchPlaceholder')
-        }
-        label={t('songs.searchLabel')}
-        filterCount={activeFilters.length}
-        onFilter={() => setIsFilterOpen(true)}
-      />
-      <FilterChips filters={activeFilters} />
+      <div
+        className={cn(selectedSong && 'grid grid-cols-[minmax(0,1fr)_25rem] items-start gap-10')}
+      >
+        <div className="min-w-0">
+          <Finder
+            inputRef={searchInput}
+            value={text}
+            onChange={setText}
+            maxLength={MAX_KEYWORD_LENGTH}
+            placeholder={
+              library
+                ? t(isWide ? 'songs.searchWide' : 'songs.searchPhone', {
+                    total: library.totalCount,
+                  })
+                : t('songs.searchPlaceholder')
+            }
+            label={t('songs.searchLabel')}
+            filterCount={activeFilters.length}
+            onFilter={() => setIsFilterOpen(true)}
+          />
+          <FilterChips filters={activeFilters} />
 
-      <GroupTitle
-        title={isFiltered ? t('songs.results') : t('songs.library')}
-        count={data?.totalCount}
-        hint={t(`songs.sortHint.${sort}`)}
-        first
-      />
-      {isError ? (
-        <EmptyState title={t('songs.loadFailed')} />
-      ) : (
-        <div className={isFetching ? 'opacity-60 transition-opacity' : undefined}>
-          {isWide ? (
-            <SongsTable songs={songs} />
+          <GroupTitle
+            title={isFiltered ? t('songs.results') : t('songs.library')}
+            count={data?.totalCount}
+            hint={isWide ? t('songs.previewHint') : t(`songs.sortHint.${sort}`)}
+            first
+          />
+          {isError ? (
+            <EmptyState title={t('songs.loadFailed')} />
           ) : (
-            <SongRows
-              songs={songs}
-              sort={sort}
-              grouped={q.trim() === ''}
-              nextSetSongIds={nextSetSongs}
-            />
+            <div className={isFetching ? 'opacity-60 transition-opacity' : undefined}>
+              {isWide ? (
+                <SongsTable
+                  songs={songs}
+                  selectedId={selectedSong?._id}
+                  onSelect={(songId) => setSearch({ song: songId })}
+                />
+              ) : (
+                <SongRows
+                  songs={songs}
+                  sort={sort}
+                  grouped={q.trim() === ''}
+                  nextSetSongIds={nextSetSongs}
+                />
+              )}
+            </div>
           )}
+
+          {totalPages > 1 ? (
+            <nav
+              className="mt-4 flex items-center justify-between gap-2"
+              aria-label={t('songs.pages')}
+            >
+              <Button
+                variant="secondary"
+                size="sm"
+                disabled={page <= 1}
+                onClick={() => setSearch({ page: page - 1 })}
+              >
+                <ChevronLeft />
+                {t('songs.previous')}
+              </Button>
+              <span className="text-ink-2 font-mono text-sm">
+                {t('songs.page', { page, total: totalPages })}
+              </span>
+              <Button
+                variant="secondary"
+                size="sm"
+                disabled={page >= totalPages}
+                onClick={() => setSearch({ page: page + 1 })}
+              >
+                {t('songs.next')}
+                <ChevronRight />
+              </Button>
+            </nav>
+          ) : null}
+
+          {canAdd && web && q.trim() !== '' ? (
+            <WebResults
+              key={q}
+              q={q}
+              onPickUrl={songImport.pickUrl}
+              onPaste={songImport.openPaste}
+            />
+          ) : null}
         </div>
-      )}
-
-      {totalPages > 1 ? (
-        <nav className="mt-4 flex items-center justify-between gap-2" aria-label={t('songs.pages')}>
-          <Button
-            variant="secondary"
-            size="sm"
-            disabled={page <= 1}
-            onClick={() => setSearch({ page: page - 1 })}
-          >
-            <ChevronLeft />
-            {t('songs.previous')}
-          </Button>
-          <span className="text-ink-2 font-mono text-sm">
-            {t('songs.page', { page, total: totalPages })}
-          </span>
-          <Button
-            variant="secondary"
-            size="sm"
-            disabled={page >= totalPages}
-            onClick={() => setSearch({ page: page + 1 })}
-          >
-            {t('songs.next')}
-            <ChevronRight />
-          </Button>
-        </nav>
-      ) : null}
-
-      {canAdd && web && q.trim() !== '' ? (
-        <WebResults key={q} q={q} onPickUrl={songImport.pickUrl} onPaste={songImport.openPaste} />
-      ) : null}
+        {selectedSong ? (
+          <SongPreview
+            key={selectedSong._id}
+            song={selectedSong}
+            canEdit={canAdd}
+            onClose={closePreview}
+          />
+        ) : null}
+      </div>
 
       <SongFilterSheet
         open={isFilterOpen}

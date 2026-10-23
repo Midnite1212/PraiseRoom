@@ -74,10 +74,8 @@
     "columns": {
       "code": "Code",
       "title": "Title",
-      "artist": "Artist",
       "key": "Key",
-      "tempo": "Tempo",
-      "themes": "Themes"
+      "tempo": "Tempo"
     },
     "empty": "No songs found.",
     "loadFailed": "Could not load songs. Please try again.",
@@ -110,6 +108,15 @@
     "sortHint": {
       "title": "A–Z",
       "code": "By code"
+    },
+    "previewHint": "Click to preview · double-click or Enter to open",
+    "preview": {
+      "label": "Preview of {{title}}",
+      "close": "Close preview",
+      "closeHint": "Close preview (Esc)",
+      "open": "Open",
+      "edit": "Edit",
+      "time": "Time"
     },
     "library": "All songs",
     "searchPhone": "Search {{total}} songs",
