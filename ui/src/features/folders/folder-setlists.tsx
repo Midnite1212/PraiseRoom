@@ -1,29 +1,37 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Link } from '@tanstack/react-router';
-import { Close, SectionPlus } from 'pixelarticons/react';
+import { Bulletlist, Close, Plus, Search } from 'pixelarticons/react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
+import { EmptyState } from '@/components/page/empty-state';
+import { GroupTitle } from '@/components/page/group-title';
+import { LIST_CLASSES } from '@/components/page/list-row';
+import { DateBlock } from '@/components/primitives/date-block';
+import { PickRow } from '@/components/primitives/pick-row';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Session } from '@/features/auth/session';
 import { type Folder, setlistsQueryOptions } from '@/features/setlists/api';
-import { formatSetlistDate } from '@/features/setlists/format-date';
 import { canEditSetlist } from '@/features/setlists/permissions';
+import { SetlistRow } from '@/features/setlists/setlist-row';
+import { useSetlistNames } from '@/features/setlists/use-setlist-names';
 
 import { FOLDER_RELATED_QUERY_KEYS, setFolderSetlists } from './api';
 
-type FolderSetlistsProps = { session: Session; folder: Folder; canEdit: boolean };
-
-export function FolderSetlists({ session, folder, canEdit }: FolderSetlistsProps) {
-  const { t, i18n } = useTranslation();
+const useFolderSetlistsUpdate = (folder: Folder) => {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
-  const { data: setlists, isPending } = useQuery(setlistsQueryOptions());
-
-  const update = useMutation({
+  return useMutation({
     mutationFn: (setlistIds: string[]) => setFolderSetlists(folder._id, setlistIds),
     onSuccess: () =>
       Promise.all(
@@ -35,94 +43,204 @@ export function FolderSetlists({ session, folder, canEdit }: FolderSetlistsProps
       toast.error(t('folders.setlistsFailed'));
     },
   });
+};
 
+type FolderSetlistsProps = {
+  session: Session;
+  folder: Folder;
+  canEdit: boolean;
+  now: number;
+  onAddSetlists: () => void;
+};
+
+export function FolderSetlists({
+  session,
+  folder,
+  canEdit,
+  now,
+  onAddSetlists,
+}: FolderSetlistsProps) {
+  const { t } = useTranslation();
+  const { data: setlists, isPending } = useQuery(setlistsQueryOptions());
+  const names = useSetlistNames(session);
+  const update = useFolderSetlistsUpdate(folder);
   const inFolder = new Set(folder.setlistIds);
   const folderSetlists = (setlists ?? []).filter(({ _id }) => inFolder.has(_id));
-  // A folder may newly link only setlists the caller can edit; the server enforces the same rule.
-  const addable = (setlists ?? []).filter(
-    (setlist) => !inFolder.has(setlist._id) && canEditSetlist(session, setlist)
-  );
 
   return (
-    <section
-      className="bg-sheet flex flex-col gap-3 rounded-xl border p-4"
-      aria-labelledby="folder-setlists"
-    >
-      <div className="flex items-center justify-between gap-2">
-        <h2 id="folder-setlists" className="font-medium">
-          {t('folders.setlists', { count: folder.setlistIds.length })}
-        </h2>
-        {canEdit ? (
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" size="sm">
-                <SectionPlus />
-                {t('folders.addSetlists')}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent align="end" className="w-72">
-              {addable.length === 0 ? (
-                <p className="text-muted-foreground text-sm">{t('folders.noSetlistsToAdd')}</p>
-              ) : (
-                <ul className="flex max-h-64 flex-col gap-2 overflow-y-auto">
-                  {addable.map((setlist) => {
-                    const id = `add-setlist-${setlist._id}`;
-                    return (
-                      <li key={setlist._id} className="flex items-center gap-2">
-                        <Checkbox
-                          id={id}
-                          checked={false}
-                          disabled={update.isPending}
-                          onCheckedChange={() => update.mutate([...folder.setlistIds, setlist._id])}
-                        />
-                        <Label htmlFor={id} className="truncate font-normal">
-                          {setlist.name}
-                        </Label>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
-            </PopoverContent>
-          </Popover>
-        ) : null}
-      </div>
-
+    <section aria-labelledby="folder-setlists">
+      <GroupTitle
+        id="folder-setlists"
+        title={t('setlists.title')}
+        count={folder.setlistIds.length}
+        action={
+          canEdit ? (
+            <Button variant="link" size="sm" onClick={onAddSetlists}>
+              <Plus />
+              {t('folders.addSetlists')}
+            </Button>
+          ) : null
+        }
+      />
       {isPending ? (
         <Skeleton className="h-24 w-full" />
       ) : folderSetlists.length === 0 ? (
-        <p className="text-muted-foreground py-4 text-center text-sm">{t('folders.noSetlists')}</p>
+        <EmptyState title={t('folders.noSetlists')}>{t('folders.noSetlistsHint')}</EmptyState>
       ) : (
-        <ul className="divide-y">
+        <ul className={LIST_CLASSES}>
           {folderSetlists.map((setlist) => (
-            <li key={setlist._id} className="flex items-center gap-2">
-              <Link
-                to="/setlists/$setlistId"
-                params={{ setlistId: setlist._id }}
-                className="flex min-w-0 flex-1 flex-col py-2 hover:underline"
-              >
-                <span className="truncate text-sm font-medium">{setlist.name}</span>
-                <span className="text-muted-foreground font-mono text-xs">
-                  {formatSetlistDate(setlist.date, i18n.language) ?? t('setlists.noDate')}
-                </span>
-              </Link>
-              {canEdit ? (
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  disabled={update.isPending}
-                  aria-label={t('folders.removeSetlist', { name: setlist.name })}
-                  onClick={() =>
-                    update.mutate(folder.setlistIds.filter((id) => id !== setlist._id))
-                  }
-                >
-                  <Close />
-                </Button>
-              ) : null}
+            <li key={setlist._id}>
+              <SetlistRow
+                session={session}
+                setlist={setlist}
+                names={names}
+                now={now}
+                actions={
+                  canEdit ? (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      disabled={update.isPending}
+                      aria-label={t('folders.removeSetlist', { name: setlist.name })}
+                      title={t('folders.removeFromFolder')}
+                      onClick={() =>
+                        update.mutate(
+                          folder.setlistIds.filter((id) => id !== setlist._id),
+                          {
+                            onSuccess: () =>
+                              toast.success(t('folders.setlistRemoved', { name: setlist.name })),
+                          }
+                        )
+                      }
+                    >
+                      <Close />
+                    </Button>
+                  ) : null
+                }
+              />
             </li>
           ))}
         </ul>
       )}
     </section>
+  );
+}
+
+// Pick setlists to add; only ones you can edit, as the server allows.
+export function AddSetlistsDialog({
+  session,
+  folder,
+  now,
+  open,
+  onOpenChange,
+}: {
+  session: Session;
+  folder: Folder;
+  now: number;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const { t } = useTranslation();
+  const { data: setlists } = useQuery(setlistsQueryOptions());
+  const update = useFolderSetlistsUpdate(folder);
+  const [search, setSearch] = useState('');
+  const [picked, setPicked] = useState<readonly string[]>([]);
+  const inFolder = new Set(folder.setlistIds);
+  const query = search.trim().toLocaleLowerCase();
+  const options = (setlists ?? []).filter(
+    (setlist) =>
+      canEditSetlist(session, setlist) &&
+      (!query || setlist.name.toLocaleLowerCase().includes(query))
+  );
+
+  const reset = () => {
+    setSearch('');
+    setPicked([]);
+  };
+
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={(next) => {
+        if (!next) reset();
+        onOpenChange(next);
+      }}
+    >
+      <DialogContent
+        className="[--dw:520px]"
+        footer={
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="secondary">{t('editor.cancel')}</Button>
+            </DialogClose>
+            <Button
+              disabled={picked.length === 0 || update.isPending}
+              onClick={() =>
+                update.mutate([...folder.setlistIds, ...picked], {
+                  onSuccess: () => {
+                    toast.success(t('folders.setlistsAdded', { count: picked.length }));
+                    reset();
+                    onOpenChange(false);
+                  },
+                })
+              }
+            >
+              {picked.length > 0
+                ? t('folders.addCount', { count: picked.length })
+                : t('editor.add')}
+            </Button>
+          </DialogFooter>
+        }
+      >
+        <DialogHeader icon={<Bulletlist />}>
+          <DialogTitle>{t('folders.addSetlists')}</DialogTitle>
+          <DialogDescription>
+            {t('folders.addSetlistsDescription', { name: folder.groupName })}
+          </DialogDescription>
+        </DialogHeader>
+        <label className="bg-fill-hover [&_svg]:size-icon [&_svg]:text-ink-2 flex h-12 flex-none items-center gap-2.5 rounded-2xl px-3.5">
+          <Search />
+          <input
+            type="search"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder={t('folders.searchSetlists')}
+            aria-label={t('folders.searchSetlists')}
+            autoComplete="off"
+            className="placeholder:text-ink-3 h-full min-w-0 flex-1 bg-transparent outline-none"
+          />
+        </label>
+        <div className="-mx-1 flex flex-col">
+          {options.length === 0 ? (
+            <p className="text-ink-2 py-4 text-center text-sm">{t('folders.noSetlistsToAdd')}</p>
+          ) : (
+            options.map((setlist) => {
+              const isIn = inFolder.has(setlist._id);
+              return (
+                <PickRow
+                  key={setlist._id}
+                  leading={<DateBlock date={setlist.date} now={now} size="sm" />}
+                  title={setlist.name}
+                  hint={
+                    isIn
+                      ? t('folders.alreadyIn')
+                      : t('reader.songCount', { count: setlist.songs.length })
+                  }
+                  checked={isIn || picked.includes(setlist._id)}
+                  disabled={isIn}
+                  onToggle={() =>
+                    setPicked((current) =>
+                      current.includes(setlist._id)
+                        ? current.filter((id) => id !== setlist._id)
+                        : [...current, setlist._id]
+                    )
+                  }
+                />
+              );
+            })
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -1,8 +1,7 @@
 import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { FolderPlus } from 'pixelarticons/react';
-import { useState } from 'react';
+import { Folder, FolderPlus } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -10,24 +9,28 @@ import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/components/ui/dialog';
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
 import type { Session } from '@/features/auth/session';
 
 import { changeFolderMembers, createFolder, FOLDER_RELATED_QUERY_KEYS } from './api';
 
-export function CreateFolderDialog({ session }: { session: Session }) {
+type CreateFolderDialogProps = {
+  session: Session;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+};
+
+export function CreateFolderDialog({ session, open, onOpenChange }: CreateFolderDialogProps) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
 
   const form = useForm({
     defaultValues: { groupName: '' },
@@ -51,7 +54,7 @@ export function CreateFolderDialog({ session }: { session: Session }) {
           )
         );
         formApi.reset();
-        setIsOpen(false);
+        onOpenChange(false);
         toast.success(t('folders.created'));
         await navigate({ to: '/folders/$folderId', params: { folderId: folder._id } });
       } catch {
@@ -61,13 +64,7 @@ export function CreateFolderDialog({ session }: { session: Session }) {
   });
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button>
-          <FolderPlus />
-          {t('folders.new')}
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <form
           noValidate
@@ -77,7 +74,7 @@ export function CreateFolderDialog({ session }: { session: Session }) {
             void form.handleSubmit();
           }}
         >
-          <DialogHeader>
+          <DialogHeader icon={<FolderPlus />}>
             <DialogTitle>{t('folders.new')}</DialogTitle>
             <DialogDescription>{t('folders.newDescription')}</DialogDescription>
           </DialogHeader>
@@ -86,20 +83,34 @@ export function CreateFolderDialog({ session }: { session: Session }) {
               const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
               return (
                 <Field data-invalid={isInvalid}>
-                  <FieldLabel htmlFor="new-folder-name">{t('folders.name')}</FieldLabel>
-                  <Input
-                    id="new-folder-name"
-                    value={field.state.value}
-                    aria-invalid={isInvalid}
-                    onBlur={field.handleBlur}
-                    onChange={(event) => field.handleChange(event.target.value)}
-                  />
+                  <FieldLabel htmlFor="new-folder-name" className="sr-only">
+                    {t('folders.name')}
+                  </FieldLabel>
+                  <span className="bg-fill-hover [&_svg]:size-icon [&_svg]:text-ink-2 flex h-12 items-center gap-2.5 rounded-2xl px-3.5">
+                    <Folder />
+                    <input
+                      id="new-folder-name"
+                      value={field.state.value}
+                      maxLength={60}
+                      placeholder={t('folders.namePlaceholder')}
+                      aria-invalid={isInvalid}
+                      autoComplete="off"
+                      onBlur={field.handleBlur}
+                      onChange={(event) => field.handleChange(event.target.value)}
+                      className="placeholder:text-ink-3 h-full min-w-0 flex-1 bg-transparent outline-none"
+                    />
+                  </span>
                   {isInvalid ? <FieldError errors={field.state.meta.errors} /> : null}
                 </Field>
               );
             }}
           </form.Field>
           <DialogFooter>
+            <DialogClose asChild>
+              <Button type="button" variant="secondary">
+                {t('editor.cancel')}
+              </Button>
+            </DialogClose>
             <form.Subscribe selector={(state) => state.isSubmitting}>
               {(isSubmitting) => (
                 <Button type="submit" disabled={isSubmitting}>

@@ -1,64 +1,88 @@
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { ChevronRight, Folder as FolderIcon } from 'pixelarticons/react';
+import { createFileRoute } from '@tanstack/react-router';
+import { FolderPlus } from 'pixelarticons/react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { EmptyState } from '@/components/page/empty-state';
+import { Finder } from '@/components/page/finder';
+import { LIST_CLASSES } from '@/components/page/list-row';
+import { PageHeader } from '@/components/page/page-header';
+import { Fab } from '@/components/primitives/fab';
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { membersOf, peopleQueryOptions } from '@/features/folders/api';
+import { peopleQueryOptions } from '@/features/folders/api';
 import { CreateFolderDialog } from '@/features/folders/create-folder-dialog';
+import { FolderCard, FolderRow } from '@/features/folders/folder-card';
 import { foldersQueryOptions } from '@/features/setlists/api';
 import { ownFolders } from '@/features/setlists/permissions';
+import { useIsWide } from '@/hooks/use-wide';
+import { cn } from '@/lib/utils';
 
 export const Route = createFileRoute('/_app/folders/')({
   loader: ({ context }) => context.queryClient.ensureQueryData(foldersQueryOptions()),
-  pendingComponent: () => <Skeleton className="mx-auto h-64 max-w-3xl" />,
+  pendingComponent: () => <Skeleton className="h-64 w-full" />,
   component: FoldersPage,
 });
 
 function FoldersPage() {
   const { t } = useTranslation();
   const { session } = Route.useRouteContext();
+  const isWide = useIsWide();
   const { data: folders } = useSuspenseQuery(foldersQueryOptions());
   const { data: people } = useQuery(peopleQueryOptions());
-  const mine = ownFolders(session, folders).toSorted((a, b) =>
-    a.groupName.localeCompare(b.groupName)
-  );
+  const [search, setSearch] = useState('');
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+
+  const query = search.trim().toLocaleLowerCase();
+  const mine = ownFolders(session, folders)
+    .filter((folder) => !query || folder.groupName.toLocaleLowerCase().includes(query))
+    .toSorted((a, b) => a.groupName.localeCompare(b.groupName));
+  const newLabel = t('folders.new');
 
   return (
-    <section className="mx-auto flex max-w-3xl flex-col gap-4">
-      <div className="flex items-center justify-between gap-2">
-        <h1 className="text-2xl font-semibold">{t('folders.title')}</h1>
-        <CreateFolderDialog session={session} />
-      </div>
+    <>
+      <PageHeader
+        title={t('folders.title')}
+        description={t('folders.intro')}
+        actions={
+          <Button onClick={() => setIsCreateOpen(true)}>
+            <FolderPlus />
+            {newLabel}
+          </Button>
+        }
+      />
+      <Finder
+        value={search}
+        onChange={setSearch}
+        placeholder={t('folders.searchPlaceholder')}
+        label={t('folders.searchLabel')}
+      />
       {mine.length === 0 ? (
-        <p className="bg-sheet text-muted-foreground rounded-xl border p-8 text-center">
-          {t('folders.empty')}
-        </p>
-      ) : (
-        <ul className="bg-sheet divide-y overflow-hidden rounded-xl border">
+        <EmptyState title={query ? t('folders.noMatches') : t('folders.emptyTitle')}>
+          {query ? t('folders.noMatchesHint') : t('folders.empty')}
+        </EmptyState>
+      ) : isWide ? (
+        <ul className="mt-[18px] grid list-none grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-x-6 gap-y-8 p-0">
           {mine.map((folder) => (
             <li key={folder._id}>
-              <Link
-                to="/folders/$folderId"
-                params={{ folderId: folder._id }}
-                className="hover:bg-accent/60 flex items-center gap-3 px-4 py-3 transition-colors"
-              >
-                <FolderIcon className="text-label size-4 shrink-0" />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium">{folder.groupName}</p>
-                  <p className="text-muted-foreground text-xs">
-                    {t('folders.setlists', { count: folder.setlistIds.length })}
-                    {people
-                      ? ` · ${t('folders.members', { count: membersOf(people, folder._id).length })}`
-                      : null}
-                  </p>
-                </div>
-                <ChevronRight className="text-muted-foreground size-4" />
-              </Link>
+              <FolderCard session={session} folder={folder} people={people} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <ul className={cn(LIST_CLASSES, 'mt-2')}>
+          {mine.map((folder) => (
+            <li key={folder._id}>
+              <FolderRow session={session} folder={folder} people={people} />
             </li>
           ))}
         </ul>
       )}
-    </section>
+      <Fab aria-label={newLabel} title={newLabel} onClick={() => setIsCreateOpen(true)}>
+        <FolderPlus />
+      </Fab>
+      <CreateFolderDialog session={session} open={isCreateOpen} onOpenChange={setIsCreateOpen} />
+    </>
   );
 }
