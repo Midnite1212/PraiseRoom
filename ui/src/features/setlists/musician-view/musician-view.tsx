@@ -144,7 +144,7 @@ export function MusicianView({
           >
             <Bulletlist />
           </Button>
-          <BrandMark className="size-5" />
+          <BrandMark />
           <strong className="truncate text-[0.9375rem] font-semibold">{setlist.name}</strong>
           {date ? (
             <span className="text-ink-2 text-[0.8125rem] whitespace-nowrap">{date}</span>
