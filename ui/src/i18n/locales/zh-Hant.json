@@ -313,7 +313,20 @@
     "deleteTitle": "刪除此歌單？",
     "deleteDescription": "所有人都將看不到此歌單，包括其資料夾及公開連結。",
     "deleted": "已刪除歌單。",
-    "deleteFailed": "未能刪除歌單，請再試一次。"
+    "deleteFailed": "未能刪除歌單，請再試一次。",
+    "frame": {
+      "saving": "儲存中…",
+      "saved": "已儲存",
+      "saveFailed": "無法儲存",
+      "retry": "重試",
+      "paused": "尚未儲存",
+      "undo": "復原",
+      "undone": "已復原",
+      "done": "完成",
+      "savesAsYouGo": "所有更改都會自動儲存",
+      "moveHandle": "移動「{{title}}」：拖曳，或使用上下方向鍵",
+      "moved": "「{{title}}」已移至第 {{position}} 位，共 {{count}} 項"
+    }
   },
   "folders": {
     "title": "資料夾",

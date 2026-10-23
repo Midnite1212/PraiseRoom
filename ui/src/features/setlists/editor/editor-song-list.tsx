@@ -9,8 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { moveItem } from '@/lib/move-item';
 
-import { type EditorSong, keyOptionsFor, moveItem } from './editor-song';
+import { type EditorSong, keyOptionsFor } from './editor-song';
 
 type EditorSongListProps = {
   songs: EditorSong[];

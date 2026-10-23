@@ -8,6 +8,7 @@ These docs are the **editable guardrails** for `ui/`. They describe how we build
 | [components.md](components.md)             | Design system, composition, theming         | `src/components/`                    |
 | [data-fetching.md](data-fetching.md)       | API calls, query options, mutations         | `src/features/songs/api.ts`          |
 | [routing.md](routing.md)                   | File routes, search params, loaders, guards | `src/routes/`                        |
+| [editors.md](editors.md)                   | Autosave editor frame, undo, reorder        | `src/components/editor/`             |
 | [forms.md](forms.md)                       | TanStack Form with Zod and shadcn fields    | `src/routes/login.tsx`               |
 | [tables.md](tables.md)                     | TanStack Table v9 with shadcn's table       | `src/features/songs/songs-table.tsx` |
 | [i18n.md](i18n.md)                         | Translation keys and languages              | `src/i18n/`                          |

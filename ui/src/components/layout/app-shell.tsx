@@ -55,7 +55,7 @@ function PageChrome({
         />
         <div
           aria-hidden
-          className="edge-bottom wide:hidden pointer-events-none fixed inset-x-0 bottom-0 z-20 h-[calc(var(--bottom)+var(--tab-h)+40px)]"
+          className="edge-bottom wide:hidden pointer-events-none fixed inset-x-0 bottom-0 z-20 h-[calc(var(--bottom)+var(--tab-h)+40px)] in-[.editing]:hidden"
         />
 
         <aside
@@ -146,7 +146,7 @@ function PageChrome({
 
         <nav
           aria-label={t('nav.pages')}
-          className="wide:hidden pointer-events-none fixed right-[max(10px,env(safe-area-inset-right))] bottom-(--bottom) left-[max(10px,env(safe-area-inset-left))] z-30 mx-auto flex max-w-[560px] gap-2"
+          className="wide:hidden pointer-events-none fixed right-[max(10px,env(safe-area-inset-right))] bottom-(--bottom) left-[max(10px,env(safe-area-inset-left))] z-30 mx-auto flex max-w-[560px] gap-2 in-[.editing]:hidden"
         >
           <div className="glass glass-over pointer-events-auto grid h-(--tab-h) flex-1 grid-cols-4 gap-0.5 p-1.5">
             {NAV_ITEMS.map(({ id, to, labelKey, icon: Icon }) => (
