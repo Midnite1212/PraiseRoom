@@ -191,13 +191,29 @@
       "previousMonth": "Previous month",
       "nextMonth": "Next month",
       "hint": "Days with a setlist. Click one to show it.",
-      "showing": "Showing {{day}}"
+      "showing": "Showing {{day}}",
+      "next": "Next",
+      "coming": "Coming",
+      "played": "Played",
+      "showAll": "Show all"
     },
     "then": "Then",
     "comingUp": "Coming up",
     "played": "Played",
     "showPlayed": "Show",
-    "hidePlayed": "Hide"
+    "hidePlayed": "Hide",
+    "preview": {
+      "label": "Preview of {{name}}",
+      "close": "Close preview",
+      "closeHint": "Close preview (Esc)",
+      "noDate": "No date yet",
+      "youMadeThis": "You made this",
+      "from": "From {{name}}",
+      "inFolders": "in",
+      "openNamed": "Open {{name}}",
+      "noSongs": "No songs yet",
+      "noSongsHint": "Edit it to add some."
+    }
   },
   "reader": {
     "setlist": "Setlist",

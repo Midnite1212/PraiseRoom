@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { Plus } from 'pixelarticons/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
@@ -20,6 +20,8 @@ import { filterSetlists, groupSetlists } from '@/features/setlists/list';
 import { NextSetCard } from '@/features/setlists/next-set-card';
 import { SetlistCalendar } from '@/features/setlists/setlist-calendar';
 import { SetlistFilterSheet } from '@/features/setlists/setlist-filter-sheet';
+import { SetlistListContext } from '@/features/setlists/setlist-list-context';
+import { SetlistPreview } from '@/features/setlists/setlist-preview';
 import { ManagedSetlistRow } from '@/features/setlists/setlist-row';
 import { useSetlistNames } from '@/features/setlists/use-setlist-names';
 import { useIsWide } from '@/hooks/use-wide';
@@ -33,6 +35,7 @@ const setlistsSearchSchema = z.object({
     .regex(/^\d{4}-\d{2}-\d{2}$/)
     .optional()
     .catch(undefined),
+  set: z.string().optional().catch(undefined),
 });
 
 export const Route = createFileRoute('/_app/setlists/')({
@@ -57,6 +60,7 @@ function SetlistsPage() {
   const isWide = useIsWide();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isPlayedOpen, setIsPlayedOpen] = useState(false);
+  const [litDay, setLitDay] = useState<string | null>(null);
 
   const setSearch = (next: Partial<typeof search>) =>
     void navigate({ search: (previous) => ({ ...previous, ...next }), replace: true });
@@ -82,6 +86,38 @@ function SetlistsPage() {
   ].filter(({ items }) => items.length > 0);
   const showPlayed = isPlayedOpen || isFiltering;
   const nextId = nextSetlistId(setlists, now);
+  const orderedIds = sections.flatMap(({ key, items }) =>
+    key === 'past' && !showPlayed ? [] : items.map((setlist) => setlist._id)
+  );
+  const selected = isWide ? setlists.find((setlist) => setlist._id === search.set) : undefined;
+  const selectedId = selected?._id;
+  const pick = (setlistId: string | undefined) => setSearch({ set: setlistId });
+
+  useEffect(() => {
+    if (!selectedId) return undefined;
+    const onKeyDown = (event: KeyboardEvent) => {
+      const target = event.target;
+      const isTyping =
+        target instanceof HTMLElement &&
+        (target.isContentEditable || ['INPUT', 'SELECT', 'TEXTAREA'].includes(target.tagName));
+      const isOverlayOpen = document.querySelector('[role="dialog"], [role="menu"]') !== null;
+      if (event.defaultPrevented || isTyping || isOverlayOpen) return;
+      if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
+      if (event.key === 'Escape') {
+        void navigate({ search: (previous) => ({ ...previous, set: undefined }), replace: true });
+        return;
+      }
+      if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+      const next =
+        orderedIds[orderedIds.indexOf(selectedId) + (event.key === 'ArrowDown' ? 1 : -1)];
+      if (!next) return;
+      event.preventDefault();
+      void navigate({ search: (previous) => ({ ...previous, set: next }), replace: true });
+      document.querySelector<HTMLElement>(`[data-setlist-id="${next}"]`)?.focus();
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [selectedId, orderedIds, navigate]);
 
   const activeFilters: ActiveFilter[] = [
     ...(search.show === 'all'
@@ -127,7 +163,14 @@ function SetlistsPage() {
   const newLabel = t('editor.newTitle');
 
   return (
-    <>
+    <SetlistListContext
+      value={{
+        litDay,
+        onLightDay: setLitDay,
+        selectedId,
+        onSelect: isWide ? pick : undefined,
+      }}
+    >
       <PageHeader
         title={t('setlists.title')}
         actions={
@@ -139,7 +182,7 @@ function SetlistsPage() {
           </Button>
         }
       />
-      <div className="wide:grid-cols-[minmax(0,1fr)_300px] wide:items-start grid gap-x-10 gap-y-2">
+      <div className="wide:grid-cols-[minmax(0,1fr)_400px] wide:items-start grid gap-x-10 gap-y-2">
         <div className="min-w-0">
           <Finder
             value={search.q}
@@ -201,12 +244,25 @@ function SetlistsPage() {
             ))
           )}
         </div>
-        <SetlistCalendar
-          setlists={setlists}
-          now={now}
-          day={search.day}
-          onDayChange={(day) => setSearch({ day })}
-        />
+        <div className="wide:grid border-hairline sticky top-3.5 hidden max-h-[calc(100vh-28px)] [scrollbar-width:thin] gap-6 overflow-y-auto border-l pr-0.5 pb-0.5 pl-8">
+          {selected ? (
+            <SetlistPreview
+              key={selected._id}
+              session={session}
+              setlist={selected}
+              names={names}
+              nextId={nextId}
+              now={now}
+              onClose={() => pick(undefined)}
+            />
+          ) : null}
+          <SetlistCalendar
+            setlists={setlists}
+            now={now}
+            day={search.day}
+            onDayChange={(day) => setSearch({ day })}
+          />
+        </div>
       </div>
       <SetlistFilterSheet
         open={isFilterOpen}
@@ -222,6 +278,6 @@ function SetlistsPage() {
           <Plus />
         </Link>
       </Fab>
-    </>
+    </SetlistListContext>
   );
 }

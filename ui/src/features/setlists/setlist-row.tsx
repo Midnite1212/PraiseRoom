@@ -7,7 +7,7 @@ import {
   PenSquare,
   Trash,
 } from 'pixelarticons/react';
-import type { ReactNode } from 'react';
+import type { KeyboardEvent, MouseEvent, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { listRowClasses } from '@/components/page/list-row';
@@ -20,14 +20,54 @@ import { type SwipeAction, SwipeRow } from '@/components/primitives/swipe-row';
 import { Tag } from '@/components/primitives/tag';
 import { Button } from '@/components/ui/button';
 import type { Session } from '@/features/auth/session';
+import { cn } from '@/lib/utils';
 
 import type { SetlistSummary } from './api';
-import { formatSetlistDate } from './format-date';
+import { formatSetlistDate, toDateInputValue } from './format-date';
+import { dayLinkHandlers, useSetlistList } from './setlist-list-context';
 import { useSetlistActions } from './use-setlist-actions';
 
 export type SetlistNames = {
   folders: ReadonlyMap<string, string>;
   people: ReadonlyMap<string, string>;
+};
+
+// On wide screens a click picks the row for the side preview; double-click and Enter open it.
+const useRowPick = (setlist: SetlistSummary) => {
+  const list = useSetlistList();
+  const navigate = useNavigate();
+  const { onSelect } = list;
+  const day = toDateInputValue(setlist.date);
+  const isSelected = list.selectedId === setlist._id;
+  const isLit = day !== '' && list.litDay === day;
+  const open = () =>
+    void navigate({ to: '/setlists/$setlistId', params: { setlistId: setlist._id } });
+
+  return {
+    rowClassName: cn((isSelected || isLit) && 'bg-fill-on hover:bg-fill-on'),
+    rowProps: day ? dayLinkHandlers(list, day) : {},
+    linkProps: {
+      'data-setlist-id': setlist._id,
+      'aria-current': isSelected ? ('true' as const) : undefined,
+      onClick: onSelect
+        ? (event: MouseEvent<HTMLAnchorElement>) => {
+            const isPlain =
+              event.button === 0 && !(event.metaKey || event.ctrlKey || event.shiftKey);
+            if (!isPlain || event.detail === 0) return;
+            event.preventDefault();
+            onSelect(setlist._id);
+          }
+        : undefined,
+      onDoubleClick: onSelect ? open : undefined,
+      onKeyDown: onSelect
+        ? (event: KeyboardEvent<HTMLAnchorElement>) => {
+            if (event.key !== ' ') return;
+            event.preventDefault();
+            onSelect(setlist._id);
+          }
+        : undefined,
+    },
+  };
 };
 
 type SetlistRowProps = {
@@ -51,6 +91,7 @@ export function SetlistRow({
   hideFolderId,
 }: SetlistRowProps) {
   const { t, i18n } = useTranslation();
+  const { rowClassName, rowProps, linkProps } = useRowPick(setlist);
   const weekday = setlist.date
     ? new Intl.DateTimeFormat(i18n.language, { weekday: 'short' }).format(new Date(setlist.date))
     : null;
@@ -64,12 +105,18 @@ export function SetlistRow({
   });
 
   return (
-    <div className={listRowClasses('group/row grid-cols-[52px_minmax(0,1fr)_auto] items-start')}>
+    <div
+      {...rowProps}
+      className={listRowClasses(
+        cn('group/row grid-cols-[52px_minmax(0,1fr)_auto] items-start', rowClassName)
+      )}
+    >
       <DateBlock date={setlist.date} status={status} />
       <span className="min-w-0">
         <Link
           to="/setlists/$setlistId"
           params={{ setlistId: setlist._id }}
+          {...linkProps}
           aria-label={
             setlist.date
               ? `${setlist.name}, ${formatSetlistDate(setlist.date, i18n.language) ?? ''}`
@@ -102,6 +149,7 @@ export function SetlistRow({
 // A played setlist as one quiet line: its date, name and strip.
 export function PlayedSetlistRow({ setlist, actions }: SetlistRowProps) {
   const { i18n } = useTranslation();
+  const { rowClassName, rowProps, linkProps } = useRowPick(setlist);
   const date = setlist.date ? new Date(setlist.date) : null;
   const dateLabel = date
     ? new Intl.DateTimeFormat(i18n.language, { day: 'numeric', month: 'short' }).format(date)
@@ -110,12 +158,16 @@ export function PlayedSetlistRow({ setlist, actions }: SetlistRowProps) {
 
   return (
     <div
-      className={listRowClasses('group/row min-h-12 grid-cols-[64px_minmax(0,1fr)_auto] px-3 py-1')}
+      {...rowProps}
+      className={listRowClasses(
+        cn('group/row min-h-12 grid-cols-[64px_minmax(0,1fr)_auto] px-3 py-1', rowClassName)
+      )}
     >
       <span className="text-ink-3 font-mono text-[0.8125rem]">{dateLabel}</span>
       <Link
         to="/setlists/$setlistId"
         params={{ setlistId: setlist._id }}
+        {...linkProps}
         aria-label={fullDate ? `${setlist.name}, ${fullDate}` : setlist.name}
         className="text-ink-2 truncate font-medium outline-none after:absolute after:inset-0 after:rounded-2xl focus-visible:after:shadow-[inset_2px_0_0_var(--chord)]"
       >
