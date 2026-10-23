@@ -83,7 +83,7 @@ function LoginPage() {
     <div className="relative flex min-h-svh flex-col items-center justify-center gap-5 p-4">
       <div aria-hidden className="ground-wash pointer-events-none fixed inset-0" />
       <div className="relative flex items-center gap-2 text-lg font-bold tracking-[-0.01em]">
-        <BrandMark className="size-5" />
+        <BrandMark />
         {t('app.name')}
       </div>
       <main className="glass relative flex w-full max-w-sm flex-col gap-4 p-5 [--glass-r:28px]">
