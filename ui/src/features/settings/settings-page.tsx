@@ -6,6 +6,7 @@ import { LanguageChoice, ThemeChoice } from '@/components/layout/preference-choi
 import { PageHeader } from '@/components/page/page-header';
 import { LYRICS_SIZES, useLyricsSize } from '@/features/reader/lyrics-size';
 import { ACCENTS, useAccent } from '@/lib/accent';
+import { canRefract, GLASS_STYLES, useGlassStyle } from '@/lib/liquid-glass';
 import { TYPEFACES, useTypeface } from '@/lib/typeface';
 import { cn } from '@/lib/utils';
 
@@ -90,6 +91,7 @@ export function SettingsPage() {
   const [typeface, setTypeface] = useTypeface();
   const [lyricsSize, setLyricsSize] = useLyricsSize();
   const [accent, setAccent] = useAccent();
+  const [glass, setGlass] = useGlassStyle();
 
   return (
     <>
@@ -137,6 +139,26 @@ export function SettingsPage() {
             }))}
           />
         </SettingsSection>
+
+        {canRefract() ? (
+          <SettingsSection
+            id="settings-glass"
+            title={t('settings.glass.title')}
+            description={t('settings.glass.description')}
+          >
+            <ChoiceTiles
+              value={glass}
+              onChange={setGlass}
+              label={t('settings.glass.title')}
+              className="grid-cols-2"
+              tileClassName="px-3.5 py-3 text-sm font-semibold"
+              tiles={GLASS_STYLES.map((value) => ({
+                value,
+                label: t(`settings.glass.options.${value}`),
+              }))}
+            />
+          </SettingsSection>
+        ) : null}
 
         <SettingsSection
           id="settings-font"

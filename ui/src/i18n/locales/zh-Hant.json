@@ -456,6 +456,14 @@
         "signal": "訊號橙"
       }
     },
+    "glass": {
+      "title": "玻璃效果",
+      "description": "折射會令玻璃邊緣的背景彎曲。只適用於 Chrome、Edge 和 Brave。",
+      "options": {
+        "frosted": "磨砂",
+        "refract": "折射"
+      }
+    },
     "description": "這部裝置上的外觀及閱讀方式。",
     "theme": {
       "description": "深色適合昏暗的房間及台上。"
