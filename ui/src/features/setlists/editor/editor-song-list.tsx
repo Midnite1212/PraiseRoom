@@ -22,23 +22,26 @@ export function EditorSongList({ songs, onChange }: EditorSongListProps) {
 
   if (songs.length === 0) {
     return (
-      <p className="text-muted-foreground rounded-lg border border-dashed p-6 text-center text-sm">
+      <p className="text-ink-2 border-hairline rounded-2xl border-[1.5px] border-dashed p-6 text-center text-sm">
         {t('editor.noSongs')}
       </p>
     );
   }
 
   return (
-    <ol className="divide-y rounded-lg border">
+    <ol className="m-0 flex list-none flex-col gap-0.5 p-0">
       {songs.map((song, index) => {
         const keyOptions = keyOptionsFor(song.originalKey);
         return (
-          <li key={song._id} className="flex items-center gap-2 px-3 py-2">
-            <span className="text-muted-foreground w-6 shrink-0 font-mono text-xs">
+          <li
+            key={song._id}
+            className="hover:bg-fill-hover flex min-h-[60px] items-center gap-2 rounded-2xl px-3 py-1.5 transition-colors"
+          >
+            <span className="text-ink-3 w-6 shrink-0 font-mono text-[0.8125rem]">
               {String(index + 1).padStart(2, '0')}
             </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium">{song.title}</p>
+              <p className="truncate font-semibold">{song.title}</p>
               <p className="text-muted-foreground truncate text-xs">{song.artist}</p>
             </div>
             {keyOptions.length > 0 ? (
@@ -72,7 +75,7 @@ export function EditorSongList({ songs, onChange }: EditorSongListProps) {
               <Button
                 type="button"
                 variant="ghost"
-                size="icon-sm"
+                size="icon"
                 disabled={index === 0}
                 aria-label={t('editor.moveUp', { title: song.title })}
                 onClick={() => onChange(moveItem(songs, index, index - 1))}
@@ -82,7 +85,7 @@ export function EditorSongList({ songs, onChange }: EditorSongListProps) {
               <Button
                 type="button"
                 variant="ghost"
-                size="icon-sm"
+                size="icon"
                 disabled={index === songs.length - 1}
                 aria-label={t('editor.moveDown', { title: song.title })}
                 onClick={() => onChange(moveItem(songs, index, index + 1))}
@@ -92,7 +95,7 @@ export function EditorSongList({ songs, onChange }: EditorSongListProps) {
               <Button
                 type="button"
                 variant="ghost"
-                size="icon-sm"
+                size="icon"
                 aria-label={t('editor.removeSong', { title: song.title })}
                 onClick={() => onChange(songs.filter((entry) => entry._id !== song._id))}
               >
