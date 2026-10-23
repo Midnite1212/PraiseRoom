@@ -21,7 +21,7 @@ export function SetRow({
         className
       )}
     >
-      <span className="min-w-0">
+      <span className="min-w-0 flex-1">
         <b className="block font-semibold">{label}</b>
         {hint ? <span className="text-ink-3 block text-[0.8125rem]">{hint}</span> : null}
       </span>

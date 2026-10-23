@@ -38,6 +38,14 @@ export const parseChord = (chord: string): ParsedChord | null => {
 
 export const isMinorQuality = (quality: string): boolean => /^(m(?!aj)|min)/.test(quality);
 
+// Root and minor only: `F#m7/C#` becomes `F#m`, `Gsus4` and `G7` become `G`.
+export const simplifyChord = (chord: string): string => {
+  const match = CHORD_PATTERN.exec(chord.trim());
+  if (!match) return chord;
+  const [, root = '', quality = ''] = match;
+  return `${root}${isMinorQuality(quality) ? 'm' : ''}`;
+};
+
 export const parseKey = (key: string | null | undefined): MusicKey | null => {
   const match = KEY_PATTERN.exec(key?.trim() ?? '');
   if (!match) return null;

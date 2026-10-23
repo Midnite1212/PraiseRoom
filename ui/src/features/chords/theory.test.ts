@@ -6,6 +6,7 @@ import {
   parseChord,
   parseKey,
   semitonesBetween,
+  simplifyChord,
   transposeChord,
   transposeChordLyrics,
   transposeKey,
@@ -86,5 +87,24 @@ describe('transposeChordLyrics', () => {
 
   it('respells with flats when asked, even with no shift', () => {
     expect(transposeChordLyrics('[G#]', 0, true)).toBe('[Ab]');
+  });
+});
+
+describe('simplifyChord', () => {
+  it('keeps the root and minor, dropping 7ths, sus, add, extensions and slash bass', () => {
+    expect(simplifyChord('G')).toBe('G');
+    expect(simplifyChord('G7')).toBe('G');
+    expect(simplifyChord('Cmaj7')).toBe('C');
+    expect(simplifyChord('Dsus4')).toBe('D');
+    expect(simplifyChord('Cadd9')).toBe('C');
+    expect(simplifyChord('D/F#')).toBe('D');
+    expect(simplifyChord('Em7')).toBe('Em');
+    expect(simplifyChord('Amin9/G')).toBe('Am');
+    expect(simplifyChord('F#m7(b5)')).toBe('F#m');
+    expect(simplifyChord('Bbmaj7')).toBe('Bb');
+  });
+
+  it('leaves cues that are not chords alone', () => {
+    expect(simplifyChord('x2')).toBe('x2');
   });
 });
