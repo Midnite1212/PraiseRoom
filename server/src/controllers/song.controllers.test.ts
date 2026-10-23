@@ -157,6 +157,15 @@ describe('song controllers', () => {
       assert.equal(res.statusCode, 200);
     });
 
+    it('passes the recent sort through and falls back to title for unknown values', async () => {
+      const search = stubSearch();
+      await call(searchSongs, { query: { sortBy: 'recent', limit: '3' } });
+      await call(searchSongs, { query: { sortBy: 'bogus' } });
+      assert.equal(searchArgs(search, 0)?.sortBy, 'recent');
+      assert.equal(searchArgs(search, 0)?.limit, 3);
+      assert.equal(searchArgs(search, 1)?.sortBy, 'title');
+    });
+
     it('searches only live songs by title with defaults when no filters are sent', async () => {
       const songs = [{ _id: SONG_ID }];
       const search = stubSearch(songs, 45);

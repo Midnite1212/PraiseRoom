@@ -96,6 +96,18 @@ export const songSearchQueryOptions = ({
       }),
   });
 
+export const RECENT_SONGS_COUNT = 3;
+
+export const recentSongsQueryOptions = () =>
+  queryOptions({
+    queryKey: ['songs', 'search', 'recent'],
+    queryFn: ({ signal }) =>
+      apiRequest('/api/songs/search', songSearchResponseSchema, {
+        query: { page: 1, limit: RECENT_SONGS_COUNT, sortBy: 'recent' },
+        signal,
+      }),
+  });
+
 export const songSchema = readerSongSchema.extend({ recommendedKeys: z.array(z.string()) });
 
 export type Song = z.infer<typeof songSchema>;

@@ -92,7 +92,7 @@ const searchSongs: RequestHandler = async (req: Request, res: Response): Promise
       code: isSearchString(code) ? code : '',
       tempo: tempoArray,
       themes: themesArray,
-      sortBy: sortBy === 'code' ? 'code' : 'title',
+      sortBy: sortBy === 'code' || sortBy === 'recent' ? sortBy : 'title',
       offset: (parsedPage - 1) * parsedLimit,
       limit: parsedLimit,
     });
