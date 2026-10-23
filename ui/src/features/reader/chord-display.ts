@@ -25,5 +25,10 @@ export type ChordStyle = (typeof CHORD_STYLES)[number];
 
 export const useChordStyle = createStoredChoice('chord-style', CHORD_STYLES, 'full').use;
 
+export const COLOUR_CHORDS = ['off', 'on'] as const;
+export type ColourChords = (typeof COLOUR_CHORDS)[number];
+
+export const useColourChords = createStoredChoice('chord-colour', COLOUR_CHORDS, 'off').use;
+
 export const chordsUseFlats = (accidentals: Accidentals, playKey: MusicKey | null): boolean =>
   accidentals === 'auto' ? (playKey?.prefersFlats ?? false) : accidentals === 'flat';

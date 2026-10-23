@@ -4,7 +4,13 @@ import { useTranslation } from 'react-i18next';
 import { type MusicKey, parseKey } from '@/features/chords/theory';
 import { useIsWide } from '@/hooks/use-wide';
 
-import { useAccidentals, useChordNotation, useChordStyle, useReaderMode } from './chord-display';
+import {
+  useAccidentals,
+  useChordNotation,
+  useChordStyle,
+  useColourChords,
+  useReaderMode,
+} from './chord-display';
 import { ChordSettingsPanel } from './chord-settings';
 import { KeyPicker } from './key-picker';
 import { useLyricsColumns } from './lyrics-columns';
@@ -30,6 +36,7 @@ export function SongReader({ song, playKey, onPlayKeyChange, children }: SongRea
   const [notation, setNotation] = useChordNotation();
   const [accidentals] = useAccidentals();
   const [chordStyle] = useChordStyle();
+  const [colourChords] = useColourChords();
   const [lyricsSize] = useLyricsSize();
   const [lyricsColumns, setLyricsColumns] = useLyricsColumns();
   const originalKey = parseKey(song.originalKey);
@@ -75,6 +82,7 @@ export function SongReader({ song, playKey, onPlayKeyChange, children }: SongRea
           notation={notation}
           accidentals={accidentals}
           chordStyle={chordStyle}
+          colourChords={colourChords === 'on'}
           originalKey={originalKey}
           playKey={playKey}
           columns={lyricsColumns}

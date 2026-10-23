@@ -215,6 +215,8 @@
     "simpleHint": "簡化會略去七和弦、掛留和低音",
     "full": "完整",
     "simple": "簡化",
+    "colourChords": "和弦上色",
+    "colourHint": "1、4、5 級及小和弦各有顏色",
     "sharp": "升號",
     "flat": "降號",
     "key": "調",

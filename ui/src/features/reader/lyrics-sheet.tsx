@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { type ChordClass, classifyChord } from '@/features/chords/chord-class';
 import { chordToNumberParts } from '@/features/chords/nashville';
 import { type ChordLine, parseChordLyrics } from '@/features/chords/parse';
 import {
@@ -29,12 +30,21 @@ type LyricsSheetProps = {
   notation: ChordNotation;
   accidentals?: Accidentals;
   chordStyle?: ChordStyle;
+  colourChords?: boolean;
   originalKey: MusicKey | null;
   playKey: MusicKey | null;
   columns?: LyricsColumns;
 };
 
 type ChordRenderer = (chord: string) => ReactNode;
+
+const CHORD_CLASS_COLOURS: Record<ChordClass, string> = {
+  one: 'text-chord',
+  four: 'text-chord-four',
+  five: 'text-chord-five',
+  minor: 'text-chord-minor',
+  other: 'text-ink-2',
+};
 
 const createChordRenderer = (
   notation: ChordNotation,
@@ -68,10 +78,12 @@ function LyricLine({
   line,
   showChords,
   renderChord,
+  colourKey,
 }: {
   line: ChordLine;
   showChords: boolean;
   renderChord: ChordRenderer;
+  colourKey: MusicKey | null;
 }) {
   if (line.segments.length === 0) {
     return <div className="h-[0.75em]" aria-hidden />;
@@ -85,7 +97,14 @@ function LyricLine({
     <p className="flex flex-wrap items-end">
       {line.segments.map(({ id, chord, lyric }) => (
         <span key={id} className="inline-flex max-w-full min-w-0 flex-col">
-          <span className="text-chord min-h-[1.3em] pr-[0.45em] font-mono leading-[1.3] font-semibold">
+          <span
+            className={cn(
+              'min-h-[1.3em] pr-[0.45em] font-mono leading-[1.3] font-semibold',
+              chord && colourKey
+                ? CHORD_CLASS_COLOURS[classifyChord(chord, colourKey)]
+                : 'text-chord'
+            )}
+          >
             {chord ? renderChord(chord) : null}
           </span>
           <span className="break-words whitespace-pre-wrap">{lyric === '' ? ' ' : lyric}</span>
@@ -101,6 +120,7 @@ export function LyricsSheet({
   notation,
   accidentals = 'auto',
   chordStyle = 'full',
+  colourChords = false,
   originalKey,
   playKey,
   columns = DEFAULT_LYRICS_COLUMNS,
@@ -134,6 +154,7 @@ export function LyricsSheet({
               line={line}
               showChords={showChords}
               renderChord={renderChord}
+              colourKey={colourChords ? originalKey : null}
             />
           ))}
         </section>

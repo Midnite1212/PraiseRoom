@@ -139,4 +139,49 @@ describe('LyricsSheet', () => {
     expect(screen.getByText('5')).toBeInTheDocument();
     expect(screen.queryByText('5/7', { exact: false })).not.toBeInTheDocument();
   });
+
+  it('colours chords by degree against the original key, through transposing and Simple chords', () => {
+    render(
+      <LyricsSheet
+        chordLyrics={'[G]one [C]two [D7]three [Em7]four [F]five'}
+        mode="chords"
+        notation="letters"
+        chordStyle="simple"
+        colourChords
+        originalKey={G}
+        playKey={A}
+      />
+    );
+
+    expect(screen.getByText('A')).toHaveClass('text-chord');
+    expect(screen.getByText('D')).toHaveClass('text-chord-four');
+    expect(screen.getByText('E')).toHaveClass('text-chord-five');
+    expect(screen.getByText('F#m')).toHaveClass('text-chord-minor');
+    expect(screen.getByText('G')).toHaveClass('text-ink-2');
+  });
+
+  it('colours Nashville numbers the same way and leaves chords in the accent when off', () => {
+    const { rerender } = render(
+      <LyricsSheet
+        chordLyrics={'[G]one [C]two'}
+        mode="chords"
+        notation="numbers"
+        colourChords
+        originalKey={G}
+        playKey={A}
+      />
+    );
+    expect(screen.getByText('4')).toHaveClass('text-chord-four');
+
+    rerender(
+      <LyricsSheet
+        chordLyrics={'[G]one [C]two'}
+        mode="chords"
+        notation="numbers"
+        originalKey={G}
+        playKey={A}
+      />
+    );
+    expect(screen.getByText('4')).toHaveClass('text-chord');
+  });
 });

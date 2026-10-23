@@ -215,6 +215,8 @@
     "simpleHint": "Simple drops 7ths, sus and slash bass",
     "full": "Full",
     "simple": "Simple",
+    "colourChords": "Colour chords",
+    "colourHint": "1, 4, 5 and minors each get a colour",
     "sharp": "Sharps",
     "flat": "Flats",
     "key": "Key",
