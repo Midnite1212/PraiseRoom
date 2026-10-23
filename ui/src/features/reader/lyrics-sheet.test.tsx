@@ -75,4 +75,31 @@ describe('LyricsSheet', () => {
     const sheet = container.firstElementChild;
     expect(sheet).toHaveClass('text-lyrics', 'text-sheet-foreground', 'columns-3');
   });
+
+  it('respells transposed chords when sharps or flats are forced', () => {
+    const { rerender } = render(
+      <LyricsSheet
+        chordLyrics="[A]Line [D/F#]two"
+        mode="chords"
+        notation="letters"
+        accidentals="flat"
+        originalKey={A}
+        playKey={A}
+      />
+    );
+    expect(screen.getByText('D/Gb')).toBeInTheDocument();
+
+    rerender(
+      <LyricsSheet
+        chordLyrics="[Bb]Line [Eb/G]two"
+        mode="chords"
+        notation="letters"
+        accidentals="sharp"
+        originalKey={parseKey('Bb')}
+        playKey={parseKey('Bb')}
+      />
+    );
+    expect(screen.getByText('A#')).toBeInTheDocument();
+    expect(screen.getByText('D#/G')).toBeInTheDocument();
+  });
 });
