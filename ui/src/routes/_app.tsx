@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 
 import { AppShell } from '@/components/layout/app-shell';
+import { prefetchNavCounts } from '@/components/layout/nav';
 import { sessionQueryOptions } from '@/features/auth/session';
 
 export const Route = createFileRoute('/_app')({
@@ -13,6 +14,7 @@ export const Route = createFileRoute('/_app')({
     }
     return { session };
   },
+  loader: ({ context }) => prefetchNavCounts(context.queryClient),
   component: AppLayout,
 });
 
