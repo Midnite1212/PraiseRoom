@@ -1,89 +1,90 @@
-import { CircleInfo, Link as LinkIcon, Minus, Plus } from 'pixelarticons/react';
+import { CircleInfo, Link as LinkIcon } from 'pixelarticons/react';
+import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
+import { LanguageChoice, ThemeChoice } from '@/components/layout/preference-choices';
+import { Panel } from '@/components/primitives/panel';
+import { Segmented } from '@/components/primitives/segmented';
+import { SetRow } from '@/components/primitives/set-row';
+import { Stepper } from '@/components/primitives/stepper';
 import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import {
   CHORD_NOTATIONS,
   type ChordNotation,
   READER_MODES,
   type ReaderMode,
+  useReaderMode,
 } from '@/features/reader/chord-display';
-import { type LyricsColumns, nextLyricsColumns } from '@/features/reader/lyrics-columns';
-import { LYRICS_SIZES, type LyricsSize, stepLyricsSize } from '@/features/reader/lyrics-size';
-import { cn } from '@/lib/utils';
+import {
+  LYRICS_COLUMNS,
+  type LyricsColumns,
+  useLyricsColumns,
+} from '@/features/reader/lyrics-columns';
+import { LYRICS_SIZES, stepLyricsSize, useLyricsSize } from '@/features/reader/lyrics-size';
 
 import type { ReaderSong } from './song';
 
-const SIZE_METER_HEIGHTS = ['h-2', 'h-3', 'h-4', 'h-5', 'h-6'];
-
-const isOneOf = <T extends string>(values: readonly T[], value: string): value is T =>
-  values.some((option) => option === value);
+const NOTATION_LABELS = { numbers: '1 4 5', letters: 'A B C' } as const;
 
 export function ReaderModeToggle({
   mode,
   onChange,
+  size = 'lg',
+  glass = true,
 }: {
   mode: ReaderMode;
   onChange: (mode: ReaderMode) => void;
+  size?: 'md' | 'lg';
+  glass?: boolean;
 }) {
   const { t } = useTranslation();
   return (
-    <ToggleGroup
-      type="single"
-      size="sm"
-      variant="outline"
+    <Segmented
+      glass={glass}
+      size={size}
       value={mode}
-      onValueChange={(value) => {
-        if (isOneOf(READER_MODES, value)) onChange(value);
-      }}
-      aria-label={t('reader.mode')}
-    >
-      <ToggleGroupItem
-        value="lyrics"
-        className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-      >
-        {t('reader.lyrics')}
-      </ToggleGroupItem>
-      <ToggleGroupItem
-        value="chords"
-        className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-      >
-        {t('reader.chords')}
-      </ToggleGroupItem>
-    </ToggleGroup>
+      onChange={onChange}
+      label={t('reader.mode')}
+      options={READER_MODES.toReversed().map((value) => ({ value, label: t(`reader.${value}`) }))}
+    />
   );
 }
 
 export function ChordNotationToggle({
   notation,
   onChange,
+  glass = false,
 }: {
   notation: ChordNotation;
   onChange: (notation: ChordNotation) => void;
+  glass?: boolean;
 }) {
   const { t } = useTranslation();
   return (
-    <ToggleGroup
-      type="single"
-      size="sm"
-      variant="outline"
+    <Segmented
+      glass={glass}
+      mono
+      size={glass ? 'lg' : 'sm'}
       value={notation}
-      onValueChange={(value) => {
-        if (isOneOf(CHORD_NOTATIONS, value)) onChange(value);
-      }}
-      aria-label={t('reader.notation')}
-      className="font-mono"
-    >
-      <ToggleGroupItem value="numbers" aria-label={t('reader.numbers')}>
-        1 4 5
-      </ToggleGroupItem>
-      <ToggleGroupItem value="letters" aria-label={t('reader.letters')}>
-        A B C
-      </ToggleGroupItem>
-    </ToggleGroup>
+      onChange={onChange}
+      label={t('reader.notation')}
+      options={CHORD_NOTATIONS.toReversed().map((value) => ({
+        value,
+        label: NOTATION_LABELS[value],
+        ariaLabel: t(`reader.${value}`),
+      }))}
+    />
+  );
+}
+
+function ColumnBars({ count }: { count: number }) {
+  return (
+    <span aria-hidden className="flex items-center gap-0.5">
+      {Array.from({ length: count }, (_, bar) => (
+        <span key={bar} className="h-3.5 w-1 bg-current" />
+      ))}
+    </span>
   );
 }
 
@@ -95,76 +96,76 @@ export function LyricsColumnsControl({
   onChange: (columns: LyricsColumns) => void;
 }) {
   const { t } = useTranslation();
-  const label = t('reader.columns', { columns });
   return (
-    <Button
-      variant="outline"
+    <Segmented
       size="sm"
-      aria-label={label}
-      title={label}
-      onClick={() => onChange(nextLyricsColumns(columns))}
-    >
-      <span className="flex items-center gap-0.5" aria-hidden>
-        {Array.from({ length: Number(columns) }, (_, bar) => (
-          <span key={bar} className="h-3.5 w-1 rounded-sm bg-current" />
-        ))}
-      </span>
-    </Button>
+      value={columns}
+      onChange={onChange}
+      label={t('reader.lyricColumns')}
+      options={LYRICS_COLUMNS.map((value) => ({
+        value,
+        label: <ColumnBars count={Number(value)} />,
+        ariaLabel: t('reader.columns', { columns: value }),
+      }))}
+    />
   );
 }
 
-export function LyricsSizeControl({
-  size,
-  onChange,
-}: {
-  size: LyricsSize;
-  onChange: (size: LyricsSize) => void;
-}) {
+// Aa: how lyrics read on this device (size, columns), plus theme and language.
+export function ReadingPanel({ trigger }: { trigger: ReactElement }) {
   const { t } = useTranslation();
+  const [size, setSize] = useLyricsSize();
+  const [columns, setColumns] = useLyricsColumns();
   const index = LYRICS_SIZES.indexOf(size);
+
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" aria-label={t('reader.textSize')}>
-          Aa
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent align="end" className="w-56">
-        <p className="mb-3 text-sm font-medium">{t('reader.textSize')}</p>
-        <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            size="icon"
-            aria-label={t('reader.smaller')}
-            disabled={index <= 0}
-            onClick={() => onChange(stepLyricsSize(size, -1))}
-          >
-            <Minus />
+    <Panel
+      trigger={trigger}
+      title={t('reader.reading')}
+      align="end"
+      sheetClassName="bottom-[calc(var(--bottom)+var(--dock-h)+10px)]"
+    >
+      <div className="flex flex-col gap-1.5">
+        <SetRow label={t('reader.textSize')}>
+          <Stepper
+            value={t(`settings.textSize.options.${size}`)}
+            onDecrease={() => setSize(stepLyricsSize(size, -1))}
+            onIncrease={() => setSize(stepLyricsSize(size, 1))}
+            decreaseLabel={t('reader.smaller')}
+            increaseLabel={t('reader.larger')}
+            canDecrease={index > 0}
+            canIncrease={index < LYRICS_SIZES.length - 1}
+          />
+        </SetRow>
+        <SetRow label={t('reader.lyricColumns')}>
+          <LyricsColumnsControl columns={columns} onChange={setColumns} />
+        </SetRow>
+        <SetRow label={t('theme.label')}>
+          <ThemeChoice />
+        </SetRow>
+        <SetRow label={t('language.label')}>
+          <LanguageChoice />
+        </SetRow>
+      </div>
+    </Panel>
+  );
+}
+
+// Lyrics | Chords and Aa, for a live preview beside an editor.
+export function ReaderPreferenceControls() {
+  const { t } = useTranslation();
+  const [mode, setMode] = useReaderMode();
+  return (
+    <>
+      <ReaderModeToggle mode={mode} onChange={setMode} size="md" glass={false} />
+      <ReadingPanel
+        trigger={
+          <Button variant="secondary" size="icon" aria-label={t('reader.reading')}>
+            Aa
           </Button>
-          <div className="flex flex-1 items-end justify-center gap-1" aria-hidden>
-            {LYRICS_SIZES.map((option, optionIndex) => (
-              <span
-                key={option}
-                className={cn(
-                  'w-2 rounded-sm',
-                  SIZE_METER_HEIGHTS[optionIndex],
-                  optionIndex <= index ? 'bg-primary' : 'bg-border'
-                )}
-              />
-            ))}
-          </div>
-          <Button
-            variant="outline"
-            size="icon"
-            aria-label={t('reader.larger')}
-            disabled={index >= LYRICS_SIZES.length - 1}
-            onClick={() => onChange(stepLyricsSize(size, 1))}
-          >
-            <Plus />
-          </Button>
-        </div>
-      </PopoverContent>
-    </Popover>
+        }
+      />
+    </>
   );
 }
 
@@ -181,9 +182,10 @@ export function ShareButton({ link }: { link: string | null | undefined }) {
   };
   return (
     <Button
-      variant="outline"
-      size="icon-sm"
+      variant="glass"
+      size="icon-lg"
       aria-label={t('reader.copyLink')}
+      title={t('reader.copyLink')}
       onClick={() => void handleCopy()}
     >
       <LinkIcon />
@@ -191,41 +193,57 @@ export function ShareButton({ link }: { link: string | null | undefined }) {
   );
 }
 
+// ⓘ beside the title: the song's facts.
 export function SongInfo({ song }: { song: ReaderSong }) {
   const { t } = useTranslation();
-  const details = [
+  const facts = [
+    { label: t('reader.info.originalKey'), value: song.originalKey, mono: true },
+    { label: t('reader.info.capo'), value: song.capo ? String(song.capo) : null, mono: true },
+    { label: t('reader.info.timeSignature'), value: song.timeSignature.join(', '), mono: true },
+    { label: t('reader.info.tempo'), value: song.tempo.join(', '), mono: false },
+    { label: t('reader.info.code'), value: song.code, mono: true },
+    { label: t('reader.info.year'), value: song.year, mono: true },
+  ].filter(({ value }) => Boolean(value));
+  const notes = [
     { label: t('reader.info.artist'), value: song.artist },
-    { label: t('reader.info.originalKey'), value: song.originalKey },
-    { label: t('reader.info.capo'), value: song.capo ? String(song.capo) : null },
-    { label: t('reader.info.code'), value: song.code },
-    { label: t('reader.info.year'), value: song.year },
-    { label: t('reader.info.tempo'), value: song.tempo.join(', ') },
-    { label: t('reader.info.timeSignature'), value: song.timeSignature.join(', ') },
     { label: t('reader.info.themes'), value: song.themes.join(', ') },
   ].filter(({ value }) => Boolean(value));
 
   return (
-    <Popover>
-      <PopoverTrigger asChild>
+    <Panel
+      title={t('reader.info.title')}
+      align="start"
+      sheetClassName="bottom-[calc(var(--bottom)+var(--dock-h)+10px)]"
+      trigger={
         <Button
           variant="ghost"
-          size="icon-xs"
-          className="text-muted-foreground"
+          size="icon"
+          className="text-ink-3 flex-none"
           aria-label={t('reader.info.title')}
+          title={t('reader.info.title')}
         >
           <CircleInfo />
         </Button>
-      </PopoverTrigger>
-      <PopoverContent align="start" className="w-72">
-        <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-sm">
-          {details.map(({ label, value }) => (
-            <div key={label} className="contents">
-              <dt className="text-muted-foreground">{label}</dt>
-              <dd>{value}</dd>
-            </div>
-          ))}
-        </dl>
-      </PopoverContent>
-    </Popover>
+      }
+    >
+      <dl className="grid grid-cols-3 gap-1.5">
+        {facts.map(({ label, value, mono }) => (
+          <div key={label} className="bg-fill-hover rounded-2xl px-3 py-2.5">
+            <dt className="text-ink-3 text-xs">{label}</dt>
+            <dd className={mono ? 'font-mono text-base font-bold' : 'text-sm font-semibold'}>
+              {value}
+            </dd>
+          </div>
+        ))}
+      </dl>
+      <dl className="mx-0.5 grid gap-1.5 text-sm">
+        {notes.map(({ label, value }) => (
+          <div key={label}>
+            <dt className="text-ink-3 text-xs">{label}</dt>
+            <dd className="text-ink-2">{value}</dd>
+          </div>
+        ))}
+      </dl>
+    </Panel>
   );
 }

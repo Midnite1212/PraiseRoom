@@ -1,11 +1,12 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { Pencil } from 'pixelarticons/react';
+import { PenSquare } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ReaderBack } from '@/features/reader/reader-back';
 import { setlistQueryOptions } from '@/features/setlists/api';
 import { MusicianView } from '@/features/setlists/musician-view/musician-view';
 import { canEditSetlist } from '@/features/setlists/permissions';
@@ -16,6 +17,7 @@ const musicianSearchSchema = z.object({
 });
 
 export const Route = createFileRoute('/_app/setlists/$setlistId')({
+  staticData: { chrome: 'reader' },
   validateSearch: musicianSearchSchema,
   loader: ({ context, params }) =>
     ensureOrNotFound(context.queryClient, setlistQueryOptions(params.setlistId)),
@@ -37,12 +39,12 @@ function MusicianPage() {
       setlist={setlist}
       songNumber={song}
       onSongChange={(number) => void navigate({ search: { song: number }, replace: true })}
+      back={<ReaderBack to="/setlists" label={t('setlists.title')} />}
       actions={
         canEditSetlist(session, setlist) ? (
-          <Button asChild variant="outline" size="sm">
-            <Link to="/setlists/$setlistId/edit" params={{ setlistId }}>
-              <Pencil />
-              {t('editor.edit')}
+          <Button asChild variant="glass" size="icon-lg" aria-label={t('editor.edit')}>
+            <Link to="/setlists/$setlistId/edit" params={{ setlistId }} title={t('editor.edit')}>
+              <PenSquare />
             </Link>
           </Button>
         ) : null
@@ -53,12 +55,9 @@ function MusicianPage() {
 
 function MusicianPending() {
   return (
-    <div className="mx-auto flex max-w-7xl flex-col gap-3">
-      <Skeleton className="h-8 w-full" />
-      <div className="flex gap-4">
-        <Skeleton className="hidden h-[70svh] w-64 lg:block" />
-        <Skeleton className="h-[70svh] flex-1" />
-      </div>
+    <div className="mx-auto mt-24 flex max-w-6xl gap-4 px-4">
+      <Skeleton className="wide:block hidden h-[70svh] w-72" />
+      <Skeleton className="h-[70svh] flex-1" />
     </div>
   );
 }

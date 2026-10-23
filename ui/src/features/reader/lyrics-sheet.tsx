@@ -35,7 +35,9 @@ const createChordRenderer = (
       return (
         <>
           {parts.degree}
-          {parts.quality ? <sup className="text-[0.7em]">{parts.quality}</sup> : null}
+          {parts.quality ? (
+            <sup className="align-[0.5em] text-[0.68em] leading-none">{parts.quality}</sup>
+          ) : null}
           {parts.bass ? `/${parts.bass}` : null}
         </>
       );
@@ -67,7 +69,7 @@ function LyricLine({
     <p className="flex flex-wrap items-end">
       {line.segments.map(({ id, chord, lyric }) => (
         <span key={id} className="inline-flex max-w-full min-w-0 flex-col">
-          <span className="text-chord min-h-[1.25em] pr-[0.35em] leading-tight font-medium">
+          <span className="text-chord min-h-[1.3em] pr-[0.45em] font-mono leading-[1.3] font-semibold">
             {chord ? renderChord(chord) : null}
           </span>
           <span className="break-words whitespace-pre-wrap">{lyric === '' ? ' ' : lyric}</span>
@@ -93,15 +95,18 @@ export function LyricsSheet({
     // Not merged with cn(): tailwind-merge reads text-lyrics (size) and text-sheet-foreground (colour)
     // as one conflicting text-* group and drops the size.
     <div
-      className={`font-lyrics text-lyrics text-sheet-foreground gap-6 leading-snug md:gap-12 ${LYRICS_COLUMN_CLASSES[columns]}`}
+      className={`font-lyrics text-lyrics text-sheet-foreground gap-8 leading-[1.45] md:gap-14 ${LYRICS_COLUMN_CLASSES[columns]}`}
     >
       {sections.map((section) => (
         <section
           key={section.id}
-          className={cn('mb-6 break-inside-avoid', showChords ? 'space-y-1.5' : 'space-y-0.5')}
+          className={cn(
+            'mb-[1.5em] break-inside-avoid scroll-mt-[calc(var(--top-h)+60px)]',
+            showChords ? 'space-y-[0.35em]' : 'space-y-0'
+          )}
         >
           {section.label ? (
-            <h3 className="text-label mb-2 font-mono text-xs font-medium tracking-[0.14em] uppercase">
+            <h3 className="text-label mb-[0.55em] flex items-center gap-2 font-sans text-xs leading-none font-bold tracking-[0.12em] uppercase before:size-1.5 before:bg-current">
               {section.label}
             </h3>
           ) : null}

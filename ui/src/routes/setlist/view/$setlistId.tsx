@@ -3,8 +3,6 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
-import { LanguageSwitch } from '@/components/layout/language-switch';
-import { ThemeToggle } from '@/components/layout/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { sessionQueryOptions } from '@/features/auth/session';
@@ -21,7 +19,7 @@ export const Route = createFileRoute('/setlist/view/$setlistId')({
   validateSearch: publicSearchSchema,
   loader: ({ context, params }) =>
     ensureOrNotFound(context.queryClient, setlistQueryOptions(params.setlistId)),
-  pendingComponent: () => <Skeleton className="m-4 h-[80svh]" />,
+  pendingComponent: () => <Skeleton className="mx-auto mt-24 h-[70svh] max-w-6xl" />,
   component: PublicSetlistPage,
 });
 
@@ -34,34 +32,24 @@ function PublicSetlistPage() {
   const { data: session } = useQuery(sessionQueryOptions);
 
   return (
-    <div className="min-h-svh">
-      <header className="flex items-center gap-2 px-4 py-3 md:px-6">
-        <span className="font-heading min-w-0 flex-1 truncate font-semibold">{t('app.name')}</span>
-        {session ? (
-          <Button asChild variant="outline" size="sm">
+    <MusicianView
+      key={setlist._id}
+      setlist={setlist}
+      songNumber={song}
+      onSongChange={(number) => void navigate({ search: { song: number }, replace: true })}
+      actions={
+        <Button asChild variant="glass" className="h-12 px-4 text-sm">
+          {session ? (
             <Link to="/setlists/$setlistId" params={{ setlistId }} search={{ song }}>
               {t('reader.openInApp')}
             </Link>
-          </Button>
-        ) : (
-          <Button asChild variant="ghost" size="sm">
+          ) : (
             <Link to="/login" search={{ redirect: `/setlist/view/${setlistId}` }}>
               {t('login.submit')}
             </Link>
-          </Button>
-        )}
-        <LanguageSwitch />
-        <ThemeToggle />
-      </header>
-      <main className="px-4 pb-6 md:px-6">
-        <MusicianView
-          key={setlist._id}
-          setlist={setlist}
-          songNumber={song}
-          variant="public"
-          onSongChange={(number) => void navigate({ search: { song: number }, replace: true })}
-        />
-      </main>
-    </div>
+          )}
+        </Button>
+      }
+    />
   );
 }

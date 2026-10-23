@@ -24,8 +24,9 @@ import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { conventionalKey } from '@/features/chords/key-spelling';
 import { keyLabel, type MusicKey, parseKey, transposeChordLyrics } from '@/features/chords/theory';
+import { ReaderPreferenceControls } from '@/features/reader/reader-controls';
 import type { ReaderSong } from '@/features/reader/song';
-import { ReaderPreferenceControls, SongReader } from '@/features/reader/song-reader';
+import { SongReader } from '@/features/reader/song-reader';
 import { songSearchQueryOptions, TEMPO_LABEL_KEYS, TEMPO_OPTIONS } from '@/features/songs/api';
 import {
   initialKey,
@@ -441,14 +442,7 @@ function ImportPreview({
     timeSignature: [],
     themes: [],
   };
-  return (
-    <SongReader
-      song={song}
-      playKey={preview.key}
-      onPlayKeyChange={onKeyChange}
-      stickyUnder="page"
-    />
-  );
+  return <SongReader song={song} playKey={preview.key} onPlayKeyChange={onKeyChange} />;
 }
 
 function RecordingKeySuggestion({

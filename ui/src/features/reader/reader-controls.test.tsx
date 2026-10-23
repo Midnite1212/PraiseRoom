@@ -7,12 +7,13 @@ import { LyricsColumnsControl, SongInfo } from './reader-controls';
 import type { ReaderSong } from './song';
 
 describe('LyricsColumnsControl', () => {
-  it('names the current column count and steps to the next one', async () => {
+  it('marks the current column count and reports the one chosen', async () => {
     const user = userEvent.setup();
     const onChange = vi.fn<(columns: LyricsColumns) => void>();
     render(<LyricsColumnsControl columns="3" onChange={onChange} />);
 
-    await user.click(screen.getByRole('button', { name: 'Lyric columns: 3' }));
+    expect(screen.getByRole('radio', { name: 'Lyric columns: 3' })).toBeChecked();
+    await user.click(screen.getByRole('radio', { name: 'Lyric columns: 1' }));
 
     expect(onChange).toHaveBeenCalledWith('1');
   });
