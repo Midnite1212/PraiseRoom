@@ -1,9 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
-import { Clipboard } from 'pixelarticons/react';
+import { Clipboard, Download } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 
+import { GroupTitle } from '@/components/page/group-title';
+import { LIST_CLASSES, listRowClasses, RowText } from '@/components/page/list-row';
+import { Tag } from '@/components/primitives/tag';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -22,21 +24,40 @@ export function WebResults({ q, onPickUrl, onPaste }: WebResultsProps) {
   const results = useQuery({ ...importSearchQueryOptions(q), enabled: linkSource === null });
 
   return (
-    <section className="flex flex-col gap-3 border-t pt-4">
-      <h2 className="text-muted-foreground text-sm font-medium">{t('songImport.web.heading')}</h2>
+    <section aria-labelledby="web-results" className="flex flex-col gap-1">
+      <GroupTitle
+        id="web-results"
+        title={t('songImport.web.heading')}
+        count={linkSource ? undefined : results.data?.candidates.length}
+        action={
+          <Button type="button" variant="link" size="sm" onClick={onPaste}>
+            <Clipboard />
+            {t('songImport.web.pasteButton')}
+          </Button>
+        }
+      />
 
       {linkSource ? (
-        <button
-          type="button"
-          onClick={() => onPickUrl(q)}
-          className="hover:bg-muted focus-visible:ring-ring w-full rounded-lg border p-3 text-left transition-colors focus-visible:ring-2 focus-visible:outline-none"
-        >
-          <div className="flex items-center justify-between gap-2">
-            <span className="min-w-0 truncate font-medium">{t('songImport.web.importLink')}</span>
-            <Badge variant="outline">{t(`songImport.sources.${linkSource}`)}</Badge>
-          </div>
-          <p className="text-muted-foreground truncate text-sm">{q}</p>
-        </button>
+        <ul className={LIST_CLASSES}>
+          <li>
+            <button
+              type="button"
+              onClick={() => onPickUrl(q)}
+              className={listRowClasses('grid-cols-[minmax(0,1fr)_auto]')}
+            >
+              <RowText
+                title={t('songImport.web.importLink')}
+                meta={
+                  <>
+                    <Tag>{t(`songImport.sources.${linkSource}`)}</Tag>
+                    <span className="truncate">{q}</span>
+                  </>
+                }
+              />
+              <ImportLabel />
+            </button>
+          </li>
+        </ul>
       ) : (
         <>
           {results.isFetching ? <Skeleton className="h-24 w-full" /> : null}
@@ -50,12 +71,17 @@ export function WebResults({ q, onPickUrl, onPaste }: WebResultsProps) {
           ) : null}
         </>
       )}
-
-      <Button type="button" variant="outline" size="sm" className="self-start" onClick={onPaste}>
-        <Clipboard />
-        {t('songImport.web.pasteButton')}
-      </Button>
     </section>
+  );
+}
+
+function ImportLabel() {
+  const { t } = useTranslation();
+  return (
+    <span className="text-chord [&_svg]:size-icon inline-flex items-center gap-1.5 px-2.5 text-sm font-semibold">
+      <Download />
+      {t('songImport.web.import')}
+    </span>
   );
 }
 
@@ -82,26 +108,29 @@ function WebCandidates({ data, onSelect }: WebCandidatesProps) {
       ) : null}
 
       {data.candidates.length === 0 ? (
-        <p className="text-muted-foreground text-sm">{t('songImport.search.empty')}</p>
+        <p className="text-ink-2 px-3 text-sm">{t('songImport.search.empty')}</p>
       ) : (
-        <ul className="flex flex-col gap-2">
+        <ul className={LIST_CLASSES}>
           {data.candidates.map((candidate) => (
             <li key={candidate.url}>
               <button
                 type="button"
                 onClick={() => onSelect(candidate.url)}
-                className="hover:bg-muted focus-visible:ring-ring w-full rounded-lg border p-3 text-left transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                className={listRowClasses('grid-cols-[minmax(0,1fr)_auto]')}
               >
-                <div className="flex items-center justify-between gap-2">
-                  <span className="min-w-0 truncate font-medium">{candidate.title}</span>
-                  <Badge variant="outline">{t(`songImport.sources.${candidate.source}`)}</Badge>
-                </div>
-                <div className="text-muted-foreground flex items-center justify-between gap-2 text-sm">
-                  <span>{candidate.artist ?? t('songImport.search.unknownArtist')}</span>
-                  {candidate.votes !== null ? (
-                    <span>{t('songImport.search.votes', { count: candidate.votes })}</span>
-                  ) : null}
-                </div>
+                <RowText
+                  title={candidate.title}
+                  meta={
+                    <>
+                      <span>{candidate.artist ?? t('songImport.search.unknownArtist')}</span>
+                      <Tag>{t(`songImport.sources.${candidate.source}`)}</Tag>
+                      {candidate.votes !== null ? (
+                        <span>{t('songImport.search.votes', { count: candidate.votes })}</span>
+                      ) : null}
+                    </>
+                  }
+                />
+                <ImportLabel />
               </button>
             </li>
           ))}

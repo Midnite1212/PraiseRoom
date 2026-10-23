@@ -56,14 +56,15 @@
   "songs": {
     "title": "詩歌",
     "searchLabel": "搜尋詩歌",
-    "searchPlaceholder": "歌名、作者或歌詞",
+    "searchPlaceholder": "歌名、作者、歌詞或編號",
     "search": "搜尋",
     "columns": {
       "code": "編號",
       "title": "歌名",
       "artist": "作者",
       "key": "調",
-      "tempo": "速度"
+      "tempo": "速度",
+      "themes": "主題"
     },
     "empty": "找不到詩歌。",
     "loadFailed": "未能載入詩歌，請再試一次。",
@@ -74,7 +75,14 @@
       "button": "篩選",
       "tempo": "速度",
       "themes": "主題",
-      "clear": "清除篩選"
+      "clear": "清除篩選",
+      "title": "篩選詩歌",
+      "matches_one": "{{count}} 首詩歌符合",
+      "matches_other": "{{count}} 首詩歌符合",
+      "show_one": "顯示 {{count}} 首詩歌",
+      "show_other": "顯示 {{count}} 首詩歌",
+      "more": "更多",
+      "sortBy": "排序"
     },
     "tempo": {
       "fast": "快",
@@ -82,8 +90,24 @@
       "slow": "慢",
       "mediumSlow": "中慢"
     },
-    "searchWeb": "同時搜尋網上資源",
-    "searchTooLong": "搜尋內容請少於 100 個字元。"
+    "searchWeb": "包括網上結果",
+    "searchTooLong": "搜尋內容請少於 100 個字元。",
+    "libraryCount_one": "詩歌庫有 {{count}} 首詩歌",
+    "libraryCount_other": "詩歌庫有 {{count}} 首詩歌",
+    "library": "詩歌庫",
+    "results": "搜尋結果",
+    "pages": "結果頁數",
+    "emptyHint": "試試其他關鍵字，或減少篩選。",
+    "webResults": "網上結果",
+    "add": {
+      "button": "新增詩歌",
+      "title": "新增詩歌",
+      "description": "每首詩歌都有歌詞、和弦及原調。",
+      "paste": "貼上和弦譜",
+      "pasteHint": "歌詞上方的和弦，或 ChordPro",
+      "web": "在網上搜尋",
+      "webHint": "搜尋和弦網站，儲存前先檢查"
+    }
   },
   "errors": {
     "notFound": "此頁面不存在。",
@@ -233,7 +257,8 @@
     "web": {
       "heading": "網上資源",
       "importLink": "匯入此連結",
-      "pasteButton": "貼上詩歌譜"
+      "pasteButton": "貼上詩歌譜",
+      "import": "匯入"
     },
     "search": {
       "failed": "未能搜尋網上資源，請再試一次。",

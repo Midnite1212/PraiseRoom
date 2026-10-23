@@ -33,7 +33,7 @@ type ImportDialogProps = {
   onConverted: (chart: ImportedChart) => void;
 };
 
-// Full-screen on phones, a wide centered panel on desktop; closing while the form is dirty confirms first.
+// Nearly full height on phones, a wide centred panel on desktop; closing while the form is dirty confirms first.
 export function ImportDialog({ state, onClose, onConverted }: ImportDialogProps) {
   const { t } = useTranslation();
   const [isDirty, setIsDirty] = useState(false);
@@ -62,7 +62,7 @@ export function ImportDialog({ state, onClose, onConverted }: ImportDialogProps)
           if (!next) requestClose();
         }}
       >
-        <DialogContent className="flex h-[100svh] w-screen max-w-none flex-col gap-4 overflow-y-auto rounded-none p-4 sm:h-auto sm:max-h-[90svh] sm:w-[min(64rem,calc(100vw-2rem))] sm:max-w-4xl sm:rounded-xl sm:p-6">
+        <DialogContent className="wide:max-h-[90vh] max-h-[calc(100svh-var(--top)-var(--bottom))] max-w-none [--dw:1000px]">
           <DialogHeader>
             <DialogTitle>{t('songImport.dialog.title')}</DialogTitle>
           </DialogHeader>
