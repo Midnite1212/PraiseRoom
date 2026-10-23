@@ -5,7 +5,7 @@ These docs are the **editable guardrails** for `ui/`. They describe how we build
 | Doc                                        | Covers                                      | Reference code                       |
 | ------------------------------------------ | ------------------------------------------- | ------------------------------------ |
 | [folder-structure.md](folder-structure.md) | Where files go and how they are named       | `src/`                               |
-| [components.md](components.md)             | shadcn composition, styling, theming        | `src/components/layout/`             |
+| [components.md](components.md)             | Design system, composition, theming         | `src/components/`                    |
 | [data-fetching.md](data-fetching.md)       | API calls, query options, mutations         | `src/features/songs/api.ts`          |
 | [routing.md](routing.md)                   | File routes, search params, loaders, guards | `src/routes/`                        |
 | [forms.md](forms.md)                       | TanStack Form with Zod and shadcn fields    | `src/routes/login.tsx`               |

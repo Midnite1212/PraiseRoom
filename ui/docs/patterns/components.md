@@ -1,27 +1,32 @@
 # Components and styling
 
-- **Start from shadcn.** Check `src/components/ui/` first, then the shadcn registry (via the shadcn MCP server or `pnpm exec shadcn add <name>`). Compose those primitives in feature components instead of building controls from `div`s.
-- **Don't fork shadcn files for one screen.** Wrap or compose instead. If a shadcn component genuinely needs a project-wide change, keep it small and note it in the PR, since `shadcn add --overwrite` would undo it.
-- **Variants:** use `cva` (as shadcn does) for components with variants, and `cn()` from `@/lib/utils` to merge classes.
-- **Tokens only:** colours, radii, and fonts come from the CSS variables in `src/styles.css` through Tailwind classes. Add a new token for both `:root` (light) and `.dark` before using a new colour. The palette is provisional (sampled from the musician-view references) until the designer finalises it.
+The visual design is the app-pages mock (`design-poc/app-pages.html`): black and white with one accent, frosted Liquid Glass for anything that floats, rows on bare ground, and liquid motion.
 
-  | Token                        | Tailwind                            | Use                                                |
-  | ---------------------------- | ----------------------------------- | -------------------------------------------------- |
-  | `background`                 | `bg-background`                     | The tinted chrome behind everything                |
-  | `sheet` / `sheet-foreground` | `bg-sheet`, `text-sheet-foreground` | The white reading surface lyrics sit on            |
-  | `sidebar`                    | `bg-sidebar`                        | Rails and side panels                              |
-  | `primary`                    | `bg-primary`                        | Active toggles and primary buttons (navy)          |
-  | `accent`                     | `bg-accent`                         | The selected row in a list                         |
-  | `chord`                      | `text-chord`                        | Chords and chord numbers                           |
-  | `label`                      | `text-label`                        | Section labels (`VERSE 1`) and small caps metadata |
-  | `muted-foreground`           | `text-muted-foreground`             | Secondary text (artist, hints)                     |
+- **Start from what exists.** Check `src/components/primitives/` and `src/components/page/` first, then `src/components/ui/` (shadcn), then the shadcn registry. Compose those in feature components instead of building controls from `div`s; anything a second screen repeats becomes a primitive.
+- **shadcn files carry the design.** `button`, `dialog`, `alert-dialog`, `popover`, `dropdown-menu`, `input`, `select`, `switch`, `toggle`, and `sonner` are restyled in place, so every screen gets the same controls. Keep further edits small and note them in the PR, since `shadcn add --overwrite` would undo them.
+- **Variants:** use `cva` (as shadcn does) for components with variants, and `cn()` from `@/lib/utils` to merge classes. `Button` variants: `default` (the ink capsule, the one filled button), `secondary`, `ghost`, `glass` (a floating glass circle or capsule), `link` (accent text), `destructive`, `destructive-solid`.
+- **Tokens only:** colours, radii, and fonts come from the CSS variables in `src/styles.css` through Tailwind classes. Add a new token for both `:root` (light) and `.dark` before using a new colour.
 
-- **Fonts:** `font-sans` (UI), `font-mono` (labels, keys, numbers), and `font-lyrics` (lyrics) map to `--typeface-*` variables with Traditional Chinese fallbacks (`--typeface-han`). `--typeface-sans` defaults to Geist; the Settings page's font choice (`useTypeface()`, `src/lib/typeface.ts`, stored per device) sets `data-typeface` on `<html>`, which swaps it for Hanken Grotesk, Pixel (Geist Pixel + Fusion Pixel TC), Mono (Geist Mono), or System. Fonts are self-hosted from Fontsource packages imported in `main.tsx`.
+  | Token                                     | Tailwind                                       | Use                                                   |
+  | ----------------------------------------- | ---------------------------------------------- | ----------------------------------------------------- |
+  | `ground` / `ground-lift`                  | `bg-ground`                                    | The page, and the soft wash of light at its top       |
+  | `ink`, `ink-2`, `ink-3`                   | `text-ink`, `text-ink-2`, `text-ink-3`         | Primary, secondary, and tertiary text                 |
+  | `brand`                                   | `text-brand`, `bg-brand`                       | The accent; `chord`, `ring`, and `pixel-on` follow it |
+  | `fill-hover` / `fill-press` / `fill-on`   | `bg-fill-hover`, `bg-fill-press`, `bg-fill-on` | Quiet fills: hover, pressed, and selected             |
+  | `hairline`                                | `border-hairline`, `bg-hairline`               | Separators and edges                                  |
+  | `pixel-off` / `pixel-played` / `pixel-on` | `bg-pixel-*`                                   | Setlist progress pixels                               |
+  | `destructive` / `danger-tint`             | `text-destructive`, `bg-danger-tint`           | Leave and delete                                      |
+  | `cover`, `cover-light`, `cover-dim`       | `bg-cover-*`                                   | Folder sleeve pixel art                               |
+
+- **Glass:** `.glass` (in `src/styles.css`) is the frosted surface: backdrop blur and tint on `::after`, specular rim on `::before`. Add `glass-over` for glass over moving content, `glass-strong` for sheets, and set the corner with `[--glass-r:24px]`. A glass element's content must not scroll the host itself; scroll an inner element (see `DialogContent`).
+- **Wide vs phone:** the `wide:` variant (`min-width: 900px` and landscape) switches to the wide layout; `useIsWide()` (`src/hooks/use-wide.ts`) is the same query for code that must render differently (a table instead of rows, a popover instead of a sheet). Phones are the default; add `wide:` classes on top.
+- **Sheets, menus, panels:** `Dialog` is a sheet from the bottom on phones and a centred dialog on wide screens; pin its buttons with `DialogContent`'s `footer` so long sheets keep them in reach. `ActionMenu` (`⋯` menus) and `Panel` (reader panels) anchor to their button on wide screens and become sheets on phones.
+- **Motion:** `ease-out` and `ease-liquid` (a slight overshoot) are the two easings; `animate-sheet-in`, `animate-pop-in`, `animate-view-in`, and `animate-spin-slow` are the shared animations. `prefers-reduced-motion` turns them off globally.
+- **Fonts:** `font-sans` (UI), `font-mono` (keys, dates, counts, chords), and `font-lyrics` (lyrics) map to `--typeface-*` variables with Traditional Chinese fallbacks (`--typeface-han`). The Settings page's font choice (`useTypeface()`, `src/lib/typeface.ts`) sets `data-typeface` on `<html>`; the accent choice (`useAccent()`, `src/lib/accent.ts`) sets `data-palette`. Fonts are self-hosted from Fontsource packages imported in `main.tsx`.
 - **Lyrics size:** `text-lyrics` reads `--lyrics-size`, which `data-lyrics-size="sm|md|lg|xl|2xl"` on the reading sheet sets. The reader picks the size with `useLyricsSize()` (`src/features/reader/lyrics-size.ts`), stored per device.
-- **Theme:** `next-themes` sets the `dark` class on `<html>`; use `dark:` variants only when a token can't express the difference. `ThemeToggle` is in the app shell.
-- **Icons:** `pixelarticons/react` (the free pixel set), sized by the component (shadcn sizes icons inside buttons). Icon-only buttons need an `aria-label` from `t()`.
-- **Layout:** the app shell (`AppShell`, `AppSidebar`) owns the sidebar, header, and page padding. Pages render inside `<main>` and set their own max width (`mx-auto max-w-5xl`).
-- **Responsive:** design at 390 px first, then add `md:`/`lg:` classes. The shadcn sidebar becomes a sheet on phones automatically.
-- **Reader preferences** (lyrics size, Lyrics/Chords, 1-4-5/A-B-C) are per-device choices made with `createStoredChoice` (`src/lib/stored-choice.ts`); add a new one the same way instead of a store or context. Reference: `src/features/reader/`.
-- **Reading a song:** `SongReader` (`src/features/reader/song-reader.tsx`) is the one reading sheet for every screen that shows lyrics (musician view, song view, public setlist view): the song header with ⓘ and chord controls, a slim sticky row once the header scrolls away, and lyrics in the column count chosen with `LyricsColumnsControl` (1–3, at every width). Pages own the toolbar around it (`ReaderPreferenceControls`) and the key state. The musician view (`src/features/setlists/musician-view/`) adds the setlist rail (a sheet on phones), progress strip, and song navigation, and takes `onSongChange` so any route can host it.
-- **Toasts:** `toast.success` / `toast.error` from `sonner` for the result of a user action; inline `Alert` for a page that failed to load.
+- **Theme:** `next-themes` sets the `dark` class on `<html>`; use `dark:` variants only when a token can't express the difference. `ThemeChoice` and `LanguageChoice` (`src/components/layout/preference-choices.tsx`) are the one way to pick them.
+- **Icons:** `pixelarticons/react`, sized `size-icon` (18px, 16px on 2× screens) unless a component sizes them. Icon-only buttons need an `aria-label` from `t()`.
+- **Layout:** `AppShell` owns the chrome: the floating rail on wide screens, the top bar and tab dock on phones, and the page frame. Pages start with `PageHeader` (its actions show on wide screens; phones get a `Fab`), then `Finder`, `GroupTitle`, and rows (`listRowClasses`, `RowText`). A page that needs the phone top bar's back button or menu renders it with `AppBarSlot`. Routes with `staticData: { chrome: 'reader' }` get no shell and render `ReaderLayout` instead.
+- **Per-device choices** (lyrics size, Lyrics/Chords, 1-4-5/A-B-C, rail folded, accent) are made with `createStoredChoice` (`src/lib/stored-choice.ts`). Read one through a hook-named alias (`const useRail = choice.use`), never `choice.use()` inline: the React Compiler only treats `use*` names as hooks and would otherwise memoize the call away.
+- **Reading a song:** `SongReader` (`src/features/reader/song-reader.tsx`) is the one reading sheet (song view, setlist view, public setlist view, editor previews): title with ⓘ, artist with the key and lyric columns, then the lyrics. `ReaderLayout` is the full-screen frame around it; `MusicianView` (`src/features/setlists/musician-view/`) adds the setlist sidebar or song row, progress pixels, and the Up next dock.
+- **Toasts:** `toast.success` / `toast.error` from `sonner` for the result of a user action; an `EmptyState` for a list that failed to load.

@@ -140,7 +140,8 @@
       "capo": "變調夾"
     },
     "openInApp": "在應用程式中開啟",
-    "columns": "歌詞欄數：{{columns}}"
+    "columns": "歌詞欄數：{{columns}}",
+    "close": "關閉"
   },
   "editor": {
     "newTitle": "新增歌單",
@@ -324,6 +325,24 @@
         "xl": "特大",
         "2xl": "最大"
       }
+    },
+    "accent": {
+      "title": "強調色",
+      "description": "黑白配上一種顏色，只套用於這部裝置。",
+      "options": {
+        "electric": "電光藍",
+        "violet": "紫外光",
+        "volt": "螢光綠",
+        "signal": "訊號橙"
+      }
     }
+  },
+  "filters": {
+    "button": "篩選",
+    "buttonWithCount": "篩選（已選 {{count}} 項）",
+    "remove": "移除 {{name}}",
+    "clearSearch": "清除搜尋",
+    "reset": "重設",
+    "clear": "清除"
   }
 }
