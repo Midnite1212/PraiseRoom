@@ -12,6 +12,7 @@ const song: SongSummary = {
   artist: 'John Newton',
   originalKey: 'G',
   tempo: ['Slow', 'Medium'],
+  themes: ['Grace'],
   code: null,
 };
 
@@ -26,6 +27,7 @@ describe('SongsTable', () => {
     );
     expect(screen.getByRole('cell', { name: 'Amazing Grace' })).toBeInTheDocument();
     expect(screen.getByRole('cell', { name: 'Slow, Medium' })).toBeInTheDocument();
+    expect(screen.getByRole('cell', { name: 'Grace' })).toBeInTheDocument();
     expect(screen.getByRole('cell', { name: '—' })).toBeInTheDocument();
   });
 

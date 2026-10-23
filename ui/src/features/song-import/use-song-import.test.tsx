@@ -5,7 +5,18 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { requestUrl, sessionResponse } from '@/test/mock-fetch';
 import { renderWithQueryAndRouter } from '@/test/render-with-router';
 
-import { SongImportFlow } from './song-import-flow';
+import { useSongImport } from './use-song-import';
+import { WebResults } from './web-results';
+
+function SongImportFlow({ q }: { q: string }) {
+  const { pickUrl, openPaste, element } = useSongImport();
+  return (
+    <>
+      <WebResults q={q} onPickUrl={pickUrl} onPaste={openPaste} />
+      {element}
+    </>
+  );
+}
 
 const emptySongSearch = () =>
   new Response(JSON.stringify({ data: [], totalCount: 0, currentPage: 1, totalPages: 1 }));
@@ -35,7 +46,7 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe('SongImportFlow', () => {
+describe('useSongImport', () => {
   it('fetches a picked search result and previews the converted chart in the dialog', async () => {
     const user = userEvent.setup();
     fetchMock.mockImplementation(async (input) => {

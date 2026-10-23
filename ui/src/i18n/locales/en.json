@@ -56,14 +56,15 @@
   "songs": {
     "title": "Songs",
     "searchLabel": "Search songs",
-    "searchPlaceholder": "Title, artist, or lyrics",
+    "searchPlaceholder": "Title, artist, lyrics or code",
     "search": "Search",
     "columns": {
       "code": "Code",
       "title": "Title",
       "artist": "Artist",
       "key": "Key",
-      "tempo": "Tempo"
+      "tempo": "Tempo",
+      "themes": "Themes"
     },
     "empty": "No songs found.",
     "loadFailed": "Could not load songs. Please try again.",
@@ -74,7 +75,14 @@
       "button": "Filters",
       "tempo": "Tempo",
       "themes": "Themes",
-      "clear": "Clear filters"
+      "clear": "Clear filters",
+      "title": "Filter songs",
+      "matches_one": "{{count}} song matches",
+      "matches_other": "{{count}} songs match",
+      "show_one": "Show {{count}} song",
+      "show_other": "Show {{count}} songs",
+      "more": "More",
+      "sortBy": "Sort by"
     },
     "tempo": {
       "fast": "Fast",
@@ -82,8 +90,24 @@
       "slow": "Slow",
       "mediumSlow": "Medium slow"
     },
-    "searchWeb": "Search the web too",
-    "searchTooLong": "Keep the search under 100 characters."
+    "searchWeb": "Include results from the web",
+    "searchTooLong": "Keep the search under 100 characters.",
+    "libraryCount_one": "{{count}} song in the library",
+    "libraryCount_other": "{{count}} songs in the library",
+    "library": "Library",
+    "results": "Results",
+    "pages": "Pages of results",
+    "emptyHint": "Try another search or fewer filters.",
+    "webResults": "Web results",
+    "add": {
+      "button": "Add song",
+      "title": "Add a song",
+      "description": "Every song gets lyrics, chords and its original key.",
+      "paste": "Paste a chord chart",
+      "pasteHint": "Chords above lyrics, or ChordPro",
+      "web": "Find it on the web",
+      "webHint": "Search chord sites, then check before saving"
+    }
   },
   "errors": {
     "notFound": "This page doesn't exist.",
@@ -233,7 +257,8 @@
     "web": {
       "heading": "From the web",
       "importLink": "Import from this link",
-      "pasteButton": "Paste a chart"
+      "pasteButton": "Paste a chart",
+      "import": "Import"
     },
     "search": {
       "failed": "Could not search the web. Please try again.",

@@ -1,17 +1,34 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
+import { ChevronLeft, ChevronRight, Plus } from 'pixelarticons/react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { EmptyState } from '@/components/page/empty-state';
+import { type ActiveFilter, FilterChips } from '@/components/page/filter-chips';
+import { Finder } from '@/components/page/finder';
+import { GroupTitle } from '@/components/page/group-title';
+import { PageHeader } from '@/components/page/page-header';
+import { Fab } from '@/components/primitives/fab';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { canWriteSongs } from '@/features/auth/session';
-import { SongImportFlow } from '@/features/song-import/song-import-flow';
-import { songSearchQueryOptions } from '@/features/songs/api';
-import { SongFilters } from '@/features/songs/song-filters';
-import { SongSearchForm } from '@/features/songs/song-search-form';
+import { useSongImport } from '@/features/song-import/use-song-import';
+import { WebResults } from '@/features/song-import/web-results';
+import { AddSongDialog } from '@/features/songs/add-song-dialog';
+import {
+  SONG_SORTS,
+  songSearchQueryOptions,
+  TEMPO_LABEL_KEYS,
+  TEMPO_OPTIONS,
+} from '@/features/songs/api';
+import { type SongFilterValues, SongFilterSheet } from '@/features/songs/song-filter-sheet';
+import { SongRows } from '@/features/songs/song-rows';
+import { MAX_KEYWORD_LENGTH, toSearchKeyword } from '@/features/songs/song-search';
 import { SongsTable } from '@/features/songs/songs-table';
+import { useDebouncedValue } from '@/hooks/use-debounced-value';
+import { useIsWide } from '@/hooks/use-wide';
 
 const songsSearchSchema = z.object({
   q: z.string().default('').catch(''),
@@ -19,6 +36,7 @@ const songsSearchSchema = z.object({
   tempo: z.array(z.string()).default([]).catch([]),
   themes: z.array(z.string()).default([]).catch([]),
   web: z.boolean().default(false).catch(false),
+  sort: z.enum(SONG_SORTS).default('title').catch('title'),
 });
 
 export const Route = createFileRoute('/_app/songs/')({
@@ -31,75 +49,181 @@ export const Route = createFileRoute('/_app/songs/')({
         page: deps.page,
         tempo: deps.tempo,
         themes: deps.themes,
+        sort: deps.sort,
       })
     ),
   pendingComponent: SongsPending,
   component: SongsPage,
 });
 
+const isTempo = (value: string): value is (typeof TEMPO_OPTIONS)[number] =>
+  TEMPO_OPTIONS.some((option) => option === value);
+
 function SongsPage() {
   const { t } = useTranslation();
   const { session } = Route.useRouteContext();
   const search = Route.useSearch();
-  const { q, page, tempo, themes, web } = search;
+  const { q, page, tempo, themes, web, sort } = search;
   const navigate = Route.useNavigate();
+  const isWide = useIsWide();
+  const searchInput = useRef<HTMLInputElement>(null);
+  const [text, setText] = useState(q);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const songImport = useSongImport();
   const { data, isError, isFetching } = useQuery({
-    ...songSearchQueryOptions({ keyword: q, page, tempo, themes }),
+    ...songSearchQueryOptions({ keyword: q, page, tempo, themes, sort }),
     placeholderData: keepPreviousData,
   });
+  const { data: library } = useQuery(songSearchQueryOptions({ keyword: '', page: 1 }));
 
-  const canSearchWeb = canWriteSongs(session);
+  const canAdd = canWriteSongs(session);
+  const setSearch = (next: Partial<typeof search>) =>
+    void navigate({ search: (previous) => ({ ...previous, ...next }), replace: true });
+
+  // The list follows the search box as you type, once typing pauses.
+  const keyword = toSearchKeyword(useDebouncedValue(text, 300));
+  useEffect(() => {
+    if (keyword !== q)
+      void navigate({
+        search: (previous) => ({ ...previous, q: keyword, page: 1 }),
+        replace: true,
+      });
+  }, [keyword, q, navigate]);
+
+  const changeFilters = (filters: Partial<SongFilterValues>) => setSearch({ ...filters, page: 1 });
+  const activeFilters: ActiveFilter[] = [
+    ...tempo.map((value) => ({
+      key: `tempo-${value}`,
+      label: isTempo(value) ? t(TEMPO_LABEL_KEYS[value]) : value,
+      onRemove: () => changeFilters({ tempo: tempo.filter((item) => item !== value) }),
+    })),
+    ...themes.map((value) => ({
+      key: `theme-${value}`,
+      label: value,
+      onRemove: () => changeFilters({ themes: themes.filter((item) => item !== value) }),
+    })),
+    ...(web && canAdd
+      ? [
+          {
+            key: 'web',
+            label: t('songs.webResults'),
+            onRemove: () => changeFilters({ web: false }),
+          },
+        ]
+      : []),
+  ];
+
+  const songs = data?.data ?? [];
   const totalPages = Math.max(1, data?.totalPages ?? 1);
-  const goToPage = (nextPage: number) => void navigate({ search: { ...search, page: nextPage } });
+  const isFiltered = q !== '' || activeFilters.length > 0;
+  const addSongLabel = t('songs.add.button');
 
   return (
-    <section className="mx-auto flex max-w-5xl flex-col gap-4">
-      <h1 className="font-heading text-2xl font-semibold">{t('songs.title')}</h1>
-      <div className="flex flex-wrap items-end gap-2">
-        <SongSearchForm
-          key={q}
-          keyword={q}
-          onSearch={(keyword) => void navigate({ search: { ...search, q: keyword, page: 1 } })}
-          canSearchWeb={canSearchWeb}
-          web={web}
-          onWebChange={(value) => void navigate({ search: { ...search, web: value } })}
-        />
-        <SongFilters
-          tempo={tempo}
-          themes={themes}
-          onChange={(filters) => void navigate({ search: { ...search, ...filters, page: 1 } })}
-        />
-      </div>
+    <>
+      <PageHeader
+        title={t('songs.title')}
+        description={library ? t('songs.libraryCount', { count: library.totalCount }) : undefined}
+        actions={
+          canAdd ? (
+            <Button onClick={() => setIsAddOpen(true)}>
+              <Plus />
+              {addSongLabel}
+            </Button>
+          ) : null
+        }
+      />
+      <Finder
+        inputRef={searchInput}
+        value={text}
+        onChange={setText}
+        maxLength={MAX_KEYWORD_LENGTH}
+        placeholder={t('songs.searchPlaceholder')}
+        label={t('songs.searchLabel')}
+        filterCount={activeFilters.length}
+        onFilter={() => setIsFilterOpen(true)}
+      />
+      <FilterChips filters={activeFilters} />
+
+      <GroupTitle
+        title={isFiltered ? t('songs.results') : t('songs.library')}
+        count={data?.totalCount}
+      />
       {isError ? (
-        <Alert variant="destructive">
-          <AlertDescription>{t('songs.loadFailed')}</AlertDescription>
-        </Alert>
+        <EmptyState title={t('songs.loadFailed')} />
       ) : (
         <div className={isFetching ? 'opacity-60 transition-opacity' : undefined}>
-          <SongsTable songs={data?.data ?? []} />
+          {isWide ? <SongsTable songs={songs} /> : <SongRows songs={songs} />}
         </div>
       )}
-      <nav className="flex items-center justify-between gap-2" aria-label={t('songs.title')}>
-        <Button variant="outline" disabled={page <= 1} onClick={() => goToPage(page - 1)}>
-          {t('songs.previous')}
-        </Button>
-        <span className="text-muted-foreground text-sm">
-          {t('songs.page', { page, total: totalPages })}
-        </span>
-        <Button variant="outline" disabled={page >= totalPages} onClick={() => goToPage(page + 1)}>
-          {t('songs.next')}
-        </Button>
-      </nav>
-      {canSearchWeb && web && q.trim() !== '' ? <SongImportFlow key={q} q={q} /> : null}
-    </section>
+
+      {totalPages > 1 ? (
+        <nav className="mt-4 flex items-center justify-between gap-2" aria-label={t('songs.pages')}>
+          <Button
+            variant="secondary"
+            size="sm"
+            disabled={page <= 1}
+            onClick={() => setSearch({ page: page - 1 })}
+          >
+            <ChevronLeft />
+            {t('songs.previous')}
+          </Button>
+          <span className="text-ink-2 font-mono text-sm">
+            {t('songs.page', { page, total: totalPages })}
+          </span>
+          <Button
+            variant="secondary"
+            size="sm"
+            disabled={page >= totalPages}
+            onClick={() => setSearch({ page: page + 1 })}
+          >
+            {t('songs.next')}
+            <ChevronRight />
+          </Button>
+        </nav>
+      ) : null}
+
+      {canAdd && web && q.trim() !== '' ? (
+        <WebResults key={q} q={q} onPickUrl={songImport.pickUrl} onPaste={songImport.openPaste} />
+      ) : null}
+
+      <SongFilterSheet
+        open={isFilterOpen}
+        onOpenChange={setIsFilterOpen}
+        tempo={tempo}
+        themes={themes}
+        web={web}
+        sort={sort}
+        matchCount={data?.totalCount}
+        canSearchWeb={canAdd}
+        onChange={changeFilters}
+      />
+      {canAdd ? (
+        <>
+          <Fab aria-label={addSongLabel} title={addSongLabel} onClick={() => setIsAddOpen(true)}>
+            <Plus />
+          </Fab>
+          <AddSongDialog
+            open={isAddOpen}
+            onOpenChange={setIsAddOpen}
+            onPaste={songImport.openPaste}
+            onFindOnWeb={() => {
+              setSearch({ web: true });
+              searchInput.current?.focus();
+            }}
+          />
+          {songImport.element}
+        </>
+      ) : null}
+    </>
   );
 }
 
 function SongsPending() {
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-4">
-      <Skeleton className="h-8 w-40" />
-      <Skeleton className="h-9 w-full max-w-sm" />
+    <div className="flex flex-col gap-4">
+      <Skeleton className="h-10 w-40" />
+      <Skeleton className="h-12 w-full" />
       <Skeleton className="h-96 w-full" />
     </div>
   );

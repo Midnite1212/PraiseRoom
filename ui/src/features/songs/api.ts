@@ -47,6 +47,7 @@ export const songSummarySchema = z.object({
   artist: z.string(),
   originalKey: z.string(),
   tempo: z.array(z.string()),
+  themes: z.array(z.string()).default([]),
   code: z.string().nullish(),
 });
 
@@ -59,19 +60,37 @@ const songSearchResponseSchema = z.object({
   totalPages: z.number(),
 });
 
+export const SONG_SORTS = ['title', 'code'] as const;
+
+export type SongSort = (typeof SONG_SORTS)[number];
+
 export type SongSearch = {
   keyword: string;
   page: number;
+  sort?: SongSort;
   tempo?: readonly string[];
   themes?: readonly string[];
 };
 
-export const songSearchQueryOptions = ({ keyword, page, tempo = [], themes = [] }: SongSearch) =>
+export const songSearchQueryOptions = ({
+  keyword,
+  page,
+  tempo = [],
+  themes = [],
+  sort = 'title',
+}: SongSearch) =>
   queryOptions({
-    queryKey: ['songs', 'search', { keyword, page, tempo, themes }],
+    queryKey: ['songs', 'search', { keyword, page, tempo, themes, sort }],
     queryFn: ({ signal }) =>
       apiRequest('/api/songs/search', songSearchResponseSchema, {
-        query: { keyword: keyword || undefined, page, limit: SONGS_PAGE_SIZE, tempo, themes },
+        query: {
+          keyword: keyword || undefined,
+          page,
+          limit: SONGS_PAGE_SIZE,
+          tempo,
+          themes,
+          sortBy: sort === 'code' ? 'code' : undefined,
+        },
         signal,
       }),
   });
