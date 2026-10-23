@@ -293,6 +293,7 @@
     "saveFailed": "Could not save the folder. Please try again.",
     "setlists_one": "{{count}} setlist",
     "setlists_other": "{{count}} setlists",
+    "nextDate": "next {{date}}",
     "members_one": "{{count}} member",
     "members_other": "{{count}} members",
     "addSetlists": "Add setlists",

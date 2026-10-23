@@ -14,13 +14,19 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { peopleQueryOptions } from '@/features/folders/api';
 import { CreateFolderDialog } from '@/features/folders/create-folder-dialog';
 import { FolderCard, FolderRow } from '@/features/folders/folder-card';
-import { foldersQueryOptions } from '@/features/setlists/api';
+import { foldersQueryOptions, setlistsQueryOptions } from '@/features/setlists/api';
 import { ownFolders } from '@/features/setlists/permissions';
 import { useIsWide } from '@/hooks/use-wide';
 import { cn } from '@/lib/utils';
 
 export const Route = createFileRoute('/_app/folders/')({
-  loader: ({ context }) => context.queryClient.ensureQueryData(foldersQueryOptions()),
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(foldersQueryOptions()),
+      context.queryClient.ensureQueryData(setlistsQueryOptions()),
+    ]);
+    return { now: Date.now() };
+  },
   pendingComponent: () => <Skeleton className="h-64 w-full" />,
   component: FoldersPage,
 });
@@ -28,6 +34,7 @@ export const Route = createFileRoute('/_app/folders/')({
 function FoldersPage() {
   const { t } = useTranslation();
   const { session } = Route.useRouteContext();
+  const { now } = Route.useLoaderData();
   const isWide = useIsWide();
   const { data: folders } = useSuspenseQuery(foldersQueryOptions());
   const { data: people } = useQuery(peopleQueryOptions());
@@ -65,7 +72,7 @@ function FoldersPage() {
         <ul className="mt-[18px] grid list-none grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-x-6 gap-y-8 p-0">
           {mine.map((folder) => (
             <li key={folder._id}>
-              <FolderCard session={session} folder={folder} people={people} />
+              <FolderCard session={session} folder={folder} people={people} now={now} />
             </li>
           ))}
         </ul>
@@ -73,7 +80,7 @@ function FoldersPage() {
         <ul className={cn(LIST_CLASSES, 'mt-2')}>
           {mine.map((folder) => (
             <li key={folder._id}>
-              <FolderRow session={session} folder={folder} people={people} />
+              <FolderRow session={session} folder={folder} people={people} now={now} />
             </li>
           ))}
         </ul>

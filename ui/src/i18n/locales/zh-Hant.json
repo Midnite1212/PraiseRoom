@@ -293,6 +293,7 @@
     "saveFailed": "未能儲存資料夾，請再試一次。",
     "setlists_one": "{{count}} 個歌單",
     "setlists_other": "{{count}} 個歌單",
+    "nextDate": "下次 {{date}}",
     "members_one": "{{count}} 位成員",
     "members_other": "{{count}} 位成員",
     "addSetlists": "加入歌單",

@@ -93,6 +93,7 @@
   --color-scrim: var(--scrim);
   --color-cover: var(--cover);
   --color-cover-light: var(--cover-light);
+  --color-cover-soft: var(--cover-soft);
   --color-cover-dim: var(--cover-dim);
   --color-on-brand: var(--on-brand);
 
@@ -189,6 +190,7 @@
   --scrim: oklch(0 0 0 / 0.45);
   --cover: oklch(0.16 0 0);
   --cover-light: oklch(1 0 0 / 0.86);
+  --cover-soft: oklch(1 0 0 / 0.34);
   --cover-dim: oklch(1 0 0 / 0.16);
 
   --background: var(--ground);

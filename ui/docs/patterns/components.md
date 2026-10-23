@@ -7,16 +7,16 @@ The visual design is the app-pages mock (`design-poc/app-pages.html`): black and
 - **Variants:** use `cva` (as shadcn does) for components with variants, and `cn()` from `@/lib/utils` to merge classes. `Button` variants: `default` (the ink capsule, the one filled button), `secondary`, `ghost`, `glass` (a floating glass circle or capsule), `link` (accent text), `destructive`, `destructive-solid`.
 - **Tokens only:** colours, radii, and fonts come from the CSS variables in `src/styles.css` through Tailwind classes. Add a new token for both `:root` (light) and `.dark` before using a new colour.
 
-  | Token                                     | Tailwind                                       | Use                                                   |
-  | ----------------------------------------- | ---------------------------------------------- | ----------------------------------------------------- |
-  | `ground` / `ground-lift`                  | `bg-ground`                                    | The page, and the soft wash of light at its top       |
-  | `ink`, `ink-2`, `ink-3`                   | `text-ink`, `text-ink-2`, `text-ink-3`         | Primary, secondary, and tertiary text                 |
-  | `brand`                                   | `text-brand`, `bg-brand`                       | The accent; `chord`, `ring`, and `pixel-on` follow it |
-  | `fill-hover` / `fill-press` / `fill-on`   | `bg-fill-hover`, `bg-fill-press`, `bg-fill-on` | Quiet fills: hover, pressed, and selected             |
-  | `hairline`                                | `border-hairline`, `bg-hairline`               | Separators and edges                                  |
-  | `pixel-off` / `pixel-played` / `pixel-on` | `bg-pixel-*`                                   | Setlist progress pixels                               |
-  | `destructive` / `danger-tint`             | `text-destructive`, `bg-danger-tint`           | Leave and delete                                      |
-  | `cover`, `cover-light`, `cover-dim`       | `bg-cover-*`                                   | Folder sleeve pixel art                               |
+  | Token                                             | Tailwind                                       | Use                                                   |
+  | ------------------------------------------------- | ---------------------------------------------- | ----------------------------------------------------- |
+  | `ground` / `ground-lift`                          | `bg-ground`                                    | The page, and the soft wash of light at its top       |
+  | `ink`, `ink-2`, `ink-3`                           | `text-ink`, `text-ink-2`, `text-ink-3`         | Primary, secondary, and tertiary text                 |
+  | `brand`                                           | `text-brand`, `bg-brand`                       | The accent; `chord`, `ring`, and `pixel-on` follow it |
+  | `fill-hover` / `fill-press` / `fill-on`           | `bg-fill-hover`, `bg-fill-press`, `bg-fill-on` | Quiet fills: hover, pressed, and selected             |
+  | `hairline`                                        | `border-hairline`, `bg-hairline`               | Separators and edges                                  |
+  | `pixel-off` / `pixel-played` / `pixel-on`         | `bg-pixel-*`                                   | Setlist progress pixels                               |
+  | `destructive` / `danger-tint`                     | `text-destructive`, `bg-danger-tint`           | Leave and delete                                      |
+  | `cover`, `cover-light`, `cover-soft`, `cover-dim` | `bg-cover-*`                                   | Folder sleeve equaliser                               |
 
 - **Glass:** `.glass` (in `src/styles.css`) is the frosted surface: backdrop blur and tint on `::after`, specular rim on `::before`. Add `glass-over` for glass over moving content, `glass-strong` for sheets, and set the corner with `[--glass-r:24px]`. A glass element's content must not scroll the host itself; scroll an inner element (see `DialogContent`). Settings → Glass can switch Chromium browsers to refraction (`src/lib/liquid-glass.ts`): it puts `.refract` on `<html>` and gives every `.glass` an SVG filter sized to it, so new glass needs no extra wiring.
 - **Wide vs phone:** the `wide:` variant (`min-width: 900px` and landscape) switches to the wide layout; `useIsWide()` (`src/hooks/use-wide.ts`) is the same query for code that must render differently (a table instead of rows, a popover instead of a sheet). Phones are the default; add `wide:` classes on top.
