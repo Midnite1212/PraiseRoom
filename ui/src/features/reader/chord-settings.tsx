@@ -11,8 +11,10 @@ import {
   ACCIDENTALS,
   type Accidentals,
   CHORD_NOTATIONS,
+  CHORD_STYLES,
   useAccidentals,
   useChordNotation,
+  useChordStyle,
 } from './chord-display';
 
 const ACCIDENTAL_LABELS = { sharp: '#', flat: 'b' } as const;
@@ -46,6 +48,7 @@ export function ChordSettingsPanel({ glass = false }: { glass?: boolean }) {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [notation, setNotation] = useChordNotation();
+  const [chordStyle, setChordStyle] = useChordStyle();
   const [accidentals, setAccidentals] = useAccidentals();
 
   return (
@@ -78,6 +81,15 @@ export function ChordSettingsPanel({ glass = false }: { glass?: boolean }) {
               value,
               label: t(`reader.${value}`),
             }))}
+          />
+        </SetRow>
+        <SetRow label={t('reader.chordsStyle')} hint={t('reader.simpleHint')}>
+          <Segmented
+            size="sm"
+            value={chordStyle}
+            onChange={setChordStyle}
+            label={t('reader.chordsStyle')}
+            options={CHORD_STYLES.map((value) => ({ value, label: t(`reader.${value}`) }))}
           />
         </SetRow>
         <SetRow label={t('reader.accidentals')}>

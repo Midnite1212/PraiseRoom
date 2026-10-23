@@ -2,10 +2,16 @@ import type { ReactNode } from 'react';
 
 import { chordToNumberParts } from '@/features/chords/nashville';
 import { type ChordLine, parseChordLyrics } from '@/features/chords/parse';
-import { type MusicKey, semitonesBetween, transposeChord } from '@/features/chords/theory';
+import {
+  type MusicKey,
+  semitonesBetween,
+  simplifyChord,
+  transposeChord,
+} from '@/features/chords/theory';
 import {
   type Accidentals,
   type ChordNotation,
+  type ChordStyle,
   chordsUseFlats,
   type ReaderMode,
 } from '@/features/reader/chord-display';
@@ -22,6 +28,7 @@ type LyricsSheetProps = {
   mode: ReaderMode;
   notation: ChordNotation;
   accidentals?: Accidentals;
+  chordStyle?: ChordStyle;
   originalKey: MusicKey | null;
   playKey: MusicKey | null;
   columns?: LyricsColumns;
@@ -33,11 +40,13 @@ const createChordRenderer = (
   notation: ChordNotation,
   originalKey: MusicKey | null,
   playKey: MusicKey | null,
-  accidentals: Accidentals
+  accidentals: Accidentals,
+  chordStyle: ChordStyle
 ): ChordRenderer => {
+  const shape = (chord: string) => (chordStyle === 'simple' ? simplifyChord(chord) : chord);
   if (notation === 'numbers' && originalKey) {
     return (chord) => {
-      const parts = chordToNumberParts(chord, originalKey);
+      const parts = chordToNumberParts(shape(chord), originalKey);
       if (!parts) return chord;
       return (
         <>
@@ -52,7 +61,7 @@ const createChordRenderer = (
   }
   const semitones = originalKey && playKey ? semitonesBetween(originalKey, playKey) : 0;
   const useFlats = chordsUseFlats(accidentals, playKey);
-  return (chord) => transposeChord(chord, semitones, useFlats);
+  return (chord) => transposeChord(shape(chord), semitones, useFlats);
 };
 
 function LyricLine({
@@ -91,12 +100,13 @@ export function LyricsSheet({
   mode,
   notation,
   accidentals = 'auto',
+  chordStyle = 'full',
   originalKey,
   playKey,
   columns = DEFAULT_LYRICS_COLUMNS,
 }: LyricsSheetProps) {
   const sections = parseChordLyrics(chordLyrics);
-  const renderChord = createChordRenderer(notation, originalKey, playKey, accidentals);
+  const renderChord = createChordRenderer(notation, originalKey, playKey, accidentals, chordStyle);
   const showChords = mode === 'chords';
 
   return (

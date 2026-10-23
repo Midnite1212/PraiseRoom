@@ -102,4 +102,41 @@ describe('LyricsSheet', () => {
     expect(screen.getByText('A#')).toBeInTheDocument();
     expect(screen.getByText('D#/G')).toBeInTheDocument();
   });
+
+  it('simplifies after transposing and spelling, in letters', () => {
+    render(
+      <LyricsSheet
+        chordLyrics={LYRICS}
+        mode="chords"
+        notation="letters"
+        chordStyle="simple"
+        accidentals="flat"
+        originalKey={G}
+        playKey={A}
+      />
+    );
+
+    expect(screen.getByText('Gbm')).toBeInTheDocument();
+    expect(screen.getByText('E')).toBeInTheDocument();
+    expect(screen.queryByText('Gbm7')).not.toBeInTheDocument();
+    expect(screen.queryByText('E/Ab')).not.toBeInTheDocument();
+  });
+
+  it('simplifies in numbers, with no raised extension or bass', () => {
+    const { container } = render(
+      <LyricsSheet
+        chordLyrics={LYRICS}
+        mode="chords"
+        notation="numbers"
+        chordStyle="simple"
+        originalKey={G}
+        playKey={A}
+      />
+    );
+
+    expect(container.querySelector('sup')).toBeNull();
+    expect(screen.getByText('6m')).toBeInTheDocument();
+    expect(screen.getByText('5')).toBeInTheDocument();
+    expect(screen.queryByText('5/7', { exact: false })).not.toBeInTheDocument();
+  });
 });

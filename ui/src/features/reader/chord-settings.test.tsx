@@ -17,6 +17,10 @@ describe('ChordSettingsPanel', () => {
     expect(screen.getByRole('radio', { name: 'Flats' })).toBeChecked();
     expect(localStorage.getItem('chord-accidentals')).toBe('flat');
 
+    expect(screen.getByRole('radio', { name: 'Full' })).toBeChecked();
+    await user.click(screen.getByRole('radio', { name: 'Simple' }));
+    expect(localStorage.getItem('chord-style')).toBe('simple');
+
     await user.click(screen.getByRole('radio', { name: 'Numbers' }));
     expect(localStorage.getItem('chord-notation')).toBe('numbers');
   });

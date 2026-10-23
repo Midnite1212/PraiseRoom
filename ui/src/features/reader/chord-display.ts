@@ -20,5 +20,10 @@ export type Accidentals = (typeof ACCIDENTALS)[number];
 
 export const useAccidentals = createStoredChoice('chord-accidentals', ACCIDENTALS, 'auto').use;
 
+export const CHORD_STYLES = ['full', 'simple'] as const;
+export type ChordStyle = (typeof CHORD_STYLES)[number];
+
+export const useChordStyle = createStoredChoice('chord-style', CHORD_STYLES, 'full').use;
+
 export const chordsUseFlats = (accidentals: Accidentals, playKey: MusicKey | null): boolean =>
   accidentals === 'auto' ? (playKey?.prefersFlats ?? false) : accidentals === 'flat';
