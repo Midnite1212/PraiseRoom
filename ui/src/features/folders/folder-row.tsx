@@ -5,16 +5,19 @@ import { listRowClasses, RowText } from '@/components/page/list-row';
 import { AvatarStack } from '@/components/primitives/avatar';
 import type { Session } from '@/features/auth/session';
 import type { Folder } from '@/features/setlists/api';
+import { cn } from '@/lib/utils';
 
 import { membersOf, type Person } from './api';
 import { FolderSleeve } from './folder-sleeve';
 import { useFolderCover } from './use-folder-cover';
 
-type FolderSummaryProps = {
+type FolderRowProps = {
   session: Session;
   folder: Folder;
   people: readonly Person[] | undefined;
   now: number;
+  // Wide Folders page: the row selects the folder in the pane (a search param) instead of opening its page.
+  pane?: { selected: boolean; isOpen: boolean };
 };
 
 const avatarPeople = (people: readonly Person[] | undefined, folderId: string) =>
@@ -38,45 +41,40 @@ function FolderMeta({ count, nextDate }: { count: number; nextDate: string | nul
   );
 }
 
-// Wide screens: a folder as a record sleeve with its name, setlist count and members under it.
-export function FolderCard({ session, folder, people, now }: FolderSummaryProps) {
-  const { cells, nextDate } = useFolderCover(folder, now);
-  return (
-    <Link
-      to="/folders/$folderId"
-      params={{ folderId: folder._id }}
-      className="sleeve-host block w-full text-left"
-    >
-      <FolderSleeve cells={cells} size="card" />
-      <span className="mt-2.5 block">
-        <span className="block truncate font-semibold">{folder.groupName}</span>
-        <span className="text-ink-2 mt-1 flex items-center justify-between gap-2 text-[0.8125rem]">
-          <span className="truncate">
-            <FolderMeta count={folder.setlistIds.length} nextDate={nextDate} />
-          </span>
-          <AvatarStack people={avatarPeople(people, folder._id)} youId={session.id} />
-        </span>
-      </span>
-    </Link>
-  );
-}
-
-// Phones and side lists: a compact row with a small sleeve.
-export function FolderRow({ session, folder, people, now }: FolderSummaryProps) {
+// A folder as a row with a small sleeve. In the Folders pane an open pane drops the members to make room.
+export function FolderRow({ session, folder, people, now, pane }: FolderRowProps) {
   const { cells, nextDate } = useFolderCover(folder, now);
   const members = avatarPeople(people, folder._id);
-  return (
-    <Link
-      to="/folders/$folderId"
-      params={{ folderId: folder._id }}
-      className={listRowClasses('sleeve-host min-h-[72px] grid-cols-[56px_minmax(0,1fr)_auto]')}
-    >
+  const className = listRowClasses(
+    cn(
+      'sleeve-host min-h-[72px]',
+      pane?.isOpen ? 'grid-cols-[56px_minmax(0,1fr)]' : 'grid-cols-[56px_minmax(0,1fr)_auto]',
+      pane?.selected && 'bg-fill-on hover:bg-fill-on'
+    )
+  );
+  const content = (
+    <>
       <FolderSleeve cells={cells} size="row" />
       <RowText
         title={folder.groupName}
         meta={<FolderMeta count={folder.setlistIds.length} nextDate={nextDate} />}
       />
-      <AvatarStack people={members} youId={session.id} />
+      {pane?.isOpen ? null : <AvatarStack people={members} youId={session.id} />}
+    </>
+  );
+  return pane ? (
+    <Link
+      to="/folders"
+      search={{ folder: folder._id }}
+      data-folder-row={folder._id}
+      aria-current={pane.selected ? 'true' : undefined}
+      className={className}
+    >
+      {content}
+    </Link>
+  ) : (
+    <Link to="/folders/$folderId" params={{ folderId: folder._id }} className={className}>
+      {content}
     </Link>
   );
 }

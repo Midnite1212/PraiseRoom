@@ -16,6 +16,7 @@
   --ease-liquid: cubic-bezier(0.34, 1.32, 0.52, 1);
 
   --animate-view-in: view-in 360ms var(--ease-out);
+  --animate-pane-in: pane-in 320ms var(--ease-out);
   --animate-spin-slow: spin 3.2s linear infinite;
   --animate-sheet-in: sheet-in 480ms var(--ease-liquid);
   --animate-sheet-out: sheet-out 200ms var(--ease-out) forwards;
@@ -28,6 +29,12 @@
     from {
       opacity: 0;
       translate: 0 8px;
+    }
+  }
+  @keyframes pane-in {
+    from {
+      opacity: 0;
+      translate: 12px 0;
     }
   }
   @keyframes sheet-in {

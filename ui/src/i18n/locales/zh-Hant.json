@@ -339,6 +339,7 @@
     "noMatchesHint": "試試其他名稱。",
     "namePlaceholder": "你的團隊或小組",
     "actions": "資料夾操作",
+    "closePreview": "關閉資料夾（Esc）",
     "rename": "重新命名",
     "youMadeThis": "由你建立",
     "from": "來自 {{name}}",

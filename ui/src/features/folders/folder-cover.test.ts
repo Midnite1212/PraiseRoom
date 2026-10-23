@@ -50,6 +50,24 @@ describe('coverCells', () => {
     expect(floor).toEqual(['', 'w', 'a', 'u', 'g', '']);
   });
 
+  it.each([
+    [1, [2, 3]],
+    [2, [0, 1, 3, 4]],
+    [3, [0, 2, 4]],
+    [4, [1, 2, 3, 4]],
+    [6, [0, 1, 2, 3, 4, 5]],
+  ])('lays %i setlist(s) out in the columns the mock does', (count, lit) => {
+    const sets = Array.from({ length: count }, (_, index) =>
+      setlist(`s${index}`, 6, day(-30 + index))
+    );
+    const cells = coverCells(sets, null, NOW);
+    const litColumns = Array.from({ length: 6 }, (_, index) => index).filter(
+      (index) => column(cells, index)[0] === 'w'
+    );
+    expect(litColumns).toEqual(lit);
+    expect(cells.filter((cell) => cell !== '')).toHaveLength(lit.length * 6);
+  });
+
   it('keeps only the latest six setlists', () => {
     const many = Array.from({ length: 8 }, (_, index) => setlist(`s${index}`, 1, day(-20 + index)));
     const floor = coverCells(many, null, NOW).slice(30);
