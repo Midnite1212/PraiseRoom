@@ -1,0 +1,1712 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Layout Brainstorm</title>
+    <meta
+      name="description"
+      content="Wireframe brainstorm of layouts and UX for the Praise Room public setlist view."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --h: 250;
+        --paper: oklch(0.985 0.004 var(--h));
+        --ground: oklch(0.955 0.008 var(--h));
+        --ink: oklch(0.22 0.03 var(--h));
+        --ink-2: oklch(0.42 0.03 var(--h));
+        --ink-3: oklch(0.55 0.03 var(--h));
+        --line: oklch(0.82 0.015 var(--h));
+        --block: oklch(0.86 0.012 var(--h));
+        --block-2: oklch(0.91 0.01 var(--h));
+        --accent: oklch(0.52 0.16 var(--h));
+        --accent-soft: oklch(0.52 0.16 var(--h) / 0.12);
+        --chord: oklch(0.62 0.14 var(--h));
+        --good: oklch(0.55 0.13 155);
+        --warn: oklch(0.6 0.13 60);
+        --font: 'Geist', ui-sans-serif, system-ui, -apple-system, 'PingFang TC', sans-serif;
+        --mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+        color-scheme: light;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) {
+          --paper: oklch(0.2 0.015 var(--h));
+          --ground: oklch(0.16 0.013 var(--h));
+          --ink: oklch(0.95 0.01 var(--h));
+          --ink-2: oklch(0.78 0.02 var(--h));
+          --ink-3: oklch(0.64 0.025 var(--h));
+          --line: oklch(0.36 0.02 var(--h));
+          --block: oklch(0.38 0.02 var(--h));
+          --block-2: oklch(0.29 0.018 var(--h));
+          --accent: oklch(0.78 0.12 var(--h));
+          --accent-soft: oklch(0.78 0.12 var(--h) / 0.14);
+          --chord: oklch(0.72 0.12 var(--h));
+          --good: oklch(0.75 0.12 155);
+          --warn: oklch(0.78 0.12 70);
+          color-scheme: dark;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--ground);
+        color: var(--ink);
+        font: 400 1rem/1.55 var(--font);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      ::selection {
+        background: var(--accent-soft);
+      }
+
+      main {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 48px 16px 96px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 1.4rem + 2.6vw, 3rem);
+        font-weight: 700;
+        line-height: 1.05;
+        letter-spacing: -0.035em;
+        text-wrap: balance;
+      }
+
+      h2 {
+        margin: 72px 0 8px;
+        font-size: 1.75rem;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+        line-height: 1.15;
+      }
+
+      h3 {
+        margin: 0;
+        font-size: 1.375rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+      }
+
+      h4 {
+        margin: 0 0 6px;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: var(--ink-2);
+      }
+
+      p {
+        margin: 0;
+      }
+
+      .lede {
+        max-width: 68ch;
+        margin-top: 14px;
+        color: var(--ink-2);
+        font-size: 1.0625rem;
+      }
+
+      .section-lede {
+        max-width: 68ch;
+        color: var(--ink-2);
+      }
+
+      code,
+      .mono {
+        font-family: var(--mono);
+        font-size: 0.875em;
+      }
+
+      /* ---------- Scenes ---------- */
+      .scenes {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 12px;
+        margin-top: 28px;
+      }
+
+      .scene {
+        padding: 16px 18px;
+        border-radius: 16px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+      }
+
+      .scene b {
+        display: block;
+        margin-bottom: 4px;
+        font-weight: 600;
+      }
+
+      .scene p {
+        color: var(--ink-2);
+        font-size: 0.9375rem;
+      }
+
+      /* ---------- Control map ---------- */
+      .tiers {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 12px;
+        margin-top: 20px;
+      }
+
+      .tier {
+        padding: 18px;
+        border-radius: 16px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+      }
+
+      .tier header {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      .tier header b {
+        font-weight: 600;
+      }
+
+      .tier header span {
+        color: var(--ink-3);
+        font-size: 0.8125rem;
+      }
+
+      .tier ul {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .tier li {
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: var(--block-2);
+        font-size: 0.875rem;
+      }
+
+      .tier.t1 li {
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      .tier p {
+        margin-top: 12px;
+        color: var(--ink-2);
+        font-size: 0.875rem;
+      }
+
+      /* ---------- Concepts ---------- */
+      .concept {
+        margin-top: 28px;
+        padding: 28px;
+        border-radius: 24px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+      }
+
+      .concept-head {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .letter {
+        flex: none;
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: var(--accent);
+        color: var(--paper);
+        font: 700 1.25rem var(--mono);
+      }
+
+      .thesis {
+        margin-top: 4px;
+        color: var(--ink-2);
+        max-width: 70ch;
+      }
+
+      .rec-badge {
+        display: inline-block;
+        margin-left: 8px;
+        padding: 2px 10px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-size: 0.75rem;
+        font-weight: 600;
+        vertical-align: 0.25em;
+        letter-spacing: 0;
+      }
+
+      .boards {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 28px;
+        margin: 28px 0 24px;
+      }
+
+      .board figcaption {
+        margin-top: 8px;
+        color: var(--ink-3);
+        font-size: 0.8125rem;
+        text-align: center;
+      }
+
+      .notes {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+        gap: 20px 28px;
+        padding-top: 20px;
+        border-top: 1px solid var(--line);
+      }
+
+      .notes p,
+      .notes li {
+        color: var(--ink);
+        font-size: 0.9375rem;
+      }
+
+      .notes ul {
+        margin: 0;
+        padding-left: 18px;
+      }
+
+      .notes li + li {
+        margin-top: 4px;
+      }
+
+      .nh {
+        margin: 0 0 6px;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        letter-spacing: 0;
+        color: var(--ink-2);
+      }
+
+      .notes .pro h4,
+      .notes .pro .nh {
+        color: var(--good);
+      }
+
+      .notes .con h4,
+      .notes .con .nh {
+        color: var(--warn);
+      }
+
+      /* ---------- Wireframe primitives ---------- */
+      .wf {
+        position: relative;
+        overflow: hidden;
+        background: var(--ground);
+        border: 2px solid var(--ink-3);
+        font-family: var(--font);
+      }
+
+      .phone {
+        width: 196px;
+        height: 412px;
+        border-radius: 26px;
+        padding: 10px 10px 0;
+      }
+
+      .wide {
+        width: 452px;
+        height: 282px;
+        border-radius: 14px;
+        padding: 10px 12px 0;
+      }
+
+      .tv {
+        width: 452px;
+        height: 254px;
+        border-radius: 6px;
+        border-width: 6px;
+        border-color: oklch(0.3 0.012 var(--h));
+        padding: 0;
+      }
+
+      .stand {
+        width: 360px;
+        height: 262px;
+        border-radius: 18px;
+        padding: 10px 12px 0;
+      }
+
+      .bar {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        height: 22px;
+        padding: 0 8px;
+        border-radius: 999px;
+        border: 1.5px solid var(--line);
+        background: var(--paper);
+        font-size: 7.5px;
+        color: var(--ink-2);
+        white-space: nowrap;
+      }
+
+      .bar .grow {
+        flex: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .bar .mk {
+        width: 7px;
+        height: 7px;
+        background: var(--accent);
+      }
+
+      .bar .pill {
+        padding: 1px 5px;
+        border-radius: 99px;
+        background: var(--ink);
+        color: var(--paper);
+        font-weight: 600;
+      }
+
+      .dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 3px;
+        border: 1.5px solid var(--ink-3);
+      }
+
+      .title-bar {
+        height: 13px;
+        width: 72%;
+        margin: 12px 0 5px;
+        border-radius: 3px;
+        background: var(--ink);
+      }
+
+      .sub-bar {
+        height: 5px;
+        width: 40%;
+        border-radius: 3px;
+        background: var(--block);
+      }
+
+      .chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+        margin: 9px 0 6px;
+      }
+
+      .chip {
+        height: 15px;
+        padding: 0 6px;
+        border-radius: 99px;
+        border: 1.5px solid var(--line);
+        background: var(--paper);
+        font-size: 7px;
+        line-height: 12px;
+        color: var(--ink-2);
+        white-space: nowrap;
+      }
+
+      .chip.on {
+        border-color: var(--accent);
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      .lyr {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+      }
+
+      .lyr .sec {
+        width: 22px;
+        height: 4px;
+        margin-top: 5px;
+        border-radius: 2px;
+        background: var(--accent);
+        opacity: 0.7;
+      }
+
+      .lyr .ch {
+        display: flex;
+        gap: 9%;
+        height: 4px;
+        padding-left: 2px;
+      }
+
+      .lyr .ch i {
+        width: 7px;
+        height: 4px;
+        border-radius: 1px;
+        background: var(--chord);
+      }
+
+      .lyr .ly {
+        height: 5px;
+        border-radius: 2px;
+        background: var(--block);
+      }
+
+      .lyr.big .ly {
+        height: 9px;
+      }
+
+      .lyr.big .ch i {
+        height: 6px;
+        width: 11px;
+      }
+
+      .lyr.big .ch {
+        height: 6px;
+      }
+
+      .dock {
+        position: absolute;
+        left: 50%;
+        bottom: 10px;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        height: 30px;
+        padding: 0 12px;
+        border-radius: 999px;
+        border: 1.5px solid var(--line);
+        background: var(--paper);
+        font-size: 10px;
+        color: var(--ink-2);
+        box-shadow: 0 6px 14px -8px oklch(0.2 0.03 var(--h) / 0.35);
+        white-space: nowrap;
+      }
+
+      .strip {
+        display: flex;
+        gap: 2px;
+      }
+
+      .strip i {
+        width: 6px;
+        height: 6px;
+        background: var(--block);
+      }
+
+      .strip i.p {
+        background: color-mix(in oklch, var(--accent) 45%, var(--block));
+      }
+
+      .strip i.n {
+        background: var(--accent);
+        outline: 1.5px solid var(--accent);
+        outline-offset: 1.5px;
+      }
+
+      .tag {
+        position: absolute;
+        z-index: 3;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 2px 7px;
+        border-radius: 99px;
+        background: var(--accent);
+        color: var(--paper);
+        font-size: 8px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .upnext {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 8px;
+        padding-top: 7px;
+        border-top: 1.5px dashed var(--line);
+        font-size: 7.5px;
+        color: var(--ink-2);
+      }
+
+      .upnext i {
+        width: 7px;
+        height: 7px;
+        background: color-mix(in oklch, var(--accent) 45%, var(--block));
+      }
+
+      .cols {
+        display: flex;
+        gap: 10px;
+        height: 100%;
+      }
+
+      .pane {
+        position: relative;
+        flex: 1;
+        min-width: 0;
+        padding: 8px;
+        border-radius: 10px;
+        border: 1.5px solid var(--line);
+        background: var(--paper);
+        overflow: hidden;
+      }
+
+      .pane.dim {
+        opacity: 0.55;
+        border-style: dashed;
+      }
+
+      .pane-head {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 6px;
+        font-size: 8px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .pane-head .k {
+        margin-left: auto;
+        padding: 0 4px;
+        border-radius: 3px;
+        background: var(--accent-soft);
+        color: var(--accent);
+        font-family: var(--mono);
+      }
+
+      .rail {
+        width: 92px;
+        flex: none;
+        padding: 8px;
+        border-radius: 10px;
+        border: 1.5px solid var(--line);
+        background: var(--paper);
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .rail .r {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        height: 9px;
+      }
+
+      .rail .r i {
+        width: 5px;
+        height: 5px;
+        background: var(--block);
+      }
+
+      .rail .r b {
+        flex: 1;
+        height: 4px;
+        border-radius: 2px;
+        background: var(--block);
+      }
+
+      .rail .r.on {
+        background: var(--accent-soft);
+        border-radius: 4px;
+      }
+
+      .rail .r.on i,
+      .rail .r.on b {
+        background: var(--accent);
+      }
+
+      .zone {
+        position: absolute;
+        top: 34px;
+        bottom: 44px;
+        width: 30%;
+        display: grid;
+        place-items: center;
+        font-size: 8px;
+        font-weight: 600;
+        color: var(--accent);
+        background: var(--accent-soft);
+        border: 1.5px dashed color-mix(in oklch, var(--accent) 50%, transparent);
+      }
+
+      .zone.l {
+        left: 0;
+        border-left: 0;
+      }
+
+      .zone.r {
+        right: 0;
+        border-right: 0;
+      }
+
+      .gutter {
+        width: 2px;
+        background: repeating-linear-gradient(var(--line) 0 4px, transparent 4px 7px);
+      }
+
+      .peek {
+        position: absolute;
+        top: 40px;
+        right: -2px;
+        bottom: 52px;
+        width: 22px;
+        border-radius: 8px 0 0 8px;
+        border: 1.5px dashed var(--line);
+        border-right: 0;
+        background: var(--paper);
+        display: grid;
+        place-items: center;
+      }
+
+      .peek span {
+        writing-mode: vertical-rl;
+        font-size: 7.5px;
+        color: var(--ink-2);
+        white-space: nowrap;
+      }
+
+      .sticky {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        height: 18px;
+        margin: 8px 0 6px;
+        padding: 0 7px;
+        border-radius: 6px;
+        background: var(--paper);
+        border: 1.5px solid var(--line);
+        font-size: 7.5px;
+        font-weight: 600;
+      }
+
+      .sticky .k {
+        margin-left: auto;
+        font-family: var(--mono);
+        color: var(--accent);
+      }
+
+      .fab {
+        position: absolute;
+        right: 10px;
+        bottom: 50px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        height: 24px;
+        padding: 0 9px;
+        border-radius: 999px;
+        border: 1.5px solid var(--accent);
+        background: var(--paper);
+        color: var(--accent);
+        font-size: 8px;
+        font-weight: 600;
+      }
+
+      .present {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        background: oklch(0.16 0.013 var(--h));
+        color: oklch(0.96 0.01 var(--h));
+        text-align: center;
+      }
+
+      .present .sec-l {
+        font-size: 8px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: oklch(0.78 0.12 var(--h));
+      }
+
+      .present .big {
+        font-size: 17px;
+        font-weight: 600;
+        line-height: 1.32;
+        letter-spacing: -0.01em;
+      }
+
+      .present .next-line {
+        position: absolute;
+        bottom: 14px;
+        font-size: 9px;
+        color: oklch(0.68 0.02 var(--h));
+      }
+
+      .present .corner {
+        position: absolute;
+        top: 10px;
+        left: 12px;
+        font-size: 8px;
+        color: oklch(0.68 0.02 var(--h));
+      }
+
+      .present .corner.r {
+        left: auto;
+        right: 12px;
+        font-family: var(--mono);
+      }
+
+      .arrow {
+        position: absolute;
+        z-index: 3;
+        font-size: 9px;
+        font-weight: 600;
+        color: var(--accent);
+        white-space: nowrap;
+      }
+
+      /* ---------- Matrix ---------- */
+      .matrix-wrap {
+        overflow-x: auto;
+        margin-top: 20px;
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: var(--paper);
+      }
+
+      table {
+        width: 100%;
+        min-width: 760px;
+        border-collapse: collapse;
+        font-size: 0.9375rem;
+      }
+
+      th,
+      td {
+        padding: 12px 14px;
+        text-align: left;
+        border-bottom: 1px solid var(--line);
+        vertical-align: middle;
+      }
+
+      thead th {
+        color: var(--ink-2);
+        font-size: 0.8125rem;
+        font-weight: 600;
+      }
+
+      tbody tr:last-child td,
+      tbody tr:last-child th {
+        border-bottom: 0;
+      }
+
+      tbody th {
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .score {
+        display: inline-flex;
+        gap: 3px;
+        vertical-align: middle;
+      }
+
+      .score i {
+        width: 9px;
+        height: 9px;
+        background: var(--block);
+      }
+
+      .score i.on {
+        background: var(--accent);
+      }
+
+      .muted {
+        color: var(--ink-3);
+      }
+
+      /* ---------- Ideas ---------- */
+      .ideas {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 12px;
+        margin-top: 20px;
+      }
+
+      .idea {
+        padding: 18px;
+        border-radius: 16px;
+        background: var(--paper);
+        border: 1px solid var(--line);
+      }
+
+      .idea b {
+        display: block;
+        font-weight: 600;
+      }
+
+      .idea p {
+        margin-top: 6px;
+        color: var(--ink-2);
+        font-size: 0.9375rem;
+      }
+
+      .idea .fits {
+        margin-top: 10px;
+        font-size: 0.8125rem;
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      /* ---------- Recommendation ---------- */
+      .rec {
+        margin-top: 20px;
+        padding: 28px;
+        border-radius: 24px;
+        background: var(--paper);
+        border: 2px solid var(--accent);
+      }
+
+      .rec ol {
+        margin: 14px 0 0;
+        padding-left: 20px;
+      }
+
+      .rec li {
+        max-width: 72ch;
+      }
+
+      .rec li + li {
+        margin-top: 10px;
+      }
+
+      .qs {
+        margin-top: 24px;
+        padding-top: 20px;
+        border-top: 1px solid var(--line);
+      }
+
+      .qs-title {
+        font-size: 1rem;
+        letter-spacing: -0.01em;
+      }
+
+      .qs ol {
+        margin: 8px 0 0;
+        padding-left: 20px;
+        color: var(--ink);
+      }
+
+      .qs li + li {
+        margin-top: 8px;
+      }
+
+      @media (max-width: 560px) {
+        .concept,
+        .rec {
+          padding: 20px 16px;
+        }
+        .concept-head {
+          flex-direction: column;
+          gap: 12px;
+        }
+        .wide,
+        .tv {
+          width: 100%;
+          max-width: 452px;
+        }
+        .wide {
+          height: auto;
+          aspect-ratio: 452 / 282;
+        }
+        .tv {
+          height: auto;
+          aspect-ratio: 16 / 9;
+        }
+        .stand {
+          width: 100%;
+          height: auto;
+          aspect-ratio: 360 / 262;
+        }
+        .boards figure {
+          width: 100%;
+        }
+      }
+
+      .picker-head {
+        padding: 2px 4px;
+        margin: -2px -4px 6px;
+        border-radius: 5px;
+        background: var(--accent-soft);
+      }
+
+      .menu {
+        position: absolute;
+        z-index: 4;
+        top: 26px;
+        left: 8px;
+        right: 8px;
+        padding: 4px;
+        border-radius: 8px;
+        border: 1.5px solid var(--line);
+        background: var(--paper);
+        box-shadow: 0 10px 24px -10px oklch(0.15 0.03 var(--h) / 0.5);
+        font-size: 8px;
+      }
+
+      .menu .mi {
+        padding: 4px 6px;
+        border-radius: 5px;
+        color: var(--ink-2);
+        white-space: nowrap;
+      }
+
+      .menu .mi.on {
+        color: var(--accent);
+        font-weight: 600;
+        border-bottom: 1px solid var(--line);
+        border-radius: 0;
+        margin-bottom: 2px;
+      }
+
+      .menu .mi.sel {
+        background: var(--accent-soft);
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      .sheet-wf {
+        position: absolute;
+        left: 6px;
+        right: 6px;
+        bottom: 6px;
+        top: 44px;
+        padding: 10px 8px;
+        border-radius: 18px;
+        border: 1.5px solid var(--line);
+        background: var(--paper);
+        font-size: 8.5px;
+      }
+
+      .sheet-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin: 0 4px 8px;
+        font-size: 10px;
+      }
+
+      .row-wf {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        height: 24px;
+        padding: 0 6px;
+        border-radius: 7px;
+        color: var(--ink);
+        white-space: nowrap;
+      }
+
+      .row-wf .hd {
+        color: var(--ink-3);
+      }
+
+      .row-wf .k2 {
+        margin-left: auto;
+        font-family: var(--mono);
+        color: var(--ink-2);
+      }
+
+      .row-wf.on {
+        background: var(--accent-soft);
+        font-weight: 600;
+      }
+
+      .row-wf.lift {
+        border: 1.5px solid var(--accent);
+        background: var(--paper);
+        box-shadow: 0 8px 16px -8px oklch(0.15 0.03 var(--h) / 0.6);
+        transform: translateX(6px) rotate(-1.5deg);
+      }
+
+      .reset {
+        margin: 10px 6px 0;
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      .nx {
+        padding: 2px 7px;
+        border-radius: 99px;
+        background: var(--accent);
+        color: var(--paper);
+        font-size: 8px;
+        font-weight: 600;
+      }
+
+      .pull {
+        margin-top: 14px;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1.5px dashed var(--accent);
+        color: var(--ink-2);
+        font-size: 8px;
+        line-height: 1.4;
+        text-align: center;
+      }
+
+      .pull span {
+        display: block;
+        color: var(--accent);
+        font-size: 12px;
+      }
+
+      .pull b {
+        color: var(--ink);
+      }
+
+      .lyr.fade {
+        opacity: 0.5;
+      }
+
+      .halfsheet {
+        position: absolute;
+        left: 6px;
+        right: 6px;
+        bottom: 46px;
+        height: 150px;
+        padding: 6px 8px;
+        border-radius: 14px 14px 10px 10px;
+        border: 1.5px solid var(--accent);
+        background: var(--paper);
+      }
+
+      .grab {
+        width: 26px;
+        height: 3px;
+        margin: 0 auto 6px;
+        border-radius: 2px;
+        background: var(--line);
+      }
+
+      .wf.phone + figcaption {
+        max-width: 196px;
+        margin-inline: auto;
+      }
+
+      figcaption b {
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      figure {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Public setlist view: layout brainstorm</h1>
+      <p class="lede">
+        Five ways to lay out the page that a shared setlist link opens. These are structure and flow only; any
+        of them can wear the Liquid Glass styling later. Every concept is checked against the three places the
+        page gets used, and against the two things you said happen mid-song: scrolling and text layout, and
+        moving to the next or previous song.
+      </p>
+
+      <div class="scenes">
+        <div class="scene">
+          <b>In hand</b>
+          <p>One person or a congregation member following along. Portrait phone, thumb reach, one-handed.</p>
+        </div>
+        <div class="scene">
+          <b>On a stand</b>
+          <p>A musician with both hands on an instrument. Phone or tablet at arm's length, often landscape. Touches must be few and large.</p>
+        </div>
+        <div class="scene">
+          <b>Shared to a TV</b>
+          <p>A small group reading together from a laptop screen-shared to a TV. Big lyrics, little chrome, one person driving.</p>
+        </div>
+      </div>
+
+      <h2>Where controls should live</h2>
+      <p class="section-lede">
+        Sorted by how often they're touched once the music starts. This holds across every concept below; the
+        concepts differ in where the reading surface goes, not in this ranking.
+      </p>
+      <div class="tiers">
+        <div class="tier t1">
+          <header><b>Always in reach</b><span>mid-song</span></header>
+          <ul>
+            <li>Previous / next song</li>
+            <li>Position in set (2/5)</li>
+            <li>Text size</li>
+            <li>Scroll / page</li>
+          </ul>
+          <p>One touch from the thumb or a pedal, never hidden behind a menu.</p>
+        </div>
+        <div class="tier">
+          <header><b>One tap away</b><span>between songs</span></header>
+          <ul>
+            <li>Key</li>
+            <li>Lyrics / chords</li>
+            <li>1 4 5 / A B C</li>
+            <li>Split or columns</li>
+            <li>Auto-scroll speed</li>
+            <li>Song list</li>
+          </ul>
+          <p>Visible on the song header or in one sheet; set once per song, rarely touched mid-song.</p>
+        </div>
+        <div class="tier">
+          <header><b>Tucked away</b><span>once per visit</span></header>
+          <ul>
+            <li>Theme</li>
+            <li>Language</li>
+            <li>Copy link</li>
+            <li>Sign in</li>
+            <li>Present to TV</li>
+            <li>Song details</li>
+          </ul>
+          <p>In the top bar's menu. They shouldn't compete with the song for space.</p>
+        </div>
+      </div>
+
+      <h2>Five concepts</h2>
+      <p class="section-lede">
+        Each one is shown on the device where it matters most, with the split (left and right) behaviour you
+        asked for to make song transitions easier.
+      </p>
+
+      <!-- A -->
+      <section class="concept">
+        <div class="concept-head">
+          <div class="letter">A</div>
+          <div>
+            <h3>Scroll &amp; Dock</h3>
+            <p class="thesis">
+              Today's mock, tidied. One song scrolls; a dock at the bottom carries previous, the set strip and
+              next. On wide screens a narrow "on deck" column previews the next song's opening on the right.
+            </p>
+          </div>
+        </div>
+        <div class="boards">
+          <figure class="board">
+            <div class="wf phone">
+              <div class="bar"><span class="mk"></span><span class="grow">Sunday Morning Worship</span><span class="dot"></span><span class="pill">Sign in</span></div>
+              <div class="title-bar"></div>
+              <div class="sub-bar"></div>
+              <div class="chips"><span class="chip on">Key A +2</span><span class="chip">Lyrics · <b>Chords</b></span><span class="chip">Aa</span></div>
+              <div class="lyr" data-lines="7"></div>
+              <div class="upnext"><i></i>Up next · Be Thou My Vision · Eb ›</div>
+              <div class="dock">‹ <span class="strip"><i class="p"></i><i class="n"></i><i></i><i></i><i></i></span> ›</div>
+            </div>
+            <figcaption>Phone, in hand</figcaption>
+          </figure>
+          <figure class="board">
+            <div class="wf wide">
+              <div class="bar"><span class="mk"></span><span class="grow">Sunday Morning Worship · Sun 25 Oct</span><span class="dot"></span><span class="dot"></span><span class="pill">Sign in</span></div>
+              <div class="cols" style="height: 196px; margin-top: 10px">
+                <div class="rail"><div class="r"><i></i><b></b></div><div class="r on"><i></i><b></b></div><div class="r"><i></i><b></b></div><div class="r"><i></i><b></b></div><div class="r"><i></i><b></b></div></div>
+                <div class="pane" style="flex: 2.4"><div class="pane-head">Amazing Grace<span class="k">A</span></div><div class="lyr" data-lines="6"></div></div>
+                <div class="pane dim" style="flex: 0.9"><div class="pane-head">On deck<span class="k">Eb</span></div><div class="lyr" data-lines="4"></div></div>
+              </div>
+              <span class="tag" style="right: 18px; top: 200px">tap to advance</span>
+              <div class="dock">‹ <span class="strip"><i class="p"></i><i class="n"></i><i></i><i></i><i></i></span> ›</div>
+            </div>
+            <figcaption>Laptop or landscape tablet: rail, song, on-deck preview</figcaption>
+          </figure>
+        </div>
+        <div class="notes">
+          <div>
+            <h4>Split</h4>
+            <p>A preview, not a true split: the next song's first verse sits in a narrow column. Tapping it advances.</p>
+          </div>
+          <div>
+            <h4>Transitions</h4>
+            <p>"Up next" at the end of every song, plus the dock. Scrolling past the end could pull you into the next song.</p>
+          </div>
+          <div class="pro">
+            <h4>Strong at</h4>
+            <ul><li>Phone in hand; the most familiar pattern</li><li>Already built, so the least work</li></ul>
+          </div>
+          <div class="con">
+            <h4>Watch out</h4>
+            <ul><li>Scrolling with your hands on an instrument</li><li>Too much chrome for a TV</li></ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- B -->
+      <section class="concept">
+        <div class="concept-head">
+          <div class="letter">B</div>
+          <div>
+            <h3>Stage Split <span class="rec-badge">Recommended for wide screens</span></h3>
+            <p class="thesis">
+              Two songs side by side: the current song on the left, the next one waiting on the right. Advancing
+              slides the right pane over to the left and brings the following song in on the right. On a portrait
+              phone it collapses to one song, with the next one peeking at the edge.
+            </p>
+          </div>
+        </div>
+        <div class="boards">
+          <figure class="board">
+            <div class="wf phone">
+              <div class="bar"><span class="mk"></span><span class="grow">Amazing Grace · A</span><span class="dot"></span></div>
+              <div class="title-bar" style="width: 60%"></div>
+              <div class="chips"><span class="chip on">Key A +2</span><span class="chip">Aa</span><span class="chip">⋯</span></div>
+              <div class="lyr" data-lines="8"></div>
+              <div class="peek"><span>Next · Be Thou My Vision</span></div>
+              <span class="tag" style="right: 26px; top: 150px">swipe ‹</span>
+              <div class="dock">‹ <span class="strip"><i class="p"></i><i class="n"></i><i></i><i></i><i></i></span> ›</div>
+            </div>
+            <figcaption>Portrait phone: one song, the next peeks in</figcaption>
+          </figure>
+          <figure class="board">
+            <div class="wf wide">
+              <div class="bar"><span class="mk"></span><span class="grow">Sunday Morning Worship</span><span class="dot"></span><span class="dot"></span></div>
+              <div class="cols" style="height: 200px; margin-top: 10px">
+                <div class="pane"><div class="pane-head">2 · Amazing Grace<span class="k">A</span></div><div class="lyr" data-lines="7"></div></div>
+                <div class="pane dim"><div class="pane-head">3 · Be Thou My Vision<span class="k">Eb</span></div><div class="lyr" data-lines="7"></div></div>
+              </div>
+              <span class="arrow" style="left: 50%; top: 118px; transform: translateX(-50%)">‹ slides over</span>
+              <div class="dock">‹ <span class="strip"><i class="p"></i><i class="n"></i><i class="n" style="outline: 0; opacity: 0.45"></i><i></i><i></i></span> Aa ›</div>
+            </div>
+            <figcaption>Landscape tablet or laptop: now | next</figcaption>
+          </figure>
+        </div>
+        <div class="notes">
+          <div>
+            <h4>Split</h4>
+            <p>Literally the split you described. Each pane scrolls on its own. The right pane is quieter (dimmer, no key controls) until it becomes the current song.</p>
+          </div>
+          <div>
+            <h4>Transitions</h4>
+            <p>You can read the next song's first line while finishing this one, and one touch (or a pedal press) moves everything along.</p>
+          </div>
+          <div class="pro">
+            <h4>Strong at</h4>
+            <ul><li>Stands and laptops; the smoothest transitions</li><li>Two songs in view helps a medley</li></ul>
+          </div>
+          <div class="con">
+            <h4>Watch out</h4>
+            <ul><li>Half width means more line wrapping at large text sizes</li><li>A portrait phone can't split, so it needs the peek</li></ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- C -->
+      <section class="concept">
+        <div class="concept-head">
+          <div class="letter">C</div>
+          <div>
+            <h3>Page Spreads</h3>
+            <p class="thesis">
+              No scrolling: lyrics flow into screen-sized pages you turn like a music book, by tapping the left or
+              right edge, swiping, or pressing a pedal. On wide screens you see two pages at once, so at the end
+              of a song the left page finishes it and the right page starts the next.
+            </p>
+          </div>
+        </div>
+        <div class="boards">
+          <figure class="board">
+            <div class="wf phone">
+              <div class="bar"><span class="mk"></span><span class="grow">Amazing Grace · A</span><span class="dot"></span></div>
+              <div class="title-bar" style="width: 60%"></div>
+              <div class="lyr" data-lines="9"></div>
+              <div class="zone l">‹ back</div>
+              <div class="zone r">turn ›</div>
+              <div class="dock">page 2 / 3 <span class="strip"><i class="p"></i><i class="n"></i><i></i></span></div>
+            </div>
+            <figcaption>Phone: tap the edges to turn</figcaption>
+          </figure>
+          <figure class="board">
+            <div class="wf stand">
+              <div class="bar"><span class="mk"></span><span class="grow">Sunday Morning Worship</span><span class="dot"></span></div>
+              <div class="cols" style="height: 178px; margin-top: 10px; gap: 8px">
+                <div class="pane"><div class="pane-head">Amazing Grace · p3<span class="k">A</span></div><div class="lyr" data-lines="5"></div><div class="upnext" style="margin-top: 6px">end of song</div></div>
+                <div class="gutter"></div>
+                <div class="pane"><div class="pane-head">Be Thou My Vision · p1<span class="k">Eb</span></div><div class="lyr" data-lines="6"></div></div>
+              </div>
+              <span class="tag" style="left: 50%; bottom: 52px; transform: translateX(-50%)">pedal / tap → next spread</span>
+              <div class="dock" style="height: 26px">‹ 2·3 / 2·1 ›</div>
+            </div>
+            <figcaption>Tablet on a stand: a two-page spread across songs</figcaption>
+          </figure>
+        </div>
+        <div class="notes">
+          <div>
+            <h4>Split</h4>
+            <p>It happens naturally: the split shows whatever two pages are open, and at a song boundary that's the end of one song and the start of the next.</p>
+          </div>
+          <div>
+            <h4>Transitions</h4>
+            <p>Turning a page is the same action within a song and between songs, so musicians learn one move.</p>
+          </div>
+          <div class="pro">
+            <h4>Strong at</h4>
+            <ul><li>Stands with a Bluetooth pedal; no scrolling at all</li><li>TV: whole pages, no half-scrolled lines</li></ul>
+          </div>
+          <div class="con">
+            <h4>Watch out</h4>
+            <ul><li>Changing text size reflows the pages</li><li>Less natural for a phone in hand, where scrolling is expected</li><li>The most build effort</li></ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- D -->
+      <section class="concept">
+        <div class="concept-head">
+          <div class="letter">D</div>
+          <div>
+            <h3>One Long Set</h3>
+            <p class="thesis">
+              The whole setlist reads as one continuous document. Each song is a section with a sticky header
+              (title and key), so moving to the next song is just reading on. Auto-scroll fits naturally. On wide
+              screens the set flows across columns, so one song's end sits beside the next song's start.
+            </p>
+          </div>
+        </div>
+        <div class="boards">
+          <figure class="board">
+            <div class="wf phone">
+              <div class="bar"><span class="mk"></span><span class="grow">Sunday Morning Worship</span><span class="dot"></span></div>
+              <div class="sticky">2 · Amazing Grace<span class="k">A</span></div>
+              <div class="lyr" data-lines="4"></div>
+              <div class="sticky" style="border-color: var(--accent)">3 · Be Thou My Vision<span class="k">Eb</span></div>
+              <div class="lyr" data-lines="4"></div>
+              <div class="fab">▶ auto-scroll · 1.2×</div>
+              <div class="dock"><span class="strip"><i class="p"></i><i class="p"></i><i class="n"></i><i></i><i></i></span> jump</div>
+            </div>
+            <figcaption>Phone: songs follow one another</figcaption>
+          </figure>
+          <figure class="board">
+            <div class="wf wide">
+              <div class="bar"><span class="mk"></span><span class="grow">Sunday Morning Worship · auto-scroll ▶</span><span class="dot"></span></div>
+              <div class="cols" style="height: 196px; margin-top: 10px; gap: 14px">
+                <div style="flex: 1"><div class="sticky">2 · Amazing Grace<span class="k">A</span></div><div class="lyr" data-lines="8"></div></div>
+                <div style="flex: 1"><div class="lyr" data-lines="3"></div><div class="sticky" style="border-color: var(--accent)">3 · Be Thou My Vision<span class="k">Eb</span></div><div class="lyr" data-lines="4"></div></div>
+              </div>
+              <div class="dock"><span class="strip"><i class="p"></i><i class="n"></i><i></i><i></i><i></i></span></div>
+            </div>
+            <figcaption>Wide: the set flows across columns</figcaption>
+          </figure>
+        </div>
+        <div class="notes">
+          <div>
+            <h4>Split</h4>
+            <p>Comes from the columns: the boundary between songs moves through the split as you read, not on a fixed song pairing.</p>
+          </div>
+          <div>
+            <h4>Transitions</h4>
+            <p>None needed; the next song is just the next section. The strip tracks where you are as you scroll.</p>
+          </div>
+          <div class="pro">
+            <h4>Strong at</h4>
+            <ul><li>Scrolling and auto-scroll, your top mid-song action</li><li>Simple mental model: the set is one page</li></ul>
+          </div>
+          <div class="con">
+            <h4>Watch out</h4>
+            <ul><li>Each song has its own key and layout settings inside one scroll</li><li>Jumping back to a song means scrolling or using the strip</li></ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- E -->
+      <section class="concept">
+        <div class="concept-head">
+          <div class="letter">E</div>
+          <div>
+            <h3>Present (TV mode) <span class="rec-badge">Recommended as a mode</span></h3>
+            <p class="thesis">
+              A full-screen mode, not a whole page layout, that any concept can switch into for screen-sharing.
+              Lyrics only, very large, one section (verse or chorus) at a time, with the next line previewed at the
+              bottom. Arrow keys, space or a clicker move through sections and then songs.
+            </p>
+          </div>
+        </div>
+        <div class="boards">
+          <figure class="board">
+            <div class="wf tv">
+              <div class="present">
+                <span class="corner">Amazing Grace</span>
+                <span class="corner r">2/5 · verse 2</span>
+                <span class="sec-l">Verse 2</span>
+                <span class="big">'Twas grace that taught my heart to fear,<br />and grace my fears relieved;</span>
+                <span class="next-line">next: How precious did that grace appear…</span>
+              </div>
+            </div>
+            <figcaption>Laptop screen-shared to the TV</figcaption>
+          </figure>
+          <figure class="board">
+            <div class="wf wide" style="height: 150px">
+              <div class="bar"><span class="mk"></span><span class="grow">Present · Amazing Grace</span><span class="chip">Chords off</span><span class="chip">Size L</span><span class="pill">Exit</span></div>
+              <div class="cols" style="height: 92px; margin-top: 10px; gap: 6px">
+                <div class="pane" style="padding: 6px"><div class="pane-head">Verse 1</div><div class="lyr" data-lines="2"></div></div>
+                <div class="pane" style="padding: 6px; border-color: var(--accent)"><div class="pane-head">Verse 2 ● live</div><div class="lyr" data-lines="2"></div></div>
+                <div class="pane" style="padding: 6px"><div class="pane-head">Verse 3</div><div class="lyr" data-lines="2"></div></div>
+              </div>
+            </div>
+            <figcaption>Optional: the person driving sees a section strip on hover</figcaption>
+          </figure>
+        </div>
+        <div class="notes">
+          <div>
+            <h4>Split</h4>
+            <p>Not used here. On a TV, one big section at a time reads better than two songs.</p>
+          </div>
+          <div>
+            <h4>Transitions</h4>
+            <p>The last section of a song is followed by a title card for the next song, then its first section.</p>
+          </div>
+          <div class="pro">
+            <h4>Strong at</h4>
+            <ul><li>Small groups reading together on a TV</li><li>Readable from across a room</li></ul>
+          </div>
+          <div class="con">
+            <h4>Watch out</h4>
+            <ul><li>Not for musicians who need the whole chord chart</li><li>Needs songs to be split into sections, which they already are</li></ul>
+          </div>
+        </div>
+      </section>
+
+      <h2>Side by side</h2>
+      <p class="section-lede">More squares is better. Build effort counts down, so more squares means less work.</p>
+      <div class="matrix-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Concept</th>
+              <th>In hand</th>
+              <th>On a stand</th>
+              <th>Shared to TV</th>
+              <th>Song transitions</th>
+              <th>Scroll &amp; text tweaks</th>
+              <th>Familiar</th>
+              <th>Build effort</th>
+            </tr>
+          </thead>
+          <tbody id="matrix"></tbody>
+        </table>
+      </div>
+
+      <h2>New UX ideas</h2>
+      <p class="section-lede">Additions worth considering, whichever layout wins. Each says where it fits best.</p>
+      <div class="ideas">
+        <div class="idea"><b>Keep the screen awake</b><p>While a setlist is open, stop the phone or tablet from dimming and locking mid-song. One browser call (the Wake Lock API), and a must for stands.</p><div class="fits">All concepts · small effort</div></div>
+        <div class="idea"><b>Pedal &amp; keyboard control</b><p>Bluetooth page-turner pedals send arrow and page keys. Map ← → to songs and PgUp/PgDn/Space to scrolling or pages, so a musician never touches the screen.</p><div class="fits">B, C, E · small effort</div></div>
+        <div class="idea"><b>Swipe between songs</b><p>A horizontal swipe on the reading area changes song on phones, with the next song peeking in at the edge.</p><div class="fits">A, B · small effort</div></div>
+        <div class="idea"><b>Auto-scroll</b><p>A play button with a speed setting that scrolls at a steady pace and pauses on touch. Speed is remembered per song on this device.</p><div class="fits">A, B, D · medium effort</div></div>
+        <div class="idea"><b>Jump to a section</b><p>Verse / Chorus / Bridge chips on the song header jump straight there; this is useful when the leader calls "back to the chorus".</p><div class="fits">All concepts · small effort</div></div>
+        <div class="idea"><b>Orientation-aware layout</b><p>Turning a tablet or phone to landscape switches to the split view automatically; portrait goes back to one song. No setting to find.</p><div class="fits">B, C · small effort</div></div>
+        <div class="idea"><b>Fit to screen</b><p>One tap sizes the text so the whole song (or the current page) fits the screen without scrolling, where it can.</p><div class="fits">B, C, E · medium effort</div></div>
+        <div class="idea"><b>Works offline</b><p>Cache the opened setlist so it keeps working when a venue's Wi-Fi drops (a PWA).</p><div class="fits">All concepts · medium effort</div></div>
+        <div class="idea"><b>Follow the leader</b><p>Later: when the worship leader changes song, everyone's screen follows. This needs a live server channel, so it's a bigger, separate project.</p><div class="fits">Future · large effort</div></div>
+      </div>
+
+      <h2>Decided so far</h2>
+      <div class="rec">
+        <ol>
+          <li><b>Portrait phone → A (Scroll &amp; Dock)</b>, with no peek. The next song's opening <b>flows on</b> after the end of the current one (option 3), the dock's next button <b>names the next song</b> (option 1), and <b>swipe</b> stays as a hidden gesture (option 5).</li>
+          <li><b>Landscape tablet or laptop → B (Stage Split)</b>, switched on by orientation and width. The right pane is the next song by default, but people can <b>pick any song for either pane</b> and <b>reorder the set</b> for themselves. Advancing <b>slides</b> the panes: the right song moves left and becomes current.</li>
+          <li><b>Shared to a TV → E (Present)</b>, lyrics only by default, with a <b>Show chords</b> toggle.</li>
+          <li><b>Quick wins for every layout:</b> keep the screen awake, pedal and keyboard control, section jump, and auto-scroll.</li>
+        </ol>
+      </div>
+
+      <h2>Split: picking and reordering songs</h2>
+      <p class="section-lede">
+        The public link is signed out and shared, so picking and reordering change <em>your view only</em>,
+        remembered on this device; the leader's set is untouched. "Follow the set" puts everything back.
+      </p>
+      <div class="concept">
+        <div class="boards" style="margin-top: 0">
+          <figure class="board">
+            <div class="wf wide">
+              <div class="bar"><span class="mk"></span><span class="grow">Sunday Morning Worship</span><span class="chip">Your order</span><span class="dot"></span></div>
+              <div class="cols" style="height: 200px; margin-top: 10px">
+                <div class="pane"><div class="pane-head picker-head">2 · Amazing Grace ▾<span class="k">A</span></div><div class="lyr" data-lines="7"></div></div>
+                <div class="pane" style="border-color: var(--accent)"><div class="pane-head picker-head">Pinned · 5 · Doxology ▾<span class="k">G</span></div><div class="lyr" data-lines="3"></div>
+                  <div class="menu">
+                    <div class="mi on">Next song (follow the set)</div>
+                    <div class="mi">1 · Holy, Holy, Holy</div>
+                    <div class="mi">3 · Be Thou My Vision</div>
+                    <div class="mi">4 · 晨光讚美</div>
+                    <div class="mi sel">5 · Doxology ✓</div>
+                  </div>
+                </div>
+              </div>
+              <div class="dock">‹ <span class="strip"><i class="p"></i><i class="n"></i><i></i><i></i><i></i></span> ›</div>
+            </div>
+            <figcaption>Tap a pane's title to choose its song; the pane shows it's pinned</figcaption>
+          </figure>
+          <figure class="board">
+            <div class="wf phone" style="height: 340px">
+              <div class="bar"><span class="mk"></span><span class="grow">Sunday Morning Worship</span><span class="dot"></span></div>
+              <div class="sheet-wf">
+                <div class="sheet-top"><b>Setlist</b><span class="chip on">Done</span></div>
+                <div class="row-wf"><span class="hd">≡</span>1 · Holy, Holy, Holy<span class="k2">D</span></div>
+                <div class="row-wf on"><span class="hd">≡</span>2 · Amazing Grace<span class="k2">A</span></div>
+                <div class="row-wf lift"><span class="hd">≡</span>5 · Doxology<span class="k2">G</span></div>
+                <div class="row-wf"><span class="hd">≡</span>3 · Be Thou My Vision<span class="k2">Eb</span></div>
+                <div class="row-wf"><span class="hd">≡</span>4 · 晨光讚美<span class="k2">A</span></div>
+                <div class="reset">Reset to the leader's order</div>
+              </div>
+            </div>
+            <figcaption>Song list: drag to reorder (your device only)</figcaption>
+          </figure>
+        </div>
+        <div class="notes">
+          <div>
+            <h3 class="nh">Picking</h3>
+            <p>Each pane's title is a button that opens the song list. Choosing a song pins it; "Next song" unpins the right pane so it follows the set again.</p>
+          </div>
+          <div>
+            <h3 class="nh">Reordering</h3>
+            <p>Drag handles in the song list (an Edit order mode). The strip, the dock and "next" all follow your order. A "Your order" chip shows the order differs from the leader's.</p>
+          </div>
+          <div>
+            <h3 class="nh">Advancing with a pin</h3>
+            <p>If the right pane is pinned, advancing slides it over to the left and the right pane goes back to following the set.</p>
+          </div>
+          <div class="con">
+            <h3 class="nh">Watch out</h3>
+            <ul><li>People may forget they reordered, so keep the chip and Reset visible</li><li>Reordering on a phone needs an explicit mode so swipes don't drag rows</li></ul>
+          </div>
+        </div>
+      </div>
+
+      <h2>Portrait phone: reaching the next song without a peek</h2>
+      <p class="section-lede">
+        Five options. On a stand, the next song's opening matters as much as the button, so I'd combine one
+        that shows it with one that makes advancing a single touch.
+      </p>
+      <div class="concept">
+        <div class="boards" style="margin-top: 0; gap: 22px; align-items: flex-start">
+          <figure class="board">
+            <div class="wf phone">
+              <div class="bar"><span class="mk"></span><span class="grow">Amazing Grace · A</span><span class="dot"></span></div>
+              <div class="lyr" data-lines="10" style="margin-top: 10px"></div>
+              <div class="dock" style="gap: 6px">‹ <span class="strip"><i class="p"></i><i class="n"></i><i></i></span><span class="nx">Be Thou My Vision ›</span></div>
+            </div>
+            <figcaption><b>1 · The dock names it</b><br />Next button shows the title</figcaption>
+          </figure>
+          <figure class="board">
+            <div class="wf phone">
+              <div class="bar"><span class="mk"></span><span class="grow">Amazing Grace · A</span><span class="dot"></span></div>
+              <div class="lyr" data-lines="7" style="margin-top: 10px"></div>
+              <div class="pull"><span>↑</span>Release for<br /><b>Be Thou My Vision · Eb</b></div>
+              <div class="dock">‹ <span class="strip"><i class="p"></i><i class="n"></i><i></i></span> ›</div>
+            </div>
+            <figcaption><b>2 · Pull past the end</b><br />Overscroll, then release to advance</figcaption>
+          </figure>
+          <figure class="board">
+            <div class="wf phone">
+              <div class="bar"><span class="mk"></span><span class="grow">Amazing Grace · A</span><span class="dot"></span></div>
+              <div class="lyr" data-lines="5" style="margin-top: 10px"></div>
+              <div class="sticky" style="border-color: var(--accent); margin-top: 10px">3 · Be Thou My Vision<span class="k">Eb</span></div>
+              <div class="lyr fade" data-lines="3"></div>
+              <div class="dock">‹ <span class="strip"><i class="p"></i><i class="n"></i><i></i></span> ›</div>
+            </div>
+            <figcaption><b>3 · Flow on</b><br />The next song's opening follows the end</figcaption>
+          </figure>
+          <figure class="board">
+            <div class="wf phone">
+              <div class="bar"><span class="mk"></span><span class="grow">Amazing Grace · A</span><span class="dot"></span></div>
+              <div class="lyr" data-lines="4" style="margin-top: 10px"></div>
+              <div class="halfsheet"><div class="grab"></div><div class="pane-head">Next · Be Thou My Vision<span class="k">Eb</span></div><div class="lyr" data-lines="3"></div></div>
+              <div class="dock">‹ <span class="strip"><i class="p"></i><i class="n"></i><i></i></span> ›</div>
+            </div>
+            <figcaption><b>4 · Next-up sheet</b><br />Slim bar above the dock; drag up to preview</figcaption>
+          </figure>
+          <figure class="board">
+            <div class="wf phone">
+              <div class="bar"><span class="mk"></span><span class="grow">Amazing Grace · A</span><span class="dot"></span></div>
+              <div class="lyr" data-lines="10" style="margin-top: 10px"></div>
+              <span class="tag" style="left: 50%; top: 180px; transform: translateX(-50%)">‹ swipe ›</span>
+              <div class="dock">‹ <span class="strip"><i class="p"></i><i class="n"></i><i></i></span> ›</div>
+            </div>
+            <figcaption><b>5 · Swipe, no peek</b><br />Gesture only; the strip shows position</figcaption>
+          </figure>
+        </div>
+        <div class="notes">
+          <div>
+            <h3 class="nh">1 · The dock names it</h3>
+            <p>The next button grows into "Be Thou My Vision ›" as you reach the last section. One tap, always in thumb reach, and the title tells you what's coming.</p>
+          </div>
+          <div>
+            <h3 class="nh">2 · Pull past the end</h3>
+            <p>Keep scrolling past the last line and a "Release for…" card appears. Natural when you're already scrolling, but easy to trigger by accident on a stand.</p>
+          </div>
+          <div>
+            <h3 class="nh">3 · Flow on</h3>
+            <p>The end of the song is followed by the next song's title and its first lines, dimmed. Scrolling into it makes it current. This is the portrait version of the split: you see what's next while finishing.</p>
+          </div>
+          <div>
+            <h3 class="nh">4 · Next-up sheet</h3>
+            <p>A slim bar above the dock shows the next song's first line; drag it up for a half-height preview. A top/bottom split on demand, but it costs reading space.</p>
+          </div>
+          <div>
+            <h3 class="nh">5 · Swipe, no peek</h3>
+            <p>A horizontal swipe changes song with a slide; nothing on screen hints at it except the strip. Clean, but hidden, so it suits people who already know it.</p>
+          </div>
+          <div class="pro">
+            <h3 class="nh">Decided</h3>
+            <p><b>3 + 1</b>: Flow on shows the next opening (the split's benefit, in portrait), and the dock's named next button makes advancing one tap. Keep 5 as a gesture for people who know it.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Fill wireframe lyric blocks: each line is a chord row over a lyric bar, in a fixed rhythm.
+      const widths = [92, 78, 86, 64, 90, 72, 84, 58, 88, 70];
+      document.querySelectorAll('.lyr').forEach((el, b) => {
+        const n = Number(el.dataset.lines) || 6;
+        let html = '<span class="sec"></span>';
+        for (let i = 0; i < n; i++) {
+          if (i === 4) html += '<span class="sec"></span>';
+          const chords = 2 + ((i + b) % 2);
+          html += `<span class="ch">${'<i></i>'.repeat(chords)}</span><span class="ly" style="width:${widths[(i + b) % widths.length]}%"></span>`;
+        }
+        el.innerHTML = html;
+      });
+
+      // Comparison matrix: 1 to 3 squares.
+      const rows = [
+        ['A · Scroll & Dock', 3, 1, 1, 2, 3, 3, 3],
+        ['B · Stage Split', 2, 3, 2, 3, 2, 2, 2],
+        ['C · Page Spreads', 1, 3, 3, 3, 1, 1, 1],
+        ['D · One Long Set', 3, 2, 2, 3, 3, 2, 2],
+        ['E · Present (mode)', null, null, 3, 2, 1, 2, 2],
+      ];
+      const sq = (v) =>
+        v === null
+          ? '<span class="muted">n/a</span>'
+          : `<span class="score" aria-label="${v} of 3">${[1, 2, 3].map((k) => `<i class="${k <= v ? 'on' : ''}"></i>`).join('')}</span>`;
+      document.getElementById('matrix').innerHTML = rows
+        .map(([name, ...vals]) => `<tr><th scope="row">${name}</th>${vals.map((v) => `<td>${sq(v)}</td>`).join('')}</tr>`)
+        .join('');
+    </script>
+  </body>
+</html>

@@ -1,0 +1,3704 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Public Setlist View</title>
+    <meta
+      name="description"
+      content="Design mock: the Praise Room public setlist view in the Liquid Glass and pixel icon world."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!--
+      Design mock only. Sample songs are public-domain hymns plus one synthetic Chinese demo song.
+      Icons: pixelarticons 2.4.1 by Gerrit Halfmann, MIT licence (https://github.com/halfmage/pixelarticons).
+      Glass: CSS backdrop-filter in every browser; Chromium adds bezel refraction from size-specific
+      SVG displacement maps (Snell's-law profile, after archisvaze/liquid-glass and kube.io).
+    -->
+    <style>
+      :root {
+        /* The one brand hue. Every tint, chord and pixel of light derives from it. */
+        --h: 250;
+        --font-ui: 'Geist', ui-sans-serif, system-ui, -apple-system, 'PingFang TC', 'Noto Sans TC',
+          'Microsoft JhengHei', sans-serif;
+        --font-display: var(--font-ui);
+        /* Musical data only (chords, keys, offsets, counts): every chord takes the same width over its syllable. */
+        --font-mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, 'PingFang TC', 'Noto Sans TC',
+          monospace;
+        --lyrics-size: 1.125rem;
+        --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+        --ease-liquid: cubic-bezier(0.34, 1.32, 0.52, 1);
+        --dock-h: 64px;
+        --bar-h: 56px;
+        --gutter: 16px;
+
+        color-scheme: dark;
+      }
+
+      /* Dark is the default: dim rooms and stages. Every colour is tinted by the one brand hue. */
+      :root,
+      :root[data-theme='dark'] {
+        --ground: oklch(0.165 0.013 var(--h));
+        --ink: oklch(0.96 0.01 var(--h));
+        --ink-2: oklch(0.79 0.025 var(--h));
+        --ink-3: oklch(0.64 0.03 var(--h));
+        --chord: oklch(0.84 0.13 var(--h));
+        --label: oklch(0.77 0.1 var(--h));
+        --hairline: oklch(1 0 0 / 0.1);
+        --glass-tint: oklch(0.25 0.02 var(--h) / 0.56);
+        --glass-tint-strong: oklch(0.21 0.026 var(--h) / 0.8);
+        --glass-tint-over: oklch(0.22 0.02 var(--h) / 0.72);
+        --rim-hi: oklch(1 0 0 / 0.55);
+        --rim-lo: oklch(1 0 0 / 0.07);
+        --rim-edge: oklch(1 0 0 / 0.06);
+        --shadow: oklch(0.06 0.02 var(--h) / 0.6);
+        --fill-hover: oklch(1 0 0 / 0.08);
+        --fill-press: oklch(1 0 0 / 0.14);
+        --fill-on: oklch(0.84 0.13 var(--h) / 0.22);
+        --ground-lift: oklch(0.215 0.03 var(--h));
+        --pixel-off: oklch(1 0 0 / 0.16);
+        --pixel-played: oklch(0.8 0.12 var(--h) / 0.55);
+        --pixel-on: oklch(0.86 0.13 var(--h));
+        --pixel-glow: oklch(0.8 0.15 var(--h) / 0.7);
+        color-scheme: dark;
+      }
+
+      :root[data-theme='light'] {
+        --ground: oklch(0.97 0.008 var(--h));
+        --ink: oklch(0.21 0.03 var(--h));
+        --ink-2: oklch(0.41 0.035 var(--h));
+        --ink-3: oklch(0.51 0.035 var(--h));
+        --chord: oklch(0.5 0.16 var(--h));
+        --label: oklch(0.5 0.12 var(--h));
+        --hairline: oklch(0.25 0.03 var(--h) / 0.12);
+        --glass-tint: oklch(0.995 0.006 var(--h) / 0.55);
+        --glass-tint-strong: oklch(0.99 0.008 var(--h) / 0.84);
+        --glass-tint-over: oklch(0.99 0.006 var(--h) / 0.72);
+        --rim-hi: oklch(1 0 0 / 0.95);
+        --rim-lo: oklch(1 0 0 / 0.3);
+        --rim-edge: oklch(0.25 0.03 var(--h) / 0.1);
+        --shadow: oklch(0.32 0.05 var(--h) / 0.24);
+        --fill-hover: oklch(0.25 0.03 var(--h) / 0.07);
+        --fill-press: oklch(0.25 0.03 var(--h) / 0.12);
+        --fill-on: oklch(0.5 0.16 var(--h) / 0.14);
+        --ground-lift: oklch(0.93 0.022 var(--h));
+        --pixel-off: oklch(0.25 0.03 var(--h) / 0.16);
+        --pixel-played: oklch(0.55 0.14 var(--h) / 0.5);
+        --pixel-on: oklch(0.55 0.16 var(--h));
+        --pixel-glow: oklch(0.55 0.16 var(--h) / 0.4);
+        color-scheme: light;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      html {
+        -webkit-text-size-adjust: 100%;
+        scrollbar-color: oklch(0.6 0.05 var(--h) / 0.5) transparent;
+        scroll-padding-top: calc(var(--bar-h) + 24px);
+      }
+
+      body {
+        margin: 0;
+        min-height: 100svh;
+        background: var(--ground);
+        color: var(--ink);
+        font-family: var(--font-ui);
+        font-size: 1rem;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+
+      ::selection {
+        background: oklch(0.84 0.13 var(--h) / 0.35);
+        color: var(--ink);
+      }
+
+      button {
+        font: inherit;
+        color: inherit;
+        border: 0;
+        background: none;
+        padding: 0;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      button:disabled {
+        cursor: default;
+        opacity: 0.38;
+      }
+
+      :focus-visible {
+        outline: 2px solid var(--chord);
+        outline-offset: 2px;
+      }
+
+      [hidden] {
+        display: none !important;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+
+      /* Pixel icons are a 24-unit grid, drawn mostly in 2-unit pixels. At 1x, 24px puts every edge on a
+         device pixel. Smaller sizes keep each icon pixel a whole number of device pixels wide (3 at 18px
+         on 2x, 5 at 20px on 3x); edges at odd units fall on half pixels, and crispEdges snaps them. */
+      :root {
+        --icon: 24px;
+      }
+
+      @media (min-resolution: 2dppx) {
+        :root {
+          --icon: 18px;
+        }
+      }
+
+      @media (min-resolution: 2.5dppx) {
+        :root {
+          --icon: 20px;
+        }
+      }
+
+      .px {
+        display: block;
+        width: var(--icon);
+        height: var(--icon);
+        flex: none;
+        shape-rendering: crispEdges;
+      }
+
+      /* ---------- Ground: one even field, lifted by a single soft wash of light from the top ---------- */
+
+      .ground-wash {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+        background: linear-gradient(180deg, var(--ground-lift) 0%, transparent 46vh);
+      }
+
+      /* Scroll edges: content dissolves before it reaches the floating bars. */
+      .edge {
+        position: fixed;
+        left: 0;
+        right: 0;
+        z-index: 20;
+        pointer-events: none;
+        background: color-mix(in oklch, var(--ground) 55%, transparent);
+        -webkit-backdrop-filter: blur(6px);
+        backdrop-filter: blur(6px);
+        transition: opacity 240ms var(--ease-out);
+      }
+
+      .edge--top {
+        top: 0;
+        height: calc(max(10px, env(safe-area-inset-top)) + var(--bar-h) + 22px);
+        -webkit-mask-image: linear-gradient(#000 55%, transparent);
+        mask-image: linear-gradient(#000 55%, transparent);
+        opacity: 0;
+      }
+
+      .away-top .edge--top {
+        opacity: 1;
+      }
+
+      .edge--bottom {
+        bottom: 0;
+        height: calc(max(12px, env(safe-area-inset-bottom)) + var(--dock-h) + 28px);
+        -webkit-mask-image: linear-gradient(transparent, #000 50%);
+        mask-image: linear-gradient(transparent, #000 50%);
+      }
+
+      /* ---------- Liquid Glass ---------- */
+      /*
+        Layering (same in both paths): the host is an isolated stacking context with no paint of its own.
+        ::after (z -1) carries the backdrop and the tint, ::before (z 1) is the specular rim, children sit between.
+        Frosted path: backdrop-filter blur + saturate, everywhere.
+        Refraction path (.refract on <html>, Chromium only): ::after swaps to the element's SVG filter.
+      */
+      .glass {
+        position: relative;
+        isolation: isolate;
+        border-radius: var(--glass-r, 999px);
+        color: var(--ink);
+        box-shadow:
+          0 12px 32px -10px var(--shadow),
+          0 2px 8px -2px var(--shadow);
+      }
+
+      .glass::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        border-radius: inherit;
+        background: var(--glass-fill, var(--glass-tint));
+        -webkit-backdrop-filter: blur(var(--glass-blur, 14px)) saturate(185%) brightness(1.04);
+        backdrop-filter: blur(var(--glass-blur, 14px)) saturate(185%) brightness(1.04);
+        pointer-events: none;
+      }
+
+      .glass::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        border-radius: inherit;
+        padding: 1px;
+        background:
+          linear-gradient(
+            150deg,
+            var(--rim-hi) 0%,
+            var(--rim-lo) 28%,
+            transparent 50%,
+            var(--rim-lo) 74%,
+            color-mix(in oklch, var(--rim-hi) 60%, transparent) 100%
+          ),
+          linear-gradient(var(--rim-edge), var(--rim-edge));
+        -webkit-mask:
+          linear-gradient(#000 0 0) content-box,
+          linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+        mask:
+          linear-gradient(#000 0 0) content-box exclude,
+          linear-gradient(#000 0 0);
+        pointer-events: none;
+      }
+
+      .refract .glass::after {
+        -webkit-backdrop-filter: var(--lg, blur(var(--glass-blur, 14px)) saturate(185%));
+        backdrop-filter: var(--lg, blur(var(--glass-blur, 14px)) saturate(185%));
+      }
+
+      /* Glass that floats over moving lyrics carries a denser tint so its own labels always win. */
+      .dock,
+      .scrolled .topbar {
+        --glass-fill: var(--glass-tint-over);
+      }
+
+      .glass::after {
+        transition: background-color 300ms var(--ease-out);
+      }
+
+      .glass--strong {
+        --glass-fill: var(--glass-tint-strong);
+        --glass-blur: 22px;
+      }
+
+      @media (prefers-reduced-transparency: reduce) {
+        .glass::after,
+        .refract .glass::after {
+          background: var(--glass-tint-strong);
+          -webkit-backdrop-filter: none;
+          backdrop-filter: none;
+        }
+        .glass::after {
+          background: color-mix(in oklch, var(--glass-tint-strong) 100%, var(--ground));
+        }
+      }
+
+      @media (forced-colors: active) {
+        .glass {
+          border: 1px solid CanvasText;
+        }
+      }
+
+      @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+        .glass::after {
+          background: var(--glass-tint-strong);
+        }
+      }
+
+      /* Plain controls inside glass: no glass-in-glass, just fills. */
+      .tap {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        min-width: 40px;
+        height: 40px;
+        padding: 0 8px;
+        border-radius: 999px;
+        transition:
+          background-color 180ms var(--ease-out),
+          transform 260ms var(--ease-liquid);
+      }
+
+      .tap:hover:not(:disabled) {
+        background: var(--fill-hover);
+      }
+
+      .tap:active:not(:disabled) {
+        background: var(--fill-press);
+        transform: scale(0.94);
+      }
+
+      /* ---------- Top bar ---------- */
+
+      .topbar {
+        position: fixed;
+        z-index: 30;
+        top: max(10px, env(safe-area-inset-top));
+        left: max(10px, env(safe-area-inset-left));
+        right: max(10px, env(safe-area-inset-right));
+        height: var(--bar-h);
+        max-width: 1200px;
+        margin-inline: auto;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        padding: 0 8px 0 10px;
+      }
+
+      .mark {
+        flex: none;
+        display: grid;
+        place-items: center;
+        width: 36px;
+        height: 36px;
+        color: var(--chord);
+      }
+
+      .mark svg {
+        width: 24px;
+        height: 24px;
+        shape-rendering: crispEdges;
+      }
+
+      .bar-title {
+        position: relative;
+        flex: 1;
+        min-width: 0;
+        height: 40px;
+        margin-left: 2px;
+      }
+
+      .bar-title > div {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-width: 0;
+        transition:
+          opacity 260ms var(--ease-out),
+          transform 360ms var(--ease-out);
+      }
+
+      .bar-title strong,
+      .bar-title span {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        font-weight: 400;
+      }
+
+      .bar-title strong {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        line-height: 1.2;
+      }
+
+      .bar-title span {
+        font-size: 0.8125rem;
+        line-height: 1.3;
+        color: var(--ink-2);
+      }
+
+      .bar-title .song-mode {
+        opacity: 0;
+        transform: translateY(8px);
+        pointer-events: none;
+      }
+
+      .bar-title .song-mode strong {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .scrolled .bar-title .set-mode {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+
+      .scrolled .bar-title .song-mode {
+        opacity: 1;
+        transform: none;
+        pointer-events: auto;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        height: 22px;
+        padding: 0 8px;
+        border-radius: 6px;
+        background: var(--fill-on);
+        color: var(--chord);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        font-family: var(--font-mono);
+        white-space: nowrap;
+      }
+
+      .bar-actions {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+      }
+
+      .signin {
+        height: 40px;
+        margin-left: 4px;
+        padding: 0 14px;
+        border-radius: 999px;
+        background: var(--ink);
+        color: var(--ground);
+        font-weight: 600;
+        font-size: 0.875rem;
+        white-space: nowrap;
+        transition: transform 260ms var(--ease-liquid);
+      }
+
+      .signin:active {
+        transform: scale(0.95);
+      }
+
+      /* Song rows: shared by the desktop rail and the phone sheet. */
+      .song-row {
+        display: grid;
+        grid-template-columns: 12px 20px minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        min-height: 44px;
+        padding: 6px 10px;
+        border-radius: 14px;
+        text-align: left;
+        transition: background-color 180ms var(--ease-out);
+      }
+
+      .song-row:hover {
+        background: var(--fill-hover);
+      }
+
+      .song-row[aria-current='true'] {
+        background: var(--row-on);
+      }
+
+      .song-row .pixel {
+        width: 10px;
+        height: 10px;
+        background: var(--pixel-off);
+      }
+
+      .song-row .pixel.played {
+        background: var(--pixel-played);
+      }
+
+      .song-row[aria-current='true'] .pixel {
+        background: var(--pixel-on);
+      }
+
+      .song-row .num {
+        color: var(--ink-3);
+        font-size: 0.8125rem;
+        font-family: var(--font-mono);
+      }
+
+      .song-row .title {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        font-size: 0.9375rem;
+        font-weight: 400;
+      }
+
+      .song-row[aria-current='true'] .title {
+        font-weight: 600;
+      }
+
+      .song-row .key {
+        color: var(--ink-2);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        font-family: var(--font-mono);
+      }
+
+      .song-row {
+        --row-on: var(--fill-on);
+      }
+
+      /* ---------- Reader ---------- */
+
+      .reader {
+        min-width: 0;
+      }
+
+      .reader-inner {
+        max-width: 72ch;
+      }
+
+      .two-col .reader-inner {
+        max-width: none;
+      }
+
+      .song-head {
+        margin-bottom: 24px;
+      }
+
+      .title-row {
+        --title-size: clamp(2.125rem, 1.4rem + 3.4vw, 3.5rem);
+        display: flex;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      h1 {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: var(--title-size);
+        font-weight: 700;
+        line-height: 1.04;
+        letter-spacing: -0.035em;
+        text-wrap: balance;
+      }
+
+      /* Geist centres its caps in the line box, so the 40px button centres on the title's first line:
+         half the 1.04 line height (less 0.02em measured), minus half the button. */
+      .title-row .tap {
+        flex: none;
+        margin-top: calc(var(--title-size) * 0.5 - 20px);
+        color: var(--ink-3);
+      }
+
+      .artist {
+        margin: 8px 0 0;
+        color: var(--ink-2);
+        font-size: 1.0625rem;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+        margin-top: 22px;
+      }
+
+      .controls .glass {
+        --glass-blur: 10px;
+        height: 44px;
+        display: inline-flex;
+        align-items: center;
+        padding: 2px;
+      }
+
+      .key-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 40px;
+        padding: 0 10px 0 14px;
+        border-radius: 999px;
+        transition: transform 260ms var(--ease-liquid);
+      }
+
+      .key-btn:active {
+        transform: scale(0.95);
+      }
+
+      .key-btn .k-label {
+        color: var(--ink-2);
+        font-size: 0.8125rem;
+      }
+
+      .key-btn .k-name {
+        font-size: 1.0625rem;
+        font-weight: 700;
+        font-family: var(--font-mono);
+        min-width: 1.6em;
+      }
+
+      .offset {
+        display: inline-grid;
+        place-items: center;
+        min-width: 28px;
+        height: 22px;
+        padding: 0 6px;
+        border-radius: 6px;
+        background: var(--fill-on);
+        color: var(--chord);
+        font-size: 0.75rem;
+        font-weight: 700;
+        font-family: var(--font-mono);
+      }
+
+      .offset[data-zero='true'] {
+        background: var(--fill-hover);
+        color: var(--ink-3);
+      }
+
+      /* Segmented control with a liquid thumb. */
+      .seg {
+        position: relative;
+        display: inline-grid;
+        grid-auto-flow: column;
+        grid-auto-columns: 1fr;
+      }
+
+      .seg button {
+        position: relative;
+        z-index: 1;
+        height: 40px;
+        padding: 0 14px;
+        border-radius: 999px;
+        color: var(--ink-2);
+        font-size: 0.875rem;
+        font-weight: 600;
+        white-space: nowrap;
+        transition: color 220ms var(--ease-out);
+      }
+
+      .seg button[aria-pressed='true'] {
+        color: var(--ink);
+      }
+
+      .seg .thumb {
+        position: absolute;
+        z-index: 0;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        border-radius: 999px;
+        background: var(--fill-on);
+        box-shadow: inset 0 0 0 1px oklch(0.84 0.13 var(--h) / 0.25);
+        transition:
+          transform 520ms var(--ease-liquid),
+          width 520ms var(--ease-liquid);
+      }
+
+      .seg.nums button {
+        font-family: var(--font-mono);
+      }
+
+      .size-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
+        font-weight: 600;
+        font-size: 0.9375rem;
+        display: grid;
+        place-items: center;
+      }
+
+      .size-btn:hover,
+      .key-btn:hover {
+        background: var(--fill-hover);
+      }
+
+      /* ---------- Lyrics ---------- */
+
+      .lyrics {
+        font-size: var(--lyrics-size);
+        line-height: 1.45;
+        transition: font-size 260ms var(--ease-out);
+      }
+
+      .two-col .lyrics {
+        columns: 2;
+        column-gap: 56px;
+      }
+
+      .lyrics section {
+        break-inside: avoid;
+        margin-bottom: 1.6em;
+      }
+
+      .lyrics h3 {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 0 0 0.6em;
+        color: var(--label);
+        font-family: var(--font-ui);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        line-height: 1;
+      }
+
+      .lyrics h3::before {
+        content: '';
+        width: 6px;
+        height: 6px;
+        background: currentColor;
+      }
+
+      .line {
+        margin: 0;
+      }
+
+      .chords-on .line + .line {
+        margin-top: 0.35em;
+      }
+
+      .line.has-chords {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+      }
+
+      .seg-word {
+        display: inline-flex;
+        flex-direction: column;
+      }
+
+      .ch {
+        min-height: 1.3em;
+        padding-right: 0.4em;
+        color: var(--chord);
+        font-weight: 600;
+        line-height: 1.3;
+        font-family: var(--font-mono);
+      }
+
+      .ch sup {
+        font-size: 0.68em;
+        vertical-align: 0.5em;
+        line-height: 0;
+      }
+
+      .ly {
+        white-space: pre;
+      }
+
+      .line.plain {
+        white-space: pre-wrap;
+      }
+
+      .gap {
+        height: 0.8em;
+      }
+
+      .no-lyrics {
+        color: var(--ink-2);
+      }
+
+      /* Song swap: the sheet slides a little in the direction of travel. */
+      .reader-inner.enter-next {
+        animation: in-next 520ms var(--ease-out) both;
+      }
+
+      .reader-inner.enter-prev {
+        animation: in-prev 520ms var(--ease-out) both;
+      }
+
+      @keyframes in-next {
+        from {
+          opacity: 0;
+          transform: translateX(28px);
+          filter: blur(6px);
+        }
+      }
+
+      @keyframes in-prev {
+        from {
+          opacity: 0;
+          transform: translateX(-28px);
+          filter: blur(6px);
+        }
+      }
+
+      /* ---------- Next up ---------- */
+
+      .next-up {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 16px;
+        width: 100%;
+        margin-top: 40px;
+        padding: 22px 4px;
+        border-top: 1px solid var(--hairline);
+        text-align: left;
+        border-radius: 0;
+      }
+
+      .next-up .pixel {
+        width: 14px;
+        height: 14px;
+        background: var(--pixel-played);
+      }
+
+      .next-up small {
+        display: block;
+        color: var(--ink-3);
+        font-size: 0.8125rem;
+      }
+
+      .next-up strong {
+        display: block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        font-family: var(--font-display);
+        font-size: 1.375rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+
+      .next-up .go {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: var(--ink-2);
+        font-weight: 600;
+        font-family: var(--font-mono);
+        transition: transform 300ms var(--ease-liquid);
+      }
+
+      .next-up:hover .go {
+        transform: translateX(4px);
+        color: var(--ink);
+      }
+
+      .end-set {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-top: 40px;
+        padding: 22px 4px;
+        border-top: 1px solid var(--hairline);
+        color: var(--ink-2);
+      }
+
+      .end-set .row {
+        display: flex;
+        gap: 4px;
+      }
+
+      .end-set .row i {
+        width: 8px;
+        height: 8px;
+        background: var(--pixel-on);
+      }
+
+      .credit {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 28px;
+        color: var(--ink-3);
+        font-size: 0.8125rem;
+        font-weight: 400;
+      }
+
+      .credit svg {
+        width: 12px;
+        height: 12px;
+        color: var(--chord);
+        shape-rendering: crispEdges;
+      }
+
+      /* ---------- Dock ---------- */
+
+      .dock {
+        position: fixed;
+        z-index: 30;
+        left: 50%;
+        bottom: max(12px, env(safe-area-inset-bottom));
+        width: min(calc(100% - 20px), 460px);
+        height: var(--dock-h);
+        transform: translateX(-50%);
+        display: grid;
+        grid-template-columns: 52px minmax(0, 1fr) 52px;
+        align-items: center;
+        padding: 0 6px;
+        --glass-blur: 16px;
+      }
+
+      .dock .tap {
+        width: 52px;
+        height: 52px;
+        transition:
+          background-color 180ms var(--ease-out),
+          transform 260ms var(--ease-liquid),
+          opacity 200ms var(--ease-out);
+      }
+
+      /* While reading downward the dock gathers into the spectrum alone; scrolling up restores it. */
+      .dock {
+        transition:
+          width 560ms var(--ease-liquid),
+          height 560ms var(--ease-liquid),
+          left 560ms var(--ease-out);
+      }
+
+      .dock-min .dock {
+        width: var(--dock-min-w, 140px);
+        height: 44px;
+        grid-template-columns: 0 minmax(0, 1fr) 0;
+        padding: 0;
+      }
+
+      .dock-min .dock .tap {
+        opacity: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      .dock-label {
+        transition: opacity 200ms var(--ease-out);
+      }
+
+      .dock-min .dock-label {
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .dock-min .spectrum-btn {
+        height: 44px;
+      }
+
+      .spectrum-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        height: 52px;
+        min-width: 0;
+        padding: 0 8px;
+        border-radius: 22px;
+        transition: background-color 180ms var(--ease-out);
+      }
+
+      .spectrum-btn:hover {
+        background: var(--fill-hover);
+      }
+
+      .spectrum {
+        position: relative;
+        display: flex;
+        gap: var(--px-gap, 5px);
+        padding: 0 2px;
+      }
+
+      .spectrum i {
+        width: var(--px, 10px);
+        height: var(--px, 10px);
+        background: var(--pixel-off);
+        transition:
+          background-color 600ms var(--ease-out),
+          box-shadow 600ms var(--ease-out);
+      }
+
+      .spectrum i.played {
+        background: var(--pixel-played);
+      }
+
+      .spectrum i.now {
+        background: var(--pixel-on);
+        box-shadow: 0 2px 10px 1px var(--pixel-glow);
+      }
+
+      /* The lens: a small glass bead that rides along the spectrum to the current song. */
+      .lens {
+        --glass-r: 7px;
+        --glass-fill: transparent;
+        position: absolute;
+        top: calc((var(--px, 10px) - var(--lens)) / 2);
+        left: 0;
+        width: var(--lens);
+        height: var(--lens);
+        --lens: calc(var(--px, 10px) + 10px);
+        box-shadow: 0 3px 8px -2px var(--shadow);
+        transition: transform 640ms var(--ease-liquid);
+        pointer-events: none;
+      }
+
+      .lens::after {
+        -webkit-backdrop-filter: brightness(1.28) saturate(1.7);
+        backdrop-filter: brightness(1.28) saturate(1.7);
+      }
+
+      .dock-label {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        max-width: 100%;
+        min-width: 0;
+        font-size: 0.9375rem;
+        line-height: 1.1;
+      }
+
+      .dock-label .count {
+        color: var(--ink-3);
+        font-family: var(--font-mono);
+        flex: none;
+      }
+
+      .dock-label .name {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        font-weight: 600;
+      }
+
+      /* ---------- Popovers and sheet ---------- */
+
+      .pop {
+        --glass-r: 22px;
+        position: fixed;
+        z-index: 50;
+        min-width: 220px;
+        padding: 14px;
+        opacity: 0;
+        visibility: hidden;
+        transform: scale(0.94);
+        transform-origin: var(--origin, top right);
+        transition:
+          opacity 200ms var(--ease-out),
+          transform 360ms var(--ease-liquid),
+          visibility 0s linear 360ms;
+      }
+
+      .pop[data-open='true'] {
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        transition:
+          opacity 160ms var(--ease-out),
+          transform 420ms var(--ease-liquid),
+          visibility 0s;
+      }
+
+      .pop h2 {
+        margin: 0 0 10px;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        color: var(--ink-2);
+      }
+
+      .pop .group + .group {
+        margin-top: 16px;
+      }
+
+      .key-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 52px);
+        gap: 4px;
+      }
+
+      .key-grid button {
+        position: relative;
+        height: 44px;
+        border-radius: 12px;
+        font-weight: 600;
+        font-family: var(--font-mono);
+        transition: background-color 160ms var(--ease-out);
+      }
+
+      .key-grid button:hover {
+        background: var(--fill-hover);
+      }
+
+      .key-grid button[aria-pressed='true'] {
+        background: var(--chord);
+        color: var(--ground);
+      }
+
+      .key-grid button[data-original='true']::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        bottom: 5px;
+        width: 4px;
+        height: 4px;
+        margin-left: -2px;
+        background: currentColor;
+        opacity: 0.7;
+      }
+
+      .pop .hint {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 12px 2px 0;
+        color: var(--ink-3);
+        font-size: 0.75rem;
+        font-weight: 400;
+      }
+
+      .pop .hint i {
+        width: 4px;
+        height: 4px;
+        background: currentColor;
+      }
+
+      .size-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .size-row .tap {
+        width: 44px;
+        height: 44px;
+        background: var(--fill-hover);
+      }
+
+      .meter {
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        gap: 4px;
+        flex: 1;
+        height: 26px;
+      }
+
+      .meter i {
+        width: 8px;
+        background: var(--pixel-off);
+        transition: background-color 200ms var(--ease-out);
+      }
+
+      .meter i.on {
+        background: var(--chord);
+      }
+
+      .pop .seg {
+        width: 100%;
+        padding: 2px;
+        border-radius: 999px;
+        background: var(--fill-hover);
+      }
+
+      .pop .seg button {
+        height: 36px;
+        padding: 0 10px;
+      }
+
+      .info-list {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 6px 16px;
+        margin: 0;
+        font-size: 0.8125rem;
+        font-weight: 400;
+      }
+
+      .info-list dt {
+        color: var(--ink-3);
+      }
+
+      .info-list dd {
+        margin: 0;
+      }
+
+      .demo-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 16px;
+        padding-top: 12px;
+        border-top: 1px solid var(--hairline);
+        font-size: 0.8125rem;
+        color: var(--ink-2);
+        font-weight: 400;
+      }
+
+      .demo-row b {
+        display: block;
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      .switch {
+        position: relative;
+        flex: none;
+        width: 46px;
+        height: 28px;
+        border-radius: 999px;
+        background: var(--pixel-off);
+        transition: background-color 200ms var(--ease-out);
+      }
+
+      .switch::after {
+        content: '';
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 22px;
+        height: 22px;
+        border-radius: 999px;
+        background: var(--ink);
+        transition: transform 360ms var(--ease-liquid);
+      }
+
+      .switch[aria-checked='true'] {
+        background: var(--chord);
+      }
+
+      .switch[aria-checked='true']::after {
+        transform: translateX(18px);
+        background: var(--ground);
+      }
+
+      .scrim {
+        position: fixed;
+        inset: 0;
+        z-index: 40;
+        display: none;
+      }
+
+      .scrim[data-open='true'] {
+        display: block;
+      }
+
+      .sheet {
+        --glass-r: 28px;
+        position: fixed;
+        z-index: 45;
+        left: 50%;
+        bottom: calc(max(12px, env(safe-area-inset-bottom)) + var(--dock-h) + 10px);
+        width: min(calc(100% - 20px), 460px);
+        max-height: min(62svh, 560px);
+        display: flex;
+        flex-direction: column;
+        padding: 16px 8px 8px;
+        opacity: 0;
+        visibility: hidden;
+        transform: translate(-50%, 18px) scale(0.92, 0.84);
+        transform-origin: 50% 100%;
+        transition:
+          opacity 200ms var(--ease-out),
+          transform 420ms var(--ease-liquid),
+          visibility 0s linear 420ms;
+      }
+
+      .sheet[data-open='true'] {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, 0);
+        transition:
+          opacity 160ms var(--ease-out),
+          transform 520ms var(--ease-liquid),
+          visibility 0s;
+      }
+
+      .sheet-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0 4px 10px 12px;
+      }
+
+      .sheet-head div {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .sheet-head h2 {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: 1.125rem;
+        font-weight: 600;
+        line-height: 1.25;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      .sheet-head p {
+        margin: 0;
+        color: var(--ink-2);
+        font-size: 0.8125rem;
+        font-weight: 400;
+      }
+
+      .sheet .rail-list {
+        padding-bottom: 4px;
+      }
+
+      .toast {
+        --glass-r: 999px;
+        position: fixed;
+        z-index: 60;
+        left: 50%;
+        top: calc(max(10px, env(safe-area-inset-top)) + var(--bar-h) + 12px);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        height: 44px;
+        padding: 0 18px 0 14px;
+        font-size: 0.9375rem;
+        font-weight: 600;
+        opacity: 0;
+        visibility: hidden;
+        transform: translate(-50%, -10px) scale(0.9);
+        transition:
+          opacity 200ms var(--ease-out),
+          transform 420ms var(--ease-liquid),
+          visibility 0s linear 420ms;
+      }
+
+      .toast svg {
+        color: var(--chord);
+      }
+
+      .toast[data-open='true'] {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, 0);
+        transition:
+          opacity 160ms var(--ease-out),
+          transform 480ms var(--ease-liquid),
+          visibility 0s;
+      }
+
+      /* Phones: the dock carries the setlist, so hide what doesn't fit and tighten the bar. */
+      @media (max-width: 479px) {
+        .topbar {
+          padding-left: 6px;
+        }
+        .signin {
+          padding: 0 12px;
+        }
+        .seg button {
+          padding: 0 12px;
+        }
+      }
+
+      .menu-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        height: 44px;
+        margin-top: 12px;
+        padding: 0 12px;
+        border-radius: 14px;
+        background: var(--fill-hover);
+        font-weight: 600;
+        font-size: 0.875rem;
+      }
+
+      @media (min-width: 480px) {
+        .show-xs {
+          display: none !important;
+        }
+      }
+
+      @media (max-width: 479px) {
+        .hide-xs {
+          display: none !important;
+        }
+      }
+
+      @media (max-width: 1023px) {
+        .hide-sm {
+          display: none !important;
+        }
+      }
+
+      @media (min-width: 1024px) {
+        .hide-lg {
+          display: none !important;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 1ms !important;
+          transition-duration: 1ms !important;
+        }
+      }
+
+      /* ---------- Layout v2: Scroll & Dock (portrait), Stage Split (wide), Present (TV) ---------- */
+
+      .scroll-view {
+        position: relative;
+        z-index: 1;
+        max-width: 760px;
+        margin: 0 auto;
+        padding: calc(var(--bar-h) + max(10px, env(safe-area-inset-top)) + 28px) var(--gutter)
+          calc(var(--dock-h) + 40px + env(safe-area-inset-bottom));
+      }
+
+      .scroll-view.two-col {
+        max-width: 1200px;
+      }
+
+      .two-col .lyrics {
+        columns: 2;
+        column-gap: 56px;
+      }
+
+      .split .scroll-view,
+      .split .edge {
+        display: none;
+      }
+
+      /* Section jump: one chip per section of the song. */
+      .jump {
+        display: flex;
+        gap: 6px;
+        margin: 16px calc(var(--gutter) * -1) 0;
+        padding: 0 var(--gutter) 2px;
+        overflow-x: auto;
+        scrollbar-width: none;
+      }
+
+      .jump::-webkit-scrollbar {
+        display: none;
+      }
+
+      .jump button {
+        flex: none;
+        height: 32px;
+        padding: 0 12px;
+        border-radius: 999px;
+        background: var(--fill-hover);
+        color: var(--ink-2);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        white-space: nowrap;
+        transition:
+          background-color 160ms var(--ease-out),
+          color 160ms var(--ease-out);
+      }
+
+      .jump button:hover {
+        background: var(--fill-press);
+        color: var(--ink);
+      }
+
+      .lyrics section {
+        scroll-margin-top: calc(var(--bar-h) + 40px);
+      }
+
+      .ghost {
+        visibility: hidden;
+      }
+
+      /* Flow on: the next song's opening follows the end of this one. */
+      .flow {
+        margin-top: 44px;
+        padding-top: 20px;
+        border-top: 1px solid var(--hairline);
+      }
+
+      .flow-head {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 14px;
+        width: 100%;
+        padding: 6px 0 18px;
+        text-align: left;
+      }
+
+      .flow-head .pixel {
+        width: 14px;
+        height: 14px;
+        background: var(--pixel-played);
+      }
+
+      .flow-head small {
+        display: block;
+        color: var(--ink-3);
+        font-size: 0.8125rem;
+      }
+
+      .flow-head strong {
+        display: block;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        font-size: 1.375rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+
+      .flow-head .k {
+        color: var(--chord);
+        font-family: var(--font-mono);
+        font-weight: 600;
+      }
+
+      .flow-body {
+        opacity: 0.45;
+      }
+
+      .flow-hint {
+        margin: 6px 0 0;
+        color: var(--ink-3);
+        font-size: 0.8125rem;
+      }
+
+      .flow-spacer {
+        height: 46vh;
+      }
+
+      /* ---------- Dock v2: Aa · previous · set strip · next (named near the end) ---------- */
+      .dock {
+        grid-template-columns: 44px 48px minmax(0, 1fr) auto;
+        padding: 0 6px;
+      }
+
+      .dock .tap {
+        width: 48px;
+      }
+
+      .dock .read-btn {
+        width: 44px;
+        font-size: 0.9375rem;
+        font-weight: 600;
+      }
+
+      .dock .next-btn {
+        width: auto;
+        min-width: 48px;
+        padding: 0 12px;
+        gap: 2px;
+      }
+
+      .next-name {
+        max-width: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        opacity: 0;
+        font-size: 0.875rem;
+        font-weight: 600;
+        transition:
+          max-width 480ms var(--ease-liquid),
+          opacity 240ms var(--ease-out);
+      }
+
+      .named .next-name {
+        max-width: 8.5rem;
+        opacity: 1;
+      }
+
+      .named .next-btn {
+        background: var(--fill-on);
+      }
+
+      .named .dock-label {
+        display: none;
+      }
+
+      .dock-min .dock {
+        grid-template-columns: 0 0 minmax(0, 1fr) 0;
+      }
+
+      .dock-min .dock .read-btn {
+        opacity: 0;
+        pointer-events: none;
+        overflow: hidden;
+      }
+
+      /* ---------- Stage Split ---------- */
+      .stage {
+        display: none;
+      }
+
+      .split .stage {
+        position: fixed;
+        z-index: 1;
+        top: calc(max(10px, env(safe-area-inset-top)) + var(--bar-h) + 10px);
+        bottom: calc(max(12px, env(safe-area-inset-bottom)) + var(--dock-h) + 6px);
+        left: max(12px, env(safe-area-inset-left));
+        right: max(12px, env(safe-area-inset-right));
+        max-width: 1440px;
+        margin-inline: auto;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      }
+
+      .pane {
+        position: relative;
+        min-width: 0;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: 18px clamp(20px, 2.6vw, 40px) 48px;
+        scrollbar-width: thin;
+        -webkit-mask-image: linear-gradient(transparent, #000 18px, #000 calc(100% - 40px), transparent);
+        mask-image: linear-gradient(transparent, #000 18px, #000 calc(100% - 40px), transparent);
+        --title-size: clamp(1.75rem, 0.9rem + 1.9vw, 2.75rem);
+      }
+
+      .pane--right {
+        border-left: 1px solid var(--hairline);
+      }
+
+      .pane .title-row {
+        --title-size: inherit;
+      }
+
+      .pane-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin: 0 0 6px;
+      }
+
+      .pane-pick {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        height: 32px;
+        margin-left: -10px;
+        padding: 0 10px;
+        border-radius: 10px;
+        color: var(--ink-2);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        transition: background-color 160ms var(--ease-out);
+      }
+
+      .pane-pick:hover {
+        background: var(--fill-hover);
+        color: var(--ink);
+      }
+
+      .pane-pick .px {
+        width: 16px;
+        height: 16px;
+      }
+
+      .pane-pick .pin-dot {
+        width: 6px;
+        height: 6px;
+        background: var(--chord);
+      }
+
+      .start-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        height: 32px;
+        padding: 0 6px 0 12px;
+        border-radius: 999px;
+        background: var(--fill-on);
+        color: var(--ink);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        transition: transform 260ms var(--ease-liquid);
+      }
+
+      .start-btn:active {
+        transform: scale(0.95);
+      }
+
+      .start-btn .px {
+        width: 16px;
+        height: 16px;
+      }
+
+      .pane--right .pane-body {
+        opacity: 0.5;
+        transition: opacity 300ms var(--ease-out);
+      }
+
+      .pane--right:hover .pane-body {
+        opacity: 0.7;
+      }
+
+      .pane-end {
+        display: grid;
+        place-content: center;
+        justify-items: center;
+        gap: 14px;
+        height: 100%;
+        color: var(--ink-2);
+        text-align: center;
+      }
+
+      .pane-end .row {
+        display: flex;
+        gap: 5px;
+      }
+
+      .pane-end .row i {
+        width: 10px;
+        height: 10px;
+        background: var(--pixel-played);
+      }
+
+      /* ---------- Song list: picking and reordering ---------- */
+      .sheet-head .text-btn,
+      .text-btn {
+        height: 36px;
+        padding: 0 10px;
+        border-radius: 10px;
+        color: var(--chord);
+        font-size: 0.875rem;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .text-btn:hover {
+        background: var(--fill-hover);
+      }
+
+      .sheet-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        min-height: 44px;
+        padding: 6px 4px 2px 12px;
+        border-top: 1px solid var(--hairline);
+        margin-top: 6px;
+        color: var(--ink-3);
+        font-size: 0.8125rem;
+      }
+
+      .song-row.editing {
+        grid-template-columns: 28px 12px 20px minmax(0, 1fr) auto;
+      }
+
+      .grip {
+        display: grid;
+        place-items: center;
+        width: 28px;
+        height: 32px;
+        border-radius: 8px;
+        cursor: grab;
+        touch-action: none;
+      }
+
+      .grip:hover {
+        background: var(--fill-hover);
+      }
+
+      /* A grip drawn in pixels: two columns of three squares. */
+      .grip::before {
+        content: '';
+        width: 3px;
+        height: 3px;
+        background: var(--ink-3);
+        box-shadow:
+          5px 0 var(--ink-3),
+          0 5px var(--ink-3),
+          5px 5px var(--ink-3),
+          0 10px var(--ink-3),
+          5px 10px var(--ink-3);
+        transform: translate(-2.5px, -5px);
+      }
+
+      .dragging .song-row {
+        background: var(--glass-tint-strong);
+        box-shadow: 0 12px 24px -12px var(--shadow);
+        outline: 1px solid var(--rim-lo);
+      }
+
+      .dragging {
+        position: relative;
+        z-index: 2;
+      }
+
+      .order-chip {
+        height: 28px;
+        padding: 0 10px;
+        border-radius: 999px;
+        background: var(--fill-on);
+        color: var(--chord);
+        font-size: 0.75rem;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .rail-list {
+        flex: 1;
+        margin: 0;
+        padding: 0;
+        overflow-y: auto;
+        list-style: none;
+      }
+
+      .pick-list {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        width: min(300px, calc(100vw - 48px));
+        max-height: min(60vh, 420px);
+        overflow-y: auto;
+      }
+
+      .pick-follow {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 44px;
+        padding: 0 10px;
+        border-radius: 14px;
+        color: var(--chord);
+        font-size: 0.9375rem;
+        font-weight: 600;
+        text-align: left;
+      }
+
+      .pick-follow:hover {
+        background: var(--fill-hover);
+      }
+
+      .pick-follow[aria-current='true'] {
+        background: var(--fill-on);
+      }
+
+      /* ---------- Reading popover: size, auto-scroll, split ---------- */
+      .read-pop {
+        width: min(320px, calc(100vw - 24px));
+      }
+
+      .set-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 14px;
+        padding-top: 12px;
+        border-top: 1px solid var(--hairline);
+        font-size: 0.875rem;
+      }
+
+      .set-row b {
+        display: block;
+        font-weight: 600;
+      }
+
+      .set-row .hint-text {
+        display: block;
+        color: var(--ink-3);
+        font-size: 0.8125rem;
+      }
+
+      .speed {
+        display: flex;
+        align-items: center;
+        gap: 2px;
+      }
+
+      .speed .tap {
+        min-width: 36px;
+        width: 36px;
+        height: 36px;
+        padding: 0;
+      }
+
+      .speed output {
+        min-width: 3.4em;
+        text-align: center;
+        font-family: var(--font-mono);
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+
+      .play-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        background: var(--fill-on);
+        color: var(--chord);
+      }
+
+      /* Auto-scroll pill: rides above the dock while auto-scroll is in play. */
+      .auto-pill {
+        position: fixed;
+        z-index: 31;
+        left: 50%;
+        bottom: calc(max(12px, env(safe-area-inset-bottom)) + var(--dock-h) + 10px);
+        display: flex;
+        align-items: center;
+        gap: 2px;
+        height: 44px;
+        padding: 0 6px 0 4px;
+        transform: translateX(-50%);
+        --glass-fill: var(--glass-tint-over);
+      }
+
+      .auto-pill output {
+        min-width: 3.2em;
+        font-family: var(--font-mono);
+        font-size: 0.8125rem;
+        font-weight: 600;
+        text-align: center;
+      }
+
+      .auto-pill .tap {
+        min-width: 36px;
+        width: 36px;
+        height: 36px;
+        padding: 0;
+      }
+
+      .split .auto-pill {
+        bottom: calc(max(12px, env(safe-area-inset-bottom)) + var(--dock-h) + 14px);
+      }
+
+      .wake-note {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 12px;
+        color: var(--ink-3);
+        font-size: 0.8125rem;
+      }
+
+      .wake-note i {
+        width: 6px;
+        height: 6px;
+        background: var(--pixel-on);
+      }
+
+      .wake-note.off i {
+        background: var(--pixel-off);
+      }
+
+      /* ---------- Present (TV) ---------- */
+      .present {
+        position: fixed;
+        inset: 0;
+        z-index: 200;
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr) auto;
+        padding: clamp(16px, 3vh, 36px) clamp(20px, 4vw, 64px);
+        background: var(--ground);
+        color: var(--ink);
+        cursor: default;
+      }
+
+      .present::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, var(--ground-lift) 0%, transparent 50vh);
+        pointer-events: none;
+      }
+
+      .present > * {
+        position: relative;
+      }
+
+      .p-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        min-height: 44px;
+        color: var(--ink-3);
+        font-size: clamp(0.875rem, 1.1vw, 1.125rem);
+      }
+
+      .p-top .where {
+        font-family: var(--font-mono);
+      }
+
+      .p-ctrls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        opacity: 0;
+        transition: opacity 300ms var(--ease-out);
+      }
+
+      .present:hover .p-ctrls,
+      .present.ctrls .p-ctrls,
+      .p-ctrls:focus-within {
+        opacity: 1;
+      }
+
+      .p-ctrls .glass {
+        --glass-r: 999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        height: 40px;
+        padding: 0 14px;
+        color: var(--ink);
+        font-size: 0.875rem;
+        font-weight: 600;
+      }
+
+      .p-ctrls .switch {
+        width: 38px;
+        height: 22px;
+      }
+
+      .p-ctrls .switch::after {
+        top: 2px;
+        left: 2px;
+        width: 18px;
+        height: 18px;
+      }
+
+      .p-ctrls .switch[aria-checked='true']::after {
+        transform: translateX(16px);
+      }
+
+      .p-stage {
+        display: grid;
+        place-items: center;
+        min-height: 0;
+        overflow: hidden;
+        text-align: center;
+      }
+
+      .p-slide {
+        max-width: min(92vw, 1400px);
+        animation: p-in 420ms var(--ease-out) both;
+      }
+
+      @keyframes p-in {
+        from {
+          opacity: 0;
+          transform: translateY(14px);
+        }
+      }
+
+      .p-label {
+        margin-bottom: 0.9em;
+        color: var(--label);
+        font-size: clamp(0.875rem, 1.2vw, 1.25rem);
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+      }
+
+      .p-lines {
+        font-size: var(--p-size, clamp(1.75rem, 4.2vw, 4.5rem));
+        font-weight: 600;
+        line-height: 1.3;
+        letter-spacing: -0.015em;
+        text-wrap: balance;
+      }
+
+      .p-lines p {
+        margin: 0;
+      }
+
+      .p-lines .line.has-chords {
+        justify-content: center;
+      }
+
+      .p-title small {
+        display: block;
+        margin-bottom: 0.8em;
+        color: var(--ink-3);
+        font-family: var(--font-mono);
+        font-size: clamp(0.875rem, 1.2vw, 1.25rem);
+      }
+
+      .p-title h2 {
+        margin: 0;
+        font-size: clamp(2.5rem, 6.5vw, 6rem);
+        font-weight: 700;
+        line-height: 1.02;
+        letter-spacing: -0.035em;
+        text-wrap: balance;
+      }
+
+      .p-title p {
+        margin: 0.5em 0 0;
+        color: var(--ink-2);
+        font-size: clamp(1rem, 1.8vw, 1.75rem);
+      }
+
+      .p-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        min-height: 44px;
+        color: var(--ink-3);
+        font-size: clamp(0.9375rem, 1.4vw, 1.375rem);
+      }
+
+      .p-foot .next {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+
+      .p-foot .strip {
+        display: flex;
+        flex: none;
+        gap: 6px;
+      }
+
+      .p-foot .strip i {
+        width: 10px;
+        height: 10px;
+        background: var(--pixel-off);
+      }
+
+      .p-foot .strip i.played {
+        background: var(--pixel-played);
+      }
+
+      .p-foot .strip i.now {
+        background: var(--pixel-on);
+      }
+
+      .presenting body {
+        overflow: hidden;
+      }
+
+      .title-row h2 {
+        margin: 0;
+        font-family: var(--font-display);
+        font-size: var(--title-size);
+        font-weight: 700;
+        line-height: 1.04;
+        letter-spacing: -0.035em;
+        text-wrap: balance;
+      }
+    </style>
+  </head>
+  <body>
+    <svg width="0" height="0" style="position: absolute; overflow: hidden" color-interpolation-filters="sRGB" aria-hidden="true">
+      <defs id="lg-defs"></defs>
+    </svg>
+
+    <div class="ground-wash" aria-hidden="true"></div>
+    <div class="edge edge--top" aria-hidden="true"></div>
+    <div class="edge edge--bottom" aria-hidden="true"></div>
+
+    <header class="topbar glass" data-glass data-blur="3">
+      <span class="mark" aria-hidden="true" id="mark"></span>
+      <div class="bar-title">
+        <div class="set-mode">
+          <strong id="bar-setlist"></strong>
+          <span id="bar-date"></span>
+        </div>
+        <div class="song-mode" aria-hidden="true">
+          <strong><span id="bar-song" style="overflow: hidden; text-overflow: ellipsis"></span><span class="chip" id="bar-key"></span></strong>
+          <span id="bar-song-sub"></span>
+        </div>
+      </div>
+      <div class="bar-actions">
+        <button class="order-chip hide-xs" id="order-chip" data-action="list" hidden data-i18n="yourOrder"></button>
+        <button class="tap hide-xs" id="copy-link" data-action="copy" data-i18n-label="copyLink"><span data-icon="link"></span></button>
+        <button class="tap" id="view-btn" aria-haspopup="dialog" aria-expanded="false" data-i18n-label="more">
+          <span data-icon="sliders"></span>
+        </button>
+        <button class="signin" id="signin" data-i18n="signIn"></button>
+      </div>
+    </header>
+
+    <main id="reader" class="reader">
+      <!-- Portrait phones and narrow screens: one song scrolls, the next flows on after it. -->
+      <div class="scroll-view" id="scroll-view">
+        <article class="reader-inner" id="scroll-song" aria-labelledby="song-title"></article>
+        <section class="flow" id="flow" aria-live="polite"></section>
+        <p class="credit"><svg viewBox="0 0 3 3" aria-hidden="true"><rect width="3" height="3" fill="currentColor" /></svg><span data-i18n="credit"></span></p>
+      </div>
+
+      <!-- Landscape tablets and laptops: now | next, side by side. -->
+      <div class="stage" id="stage">
+        <article class="pane pane--left" id="pane-left" aria-labelledby="song-title"></article>
+        <aside class="pane pane--right" id="pane-right"></aside>
+      </div>
+    </main>
+
+    <nav class="dock glass" data-glass data-blur="3" data-i18n-label="changeSongs">
+      <button class="tap read-btn" id="read-btn" aria-haspopup="dialog" aria-expanded="false" data-i18n-label="reading">Aa</button>
+      <button class="tap" id="prev" data-action="prev" data-i18n-label="previous"><span data-icon="chevron-left"></span></button>
+      <button class="spectrum-btn" id="spectrum-btn" data-action="list" aria-haspopup="dialog" aria-expanded="false">
+        <span class="spectrum" id="spectrum" aria-hidden="true"></span>
+        <span class="dock-label"><span class="count" id="dock-count"></span><span class="name" id="dock-name"></span></span>
+      </button>
+      <button class="tap next-btn" id="next" data-action="next" data-i18n-label="next"><span class="next-name" id="next-name"></span><span data-icon="chevron-right"></span></button>
+    </nav>
+
+    <div class="auto-pill glass" data-glass data-blur="3" id="auto-pill" hidden>
+      <button class="tap" data-action="auto-toggle" id="pill-play" data-i18n-label="autoScroll"></button>
+      <button class="tap" data-action="auto-slower" data-i18n-label="slower"><span data-icon="minus"></span></button>
+      <output id="pill-speed"></output>
+      <button class="tap" data-action="auto-faster" data-i18n-label="faster"><span data-icon="plus"></span></button>
+      <button class="tap" data-action="auto-close" data-i18n-label="close"><span data-icon="close"></span></button>
+    </div>
+
+    <div class="scrim" id="scrim"></div>
+
+    <div class="sheet glass glass--strong" data-glass data-blur="8" id="sheet-list" role="dialog" aria-modal="false" aria-labelledby="sheet-title">
+      <div class="sheet-head">
+        <div>
+          <h2 id="sheet-title"></h2>
+          <p id="sheet-meta"></p>
+        </div>
+        <button class="text-btn" id="edit-order" data-action="edit-order"></button>
+        <button class="tap" data-action="close" data-i18n-label="close"><span data-icon="close"></span></button>
+      </div>
+      <ol class="rail-list" id="sheet-rows"></ol>
+      <div class="sheet-foot" id="sheet-foot" hidden>
+        <span id="sheet-foot-text"></span>
+        <button class="text-btn" data-action="reset-order" data-i18n="resetOrder"></button>
+      </div>
+    </div>
+
+    <div class="pop glass glass--strong" data-glass data-blur="8" id="key-pop" role="dialog" data-i18n-label="key">
+      <h2 data-i18n="chooseKey"></h2>
+      <div class="key-grid" id="key-grid"></div>
+      <p class="hint"><i></i><span data-i18n="originalHint"></span></p>
+    </div>
+
+    <div class="pop glass glass--strong read-pop" data-glass data-blur="8" id="read-pop" role="dialog" data-i18n-label="reading">
+      <h2 data-i18n="textSize"></h2>
+      <div class="size-row">
+        <button class="tap" id="smaller" data-action="smaller" data-i18n-label="smaller"><span data-icon="minus"></span></button>
+        <div class="meter" id="meter" aria-hidden="true"></div>
+        <button class="tap" id="larger" data-action="larger" data-i18n-label="larger"><span data-icon="plus"></span></button>
+      </div>
+      <div class="set-row">
+        <button class="play-btn" id="auto-play" data-action="auto-toggle" data-i18n-label="autoScroll"></button>
+        <span style="flex: 1; min-width: 0"><b data-i18n="autoScroll"></b><span class="hint-text" data-i18n="autoHint"></span></span>
+        <span class="speed">
+          <button class="tap" data-action="auto-slower" data-i18n-label="slower"><span data-icon="minus"></span></button>
+          <output id="auto-speed"></output>
+          <button class="tap" data-action="auto-faster" data-i18n-label="faster"><span data-icon="plus"></span></button>
+        </span>
+      </div>
+      <div class="set-row" id="split-row">
+        <span><b data-i18n="splitView"></b><span class="hint-text" data-i18n="splitHint"></span></span>
+        <button class="switch" id="split-switch" role="switch" aria-checked="true" data-action="split-toggle" data-i18n-label="splitView"></button>
+      </div>
+    </div>
+
+    <div class="pop glass glass--strong" data-glass data-blur="8" id="info-pop" role="dialog" data-i18n-label="songInfo">
+      <dl class="info-list" id="info-list"></dl>
+    </div>
+
+    <div class="pop glass glass--strong" data-glass data-blur="8" id="pick-pop" role="dialog" data-i18n-label="choosePane">
+      <h2 id="pick-title"></h2>
+      <div class="pick-list" id="pick-list"></div>
+    </div>
+
+    <div class="pop glass glass--strong" data-glass data-blur="8" id="view-pop" role="dialog" data-i18n-label="more">
+      <button class="menu-row" style="margin-top: 0" data-action="present"><span data-icon="tv"></span><span data-i18n="present"></span></button>
+      <button class="menu-row show-xs" data-action="copy"><span data-icon="link"></span><span data-i18n="copyLink"></span></button>
+      <div class="group" style="margin-top: 16px">
+        <h2 data-i18n="appearance"></h2>
+        <div class="seg" id="theme-seg" role="group" data-i18n-label="appearance">
+          <span class="thumb" aria-hidden="true"></span>
+          <button data-value="dark" data-i18n="dark"></button>
+          <button data-value="light" data-i18n="light"></button>
+          <button data-value="system" data-i18n="system"></button>
+        </div>
+      </div>
+      <div class="group">
+        <h2 data-i18n="language"></h2>
+        <div class="seg" id="lang-seg" role="group" data-i18n-label="language">
+          <span class="thumb" aria-hidden="true"></span>
+          <button data-value="en">English</button>
+          <button data-value="zh-Hant" lang="zh-Hant">繁體中文</button>
+        </div>
+      </div>
+      <p class="wake-note" id="wake-note"><i></i><span id="wake-text"></span></p>
+      <div class="demo-row">
+        <span><b data-i18n="glassDemo"></b><span id="glass-mode"></span></span>
+        <button class="switch" id="refract-switch" role="switch" aria-checked="true" data-action="refract-toggle" data-i18n-label="glassDemo"></button>
+      </div>
+    </div>
+
+    <div class="toast glass glass--strong" data-glass data-blur="6" id="toast" role="status" aria-live="polite">
+      <span data-icon="check"></span><span id="toast-text"></span>
+    </div>
+
+    <div class="present" id="present" role="dialog" aria-modal="true" aria-labelledby="p-heading" hidden>
+      <div class="p-top">
+        <span id="p-song"></span>
+        <div class="p-ctrls">
+          <span class="glass" data-glass data-blur="6"><span data-i18n="showChords"></span><button class="switch" id="p-chords" role="switch" aria-checked="false" data-action="p-chords" data-i18n-label="showChords"></button></span>
+          <button class="glass" data-glass data-blur="6" data-action="p-exit"><span data-icon="close"></span><span data-i18n="exit"></span></button>
+        </div>
+        <span class="where" id="p-where"></span>
+      </div>
+      <div class="p-stage" id="p-stage"></div>
+      <div class="p-foot">
+        <span class="next" id="p-next"></span>
+        <span class="strip" id="p-strip" aria-hidden="true"></span>
+      </div>
+    </div>
+
+    <script>
+      // ---------- Icons: pixelarticons 2.4.1 (MIT), inlined ----------
+      const ICONS = {
+        'tv': 'M4 3h16v2H4zM2 5h2v10H2zm2 10h16v2H4zM20 5h2v10h-2zM6 19h12v2H6zm3-2h2v2H9zm4 0h2v2h-2z',
+        'play': 'M15 11h-2V9h2zm0 4h-2v-2h2zm-2 2h-2v-2h2zm0-8h-2V7h2zm-2-2H9V5h2zM9 21H7V3h2zm6-8h2v-2h-2zm-6 4h2v2H9z',
+        'pause': 'M10 20H4V4h6v16Zm8-16v16h-6V4h6Zm-4 2v12h2V6h-2ZM6 18h2V6H6v12Z',
+        'chevron-down': 'M13 16h-2v-2h2v2Zm-2-2H9v-2h2v2Zm4 0h-2v-2h2v2Zm-6-2H7v-2h2v2Zm8 0h-2v-2h2v2ZM7 10H5V8h2v2Zm12 0h-2V8h2v2Z',
+        'chevron-left': 'M8 13v-2h2v2H8Zm2-2V9h2v2h-2Zm0 4v-2h2v2h-2Zm2-6V7h2v2h-2Zm0 8v-2h2v2h-2Zm2-10V5h2v2h-2Zm0 12v-2h2v2h-2Z',
+        'chevron-right': 'M16 13v-2h-2v2h2Zm-2-2V9h-2v2h2Zm0 4v-2h-2v2h2Zm-2-6V7h-2v2h2Zm0 8v-2h-2v2h2ZM10 7V5H8v2h2Zm0 12v-2H8v2h2Z',
+        link: 'M4 6h7v2H4zm0 10h7v2H4zM2 8h2v8H2zm18-2h-7v2h7zm0 10h-7v2h7zm2-8h-2v8h2zM7 11h10v2H7z',
+        sliders: 'M8 14H7v6H5v-6H2v-2h6v2Zm5 6h-2V10h2v10Zm9-2h-3v2h-2v-2h-1v-2h6v2Zm-3-4h-2V4h2v10ZM7 10H5V4h2v6Zm6-4h2v2H9V6h2V4h2v2Z',
+        'circle-info': 'M18 22H6V20H18V22ZM6 20H4V18H6V20ZM20 20H18V18H20V20ZM4 18H2V6H4V18ZM22 18H20V6H22V18ZM13 17H11V11H13V17ZM13 9H11V7H13V9ZM6 6H4V4H6V6ZM20 6H18V4H20V6ZM18 4H6V2H18V4Z',
+        close: 'M7 19H5V17H7V19ZM19 19H17V17H19V19ZM9 15V17H7V15H9ZM17 17H15V15H17V17ZM11 15H9V13H11V15ZM15 15H13V13H15V15ZM13 13H11V11H13V13ZM11 11H9V9H11V11ZM15 11H13V9H15V11ZM9 9H7V7H9V9ZM17 9H15V7H17V9ZM7 7H5V5H7V7ZM19 7H17V5H19V7Z',
+        minus: 'M4 11h16v2H4z',
+        plus: 'M13 11h7v2h-7v7h-2v-7H4v-2h7V4h2v7Z',
+        check: 'M10 18H8v-2h2v2Zm-2-2H6v-2h2v2Zm4-2v2h-2v-2h2Zm-6 0H4v-2h2v2Zm8 0h-2v-2h2v2Zm2-2h-2v-2h2v2Zm2-2h-2V8h2v2Zm2-2h-2V6h2v2Z',
+        'text-colums': 'M11 19H3v-2h8v2Zm10 0h-8v-2h8v2Zm-10-4H3v-2h8v2Zm10 0h-8v-2h8v2Zm-10-4H3V9h8v2Zm10 0h-8V9h8v2ZM11 7H3V5h8v2Zm10 0h-8V5h8v2Z',
+      };
+      const icon = (name) =>
+        `<svg class="px" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="${ICONS[name]}"/></svg>`;
+
+      // The Praise Room mark until a logo exists: a 3x3 pixel cross of light, one pixel per beat.
+      document.getElementById('mark').innerHTML =
+        '<svg viewBox="0 0 12 12" fill="currentColor"><rect x="4" y="0" width="4" height="4"/><rect x="0" y="4" width="4" height="4" opacity=".55"/><rect x="4" y="4" width="4" height="4"/><rect x="8" y="4" width="4" height="4" opacity=".55"/><rect x="4" y="8" width="4" height="4" opacity=".8"/></svg>';
+
+      // ---------- Copy ----------
+      const COPY = {
+        en: {
+          setlist: 'Setlist', songs: (n) => `${n} songs`, changeSongs: 'Change songs', previous: 'Previous song',
+          next: 'Next song', key: 'Key', chooseKey: 'Play in', originalHint: 'Original key', lyrics: 'Lyrics',
+          chords: 'Chords', show: 'Show', notation: 'Chord notation', numbers: 'Numbers', letters: 'Letters',
+          textSize: 'Text size', smaller: 'Smaller', larger: 'Larger', copyLink: 'Copy link', linkCopied: 'Link copied',
+          signIn: 'Sign in', signInMock: 'Sign-in isn’t part of this mock', more: 'More', appearance: 'Appearance',
+          dark: 'Dark', light: 'Light', system: 'System', language: 'Language', songInfo: 'Song details',
+          artist: 'Artist', originalKey: 'Original key', tempo: 'Tempo', time: 'Time', themes: 'Themes', close: 'Close',
+          upNext: 'Up next', endOfSet: 'End of the set', credit: 'Shared with Praise Room', noLyrics: 'No lyrics yet.',
+          glassDemo: 'Refraction (mock only)', glassRefract: 'Lens edges on (Chromium)', glassFrost: 'Frosted glass',
+          glassUnsupported: 'Frosted: this browser can’t refract', reading: 'Reading', autoScroll: 'Auto-scroll',
+          autoHint: 'Stops when you touch', slower: 'Slower', faster: 'Faster', splitView: 'Split view',
+          splitHint: 'Two songs side by side', present: 'Present to TV', exit: 'Exit', showChords: 'Show chords',
+          keepScrolling: 'Keep scrolling to start it', editOrder: 'Edit order', done: 'Done', yourOrder: 'Your order',
+          resetOrder: 'Reset to leader’s order', orderNote: 'Only changes this device', followSet: 'Next song (follow the set)',
+          pinned: 'Pinned', nextLabel: 'Next', now: 'Now', start: 'Start', choosePane: 'Choose a song',
+          chooseLeft: 'Play now', chooseRight: 'Show beside it', sections: 'Sections', section: 'Section',
+          screenAwake: 'Screen stays awake while this is open', awakeOff: 'This browser may let the screen sleep',
+          songOf: (i, n) => `Song ${i} of ${n}`, nextSong: 'Next song', moveSong: (s) => `Move ${s}`,
+          presentNext: 'Next', presentEnd: 'End of the set',
+        },
+        'zh-Hant': {
+          setlist: '歌單', songs: (n) => `${n} 首詩歌`, changeSongs: '切換詩歌', previous: '上一首', next: '下一首',
+          key: '調', chooseKey: '轉調', originalHint: '原調', lyrics: '歌詞', chords: '和弦', show: '顯示',
+          notation: '和弦標記', numbers: '數字', letters: '字母', textSize: '字體大小', smaller: '縮小', larger: '放大',
+          copyLink: '複製連結', linkCopied: '已複製連結', signIn: '登入', signInMock: '此示範未包含登入', more: '更多',
+          appearance: '外觀', dark: '深色', light: '淺色', system: '系統', language: '語言', songInfo: '詩歌資料',
+          artist: '作者', originalKey: '原調', tempo: '速度', time: '拍子', themes: '主題', close: '關閉',
+          upNext: '下一首', endOfSet: '歌單完結', credit: '由 Praise Room 分享', noLyrics: '暫時未有歌詞。',
+          glassDemo: '折射效果（示範用）', glassRefract: '鏡片邊緣（Chromium）', glassFrost: '磨砂玻璃',
+          glassUnsupported: '磨砂：此瀏覽器不支援折射', reading: '閱讀設定', autoScroll: '自動捲動',
+          autoHint: '觸碰即停', slower: '減慢', faster: '加快', splitView: '分屏顯示', splitHint: '兩首詩歌並排',
+          present: '投放到電視', exit: '離開', showChords: '顯示和弦', keepScrolling: '繼續捲動即開始',
+          editOrder: '調整次序', done: '完成', yourOrder: '你的次序', resetOrder: '還原領詩者次序',
+          orderNote: '只影響這部裝置', followSet: '下一首（跟隨歌單）', pinned: '已固定', nextLabel: '下一首',
+          now: '現在', start: '開始', choosePane: '選擇詩歌', chooseLeft: '現在唱', chooseRight: '並排顯示',
+          sections: '段落', section: '段落', screenAwake: '開啟期間螢幕保持亮着', awakeOff: '此瀏覽器或會令螢幕休眠',
+          songOf: (i, n) => `第 ${i} 首，共 ${n} 首`, nextSong: '下一首', moveSong: (s) => `移動 ${s}`,
+          presentNext: '下一句', presentEnd: '歌單完結',
+        },
+      };
+
+      // ---------- Sample data (public-domain hymns + one synthetic demo song) ----------
+      const SETLIST = {
+        name: 'Sunday Morning Worship',
+        date: '2026-10-25',
+        songs: [
+          { title: 'Holy, Holy, Holy', artist: 'Reginald Heber', originalKey: 'D', tempo: 'Medium', time: '4/4', themes: 'Holiness, Trinity',
+            lyrics: `{Verse 1}\n[D]Holy, holy, [Bm]holy! [G]Lord God Al[D]mighty!\n[D]Early in the [G]morning our [A]song shall rise to [D]Thee;\n[D]Holy, holy, [Bm]holy! [G]Merciful and [D]mighty!\n[Bm]God in three [G]Persons, [D]bless[A]ed Trini[D]ty!\n\n{Verse 2}\n[D]Holy, holy, [Bm]holy! All the [G]saints a[D]dore Thee,\n[D]Casting down their [G]golden crowns a[A]round the glassy [D]sea;\n[D]Cherubim and [Bm]seraphim [G]falling down be[D]fore Thee,\n[Bm]Which wert, and [G]art, and [D]ever[A]more shalt [D]be.` },
+          { title: 'Amazing Grace', artist: 'John Newton', originalKey: 'G', setKey: 'A', tempo: 'Slow', time: '3/4', themes: 'Grace',
+            lyrics: `{Verse 1}\nA[G]mazing grace! How [G7]sweet the [C]sound\nThat [G]saved a wretch like [D]me!\nI [G]once was lost, but [G7]now am [C]found;\nWas [G]blind, but [D]now I [G]see.\n\n{Verse 2}\n'Twas [G]grace that taught my [G7]heart to [C]fear,\nAnd [G]grace my fears re[D]lieved;\nHow [G]precious did that [G7]grace ap[C]pear\nThe [G]hour I [D]first be[G]lieved.\n\n{Verse 3}\nThrough [G]many dangers, [G7]toils and [C]snares,\nI [G]have already [D]come;\n'Tis [G]grace hath brought me [G7]safe thus [C]far,\nAnd [G]grace will [D]lead me [G]home.` },
+          { title: 'Be Thou My Vision', artist: 'Traditional Irish', originalKey: 'Eb', tempo: 'Slow', time: '3/4', themes: 'Devotion',
+            lyrics: `{Verse 1}\n[Eb]Be Thou my [Ab]Vision, O [Eb]Lord of my [Bb]heart;\n[Cm]Naught be all [Bb]else to me, [Eb]save that Thou [Bb]art.\n[Eb]Thou my best [Gm]Thought, by [Ab]day or by [Bb]night,\n[Ab]Waking or [Eb]sleeping, Thy [Bb]presence my [Eb]light.\n\n{Verse 2}\n[Eb]Be Thou my [Ab]Wisdom, and [Eb]Thou my true [Bb]Word;\n[Cm]I ever [Bb]with Thee and [Eb]Thou with me, [Bb]Lord.` },
+          { title: '晨光讚美（示範）', artist: 'Praise Room 示範資料', originalKey: 'A', tempo: 'Medium', time: '4/4', themes: '讚美',
+            lyrics: `{主歌}\n[A]我要歌唱 [D]讚美祢[A]名\n[F#m]在祢面前 [D]我心安[E]寧\n[A]晨光初現 [D]祢恩常[A]新\n[D]一生跟[E]隨 不離[A]棄\n\n{副歌}\n[D]哈利[E]路亞 [C#m]讚美[F#m]主\n[D]祢的[E]慈愛 [A]永長[A7]存\n[D]哈利[E]路亞 [C#m]讚美[F#m]主\n[Bm]一生[E]敬拜 [A]祢` },
+          { title: 'Doxology', artist: 'Thomas Ken', originalKey: 'G', tempo: 'Medium', time: '4/4', themes: 'Praise',
+            lyrics: `{Doxology}\n[G]Praise God, from [D]whom all [Em]blessings [C]flow;\n[G]Praise Him, all [Am]creatures [D]here be[G]low;\n[G]Praise Him a[D]bove, ye [Em]heavenly [C]host;\n[G]Praise Father, [C]Son, and [D]Holy [G]Ghost.` },
+        ],
+      };
+
+      // ---------- Music theory (mirrors src/features/chords in the app) ----------
+      const PC = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+      const SHARPS = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+      const FLATS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'];
+      const MAJOR_NAMES = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'];
+      const MINOR_NAMES = ['Cm', 'C#m', 'Dm', 'Ebm', 'Em', 'Fm', 'F#m', 'Gm', 'G#m', 'Am', 'Bbm', 'Bm'];
+      const DEGREES = ['1', 'b2', '2', 'b3', '3', '4', 'b5', '5', 'b6', '6', 'b7', '7'];
+
+      const parseNote = (s) => {
+        const m = /^([A-G])([#b]?)/.exec(s);
+        if (!m) return null;
+        return { pc: (PC[m[1]] + (m[2] === '#' ? 1 : m[2] === 'b' ? 11 : 0)) % 12, len: m[0].length };
+      };
+      const parseKey = (s) => {
+        const n = parseNote(s);
+        return n ? { root: n.pc, minor: s.slice(n.len) === 'm' } : null;
+      };
+      const keyName = (k) => (k.minor ? MINOR_NAMES : MAJOR_NAMES)[k.root];
+      const prefersFlats = (k) => keyName(k).includes('b') || (!k.minor && k.root === 5) || (k.minor && [0, 2, 5, 7].includes(k.root));
+
+      const splitChord = (chord) => {
+        const m = /^([A-G][#b]?)([^/]*)(?:\/([A-G][#b]?))?$/.exec(chord);
+        return m ? { root: m[1], quality: m[2], bass: m[3] } : null;
+      };
+      const transposeChord = (chord, semis, flats) => {
+        const p = splitChord(chord);
+        if (!p) return chord;
+        const names = flats ? FLATS : SHARPS;
+        const move = (n) => names[(parseNote(n).pc + semis + 12) % 12];
+        return move(p.root) + p.quality + (p.bass ? '/' + move(p.bass) : '');
+      };
+      const numberChord = (chord, key) => {
+        const p = splitChord(chord);
+        if (!p) return chord;
+        const deg = (n) => DEGREES[(parseNote(n).pc - key.root + 12) % 12];
+        const q = p.quality;
+        const minor = /^m(?!aj)/.test(q);
+        const rest = minor ? q.slice(1) : q;
+        return `${deg(p.root)}${minor ? 'm' : ''}${rest ? `<sup>${escapeHtml(rest)}</sup>` : ''}${p.bass ? '/' + deg(p.bass) : ''}`;
+      };
+      const signed = (from, to) => ((to.root - from.root + 18) % 12) - 6;
+
+      // ---------- Lyrics parsing ----------
+      const escapeHtml = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+      const parseLyrics = (text) => {
+        const sections = [];
+        let cur = null;
+        for (const raw of text.split('\n')) {
+          const label = /^\{(.+)\}$/.exec(raw.trim());
+          if (label) {
+            cur = { label: label[1], lines: [] };
+            sections.push(cur);
+            continue;
+          }
+          if (!cur) sections.push((cur = { label: null, lines: [] }));
+          const segs = [];
+          const re = /\[([^\]]+)\]/g;
+          let last = 0;
+          let chord = null;
+          let m;
+          while ((m = re.exec(raw))) {
+            if (m.index > last || chord !== null) segs.push({ chord, lyric: raw.slice(last, m.index) });
+            chord = m[1];
+            last = re.lastIndex;
+          }
+          if (last < raw.length || chord !== null) segs.push({ chord, lyric: raw.slice(last) });
+          cur.lines.push(segs.filter((s) => s.chord !== null || s.lyric !== ''));
+        }
+        for (const s of sections) {
+          while (s.lines.length && s.lines[0].length === 0) s.lines.shift();
+          while (s.lines.length && s.lines.at(-1).length === 0) s.lines.pop();
+        }
+        return sections.filter((s) => s.lines.length);
+      };
+
+      // ---------- State ----------
+      const store = {
+        get(k, fallback) {
+          try {
+            const v = localStorage.getItem('pr-mock-' + k);
+            return v === null ? fallback : JSON.parse(v);
+          } catch {
+            return fallback;
+          }
+        },
+        set(k, v) {
+          try {
+            localStorage.setItem('pr-mock-' + k, JSON.stringify(v));
+          } catch {}
+        },
+      };
+      const SIZES = ['1rem', '1.125rem', '1.375rem', '1.625rem', '2rem'];
+      const SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 2, 2.5, 3];
+      const browserLang = (navigator.language || 'en').toLowerCase().startsWith('zh') ? 'zh-Hant' : 'en';
+      const N = SETLIST.songs.length;
+      const identity = SETLIST.songs.map((_, i) => i);
+      const savedOrder = store.get('order', null);
+      const validOrder = (o) => Array.isArray(o) && o.length === N && identity.every((i) => o.includes(i));
+      const state = {
+        order: validOrder(savedOrder) ? savedOrder : identity.slice(),
+        pos: 0,
+        mode: store.get('mode', 'chords'),
+        notation: store.get('notation', 'letters'),
+        size: store.get('size', 1),
+        theme: store.get('theme', 'dark'),
+        lang: store.get('lang', browserLang),
+        refract: store.get('refract', true),
+        split: store.get('split', true),
+        speed: store.get('speed', 2),
+        auto: false,
+        autoShown: false,
+        chosen: {},
+        pin: null,
+        editing: false,
+      };
+      const startSong = Math.min(Math.max(Number(new URLSearchParams(location.search).get('song')) || 2, 1), N) - 1;
+      state.pos = state.order.indexOf(startSong);
+
+      const t = (k, ...a) => {
+        const v = COPY[state.lang][k];
+        return typeof v === 'function' ? v(...a) : v;
+      };
+      const $ = (id) => document.getElementById(id);
+      const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const songAt = (p) => state.order[p];
+      const cur = () => songAt(state.pos);
+      const isCustomOrder = () => state.order.some((s, i) => s !== i);
+      const nextNatural = () => (state.pos < N - 1 ? songAt(state.pos + 1) : null);
+      const rightSong = () => (state.pin !== null ? state.pin : nextNatural());
+      const splitMQ = matchMedia('(min-width: 900px) and (orientation: landscape)');
+      const inSplit = () => state.split && splitMQ.matches;
+      const scroller = () => (inSplit() ? $('pane-left') : document.scrollingElement);
+
+      const songKeys = (si) => {
+        const song = SETLIST.songs[si];
+        const original = parseKey(song.originalKey);
+        const chosen = state.chosen[si];
+        const play = chosen !== undefined ? { root: chosen, minor: original.minor } : parseKey(song.setKey || song.originalKey);
+        return { original, play };
+      };
+
+      // ---------- Rendering ----------
+      const dateLabel = () =>
+        new Intl.DateTimeFormat(state.lang === 'zh-Hant' ? 'zh-HK' : 'en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(SETLIST.date + 'T00:00:00'));
+
+      const chordRenderer = (si) => {
+        const { original, play } = songKeys(si);
+        const semis = (play.root - original.root + 12) % 12;
+        const flats = prefersFlats(play);
+        return (c) => (state.notation === 'numbers' ? numberChord(c, original) : escapeHtml(transposeChord(c, semis, flats)));
+      };
+
+      const lineHtml = (chordsOn, rc) => (segs) => {
+        if (!segs.length) return '<div class="gap" aria-hidden="true"></div>';
+        const hasChords = segs.some((s) => s.chord);
+        if (!chordsOn || !hasChords) {
+          const text = segs.map((s) => s.lyric).join('');
+          return text.trim() ? `<p class="line plain">${escapeHtml(text)}</p>` : '';
+        }
+        return `<p class="line has-chords">${segs
+          .map((s) => `<span class="seg-word"><span class="ch">${s.chord ? rc(s.chord) : ''}</span><span class="ly">${s.lyric ? escapeHtml(s.lyric) : ' '}</span></span>`)
+          .join('')}</p>`;
+      };
+
+      const lyricsHtml = (si, { limit = Infinity, ids = '' } = {}) => {
+        const sections = parseLyrics(SETLIST.songs[si].lyrics).slice(0, limit);
+        if (!sections.length) return `<p class="no-lyrics">${t('noLyrics')}</p>`;
+        const chordsOn = state.mode === 'chords';
+        const line = lineHtml(chordsOn, chordRenderer(si));
+        return `<div class="lyrics ${chordsOn ? 'chords-on' : ''}">${sections
+          .map((sec, k) => `<section${ids ? ` id="${ids}-${k}"` : ''}>${sec.label ? `<h3>${escapeHtml(sec.label)}</h3>` : ''}${sec.lines.map(line).join('')}</section>`)
+          .join('')}</div>`;
+      };
+
+      const offsetLabel = (off) => (off === 0 ? '0' : `${off > 0 ? '+' : '−'}${Math.abs(off)}`);
+
+      // The key, lyrics/chords and notation controls, for the current song only.
+      const controlsHtml = (si, ghost = false) => {
+        const { original, play } = songKeys(si);
+        const off = signed(original, play);
+        const id = (x) => (ghost ? '' : ` id="${x}"`);
+        return `<div class="controls${ghost ? ' ghost' : ''}"${ghost ? ' aria-hidden="true" inert' : ''}>
+          <div class="glass" data-glass data-blur="2"${id('key-wrap')}${state.mode === 'chords' ? '' : ' hidden'}>
+            <button class="key-btn"${id('key-btn')} data-action="key" aria-haspopup="dialog" aria-expanded="false" aria-label="${t('key')} ${keyName(play)}">
+              <span class="k-label">${t('key')}</span><span class="k-name">${keyName(play)}</span><span class="offset" data-zero="${off === 0}">${offsetLabel(off)}</span>
+            </button>
+          </div>
+          <div class="glass" data-glass data-blur="2">
+            <div class="seg"${id('mode-seg')} role="group" aria-label="${t('show')}">
+              <span class="thumb" aria-hidden="true"></span>
+              <button data-value="lyrics" data-seg="mode">${t('lyrics')}</button>
+              <button data-value="chords" data-seg="mode">${t('chords')}</button>
+            </div>
+          </div>
+          <div class="glass" data-glass data-blur="2"${state.mode === 'chords' ? '' : ' hidden'}>
+            <div class="seg nums"${id('notation-seg')} role="group" aria-label="${t('notation')}">
+              <span class="thumb" aria-hidden="true"></span>
+              <button data-value="numbers" data-seg="notation" aria-label="${t('numbers')}">1 4 5</button>
+              <button data-value="letters" data-seg="notation" aria-label="${t('letters')}">A B C</button>
+            </div>
+          </div>
+        </div>`;
+      };
+
+      const songHeadHtml = (si, { ghost = false, jumpTarget = 'sec' } = {}) => {
+        const song = SETLIST.songs[si];
+        const secs = parseLyrics(song.lyrics);
+        const level = ghost ? 'h2' : 'h1';
+        return `<header class="song-head">
+          <div class="title-row">
+            <${level}${ghost ? '' : ' id="song-title"'}>${escapeHtml(song.title)}</${level}>
+            ${ghost ? '' : `<button class="tap" data-action="info" aria-haspopup="dialog" aria-expanded="false" aria-label="${t('songInfo')}" title="${t('songInfo')}">${icon('circle-info')}</button>`}
+          </div>
+          <p class="artist">${escapeHtml(song.artist)}</p>
+          ${ghost ? '' : controlsHtml(si)}
+          ${
+            !ghost && secs.length > 1
+              ? `<nav class="jump${ghost ? ' ghost' : ''}" aria-label="${t('sections')}"${ghost ? ' aria-hidden="true" inert' : ''}>${secs
+                  .map((s, k) => `<button data-jump="${jumpTarget}-${k}">${escapeHtml(s.label || `${t('section')} ${k + 1}`)}</button>`)
+                  .join('')}</nav>`
+              : ''
+          }
+        </header>`;
+      };
+
+      const endHtml = () =>
+        `<div class="end-set"><span class="row" aria-hidden="true">${state.order.map(() => '<i></i>').join('')}</span><span>${t('endOfSet')}</span></div>`;
+
+      // Portrait: one song, then the next song's opening flows on, dimmed.
+      const renderScroll = () => {
+        const si = cur();
+        $('scroll-song').innerHTML = songHeadHtml(si) + lyricsHtml(si, { ids: 'sec' });
+        const nx = nextNatural();
+        if (nx === null) {
+          $('flow').innerHTML = endHtml();
+          return;
+        }
+        const { play } = songKeys(nx);
+        $('flow').innerHTML = `<button class="flow-head" data-action="next">
+            <span class="pixel" aria-hidden="true"></span>
+            <span style="min-width: 0"><small>${t('upNext')} · ${state.pos + 2}/${N}</small><strong>${escapeHtml(SETLIST.songs[nx].title)}</strong></span>
+            <span class="k">${keyName(play)}</span>
+          </button>
+          <div class="flow-body" id="flow-body" aria-hidden="true">${lyricsHtml(nx, { limit: 1 })}</div>
+          <p class="flow-hint">↓ ${t('keepScrolling')}</p>
+          <div class="flow-spacer" aria-hidden="true"></div>`;
+      };
+
+      // Wide: now on the left, next (or a pinned song) on the right.
+      const renderSplit = () => {
+        const L = cur();
+        const R = rightSong();
+        $('pane-left').innerHTML = `<div class="pane-row">
+            <button class="pane-pick" data-action="pick" data-side="left" aria-haspopup="dialog" aria-expanded="false">${t('now')} · ${state.pos + 1}/${N}${icon('chevron-down')}</button>
+          </div>${songHeadHtml(L, { jumpTarget: 'psec' })}${lyricsHtml(L, { ids: 'psec' })}`;
+        if (R === null) {
+          $('pane-right').innerHTML = `<div class="pane-row">
+              <button class="pane-pick" data-action="pick" data-side="right" aria-haspopup="dialog" aria-expanded="false">${t('nextLabel')}${icon('chevron-down')}</button>
+            </div><div class="pane-end">${endHtml()}</div>`;
+          return;
+        }
+        const pinned = state.pin !== null;
+        $('pane-right').innerHTML = `<div class="pane-row">
+            <button class="pane-pick" data-action="pick" data-side="right" aria-haspopup="dialog" aria-expanded="false">${pinned ? '<span class="pin-dot" aria-hidden="true"></span>' + t('pinned') : t('nextLabel')} · ${state.order.indexOf(R) + 1}/${N}${icon('chevron-down')}</button>
+            <button class="start-btn" data-action="next">${t('start')}${icon('chevron-right')}</button>
+          </div><div class="pane-body">${songHeadHtml(R, { ghost: true })}${lyricsHtml(R)}</div>`;
+      };
+
+      const rowsHtml = () =>
+        state.order
+          .map((si, p) => {
+            const song = SETLIST.songs[si];
+            const k = songKeys(si).play;
+            const lead = state.editing
+              ? `<span class="grip" role="button" tabindex="0" data-grip aria-label="${escapeHtml(t('moveSong', song.title))}"></span>`
+              : '';
+            return `<li data-song="${si}"><${state.editing ? 'div' : 'button'} class="song-row${state.editing ? ' editing' : ''}" ${state.editing ? '' : `data-go="${p}"`} ${p === state.pos ? 'aria-current="true"' : ''}>
+              ${lead}<span class="pixel${p < state.pos ? ' played' : ''}" aria-hidden="true"></span>
+              <span class="num">${p + 1}</span>
+              <span class="title">${escapeHtml(song.title)}</span>
+              <span class="key">${keyName(k)}</span></${state.editing ? 'div' : 'button'}></li>`;
+          })
+          .join('');
+
+      const renderList = () => {
+        $('sheet-rows').innerHTML = rowsHtml();
+        $('edit-order').textContent = state.editing ? t('done') : t('editOrder');
+        const custom = isCustomOrder();
+        $('sheet-foot').hidden = !(state.editing || custom);
+        $('sheet-foot-text').textContent = custom ? t('yourOrder') + ' · ' + t('orderNote') : t('orderNote');
+        $('sheet-foot').querySelector('[data-action="reset-order"]').hidden = !custom;
+      };
+
+      const placeLens = () => {
+        const px = N > 14 ? 7 : N > 8 ? 10 : 12;
+        const gap = N > 14 ? 3 : N > 8 ? 5 : 6;
+        $('spectrum').style.setProperty('--px', px + 'px');
+        $('spectrum').style.setProperty('--px-gap', gap + 'px');
+        $('lens').style.transform = `translateX(${2 + state.pos * (px + gap) - 5}px)`;
+        document.documentElement.style.setProperty('--dock-min-w', N * (px + gap) - gap + 44 + 'px');
+      };
+
+      const renderDock = () => {
+        const si = cur();
+        $('spectrum').innerHTML =
+          state.order.map((_, p) => `<i class="${p === state.pos ? 'now' : p < state.pos ? 'played' : ''}"></i>`).join('') +
+          '<span class="lens glass" data-glass data-blur="0.4" data-bezel="5" id="lens"></span>';
+        placeLens();
+        Glass.watch($('lens'));
+        $('dock-count').textContent = `${state.pos + 1}/${N}`;
+        $('dock-name').textContent = SETLIST.songs[si].title;
+        $('spectrum-btn').setAttribute('aria-label', `${t('setlist')}: ${state.pos + 1} / ${N}, ${SETLIST.songs[si].title}`);
+        const target = rightSong();
+        $('prev').disabled = state.pos === 0;
+        $('next').disabled = target === null;
+        $('next-name').textContent = target === null ? '' : SETLIST.songs[target].title;
+        $('next').setAttribute('aria-label', target === null ? t('next') : `${t('next')}: ${SETLIST.songs[target].title}`);
+        $('order-chip').hidden = !isCustomOrder();
+      };
+
+      const renderBar = () => {
+        const si = cur();
+        $('bar-song').textContent = SETLIST.songs[si].title;
+        $('bar-key').textContent = keyName(songKeys(si).play);
+        $('bar-song-sub').textContent = `${state.pos + 1} / ${N} · ${SETLIST.name}`;
+      };
+
+      const renderStatic = () => {
+        document.documentElement.lang = state.lang === 'zh-Hant' ? 'zh-Hant' : 'en';
+        document.querySelectorAll('[data-icon]').forEach((el) => {
+          if (ICONS[el.dataset.icon]) el.outerHTML = icon(el.dataset.icon);
+        });
+        document.querySelectorAll('[data-i18n]').forEach((el) => (el.textContent = t(el.dataset.i18n)));
+        document.querySelectorAll('[data-i18n-label]').forEach((el) => {
+          el.setAttribute('aria-label', t(el.dataset.i18nLabel));
+          if (el.tagName === 'BUTTON' && !el.closest('.seg')) el.title = t(el.dataset.i18nLabel);
+        });
+        $('bar-setlist').textContent = SETLIST.name;
+        $('bar-date').textContent = dateLabel();
+        $('sheet-title').textContent = SETLIST.name;
+        $('sheet-meta').textContent = `${dateLabel()} · ${t('songs', N)}`;
+      };
+
+      // Re-observe the song header so the top bar can switch to the song once it scrolls away.
+      const headIO = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry) return;
+          const past = !entry.isIntersecting && entry.boundingClientRect.top < 80 && !inSplit();
+          document.body.classList.toggle('scrolled', past);
+          document.querySelector('.song-mode').setAttribute('aria-hidden', String(!past));
+        },
+        { rootMargin: '-80px 0px 0px 0px' }
+      );
+
+      // Flow on: once the next song's opening reaches the top third, it becomes the current song,
+      // re-rendered in place so the lines under the reader's eye don't move.
+      const flowIO = new IntersectionObserver(
+        (entries) => {
+          if (inSplit()) return;
+          for (const e of entries) {
+            if (e.target.id === 'flow-body' && e.isIntersecting && e.boundingClientRect.top < innerHeight * 0.34) commitFlow();
+            if (e.target.id === 'flow') document.documentElement.classList.toggle('named', e.isIntersecting || inSplit());
+          }
+        },
+        { rootMargin: '0px 0px -66% 0px' }
+      );
+      const nearIO = new IntersectionObserver(
+        ([e]) => {
+          if (!e || inSplit()) return;
+          document.documentElement.classList.toggle('named', e.isIntersecting);
+          if (e.isIntersecting) document.documentElement.classList.remove('dock-min');
+        },
+        { rootMargin: '0px 0px 0px 0px' }
+      );
+
+      const observe = () => {
+        headIO.disconnect();
+        flowIO.disconnect();
+        nearIO.disconnect();
+        const head = inSplit() ? null : document.querySelector('#scroll-song .song-head');
+        if (head) headIO.observe(head);
+        if (!inSplit()) {
+          const fb = $('flow-body');
+          if (fb) flowIO.observe(fb);
+          // "Named next" appears once the last section of the song is on screen.
+          const last = document.querySelector('#scroll-song .lyrics section:last-of-type') || $('flow');
+          nearIO.observe(last);
+        }
+        document.documentElement.classList.toggle('named', inSplit() && rightSong() !== null);
+      };
+
+      const render = () => {
+        const split = inSplit();
+        document.documentElement.classList.toggle('split', split);
+        if (split) {
+          document.body.classList.remove('scrolled');
+          document.documentElement.classList.remove('dock-min');
+          renderSplit();
+        } else {
+          renderScroll();
+          $('scroll-view').classList.toggle('two-col', innerWidth >= 1280);
+        }
+        renderBar();
+        renderDock();
+        renderList();
+        renderInfo();
+        renderKeyGrid();
+        document.querySelectorAll('[data-glass]').forEach((el) => Glass.watch(el));
+        syncSeg('mode-seg', state.mode);
+        syncSeg('notation-seg', state.notation);
+        observe();
+      };
+
+      const renderInfo = () => {
+        const song = SETLIST.songs[cur()];
+        $('info-list').innerHTML = [
+          [t('artist'), song.artist],
+          [t('originalKey'), song.originalKey],
+          [t('tempo'), song.tempo],
+          [t('time'), song.time],
+          [t('themes'), song.themes],
+        ]
+          .map(([k, v]) => `<dt>${k}</dt><dd>${escapeHtml(v)}</dd>`)
+          .join('');
+      };
+
+      const renderKeyGrid = () => {
+        const { original, play } = songKeys(cur());
+        $('key-grid').innerHTML = Array.from({ length: 12 }, (_, r) => {
+          const k = { root: r, minor: original.minor };
+          return `<button data-root="${r}" aria-pressed="${r === play.root}" ${r === original.root ? 'data-original="true"' : ''}>${keyName(k)}</button>`;
+        }).join('');
+      };
+
+      const syncSeg = (id, value) => {
+        const seg = $(id);
+        if (!seg) return;
+        const buttons = [...seg.querySelectorAll('button')];
+        buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.value === value)));
+        const on = buttons.find((b) => b.dataset.value === value);
+        const thumb = seg.querySelector('.thumb');
+        if (on && on.offsetWidth) {
+          const fresh = !thumb.style.transform;
+          if (fresh) thumb.style.transition = 'none';
+          thumb.style.width = on.offsetWidth + 'px';
+          thumb.style.transform = `translateX(${on.offsetLeft}px)`;
+          if (fresh) requestAnimationFrame(() => requestAnimationFrame(() => (thumb.style.transition = '')));
+        }
+        // Ghost copies in the right pane mirror the same state.
+        document.querySelectorAll(`.ghost .seg button[data-seg]`).forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.value === state[b.dataset.seg])));
+      };
+
+      const applyPrefs = () => {
+        const sys = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        document.documentElement.dataset.theme = state.theme === 'system' ? sys : state.theme;
+        document.documentElement.style.setProperty('--lyrics-size', SIZES[state.size]);
+        $('meter').innerHTML = SIZES.map((_, j) => `<i class="${j <= state.size ? 'on' : ''}" style="height:${10 + j * 4}px"></i>`).join('');
+        $('smaller').disabled = state.size === 0;
+        $('larger').disabled = state.size === SIZES.length - 1;
+        syncSeg('theme-seg', state.theme);
+        syncSeg('lang-seg', state.lang);
+        $('split-row').hidden = !splitMQ.matches;
+        $('split-switch').setAttribute('aria-checked', String(state.split));
+        Glass.enable(state.refract);
+        const sw = $('refract-switch');
+        sw.setAttribute('aria-checked', String(state.refract && Glass.supported));
+        sw.disabled = !Glass.supported;
+        $('glass-mode').textContent = !Glass.supported ? t('glassUnsupported') : state.refract ? t('glassRefract') : t('glassFrost');
+        renderAuto();
+        renderWake();
+      };
+
+      // ---------- Moving through the set ----------
+      const updateURL = () => {
+        const url = new URL(location.href);
+        url.searchParams.set('song', String(cur() + 1));
+        history.replaceState(null, '', url);
+      };
+
+      const enterAnim = (el, dir) => {
+        if (!dir || reduced()) return;
+        el.animate([{ opacity: 0, transform: `translateX(${dir * 28}px)`, filter: 'blur(6px)' }, { opacity: 1, transform: 'none', filter: 'none' }], {
+          duration: 520,
+          easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+        });
+      };
+
+      const go = (p, { seamless = false } = {}) => {
+        if (p < 0 || p >= N || p === state.pos) return;
+        const dir = p > state.pos ? 1 : -1;
+        if (state.pin !== null && songAt(p) === state.pin) state.pin = null;
+        state.pos = p;
+        updateURL();
+        closeAll();
+        render();
+        if (!inSplit() && !seamless) {
+          scrollTo({ top: 0, behavior: 'instant' });
+          enterAnim($('scroll-song'), dir);
+        }
+      };
+
+      // Advance by one: in the split, the right pane slides over to the left.
+      const advance = (dir) => {
+        if (inSplit()) {
+          if (dir > 0) {
+            const target = rightSong();
+            if (target === null) return;
+            slide(1, () => {
+              state.pos = state.order.indexOf(target);
+              state.pin = null;
+            });
+          } else {
+            if (state.pos === 0) return;
+            slide(-1, () => {
+              state.pos -= 1;
+              state.pin = null;
+            });
+          }
+          return;
+        }
+        go(state.pos + dir);
+      };
+
+      let sliding = false;
+      const slide = (dir, commit) => {
+        if (sliding) return;
+        const left = $('pane-left');
+        const right = $('pane-right');
+        const shift = right.getBoundingClientRect().left - left.getBoundingClientRect().left;
+        const finish = () => {
+          commit();
+          updateURL();
+          closeAll();
+          render();
+          left.scrollTop = 0;
+          right.scrollTop = 0;
+        };
+        if (reduced()) {
+          finish();
+          return;
+        }
+        sliding = true;
+        const opts = { duration: 520, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' };
+        const body = right.querySelector('.pane-body');
+        const anims =
+          dir > 0
+            ? [
+                left.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: `translateX(${-shift * 0.3}px)` }], opts),
+                right.animate([{ transform: 'none' }, { transform: `translateX(${-shift}px)` }], opts),
+                body && body.animate([{ opacity: 0.5 }, { opacity: 1 }], opts),
+              ]
+            : [
+                right.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: `translateX(${shift * 0.3}px)` }], opts),
+                left.animate([{ transform: 'none', opacity: 1 }, { transform: `translateX(${shift}px)`, opacity: 0.5 }], opts),
+              ];
+        Promise.all(anims.filter(Boolean).map((a) => a.finished)).then(() => {
+          finish();
+          anims.forEach((a) => a && a.cancel());
+          const incoming = dir > 0 ? right : left;
+          incoming.animate([{ opacity: 0, transform: `translateX(${dir * 40}px)` }, { opacity: 1, transform: 'none' }], {
+            duration: 420,
+            easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+          });
+          sliding = false;
+        });
+      };
+
+      const commitFlow = () => {
+        const fb = $('flow-body');
+        if (!fb || state.pos >= N - 1) return;
+        const y0 = fb.getBoundingClientRect().top;
+        go(state.pos + 1, { seamless: true });
+        const first = document.querySelector('#scroll-song .lyrics');
+        if (first) scrollTo({ top: first.getBoundingClientRect().top + scrollY - y0, behavior: 'instant' });
+      };
+
+      // ---------- Song picker (split) ----------
+      let pickSide = 'right';
+      const openPick = (side, trigger) => {
+        pickSide = side;
+        $('pick-title').textContent = side === 'left' ? t('chooseLeft') : t('chooseRight');
+        const follow =
+          side === 'right' ? `<button class="pick-follow" data-pick="follow" ${state.pin === null ? 'aria-current="true"' : ''}>${t('followSet')}</button>` : '';
+        const current = side === 'left' ? cur() : rightSong();
+        $('pick-list').innerHTML =
+          follow +
+          state.order
+            .map((si, p) => {
+              if (side === 'right' && si === cur()) return '';
+              const song = SETLIST.songs[si];
+              return `<button class="song-row" data-pick="${si}" ${si === current && !(side === 'right' && state.pin === null) ? 'aria-current="true"' : ''}>
+                <span class="pixel${p < state.pos ? ' played' : ''}" aria-hidden="true"></span><span class="num">${p + 1}</span>
+                <span class="title">${escapeHtml(song.title)}</span><span class="key">${keyName(songKeys(si).play)}</span></button>`;
+            })
+            .join('');
+        toggle($('pick-pop'), trigger);
+      };
+
+      // ---------- Auto-scroll ----------
+      let autoRaf = 0;
+      let autoLast = 0;
+      let autoAcc = 0;
+      const autoStep = (ts) => {
+        if (!state.auto) return;
+        const dt = autoLast ? Math.min((ts - autoLast) / 1000, 0.1) : 0;
+        autoLast = ts;
+        autoAcc += dt * 26 * SPEEDS[state.speed];
+        const whole = Math.floor(autoAcc);
+        if (whole) {
+          scroller().scrollTop += whole;
+          autoAcc -= whole;
+        }
+        autoRaf = requestAnimationFrame(autoStep);
+      };
+      const setAuto = (on) => {
+        state.auto = on;
+        if (on) state.autoShown = true;
+        cancelAnimationFrame(autoRaf);
+        autoLast = 0;
+        autoAcc = 0;
+        if (on) autoRaf = requestAnimationFrame(autoStep);
+        renderAuto();
+      };
+      const renderAuto = () => {
+        const label = `${SPEEDS[state.speed]}×`;
+        $('auto-speed').textContent = label;
+        $('pill-speed').textContent = label;
+        const glyph = icon(state.auto ? 'pause' : 'play');
+        $('auto-play').innerHTML = glyph;
+        $('pill-play').innerHTML = glyph;
+        $('auto-play').setAttribute('aria-pressed', String(state.auto));
+        $('auto-pill').hidden = !state.autoShown;
+        if (state.autoShown) Glass.refresh($('auto-pill'));
+      };
+
+      // ---------- Keep the screen awake ----------
+      const wakeSupported = 'wakeLock' in navigator;
+      let wake = null;
+      const requestWake = async () => {
+        if (!wakeSupported || document.visibilityState !== 'visible' || wake) return;
+        try {
+          wake = await navigator.wakeLock.request('screen');
+          wake.addEventListener('release', () => {
+            wake = null;
+            renderWake();
+          });
+        } catch {}
+        renderWake();
+      };
+      const renderWake = () => {
+        $('wake-note').classList.toggle('off', !wake);
+        $('wake-text').textContent = wake ? t('screenAwake') : t('awakeOff');
+      };
+
+      // ---------- Present (TV) ----------
+      const P = { slides: [], i: 0, chords: store.get('presentChords', false) };
+      const buildSlides = () => {
+        const out = [];
+        state.order.forEach((si, p) => {
+          out.push({ type: 'title', si, p });
+          parseLyrics(SETLIST.songs[si].lyrics).forEach((sec, k, all) => out.push({ type: 'sec', si, p, sec, k, total: all.length }));
+        });
+        return out;
+      };
+      const firstLine = (sec) => {
+        const segs = sec.lines.find((l) => l.some((s) => s.lyric.trim()));
+        return segs ? segs.map((s) => s.lyric).join('').trim() : '';
+      };
+      const openPresent = () => {
+        closeAll();
+        setAuto(false);
+        P.slides = buildSlides();
+        P.i = Math.max(0, P.slides.findIndex((s) => s.p === state.pos && s.type === 'title'));
+        $('present').hidden = false;
+        document.documentElement.classList.add('presenting');
+        document.documentElement.requestFullscreen?.().catch(() => {});
+        renderPresent();
+        $('present').querySelector('[data-action="p-exit"]').focus({ preventScroll: true });
+      };
+      const closePresent = () => {
+        if ($('present').hidden) return;
+        const s = P.slides[P.i];
+        $('present').hidden = true;
+        document.documentElement.classList.remove('presenting');
+        if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {});
+        if (s && s.p !== state.pos) go(s.p);
+      };
+      const stepPresent = (d) => {
+        P.i = Math.min(Math.max(P.i + d, 0), P.slides.length - 1);
+        renderPresent();
+      };
+      const renderPresent = () => {
+        const s = P.slides[P.i];
+        if (!s) return;
+        const song = SETLIST.songs[s.si];
+        $('p-song').textContent = song.title;
+        $('p-where').textContent = s.type === 'sec' && s.sec.label ? `${s.p + 1}/${N} · ${s.sec.label}` : `${s.p + 1}/${N}`;
+        $('p-chords').setAttribute('aria-checked', String(P.chords));
+        if (s.type === 'title') {
+          $('p-stage').innerHTML = `<div class="p-slide p-title"><small>${t('songOf', s.p + 1, N)}</small><h2 id="p-heading">${escapeHtml(song.title)}</h2><p>${escapeHtml(song.artist)}</p></div>`;
+        } else {
+          const line = lineHtml(P.chords, chordRenderer(s.si));
+          $('p-stage').innerHTML = `<div class="p-slide">${s.sec.label ? `<div class="p-label" id="p-heading">${escapeHtml(s.sec.label)}</div>` : ''}<div class="p-lines ${P.chords ? 'chords-on' : ''}">${s.sec.lines.map(line).join('')}</div></div>`;
+          fitPresent();
+        }
+        const nx = P.slides[P.i + 1];
+        $('p-next').textContent = !nx
+          ? t('presentEnd')
+          : nx.type === 'title'
+            ? `${t('nextSong')}: ${SETLIST.songs[nx.si].title}`
+            : `${t('presentNext')}: ${firstLine(nx.sec)}`;
+        $('p-strip').innerHTML = state.order.map((_, p) => `<i class="${p === s.p ? 'now' : p < s.p ? 'played' : ''}"></i>`).join('');
+      };
+      // Shrink the section until it fits the TV without scrolling.
+      const fitPresent = () => {
+        const stage = $('p-stage');
+        const lines = stage.querySelector('.p-lines');
+        if (!lines) return;
+        let size = Math.min(innerWidth * 0.042, 72);
+        lines.style.setProperty('--p-size', size + 'px');
+        while (stage.scrollHeight > stage.clientHeight + 1 && size > 18) {
+          size -= 2;
+          lines.style.setProperty('--p-size', size + 'px');
+        }
+      };
+
+      // ---------- Popovers ----------
+      let openPop = null;
+      let openTrigger = null;
+      const closeAll = () => {
+        if (openPop) openPop.dataset.open = 'false';
+        if (openTrigger) openTrigger.setAttribute('aria-expanded', 'false');
+        $('scrim').dataset.open = 'false';
+        const wasOpen = openTrigger;
+        openPop = openTrigger = null;
+        return wasOpen;
+      };
+      const toggle = (pop, trigger, placement = 'below') => {
+        if (openPop === pop) {
+          closeAll()?.focus();
+          return;
+        }
+        closeAll();
+        openPop = pop;
+        openTrigger = trigger;
+        trigger.setAttribute('aria-expanded', 'true');
+        $('scrim').dataset.open = 'true';
+        if (pop.classList.contains('pop')) {
+          const r = trigger.getBoundingClientRect();
+          pop.style.visibility = 'hidden';
+          pop.style.left = '0px';
+          pop.style.top = '0px';
+          const w = pop.offsetWidth;
+          const h = pop.offsetHeight;
+          pop.style.visibility = '';
+          let left = r.left + r.width / 2 - w / 2;
+          left = Math.min(Math.max(12, left), innerWidth - w - 12);
+          const top = placement === 'below' ? r.bottom + 10 : r.top - h - 10;
+          pop.style.left = left + 'px';
+          pop.style.top = Math.max(12, top) + 'px';
+          pop.style.setProperty('--origin', `${r.left + r.width / 2 - left}px ${placement === 'below' ? 0 : h}px`);
+        }
+        requestAnimationFrame(() => {
+          pop.dataset.open = 'true';
+          Glass.refresh(pop);
+          pop.querySelector('[aria-pressed="true"], button:not(:disabled)')?.focus({ preventScroll: true });
+        });
+      };
+
+      // ---------- Toast ----------
+      let toastTimer;
+      const showToast = (text) => {
+        $('toast-text').textContent = text;
+        $('toast').dataset.open = 'true';
+        Glass.refresh($('toast'));
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => ($('toast').dataset.open = 'false'), 1800);
+      };
+
+      // ---------- Liquid Glass engine ----------
+      // Hybrid. Every browser gets the CSS frosted stack. Chromium (the only engine that accepts an SVG
+      // filter in backdrop-filter) also gets bezel refraction: a displacement map derived from Snell's law
+      // over a convex-squircle bezel profile, plus a specular rim map.
+      // Iterated over archisvaze/liquid-glass:
+      //   - maps are cached by size + radius + bezel, so every same-size control shares one <filter>;
+      //   - only the bezel band is computed (top/bottom bands fully, middle rows only at the side strips),
+      //     about O(r·(w+h)) instead of O(w·h);
+      //   - the refraction profile is cached per (thickness, bezel, ior);
+      //   - ResizeObserver work is batched into one animation frame;
+      //   - the centre stays undisplaced, so text read through the glass stays straight;
+      //   - prefers-reduced-transparency drops to an opaque tint; no WebGL, no per-frame work.
+      const Glass = (() => {
+        const defs = document.getElementById('lg-defs');
+        const supported =
+          'userAgentData' in navigator &&
+          typeof CSS !== 'undefined' &&
+          CSS.supports('backdrop-filter', 'url(#lg)') &&
+          !matchMedia('(prefers-reduced-transparency: reduce)').matches;
+        const SURFACE = (x) => Math.pow(1 - Math.pow(1 - x, 4), 0.25);
+        const profiles = new Map();
+        const filters = new Map();
+        let enabled = false;
+
+        const profileFor = (thickness, bezel, ior) => {
+          const key = `${thickness}|${bezel}|${ior}`;
+          if (profiles.has(key)) return profiles.get(key);
+          const samples = 96;
+          const eta = 1 / ior;
+          const profile = new Float32Array(samples);
+          let maxDisp = 0;
+          for (let i = 0; i < samples; i++) {
+            const x = i / samples;
+            const y = SURFACE(x);
+            const dx = x < 1 ? 1e-4 : -1e-4;
+            const deriv = (SURFACE(x + dx) - y) / dx;
+            const mag = Math.hypot(deriv, 1);
+            const nx = -deriv / mag;
+            const ny = -1 / mag;
+            const k = 1 - eta * eta * (1 - ny * ny);
+            if (k < 0) continue;
+            const sq = Math.sqrt(k);
+            const rx = -(eta * ny + sq) * nx;
+            const ry = eta - (eta * ny + sq) * ny;
+            profile[i] = rx * ((y * bezel + thickness) / ry);
+            maxDisp = Math.max(maxDisp, Math.abs(profile[i]));
+          }
+          const out = { profile, maxDisp: maxDisp || 1 };
+          profiles.set(key, out);
+          return out;
+        };
+
+        const makeMaps = (w, h, r, bezel, profile, maxDisp) => {
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          const disp = ctx.createImageData(w, h);
+          new Uint32Array(disp.data.buffer).fill(0xff008080); // neutral: R=128 G=128 B=0 A=255
+          const spec = ctx.createImageData(w, h);
+          const dd = disp.data;
+          const sd = spec.data;
+          const rSq = r * r;
+          const r1Sq = (r + 1) * (r + 1);
+          const rBSq = Math.max(r - bezel, 0) ** 2;
+          const wB = w - 2 * r;
+          const hB = h - 2 * r;
+          const S = profile.length;
+          const specBezel = bezel * 2.5;
+          const lx = Math.cos(Math.PI / 3);
+          const ly = Math.sin(Math.PI / 3);
+
+          const px = (x1, y1) => {
+            const x = x1 < r ? x1 - r : x1 >= w - r ? x1 - r - wB : 0;
+            const y = y1 < r ? y1 - r : y1 >= h - r ? y1 - r - hB : 0;
+            const dSq = x * x + y * y;
+            if (dSq > r1Sq) return;
+            const dist = Math.sqrt(dSq);
+            if (dist === 0) return;
+            const op = dSq < rSq ? 1 : 1 - (dist - r) / (Math.sqrt(r1Sq) - r);
+            if (op <= 0) return;
+            const fromSide = r - dist;
+            const cos = x / dist;
+            const sin = y / dist;
+            const idx = (y1 * w + x1) * 4;
+            if (dSq >= rBSq) {
+              const disp = profile[Math.min(((fromSide / bezel) * S) | 0, S - 1)] || 0;
+              dd[idx] = (128 + ((-cos * disp) / maxDisp) * 127 * op + 0.5) | 0;
+              dd[idx + 1] = (128 + ((-sin * disp) / maxDisp) * 127 * op + 0.5) | 0;
+            }
+            if (fromSide < specBezel) {
+              const dot = Math.abs(cos * lx - sin * ly);
+              const edge = Math.sqrt(Math.max(0, 1 - (1 - Math.max(fromSide, 0)) ** 2));
+              const c = dot * edge;
+              const col = (255 * c) | 0;
+              sd[idx] = sd[idx + 1] = sd[idx + 2] = col;
+              sd[idx + 3] = (col * c * op) | 0;
+            }
+          };
+
+          const band = Math.ceil(Math.max(r, specBezel)) + 1;
+          for (let y1 = 0; y1 < h; y1++) {
+            if (y1 < band || y1 >= h - band) {
+              for (let x1 = 0; x1 < w; x1++) px(x1, y1);
+            } else {
+              const edge = Math.min(band, w);
+              for (let x1 = 0; x1 < edge; x1++) px(x1, y1);
+              for (let x1 = Math.max(w - band, edge); x1 < w; x1++) px(x1, y1);
+            }
+          }
+          ctx.putImageData(disp, 0, 0);
+          const dispUrl = canvas.toDataURL();
+          ctx.putImageData(spec, 0, 0);
+          return { dispUrl, specUrl: canvas.toDataURL() };
+        };
+
+        const filterFor = (w, h, r, bezel, blur) => {
+          const key = `${w}x${h}r${r}b${bezel}s${blur}`;
+          if (filters.has(key)) return filters.get(key);
+          const id = `lg-${filters.size}`;
+          const { profile, maxDisp } = profileFor(36, bezel, 1.5);
+          const { dispUrl, specUrl } = makeMaps(w, h, r, bezel, profile, maxDisp);
+          defs.insertAdjacentHTML(
+            'beforeend',
+            `<filter id="${id}" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="${blur}" result="b"/>
+              <feImage href="${dispUrl}" x="0" y="0" width="${w}" height="${h}" result="d"/>
+              <feDisplacementMap in="b" in2="d" scale="${maxDisp}" xChannelSelector="R" yChannelSelector="G" result="r"/>
+              <feColorMatrix in="r" type="saturate" values="1.8" result="rs"/>
+              <feImage href="${specUrl}" x="0" y="0" width="${w}" height="${h}" result="s"/>
+              <feComposite in="rs" in2="s" operator="in" result="sm"/>
+              <feComponentTransfer in="s" result="sf"><feFuncA type="linear" slope="0.55"/></feComponentTransfer>
+              <feBlend in="sm" in2="rs" mode="normal" result="w"/>
+              <feBlend in="sf" in2="w" mode="normal"/>
+            </filter>`
+          );
+          filters.set(key, id);
+          return id;
+        };
+
+        const apply = (el) => {
+          if (!enabled) return;
+          const w = el.offsetWidth;
+          const h = el.offsetHeight;
+          if (w < 4 || h < 4) return;
+          const cs = getComputedStyle(el);
+          const r = Math.floor(Math.min(parseFloat(cs.borderTopLeftRadius) || 0, w / 2, h / 2));
+          if (r < 3) return;
+          const bezel = Math.max(1, Math.min(Number(el.dataset.bezel) || Math.round(r * 0.6), 18, r - 1));
+          const blur = Number(el.dataset.blur ?? 3);
+          el.style.setProperty('--lg', `url(#${filterFor(w, h, r, bezel, blur)})`);
+        };
+
+        const pending = new Set();
+        let frame = 0;
+        const flush = () => {
+          frame = 0;
+          pending.forEach(apply);
+          pending.clear();
+        };
+        const queue = (el) => {
+          pending.add(el);
+          clearTimeout(frame);
+          frame = setTimeout(() => requestAnimationFrame(flush), 90);
+        };
+        const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver((entries) => entries.forEach((e) => queue(e.target)));
+        const watch = (el) => {
+          ro?.observe(el);
+          queue(el);
+        };
+        document.querySelectorAll('[data-glass]').forEach(watch);
+
+        return {
+          supported,
+          watch,
+          refresh: (el) => queue(el),
+          enable(on) {
+            enabled = Boolean(on && supported);
+            document.documentElement.classList.toggle('refract', enabled);
+            if (enabled) document.querySelectorAll('[data-glass]').forEach(queue);
+          },
+        };
+      })();
+
+      // ---------- Wiring ----------
+      const scrollPage = (d) => {
+        const el = scroller();
+        const h = el === document.scrollingElement ? innerHeight : el.clientHeight;
+        el.scrollBy({ top: d * h * 0.8, behavior: reduced() ? 'auto' : 'smooth' });
+      };
+
+      // One click handler for every [data-action], [data-seg], [data-jump], [data-go] and [data-pick].
+      document.addEventListener('click', (e) => {
+        const seg = e.target.closest('button[data-seg]');
+        if (seg && !seg.closest('.ghost')) {
+          state[seg.dataset.seg] = seg.dataset.value;
+          store.set(seg.dataset.seg, seg.dataset.value);
+          render();
+          return;
+        }
+        const jump = e.target.closest('[data-jump]');
+        if (jump && !jump.closest('.ghost')) {
+          $(jump.dataset.jump)?.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth', block: 'start' });
+          return;
+        }
+        const goBtn = e.target.closest('[data-go]');
+        if (goBtn) {
+          const p = Number(goBtn.dataset.go);
+          if (inSplit() && p === state.pos + 1 && state.pin === null) {
+            closeAll();
+            advance(1);
+          } else go(p);
+          return;
+        }
+        const pick = e.target.closest('[data-pick]');
+        if (pick) {
+          const v = pick.dataset.pick;
+          if (pickSide === 'right') {
+            const si = v === 'follow' ? null : Number(v);
+            state.pin = si === null || si === nextNatural() ? null : si;
+            closeAll();
+            render();
+          } else go(state.order.indexOf(Number(v)));
+          return;
+        }
+        const root = e.target.closest('#key-grid button[data-root]');
+        if (root) {
+          state.chosen[cur()] = Number(root.dataset.root);
+          render();
+          closeAll()?.focus();
+          return;
+        }
+        const el = e.target.closest('[data-action]');
+        if (!el) return;
+        const a = el.dataset.action;
+        if (a === 'next') advance(1);
+        else if (a === 'prev') advance(-1);
+        else if (a === 'list') {
+          renderList();
+          toggle($('sheet-list'), $('spectrum-btn'));
+        } else if (a === 'close') closeAll()?.focus();
+        else if (a === 'edit-order') {
+          state.editing = !state.editing;
+          renderList();
+        } else if (a === 'reset-order') {
+          const si = cur();
+          state.order = identity.slice();
+          state.pos = state.order.indexOf(si);
+          store.set('order', null);
+          render();
+        } else if (a === 'key') toggle($('key-pop'), el);
+        else if (a === 'info') toggle($('info-pop'), el);
+        else if (a === 'pick') openPick(el.dataset.side, el);
+        else if (a === 'copy') {
+          closeAll();
+          navigator.clipboard?.writeText(location.href).catch(() => {});
+          showToast(t('linkCopied'));
+        } else if (a === 'present') openPresent();
+        else if (a === 'smaller' || a === 'larger') {
+          state.size = Math.min(SIZES.length - 1, Math.max(0, state.size + (a === 'larger' ? 1 : -1)));
+          store.set('size', state.size);
+          applyPrefs();
+        } else if (a === 'auto-toggle') setAuto(!state.auto);
+        else if (a === 'auto-slower' || a === 'auto-faster') {
+          state.speed = Math.min(SPEEDS.length - 1, Math.max(0, state.speed + (a === 'auto-faster' ? 1 : -1)));
+          store.set('speed', state.speed);
+          renderAuto();
+        } else if (a === 'auto-close') {
+          state.autoShown = false;
+          setAuto(false);
+        } else if (a === 'split-toggle') {
+          state.split = !state.split;
+          store.set('split', state.split);
+          applyPrefs();
+          render();
+        } else if (a === 'refract-toggle') {
+          state.refract = !state.refract;
+          store.set('refract', state.refract);
+          applyPrefs();
+        } else if (a === 'p-exit') closePresent();
+        else if (a === 'p-chords') {
+          P.chords = !P.chords;
+          store.set('presentChords', P.chords);
+          renderPresent();
+        }
+      });
+
+      const bindSeg = (id, onPick) =>
+        $(id).addEventListener('click', (e) => {
+          const b = e.target.closest('button[data-value]');
+          if (b) onPick(b.dataset.value);
+        });
+      bindSeg('theme-seg', (v) => {
+        state.theme = v;
+        store.set('theme', v);
+        applyPrefs();
+      });
+      bindSeg('lang-seg', (v) => {
+        state.lang = v;
+        store.set('lang', v);
+        renderStatic();
+        render();
+        applyPrefs();
+        requestAnimationFrame(() => document.querySelectorAll('[data-glass]').forEach(Glass.refresh));
+      });
+
+      $('view-btn').onclick = () => toggle($('view-pop'), $('view-btn'));
+      $('read-btn').onclick = () => toggle($('read-pop'), $('read-btn'), 'above');
+      $('signin').onclick = () => showToast(t('signInMock'));
+      $('scrim').onclick = () => closeAll();
+
+      // Present: tap the right two thirds to go on, the left third to go back.
+      $('p-stage').addEventListener('click', (e) => stepPresent(e.clientX > innerWidth / 3 ? 1 : -1));
+      let ctrlTimer;
+      $('present').addEventListener('pointermove', () => {
+        $('present').classList.add('ctrls');
+        clearTimeout(ctrlTimer);
+        ctrlTimer = setTimeout(() => $('present').classList.remove('ctrls'), 2200);
+      });
+      document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement && !$('present').hidden) closePresent();
+      });
+
+      // Keyboard and Bluetooth page-turner pedals.
+      const isTyping = (el) => el instanceof HTMLElement && (el.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(el.tagName));
+      addEventListener('keydown', (e) => {
+        if (e.altKey || e.ctrlKey || e.metaKey || isTyping(e.target)) return;
+        if (!$('present').hidden) {
+          if (['ArrowRight', 'ArrowDown', 'PageDown', ' ', 'Enter'].includes(e.key)) {
+            e.preventDefault();
+            stepPresent(1);
+          } else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(e.key)) {
+            e.preventDefault();
+            stepPresent(-1);
+          } else if (e.key === 'Escape') closePresent();
+          else if (e.key.toLowerCase() === 'c') {
+            P.chords = !P.chords;
+            store.set('presentChords', P.chords);
+            renderPresent();
+          }
+          return;
+        }
+        if (e.key === 'Escape' && openPop) {
+          closeAll()?.focus();
+          return;
+        }
+        if (openPop) return;
+        if (state.auto && ![' ', 'ArrowRight', 'ArrowLeft'].includes(e.key)) setAuto(false);
+        if (e.key === 'ArrowRight') advance(1);
+        else if (e.key === 'ArrowLeft') advance(-1);
+        else if (e.key === 'PageDown' || (e.key === ' ' && !(e.target instanceof HTMLButtonElement))) {
+          e.preventDefault();
+          scrollPage(1);
+        } else if (e.key === 'PageUp') {
+          e.preventDefault();
+          scrollPage(-1);
+        } else if (e.key.toLowerCase() === 'p') openPresent();
+      });
+
+      // Swipe between songs: a hidden gesture, horizontal and quick.
+      let touch = null;
+      $('reader').addEventListener(
+        'touchstart',
+        (e) => {
+          const p = e.touches[0];
+          touch = { x: p.clientX, y: p.clientY, t: Date.now() };
+          if (state.auto) setAuto(false);
+        },
+        { passive: true }
+      );
+      $('reader').addEventListener(
+        'touchend',
+        (e) => {
+          if (!touch) return;
+          const p = e.changedTouches[0];
+          const dx = p.clientX - touch.x;
+          const dy = p.clientY - touch.y;
+          if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 2 && Date.now() - touch.t < 600) advance(dx < 0 ? 1 : -1);
+          touch = null;
+        },
+        { passive: true }
+      );
+      addEventListener('wheel', () => state.auto && setAuto(false), { passive: true });
+
+      // Reorder: drag the pixel grip, or focus it and use the arrow keys.
+      let drag = null;
+      const commitOrder = () => {
+        const si = cur();
+        state.order = [...$('sheet-rows').children].map((li) => Number(li.dataset.song));
+        state.pos = state.order.indexOf(si);
+        state.pin = null;
+        store.set('order', isCustomOrder() ? state.order : null);
+        render();
+      };
+      $('sheet-rows').addEventListener('pointerdown', (e) => {
+        const grip = e.target.closest('[data-grip]');
+        if (!grip) return;
+        drag = grip.closest('li');
+        drag.classList.add('dragging');
+        grip.setPointerCapture(e.pointerId);
+        e.preventDefault();
+      });
+      $('sheet-rows').addEventListener('pointermove', (e) => {
+        if (!drag) return;
+        const list = $('sheet-rows');
+        for (const li of list.children) {
+          if (li === drag) continue;
+          const r = li.getBoundingClientRect();
+          if (e.clientY < r.top + r.height / 2) {
+            if (drag.nextElementSibling !== li) list.insertBefore(drag, li);
+            return;
+          }
+        }
+        list.appendChild(drag);
+      });
+      const endDrag = () => {
+        if (!drag) return;
+        drag.classList.remove('dragging');
+        drag = null;
+        commitOrder();
+      };
+      $('sheet-rows').addEventListener('pointerup', endDrag);
+      $('sheet-rows').addEventListener('pointercancel', endDrag);
+      $('sheet-rows').addEventListener('keydown', (e) => {
+        const grip = e.target.closest('[data-grip]');
+        if (!grip || !['ArrowUp', 'ArrowDown'].includes(e.key)) return;
+        e.preventDefault();
+        const li = grip.closest('li');
+        const si = li.dataset.song;
+        if (e.key === 'ArrowUp' && li.previousElementSibling) li.parentNode.insertBefore(li, li.previousElementSibling);
+        if (e.key === 'ArrowDown' && li.nextElementSibling) li.parentNode.insertBefore(li.nextElementSibling, li);
+        commitOrder();
+        $('sheet-rows').querySelector(`li[data-song="${si}"] [data-grip]`)?.focus();
+      });
+
+      // While reading downward the dock gathers into the strip; scrolling up or reaching the end restores it.
+      let lastY = scrollY;
+      addEventListener(
+        'scroll',
+        () => {
+          if (inSplit()) return;
+          const y = scrollY;
+          const root = document.documentElement;
+          root.classList.toggle('away-top', y > 4);
+          const named = root.classList.contains('named');
+          if (y > 160 && y - lastY > 6 && !openPop && !named) root.classList.add('dock-min');
+          else if (lastY - y > 6 || named || y < 160) root.classList.remove('dock-min');
+          lastY = y;
+        },
+        { passive: true }
+      );
+
+      let wasSplit = inSplit();
+      const onLayoutChange = () => {
+        applyPrefs();
+        if (inSplit() !== wasSplit) {
+          wasSplit = inSplit();
+          setAuto(false);
+          render();
+          if (!wasSplit) scrollTo({ top: 0, behavior: 'instant' });
+        } else {
+          syncSeg('mode-seg', state.mode);
+          syncSeg('notation-seg', state.notation);
+          $('scroll-view').classList.toggle('two-col', innerWidth >= 1280);
+        }
+        if (!$('present').hidden) renderPresent();
+      };
+      addEventListener('resize', onLayoutChange);
+      splitMQ.addEventListener('change', onLayoutChange);
+      matchMedia('(prefers-color-scheme: light)').addEventListener('change', applyPrefs);
+      document.addEventListener('visibilitychange', requestWake);
+
+      renderStatic();
+      applyPrefs();
+      render();
+      requestWake();
+      document.fonts?.ready.then(() => {
+        syncSeg('mode-seg', state.mode);
+        syncSeg('notation-seg', state.notation);
+        syncSeg('theme-seg', state.theme);
+        syncSeg('lang-seg', state.lang);
+      });
+    </script>
+  </body>
+</html>

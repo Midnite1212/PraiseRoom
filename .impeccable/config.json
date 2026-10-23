@@ -1,0 +1,332 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-19T18:07:45.206Z",
+        "reason": "finish reviewer: 2px inset around self-padded 40px buttons in segmented glass capsules is the native segmented-control idiom, not cramped text"
+      },
+      {
+        "rule": "dark-glow",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-20T03:34:18.288Z",
+        "reason": "builder judgment: the lit strip pixel and the ambient pixels are light sources (the approved 'each song a pixel of light' signature); shadows carry a 2px offset; decorative row glow removed"
+      },
+      {
+        "rule": "overused-font",
+        "value": "geist",
+        "files": [
+          ".impeccable/mocks/public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-20T16:52:45.252Z",
+        "reason": "user confirmed: the user asked to 'use geist and geist mono'"
+      },
+      {
+        "rule": "overused-font",
+        "value": "geist mono",
+        "files": [
+          ".impeccable/mocks/public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-20T16:52:45.279Z",
+        "reason": "user confirmed: the user asked to 'use geist and geist mono'"
+      },
+      {
+        "rule": "tiny-text",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/layout-brainstorm.html"
+        ],
+        "createdAt": "2026-10-20T17:27:57.093Z",
+        "reason": "builder judgment: sub-12px text only labels the scaled-down wireframe drawings; all reading text on the board is 13px or larger"
+      },
+      {
+        "rule": "undersized-ui-text",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/layout-brainstorm.html"
+        ],
+        "createdAt": "2026-10-20T17:28:03.602Z",
+        "reason": "builder judgment: findings sit inside scaled-down wireframe drawings (labels on pictured controls, not real UI); the board's own reading text and controls meet the floor"
+      },
+      {
+        "rule": "cramped-padding",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/layout-brainstorm.html"
+        ],
+        "createdAt": "2026-10-20T17:28:03.626Z",
+        "reason": "builder judgment: findings sit inside scaled-down wireframe drawings (labels on pictured controls, not real UI); the board's own reading text and controls meet the floor"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/layout-brainstorm.html"
+        ],
+        "createdAt": "2026-10-20T17:28:13.803Z",
+        "reason": "builder judgment: the brainstorm board is a working document with its own annotation styling and wireframe drawings (the dashed gutter is a drawn page fold), not product UI governed by DESIGN.md"
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/layout-brainstorm.html"
+        ],
+        "createdAt": "2026-10-20T17:28:13.826Z",
+        "reason": "builder judgment: the brainstorm board is a working document with its own annotation styling and wireframe drawings (the dashed gutter is a drawn page fold), not product UI governed by DESIGN.md"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/layout-brainstorm.html"
+        ],
+        "createdAt": "2026-10-20T17:28:13.851Z",
+        "reason": "builder judgment: the brainstorm board is a working document with its own annotation styling and wireframe drawings (the dashed gutter is a drawn page fold), not product UI governed by DESIGN.md"
+      },
+      {
+        "rule": "repeating-stripes-gradient",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/layout-brainstorm.html"
+        ],
+        "createdAt": "2026-10-20T17:28:13.876Z",
+        "reason": "builder judgment: the brainstorm board is a working document with its own annotation styling and wireframe drawings (the dashed gutter is a drawn page fold), not product UI governed by DESIGN.md"
+      },
+      {
+        "rule": "overused-font",
+        "value": "geist",
+        "files": [
+          ".impeccable/mocks/layout-brainstorm.html"
+        ],
+        "createdAt": "2026-10-20T17:28:13.900Z",
+        "reason": "user confirmed: the user asked to 'use geist and geist mono'"
+      },
+      {
+        "rule": "overused-font",
+        "value": "geist mono",
+        "files": [
+          ".impeccable/mocks/layout-brainstorm.html"
+        ],
+        "createdAt": "2026-10-20T17:28:13.924Z",
+        "reason": "user confirmed: the user asked to 'use geist and geist mono'"
+      },
+      {
+        "rule": "tiny-text",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/layout-wireframes.html"
+        ],
+        "createdAt": "2026-10-22T16:48:24.816Z",
+        "reason": "builder judgment: plain grey wireframe sheet the user asked for; 11px labels sit inside the drawn device frames, and the sheet is not product UI governed by DESIGN.md"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/layout-wireframes.html"
+        ],
+        "createdAt": "2026-10-22T16:48:24.840Z",
+        "reason": "builder judgment: plain grey wireframe sheet the user asked for; 11px labels sit inside the drawn device frames, and the sheet is not product UI governed by DESIGN.md"
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/layout-wireframes.html"
+        ],
+        "createdAt": "2026-10-22T16:48:24.864Z",
+        "reason": "builder judgment: plain grey wireframe sheet the user asked for; 11px labels sit inside the drawn device frames, and the sheet is not product UI governed by DESIGN.md"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/layout-wireframes.html"
+        ],
+        "createdAt": "2026-10-22T16:48:24.887Z",
+        "reason": "builder judgment: plain grey wireframe sheet the user asked for; 11px labels sit inside the drawn device frames, and the sheet is not product UI governed by DESIGN.md"
+      },
+      {
+        "rule": "tiny-text",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/baseline-iteration.html"
+        ],
+        "createdAt": "2026-10-22T17:00:44.269Z",
+        "reason": "builder judgment: plain grey wireframe sheet the user asked for; 11px labels sit inside the drawn device frames, and the sheet is not product UI governed by DESIGN.md"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/baseline-iteration.html"
+        ],
+        "createdAt": "2026-10-22T17:00:44.292Z",
+        "reason": "builder judgment: plain grey wireframe sheet the user asked for; 11px labels sit inside the drawn device frames, and the sheet is not product UI governed by DESIGN.md"
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/baseline-iteration.html"
+        ],
+        "createdAt": "2026-10-22T17:00:44.314Z",
+        "reason": "builder judgment: plain grey wireframe sheet the user asked for; 11px labels sit inside the drawn device frames, and the sheet is not product UI governed by DESIGN.md"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/baseline-iteration.html"
+        ],
+        "createdAt": "2026-10-22T17:00:44.337Z",
+        "reason": "builder judgment: plain grey wireframe sheet the user asked for; 11px labels sit inside the drawn device frames, and the sheet is not product UI governed by DESIGN.md"
+      },
+      {
+        "rule": "low-contrast",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-22T17:46:26.917Z",
+        "reason": "builder judgment: flagged pairs (#edf2f8 on #b6b7b9) exist in no rendered element of the page or either frame (checked computed styles in the browser); static read of the inert app template without its glass/theme context"
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-22T17:46:26.943Z",
+        "reason": "builder judgment: presentation page and device bezels around the mock, not product UI governed by DESIGN.md"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-22T17:46:26.966Z",
+        "reason": "builder judgment: presentation page and device bezels around the mock, not product UI governed by DESIGN.md"
+      },
+      {
+        "rule": "overused-font",
+        "value": "geist",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-22T17:46:26.990Z",
+        "reason": "user confirmed: the user asked to 'use geist and geist mono'"
+      },
+      {
+        "rule": "overused-font",
+        "value": "geist mono",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-22T17:46:27.014Z",
+        "reason": "user confirmed: the user asked to 'use geist and geist mono'"
+      },
+      {
+        "rule": "dark-glow",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-22T17:46:27.038Z",
+        "reason": "builder judgment: the lit current-song pixel is a light source, the approved 'each song a pixel of light' idea; offset shadow"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "rgb(209, 220, 232)",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T02:36:38.615Z",
+        "reason": "Showcase wrapper's brand heading, outside the app frames; the app itself uses only DESIGN.md tokens."
+      },
+      {
+        "rule": "design-system-color",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/settings-panel-options.html"
+        ],
+        "createdAt": "2026-10-23T03:08:08.499Z",
+        "reason": "Exploration page: compares candidate settings-panel layouts not yet in DESIGN.md, inside a presentation wrapper; Geist is the chosen face."
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/settings-panel-options.html"
+        ],
+        "createdAt": "2026-10-23T03:08:08.524Z",
+        "reason": "Exploration page: compares candidate settings-panel layouts not yet in DESIGN.md, inside a presentation wrapper; Geist is the chosen face."
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/settings-panel-options.html"
+        ],
+        "createdAt": "2026-10-23T03:08:08.548Z",
+        "reason": "Exploration page: compares candidate settings-panel layouts not yet in DESIGN.md, inside a presentation wrapper; Geist is the chosen face."
+      },
+      {
+        "rule": "overused-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/settings-panel-options.html"
+        ],
+        "createdAt": "2026-10-23T03:08:08.573Z",
+        "reason": "Exploration page: compares candidate settings-panel layouts not yet in DESIGN.md, inside a presentation wrapper; Geist is the chosen face."
+      },
+      {
+        "rule": "dark-glow",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/settings-panel-options.html"
+        ],
+        "createdAt": "2026-10-23T03:08:14.604Z",
+        "reason": "The current-pixel glow is the system's one sanctioned glow (pixel-glow), used on the text-size meter's current bar."
+      },
+      {
+        "rule": "design-system-color",
+        "value": "oklch(0.6 0.25 263)",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T03:10:45.352Z",
+        "reason": "Electric blue from the black-and-white palette experiment; goes into DESIGN.md only if that palette is chosen."
+      },
+      {
+        "rule": "design-system-color",
+        "value": "rgb(215, 215, 215)",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T03:25:08.865Z",
+        "reason": "Showcase wrapper text outside the app frames."
+      },
+      {
+        "rule": "design-system-color",
+        "value": "rgb(190, 190, 190)",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T03:25:08.891Z",
+        "reason": "Showcase wrapper text outside the app frames."
+      }
+    ]
+  }
+}

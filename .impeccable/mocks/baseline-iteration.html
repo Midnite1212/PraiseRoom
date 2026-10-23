@@ -1,0 +1,883 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Baseline Iteration</title>
+    <meta name="description" content="Wireframes iterating on the earlier public setlist view baseline, with numbered UI/UX improvements." />
+    <style>
+      :root {
+        --bg: #f4f4f2;
+        --paper: #ffffff;
+        --ink: #1d1d1b;
+        --ink-2: #5c5c58;
+        --line: #b9b9b4;
+        --fill: #e7e7e3;
+        --fill-2: #d6d6d1;
+        --new: #1f5fbf;
+        --new-soft: #e3ecfa;
+        color-scheme: light;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) {
+          --bg: #191918;
+          --paper: #232322;
+          --ink: #ececea;
+          --ink-2: #a9a9a4;
+          --line: #5a5a56;
+          --fill: #30302e;
+          --fill-2: #3d3d3a;
+          --new: #8db4f0;
+          --new-soft: #22303f;
+          color-scheme: dark;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+      }
+
+      main {
+        max-width: 1240px;
+        margin: 0 auto;
+        padding: 40px 16px 80px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 1.75rem;
+        line-height: 1.2;
+      }
+
+      h2 {
+        margin: 60px 0 4px;
+        font-size: 1.375rem;
+      }
+
+      h3 {
+        margin: 36px 0 0;
+        font-size: 1.0625rem;
+      }
+
+      .intro,
+      .sub {
+        max-width: 72ch;
+        margin: 8px 0 0;
+        color: var(--ink-2);
+      }
+
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 18px;
+        margin-top: 16px;
+        color: var(--ink-2);
+        font-size: 0.875rem;
+      }
+
+      .legend span {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .sw {
+        width: 18px;
+        height: 12px;
+        border: 1.5px dashed var(--line);
+        border-radius: 3px;
+      }
+
+      .sw.new {
+        border: 1.5px solid var(--new);
+        background: var(--new-soft);
+      }
+
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 28px;
+        margin-top: 18px;
+        align-items: flex-start;
+      }
+
+      figure {
+        margin: 0;
+        width: var(--w);
+      }
+
+      figcaption {
+        margin-top: 10px;
+        font-size: 0.875rem;
+        color: var(--ink-2);
+      }
+
+      figcaption b {
+        display: block;
+        color: var(--ink);
+        font-size: 1rem;
+      }
+
+      /* Devices */
+      .dev {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        overflow: hidden;
+        padding: 10px;
+        background: var(--paper);
+        border: 2px solid var(--ink);
+      }
+
+      .phone {
+        width: 230px;
+        height: 480px;
+        border-radius: 24px;
+      }
+
+      .wide {
+        width: 540px;
+        height: 340px;
+        border-radius: 10px;
+      }
+
+      .tv {
+        width: 540px;
+        height: 304px;
+        border-radius: 4px;
+        border-width: 5px;
+      }
+
+      .b {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        min-height: 28px;
+        padding: 4px 8px;
+        border: 1.5px dashed var(--line);
+        border-radius: 6px;
+        color: var(--ink-2);
+        font-size: 11px;
+        line-height: 1.3;
+        text-align: center;
+      }
+
+      .b.solid {
+        border-style: solid;
+        background: var(--fill);
+        color: var(--ink);
+      }
+
+      .b.pill {
+        border-radius: 99px;
+      }
+
+      .b.big {
+        min-height: 40px;
+        justify-content: flex-start;
+        color: var(--ink);
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .b.left {
+        justify-content: flex-start;
+      }
+
+      /* Proposed changes are drawn in blue. */
+      .b.new {
+        border: 1.5px solid var(--new);
+        background: var(--new-soft);
+        color: var(--ink);
+      }
+
+      .grow {
+        flex: 1;
+      }
+
+      .hr {
+        display: flex;
+        gap: 6px;
+      }
+
+      .hr > * {
+        flex: 1;
+      }
+
+      .hr > .fit {
+        flex: none;
+      }
+
+      .col {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        min-width: 0;
+      }
+
+      .segs {
+        display: flex;
+        gap: 3px;
+        height: 4px;
+      }
+
+      .segs i {
+        flex: 1;
+        border-radius: 2px;
+        background: var(--fill-2);
+      }
+
+      .segs i.on {
+        background: var(--ink);
+      }
+
+      .segs.new i.on {
+        background: var(--new);
+      }
+
+      .sheet {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: 8px;
+        border: 1.5px solid var(--line);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .lyrics {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding: 4px 0;
+      }
+
+      .lyrics::before {
+        content: attr(data-label);
+        color: var(--ink-2);
+        font-size: 11px;
+      }
+
+      .lyrics i {
+        height: 6px;
+        border-radius: 3px;
+        background: var(--fill-2);
+      }
+
+      .lyrics i:nth-child(3n) {
+        width: 70%;
+      }
+
+      .lyrics i:nth-child(3n + 1) {
+        width: 88%;
+      }
+
+      .lyrics i:nth-child(3n + 2) {
+        width: 60%;
+      }
+
+      .lyrics.dim i {
+        opacity: 0.4;
+      }
+
+      .lyrics.two {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 12px;
+      }
+
+      .lyrics.two::before {
+        grid-column: 1 / -1;
+      }
+
+      .overlay {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding: 10px;
+        border-top: 2px solid var(--ink);
+        border-radius: 16px 16px 0 0;
+        background: var(--paper);
+      }
+
+      .scrim {
+        position: absolute;
+        inset: 0;
+        background: color-mix(in srgb, var(--ink) 22%, transparent);
+      }
+
+      .n {
+        position: absolute;
+        z-index: 3;
+        top: -9px;
+        right: -9px;
+        display: grid;
+        place-items: center;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--new);
+        color: var(--paper);
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .sheet > .n {
+        top: 6px;
+        right: 6px;
+      }
+
+      .center {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+      }
+
+      .tvline {
+        height: 12px;
+        border-radius: 6px;
+        background: var(--fill-2);
+      }
+
+      /* Improvement list */
+      .changes {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .chg {
+        display: grid;
+        grid-template-columns: 28px 1fr;
+        gap: 4px 10px;
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--paper);
+      }
+
+      .chg .num {
+        display: grid;
+        place-items: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: var(--new);
+        color: var(--paper);
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .chg b {
+        display: block;
+      }
+
+      .chg p {
+        grid-column: 2;
+        margin: 0;
+        color: var(--ink-2);
+        font-size: 0.875rem;
+      }
+
+      .chg .cost {
+        color: var(--ink);
+      }
+
+      .kept {
+        margin-top: 18px;
+        padding: 16px 18px;
+        border: 1px dashed var(--line);
+        border-radius: 12px;
+        color: var(--ink-2);
+      }
+
+      .kept b {
+        color: var(--ink);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Public setlist view: iterating on the baseline</h1>
+      <p class="intro">
+        The earlier layout is the starting point: a quiet top bar with Lyrics | Chords, Aa and share; progress
+        segments; a paper reading sheet; an "Up next" card on phones; and a setlist rail or strip on wide screens.
+        Each screen below shows the baseline on the left and my proposal beside it. Every change is numbered and
+        explained at the end, so you can take or leave each one on its own.
+      </p>
+      <div class="legend">
+        <span><i class="sw"></i>Baseline, as it was</span>
+        <span><i class="sw new"></i>Proposed change</span>
+        <span><span class="n" style="position: static">1</span>Numbered change, listed below</span>
+      </div>
+
+      <!-- ================= PHONE ================= -->
+      <h2>Phone</h2>
+      <p class="sub">Participant view (lyrics only) by default; Chords on gives the musician view.</p>
+
+      <h3>Reading a song</h3>
+      <div class="row">
+        <figure style="--w: 230px">
+          <div class="dev phone">
+            <div class="hr"><div class="b solid pill fit">Lyrics | Chords</div><div class="grow"></div><div class="b solid pill fit">Aa</div><div class="b solid pill fit">⧉</div></div>
+            <div class="segs"><i></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+            <div class="sheet">
+              <div class="b left">Group · 2/6</div>
+              <div class="b big">Song title ⓘ</div>
+              <div class="b left">Artist</div>
+              <div class="lyrics" data-label="Lyrics"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+            <div class="hr"><div class="b solid pill">‹ · Up next: It Is Well · ›</div></div>
+          </div>
+          <figcaption><b>Baseline</b>Top bar, segments, sheet, Up next card.</figcaption>
+        </figure>
+
+        <figure style="--w: 230px">
+          <div class="dev phone">
+            <div class="hr"><div class="b solid pill fit">Lyrics | Chords</div><div class="grow"></div><div class="b solid pill fit">Aa</div><div class="b solid pill fit">⧉</div></div>
+            <div class="segs new" style="position: relative"><i></i><i class="on"></i><i></i><i></i><i></i><i></i><span class="n" style="top: -12px">1</span></div>
+            <div class="sheet">
+              <div class="b left">Group · 2/6</div>
+              <div class="b big">Song title ⓘ</div>
+              <div class="b left">Artist</div>
+              <div class="b new pill left">Verse 1 · Chorus · Verse 2<span class="n">2</span></div>
+              <div class="lyrics" data-label="Lyrics"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+            <div class="hr"><div class="b new pill">‹ · Up next: It Is Well · ›<span class="n">3</span></div></div>
+          </div>
+          <figcaption><b>Proposed</b>Tappable segments, section chips, a smarter Up next.</figcaption>
+        </figure>
+
+        <figure style="--w: 230px">
+          <div class="dev phone">
+            <div class="hr"><div class="b solid pill fit">Lyrics | Chords</div><div class="grow"></div><div class="b solid pill fit">Aa</div><div class="b solid pill fit">⧉</div></div>
+            <div class="segs"><i></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+            <div class="sheet">
+              <div class="lyrics" data-label="…end of the song"><i></i><i></i><i></i><i></i></div>
+              <div class="b new" style="flex-direction: column; align-items: stretch; gap: 5px">
+                <span class="n">4</span>
+                <span style="text-align: left">Up next · 3/6 · It Is Well · Key C</span>
+                <div class="lyrics dim" data-label="Its opening, dimmed"><i></i><i></i><i></i></div>
+                <span style="text-align: left">↓ keep scrolling to start it</span>
+              </div>
+            </div>
+            <div class="hr"><div class="b new pill">It Is Well ›</div></div>
+          </div>
+          <figcaption><b>Proposed · end of a song</b>The next song flows on; Up next becomes its name.</figcaption>
+        </figure>
+      </div>
+
+      <h3>Musician view and settings</h3>
+      <div class="row">
+        <figure style="--w: 230px">
+          <div class="dev phone">
+            <div class="hr"><div class="b solid pill fit">Lyrics | Chords</div><div class="grow"></div><div class="b solid pill fit">Aa</div><div class="b solid pill fit">⧉</div></div>
+            <div class="segs"><i></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+            <div class="sheet">
+              <div class="b big">Song title ⓘ</div>
+              <div class="hr"><div class="b solid pill">Key D ▾</div><div class="b solid pill">145 | ABC</div><div class="b solid pill fit">⚙</div></div>
+              <div class="lyrics" data-label="Chords + lyrics"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+            <div class="hr"><div class="b solid pill">‹ · Up next · ›</div></div>
+          </div>
+          <figcaption><b>Baseline</b>Chord row: key, notation, gear.</figcaption>
+        </figure>
+
+        <figure style="--w: 230px">
+          <div class="dev phone">
+            <div class="hr"><div class="b solid pill fit">Lyrics | Chords</div><div class="grow"></div><div class="b solid pill fit">Aa</div><div class="b solid pill fit">⧉</div></div>
+            <div class="segs"><i></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+            <div class="sheet">
+              <div class="b big">Song title ⓘ</div>
+              <div class="hr"><div class="b new pill">Key E +2 · Capo 2<span class="n">5</span></div><div class="b solid pill">145 | ABC</div><div class="b solid pill fit">⚙</div></div>
+              <div class="lyrics" data-label="Chords + lyrics"><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+            <div class="hr"><div class="b new pill fit">▶ 1×<span class="n">6</span></div><div class="b solid pill">‹ · Up next · ›</div></div>
+          </div>
+          <figcaption><b>Proposed</b>The key pill shows the change at a glance; auto-scroll lives in reach.</figcaption>
+        </figure>
+
+        <figure style="--w: 230px">
+          <div class="dev phone">
+            <div class="b big">Song title</div>
+            <div class="lyrics" data-label=""><i></i><i></i><i></i></div>
+            <div class="scrim"></div>
+            <div class="overlay">
+              <div class="b left">Chord settings · all songs</div>
+              <div class="hr"><div class="b left">Show chords as</div><div class="b solid pill fit">1 4 5 | A B C</div></div>
+              <div class="hr"><div class="b left">Chords</div><div class="b solid pill fit">Full | Simple</div></div>
+              <div class="hr"><div class="b left">Colour chords</div><div class="b solid pill fit">○</div></div>
+              <div class="hr"><div class="b left">Sharps &amp; flats</div><div class="b solid pill fit">Auto ♯ ♭</div></div>
+              <div class="hr"><div class="b left">Guitar capo</div><div class="b solid pill fit">●</div></div>
+              <div class="b new left">Auto-scroll and keep-awake move out of here<span class="n">7</span></div>
+              <div class="b solid pill">Done</div>
+            </div>
+          </div>
+          <figcaption><b>Proposed · chord settings sheet</b>Only chord options; reading options move to Aa.</figcaption>
+        </figure>
+
+        <figure style="--w: 230px">
+          <div class="dev phone">
+            <div class="b big">Song title</div>
+            <div class="lyrics" data-label=""><i></i><i></i><i></i></div>
+            <div class="scrim"></div>
+            <div class="overlay">
+              <div class="b left">Reading (Aa)</div>
+              <div class="hr"><div class="b left">Text size</div><div class="b solid pill fit">A− 100% A+</div></div>
+              <div class="hr"><div class="b new left">Auto-scroll</div><div class="b new pill fit">Off · Slow · Med · Fast</div></div>
+              <div class="hr"><div class="b new left">Keep screen awake</div><div class="b new pill fit">● on</div></div>
+              <div class="hr"><div class="b left">Theme</div><div class="b solid pill fit">Light Auto Dark</div></div>
+              <div class="b new left">Present to TV<span class="n">8</span></div>
+            </div>
+          </div>
+          <figcaption><b>Proposed · Aa menu</b>Everything about reading in one place.</figcaption>
+        </figure>
+      </div>
+
+      <h3>Song list</h3>
+      <div class="row">
+        <figure style="--w: 230px">
+          <div class="dev phone">
+            <div class="b big">Song title</div>
+            <div class="lyrics" data-label=""><i></i><i></i><i></i></div>
+            <div class="scrim"></div>
+            <div class="overlay">
+              <div class="b left">Setlist · 6 songs</div>
+              <div class="b solid left">01 · Song · key</div>
+              <div class="b solid left" style="border-width: 2px; border-color: var(--ink)">02 · Song · key</div>
+              <div class="b solid left">03 · Song · key</div>
+              <div class="b solid left">04 · Song · key</div>
+              <div class="b solid pill">Close</div>
+            </div>
+          </div>
+          <figcaption><b>Baseline</b>Opened from Up next.</figcaption>
+        </figure>
+
+        <figure style="--w: 230px">
+          <div class="dev phone">
+            <div class="b big">Song title</div>
+            <div class="lyrics" data-label=""><i></i><i></i><i></i></div>
+            <div class="scrim"></div>
+            <div class="overlay">
+              <div class="hr"><div class="b left">Setlist · 6 songs</div><div class="b new pill fit">Edit order<span class="n">9</span></div></div>
+              <div class="b solid left">⠿ 01 · Song · key</div>
+              <div class="b solid left" style="border-width: 2px; border-color: var(--ink)">⠿ 02 · Song · key</div>
+              <div class="b new left">⠿ 05 · Song · key (dragged)</div>
+              <div class="b solid left">⠿ 03 · Song · key</div>
+              <div class="b new left">Your order · only this device · Reset</div>
+              <div class="b solid pill">Done</div>
+            </div>
+          </div>
+          <figcaption><b>Proposed</b>Reorder for yourself; the leader's set is untouched.</figcaption>
+        </figure>
+      </div>
+
+      <h3>Brainstorm: frequent controls at the bottom</h3>
+      <p class="sub">
+        Frequent mid-song: previous / next, text size, auto-scroll, and key (musicians). Once a visit: Lyrics | Chords,
+        notation and chord style. Rarely: theme, share, sign in. Each option below moves the frequent ones into thumb
+        reach.
+      </p>
+      <div class="row">
+        <figure style="--w: 230px">
+          <div class="dev phone">
+            <div class="hr"><div class="b solid pill fit">Lyrics | Chords</div><div class="grow"></div><div class="b solid pill fit">⧉</div></div>
+            <div class="segs"><i></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+            <div class="sheet"><div class="b big">Song title ⓘ</div><div class="lyrics" data-label="Lyrics"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+            <div class="hr"><div class="b new pill fit">Aa</div><div class="b solid pill">‹ Up next ›</div><div class="b new pill fit">Key E</div></div>
+          </div>
+          <figcaption><b>B1 · One bar, three zones · chosen</b>Aa on the left, Up next in the middle, and the key on the right (musician view only). Lyrics | Chords and share stay at the top. The smallest change from the baseline.</figcaption>
+        </figure>
+
+        <figure style="--w: 230px">
+          <div class="dev phone">
+            <div class="segs"><i></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+            <div class="sheet"><div class="b big">Song title ⓘ</div><div class="lyrics" data-label="Lyrics"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+            <div class="hr"><div class="b new pill">Chords</div><div class="b new pill">Key E</div><div class="b new pill">Aa</div><div class="b new pill fit">▶</div></div>
+            <div class="hr"><div class="b solid pill">‹ Up next: It Is Well ›</div></div>
+          </div>
+          <figcaption><b>B2 · Two-tier bottom</b>Quick chips above Up next: mode, key, text size, auto-scroll. Nothing at the top but the segments. Everything is one tap, but it costs about a line of lyrics.</figcaption>
+        </figure>
+
+        <figure style="--w: 230px">
+          <div class="dev phone">
+            <div class="segs"><i></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+            <div class="sheet"><div class="b big">Song title ⓘ</div><div class="lyrics" data-label="Lyrics"><i></i><i></i><i></i><i></i></div></div>
+            <div class="scrim"></div>
+            <div class="overlay">
+              <div style="width: 30px; height: 4px; margin: 0 auto 2px; border-radius: 2px; background: var(--line)"></div>
+              <div class="hr"><div class="b new pill">Lyrics | Chords</div><div class="b new pill">Key E +2</div></div>
+              <div class="hr"><div class="b new left">Text size</div><div class="b new pill fit">A− A+</div></div>
+              <div class="hr"><div class="b new left">Auto-scroll</div><div class="b new pill fit">Off · Slow · Fast</div></div>
+              <div class="hr"><div class="b solid pill">‹ Up next: It Is Well ›</div></div>
+            </div>
+          </div>
+          <figcaption><b>B3 · Pull-up controls</b>Up next has a handle; drag it up (or tap ⌃) for a drawer of quick controls, like a music player. Full lyrics space until you need it.</figcaption>
+        </figure>
+
+        <figure style="--w: 230px">
+          <div class="dev phone">
+            <div class="segs"><i></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+            <div class="sheet"><div class="b big">Song title ⓘ</div><div class="lyrics" data-label="Lyrics"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+            <div class="hr"><div class="b solid pill">‹ Up next: It Is Well ›</div></div>
+            <div class="hr"><div class="b new pill fit">Lyrics | Chords</div><div class="b new pill fit">Aa</div><div class="b new pill fit">Key</div><div class="b new pill fit">⧉</div></div>
+          </div>
+          <figcaption><b>B4 · Top bar moves to the bottom</b>Safari-style: the whole baseline top bar sits under Up next; only the segments stay up top. The same controls, all reachable, but a taller bottom stack.</figcaption>
+        </figure>
+
+        <figure style="--w: 230px">
+          <div class="dev phone">
+            <div class="hr"><div class="b solid pill fit">Lyrics | Chords</div><div class="grow"></div><div class="b solid pill fit">⧉</div></div>
+            <div class="segs"><i></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+            <div class="sheet"><div class="b big">Song title ⓘ</div><div class="lyrics" data-label="Lyrics"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+            <div class="col" style="position: absolute; right: 14px; bottom: 54px; align-items: flex-end">
+              <div class="b new pill fit">A− · A+</div>
+              <div class="b new pill fit">▶ Auto-scroll</div>
+              <div class="b new pill fit">Key E +2</div>
+            </div>
+            <div class="hr"><div class="b solid pill">‹ Up next ›</div><div class="b new pill fit">●</div></div>
+          </div>
+          <figcaption><b>B5 · Quick button</b>A round button beside Up next fans out text size, auto-scroll and key, then closes. Very compact, but the controls are hidden until tapped.</figcaption>
+        </figure>
+      </div>
+
+      <h3>B1 in detail</h3>
+      <p class="sub">
+        Your answers: Lyrics | Chords is set once (it stays at the top), auto-scroll is an extra (it lives behind Aa),
+        and the bottom bar mainly serves the phone in hand. Tablets in portrait get the same bar, just wider.
+      </p>
+      <div class="row">
+        <figure style="--w: 230px">
+          <div class="dev phone">
+            <div class="hr"><div class="b solid pill fit">Lyrics | Chords</div><div class="grow"></div><div class="b solid pill fit">⧉</div></div>
+            <div class="segs"><i></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+            <div class="sheet"><div class="b left">Group · 2/6</div><div class="b big">Song title ⓘ</div><div class="b left">Artist</div><div class="lyrics" data-label="Lyrics"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+            <div class="hr"><div class="b new pill fit">Aa</div><div class="b solid pill">‹ Up next: It Is Well ›</div></div>
+          </div>
+          <figcaption><b>Participant</b>Two zones: Aa and Up next. Up next gets the extra width.</figcaption>
+        </figure>
+
+        <figure style="--w: 230px">
+          <div class="dev phone">
+            <div class="hr"><div class="b solid pill fit">Lyrics | Chords</div><div class="grow"></div><div class="b solid pill fit">⧉</div></div>
+            <div class="segs"><i></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+            <div class="sheet"><div class="b big">Song title ⓘ</div><div class="hr"><div class="b left">Artist</div><div class="b solid pill fit">145 | ABC</div><div class="b solid pill fit">⚙</div></div><div class="lyrics" data-label="Chords + lyrics"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+            <div class="hr"><div class="b new pill fit">Aa</div><div class="b solid pill">‹ Up next ›</div><div class="b new pill fit">E +2</div></div>
+          </div>
+          <figcaption><b>Musician</b>The key moves to the bar's right zone. The header keeps only notation and ⚙, which are set once.</figcaption>
+        </figure>
+
+        <figure style="--w: 230px">
+          <div class="dev phone">
+            <div class="b big">Song title</div>
+            <div class="lyrics" data-label=""><i></i><i></i><i></i></div>
+            <div class="scrim"></div>
+            <div class="overlay">
+              <div class="b left">Reading (Aa)</div>
+              <div class="b left">Present to TV</div>
+              <div class="hr"><div class="b left">Theme</div><div class="b solid pill fit">Light Auto Dark</div></div>
+              <div class="hr"><div class="b left">Keep screen awake</div><div class="b solid pill fit">● on</div></div>
+              <div class="hr"><div class="b left">Auto-scroll</div><div class="b solid pill fit">Off · Slow · Med · Fast</div></div>
+              <div class="hr"><div class="b new left">Text size</div><div class="b new pill fit">A− 100% A+</div></div>
+              <div class="hr"><div class="b new pill fit">Aa</div><div class="b solid pill">‹ Up next ›</div><div class="b solid pill fit">E +2</div></div>
+            </div>
+          </div>
+          <figcaption><b>Aa opens upward</b>A sheet rises from the bar it came from. The most-used row, text size, sits lowest, nearest the thumb; rarer options sit higher.</figcaption>
+        </figure>
+
+        <figure style="--w: 230px">
+          <div class="dev phone">
+            <div class="b big">Song title</div>
+            <div class="lyrics" data-label=""><i></i><i></i><i></i></div>
+            <div class="scrim"></div>
+            <div class="overlay">
+              <div class="b left">Key · Song title</div>
+              <div class="hr"><div class="b solid pill fit">−</div><div class="b big" style="justify-content: center">E</div><div class="b solid pill fit">+</div></div>
+              <div class="b left">+2 from original D</div>
+              <div class="hr"><div class="b solid">C</div><div class="b solid">D♭</div><div class="b solid">D</div><div class="b solid">E♭</div></div>
+              <div class="hr"><div class="b new">E</div><div class="b solid">F</div><div class="b solid">F♯</div><div class="b solid">G</div></div>
+              <div class="hr"><div class="b left">Capo</div><div class="b solid pill fit">− 2 +</div></div>
+              <div class="hr"><div class="b solid pill">Reset to D</div><div class="b solid pill">Done</div></div>
+            </div>
+          </div>
+          <figcaption><b>Key opens upward</b>Your baseline key panel, unchanged, opened from the bar's right zone.</figcaption>
+        </figure>
+
+        <figure style="--w: 230px">
+          <div class="dev phone">
+            <div class="hr"><div class="b solid pill fit">Lyrics | Chords</div><div class="grow"></div><div class="b solid pill fit">⧉</div></div>
+            <div class="segs"><i></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+            <div class="sheet"><div class="lyrics" data-label="Lyrics scrolling…"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+            <div class="hr" style="width: 70%; margin: 0 auto"><div class="b new pill">‖ Slow · ×</div></div>
+            <div class="hr"><div class="b solid pill fit">Aa</div><div class="b solid pill">‹ Up next ›</div><div class="b solid pill fit">E +2</div></div>
+          </div>
+          <figcaption><b>Auto-scroll running</b>A slim pill appears above the bar only while it runs: pause, speed, stop. Touching the lyrics pauses it.</figcaption>
+        </figure>
+      </div>
+
+      <div class="kept" style="margin-top: 20px">
+        <b>Things any bottom design must respect:</b> keep 44px tap targets; leave room above the phone's home
+        indicator and Safari's own bottom toolbar; don't fight the swipe-up-to-home gesture; and keep previous / next
+        in the same place in every option so musicians can find them without looking.
+      </div>
+
+      <!-- ================= TABLET / DESKTOP ================= -->
+      <h2>Tablet landscape and desktop</h2>
+      <p class="sub">Baseline: the setlist as a strip above (tablet default) or a rail beside (desktop default), one song in two columns.</p>
+      <div class="row">
+        <figure style="--w: 540px">
+          <div class="dev wide">
+            <div class="hr"><div class="b solid pill left">Group · date</div><div class="b solid pill fit">Lyrics | Chords</div><div class="b solid pill fit">Aa</div><div class="b solid pill fit">⧉</div></div>
+            <div class="hr" style="flex: 1; align-items: stretch">
+              <div class="b" style="flex: 0.42; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 4px">
+                <span>Setlist ▣</span>
+                <div class="b solid left" style="min-height: 18px">01 · Song</div>
+                <div class="b solid left" style="min-height: 18px; border-width: 2px; border-color: var(--ink)">02 · Song</div>
+                <div class="b solid left" style="min-height: 18px">03 · Song</div>
+                <div class="b solid left" style="min-height: 18px">04 · Song</div>
+              </div>
+              <div class="sheet">
+                <div class="b big">Song title ⓘ</div>
+                <div class="lyrics two" data-label="Lyrics, two columns"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+              </div>
+            </div>
+          </div>
+          <figcaption><b>Baseline · desktop</b>Rail beside one song.</figcaption>
+        </figure>
+
+        <figure style="--w: 540px">
+          <div class="dev wide">
+            <div class="hr"><div class="b solid pill left">Group · date</div><div class="b solid pill fit">Lyrics | Chords</div><div class="b solid pill fit">Aa</div><div class="b solid pill fit">⧉</div></div>
+            <div class="b new left" style="min-height: 24px">01 · 02 Now · 03 Next · 04 · 05 · 06<span class="n">10</span></div>
+            <div class="hr" style="flex: 1; align-items: stretch">
+              <div class="sheet">
+                <div class="b left">Now · 2/6 ▾</div>
+                <div class="b big">Current song ⓘ</div>
+                <div class="lyrics" data-label="Lyrics"><i></i><i></i><i></i><i></i><i></i></div>
+              </div>
+              <div class="sheet" style="border-color: var(--new)">
+                <span class="n">11</span>
+                <div class="hr"><div class="b new left">Next · 3/6 ▾ (or Pinned)</div><div class="b new pill fit">Start ›</div></div>
+                <div class="b big" style="color: var(--ink-2)">Next song</div>
+                <div class="lyrics dim" data-label="Lyrics, quieter"><i></i><i></i><i></i><i></i><i></i></div>
+              </div>
+            </div>
+          </div>
+          <figcaption><b>Proposed · Split songs</b>The rail folds into the strip; now | next side by side.</figcaption>
+        </figure>
+
+        <figure style="--w: 540px">
+          <div class="dev wide" style="height: 220px">
+            <div class="hr"><div class="b solid pill left">Aa · Reading</div></div>
+            <div class="hr"><div class="b left">Text size</div><div class="b solid pill fit">A− 100% A+</div></div>
+            <div class="hr"><div class="b left">Layout</div><div class="b solid pill fit">Auto</div><div class="b solid pill fit">One</div><div class="b solid pill fit">Two</div><div class="b new pill fit">Split songs<span class="n">12</span></div></div>
+            <div class="hr"><div class="b left">Setlist</div><div class="b solid pill fit">Beside</div><div class="b solid pill fit">Above</div></div>
+            <div class="hr"><div class="b new left">Auto-scroll · Keep awake</div><div class="b new pill fit">…</div></div>
+          </div>
+          <figcaption><b>Proposed · Aa on wide screens</b>Split songs joins the existing Layout choice; landscape tablets default to it.</figcaption>
+        </figure>
+      </div>
+
+      <h3>Song header: D everywhere</h3>
+      <div class="row">
+        <figure style="--w: 540px">
+          <div class="dev wide" style="height: 230px">
+            <div class="sheet">
+              <span class="n">13</span>
+              <div class="b big">Great Is Thy Faithfulness (Morning by Morning) ⓘ</div>
+              <div class="hr"><div class="b left" style="flex: 1.4">Thomas Chisholm &amp; William Runyan</div><div class="b solid pill">Key ▾</div><div class="b solid pill">145 | ABC</div><div class="b solid pill fit">⚙</div></div>
+              <div class="lyrics two" data-label="Lyrics"><i></i><i></i><i></i><i></i></div>
+            </div>
+          </div>
+          <figcaption><b>D · two rows · chosen</b>Row 1: title and ⓘ. Row 2: artist left, chord controls right. The same shape for every song, on every screen: one-song layout, split panes, tablet and phone (where the key moves to the bottom bar).</figcaption>
+        </figure>
+      </div>
+
+      <!-- ================= TV ================= -->
+      <h2>TV (new)</h2>
+      <p class="sub">Present to TV opens from the Aa menu (change 8). The baseline had no TV view.</p>
+      <div class="row">
+        <figure style="--w: 540px">
+          <div class="dev tv">
+            <div class="hr"><div class="b fit">Song title</div><div class="grow"></div><div class="b fit">2/6 · Verse 2</div></div>
+            <div class="center">
+              <div class="b pill fit">VERSE 2</div>
+              <div class="tvline" style="width: 80%"></div>
+              <div class="tvline" style="width: 64%"></div>
+              <div class="tvline" style="width: 74%"></div>
+              <div class="tvline" style="width: 56%"></div>
+            </div>
+            <div class="hr"><div class="b new left">Next: first line of the next section…<span class="n">14</span></div><div class="b fit">progress</div></div>
+          </div>
+          <figcaption><b>Proposed · Present</b>Lyrics only, one section at a time, Show chords toggle, keyboard, clicker or pedal to advance.</figcaption>
+        </figure>
+      </div>
+
+      <!-- ================= STATES ================= -->
+      <h2>States</h2>
+      <p class="sub">The baseline already designs loading, not found, empty and dark. One addition:</p>
+      <div class="row">
+        <figure style="--w: 230px">
+          <div class="dev phone">
+            <div class="hr"><div class="b solid pill fit">Lyrics | Chords</div><div class="grow"></div><div class="b solid pill fit">Aa</div></div>
+            <div class="b new left">Offline · showing the copy saved on this device<span class="n">15</span></div>
+            <div class="sheet">
+              <div class="b big">Song title</div>
+              <div class="lyrics" data-label="Lyrics (cached)"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            </div>
+            <div class="hr"><div class="b solid pill">‹ · Up next · ›</div></div>
+          </div>
+          <figcaption><b>Proposed · offline</b>Venue Wi-Fi drops; the set keeps working.</figcaption>
+        </figure>
+      </div>
+
+      <!-- ================= LIST ================= -->
+      <h2>The changes</h2>
+      <div class="changes">
+        <div class="chg"><span class="num">1</span><b>Tappable progress segments</b><p>Tap or drag a segment to jump to that song, with the song's name shown while you hold. Today they only show position.</p><p class="cost">Cost: small. Segments need a bigger touch area than they look.</p></div>
+        <div class="chg"><span class="num">2</span><b>Section chips</b><p>Verse / Chorus / Bridge chips under the artist jump straight there, for when the leader calls "back to the chorus".</p><p class="cost">Cost: small. Hidden when a song has one section.</p></div>
+        <div class="chg"><span class="num">3</span><b>Up next does more</b><p>Swipe the reading sheet left or right to change song; tapping the middle still opens the song list. The card shows the next song's key in the musician view.</p><p class="cost">Cost: small. Swipe stays a hidden extra.</p></div>
+        <div class="chg"><span class="num">4</span><b>Flow on at the end</b><p>After the last line, the next song's title, key and opening lines follow, dimmed. Scrolling into it makes it current, so you see what's coming without tapping.</p><p class="cost">Cost: medium. Needs a smooth hand-off so the page doesn't jump.</p></div>
+        <div class="chg"><span class="num">5</span><b>Key pill shows the change</b><p>"E +2" (and "Capo 2" when set) instead of "Key D ▾", so a musician sees the transposition without opening the panel. With B1 it sits in the bottom bar on phones and in the header on wide screens.</p><p class="cost">Cost: none. Same control, more information.</p></div>
+        <div class="chg"><span class="num">6</span><b>Auto-scroll in reach</b><p>Started from Aa (it's an extra). While it runs, a slim pause · speed · stop pill appears above the bar; touching the lyrics pauses it.</p><p class="cost">Cost: small.</p></div>
+        <div class="chg"><span class="num">7</span><b>Split the settings by purpose</b><p>The gear keeps chord options only (notation, full or simple, colour, sharps and flats, capo). Auto-scroll and keep-awake move to Aa, which is about reading, so participants find them too.</p><p class="cost">Cost: none. Mostly a move.</p></div>
+        <div class="chg"><span class="num">8</span><b>Keep awake on by default, plus Present</b><p>Screens shouldn't dim mid-song, so keep-awake starts on (it can still be switched off). Present to TV joins the Aa menu.</p><p class="cost">Cost: small.</p></div>
+        <div class="chg"><span class="num">9</span><b>Reorder for yourself</b><p>Edit order in the song list, with drag handles. It's saved on this device only and labelled "Your order", with Reset.</p><p class="cost">Cost: medium.</p></div>
+        <div class="chg"><span class="num">10</span><b>The strip marks now and next</b><p>When songs are split, the strip above labels the current and next songs, and you can tap any song to put it on the right.</p><p class="cost">Cost: small. It builds on the baseline's strip.</p></div>
+        <div class="chg"><span class="num">11</span><b>Split songs (left | right)</b><p>The current song on the left and the next on the right, quieter. Start (or →) slides the right one over. Its title picks another song to pin there.</p><p class="cost">Cost: medium. Half width wraps long lines at large text sizes.</p></div>
+        <div class="chg"><span class="num">12</span><b>Split is a layout choice</b><p>"Split songs" joins Auto / One / Two in the Aa Layout setting, and landscape tablets start in it.</p><p class="cost">Cost: none. It reuses the existing control.</p></div>
+        <div class="chg"><span class="num">13</span><b>Header: D everywhere</b><p>Row 1: title and ⓘ. Row 2: artist left, chord controls right. One shape for every song and screen, so controls never move between songs. Long titles wrap within row 1.</p><p class="cost">Cost: small.</p></div>
+        <div class="chg"><span class="num">14</span><b>Present to TV</b><p>Full screen, lyrics only, one section at a time, with the next line previewed. Show chords is a toggle.</p><p class="cost">Cost: medium.</p></div>
+        <div class="chg"><span class="num">15</span><b>Offline state</b><p>The opened setlist is saved on the device; when the connection drops, a quiet notice appears and the songs keep working.</p><p class="cost">Cost: medium (needs offline caching).</p></div>
+        <div class="chg"><span class="num">16</span><b>Bottom bar on phones (B1)</b><p>Aa · Up next · key in one bar at the bottom; Aa and Key open their panels upward. Lyrics | Chords and share stay at the top because they're set once. Tablets in portrait use the same bar.</p><p class="cost">Cost: small. It reshapes the existing Up next card.</p></div>
+      </div>
+
+      <div class="kept">
+        <b>Kept from the baseline as it is:</b> the quiet top bar with Lyrics | Chords as the main switch; the
+        paper reading sheet; the key panel with the − / + stepper, key grid, Reset and capo; chord settings
+        (numbers or letters, full or simple, colour, sharps and flats, capo); the setlist rail and strip; ⓘ About
+        this song; and the loading, not-found, empty and dark states.
+      </div>
+    </main>
+  </body>
+</html>
