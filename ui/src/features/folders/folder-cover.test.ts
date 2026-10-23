@@ -7,7 +7,10 @@ const day = (offset: number) => new Date(2026, 9, 24 + offset).toISOString();
 const setlist = (id: string, songs: number, date: string | null) => ({
   _id: id,
   date,
-  songs: Array.from({ length: songs }, (_, index) => ({ _id: `${id}-${index}` })),
+  songs: Array.from({ length: songs }, (_, index) => ({
+    _id: `${id}-${index}`,
+    title: `Song ${index}`,
+  })),
 });
 
 const column = (cells: readonly string[], index: number) =>
