@@ -455,6 +455,10 @@
         "volt": "Volt",
         "signal": "Signal orange"
       }
+    },
+    "description": "How the app looks and reads on this device.",
+    "theme": {
+      "description": "Dark suits dim rooms and stages."
     }
   },
   "filters": {

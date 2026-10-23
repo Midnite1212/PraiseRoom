@@ -37,14 +37,14 @@ export function SongPicker({ selectedIds, onToggle }: SongPickerProps) {
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col gap-3">
       <div className="relative">
-        <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2" />
+        <Search className="text-ink-2 size-icon pointer-events-none absolute top-1/2 left-3.5 -translate-y-1/2" />
         <Input
           type="search"
           value={keyword}
           onChange={(event) => setKeyword(event.target.value)}
           placeholder={t('songs.searchPlaceholder')}
           aria-label={t('songs.searchLabel')}
-          className="pl-8"
+          className="pl-10"
         />
       </div>
       {isError ? <p className="text-destructive text-sm">{t('songs.loadFailed')}</p> : null}
@@ -62,9 +62,12 @@ export function SongPicker({ selectedIds, onToggle }: SongPickerProps) {
         {songs.map((song) => {
           const isSelected = selectedIds.has(song._id);
           return (
-            <li key={song._id} className="flex items-center gap-3 border-b py-2 last:border-b-0">
+            <li
+              key={song._id}
+              className="hover:bg-fill-hover flex items-center gap-3 rounded-2xl px-2.5 py-2 transition-colors"
+            >
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium">{song.title}</p>
+                <p className="truncate text-sm font-semibold">{song.title}</p>
                 <p className="text-muted-foreground truncate text-xs">
                   {song.artist}
                   <span className="font-mono"> · {song.originalKey}</span>
@@ -73,7 +76,7 @@ export function SongPicker({ selectedIds, onToggle }: SongPickerProps) {
               <Button
                 type="button"
                 size="sm"
-                variant={isSelected ? 'secondary' : 'outline'}
+                variant={isSelected ? 'secondary' : 'link'}
                 aria-pressed={isSelected}
                 aria-label={t(isSelected ? 'editor.removeSong' : 'editor.addSong', {
                   title: song.title,

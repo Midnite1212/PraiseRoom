@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
+import { PAGE_TITLE_CLASSES } from '@/components/page/page-header';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -125,18 +126,18 @@ export function SetlistEditor({
   return (
     <form
       noValidate
-      className="mx-auto flex max-w-6xl flex-col gap-4"
+      className="flex flex-col gap-4"
       onSubmit={(event) => {
         event.preventDefault();
         void form.handleSubmit();
       }}
     >
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="text-2xl font-semibold">
+      <div className="mb-1 flex flex-wrap items-end justify-between gap-3">
+        <h1 data-page-title className={PAGE_TITLE_CLASSES}>
           {t(isEditing ? 'editor.editTitle' : 'editor.newTitle')}
         </h1>
         <div className="flex items-center gap-2">
-          <Button type="button" variant="ghost" onClick={() => router.history.back()}>
+          <Button type="button" variant="secondary" onClick={() => router.history.back()}>
             {t('editor.cancel')}
           </Button>
           <form.Subscribe selector={(state) => state.isSubmitting}>
@@ -149,8 +150,8 @@ export function SetlistEditor({
         </div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]">
-        <section className="bg-sheet flex flex-col gap-4 rounded-xl border p-4 md:p-6">
+      <div className="wide:grid-cols-[minmax(0,1fr)_22rem] wide:items-start grid gap-x-10 gap-y-4">
+        <section className="flex min-w-0 flex-col gap-4">
           <FieldGroup className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_12rem]">
             <form.Field name="name">
               {(field) => {
@@ -262,8 +263,10 @@ export function SetlistEditor({
           ) : null}
         </section>
 
-        <aside className="bg-sidebar hidden h-[calc(100svh-10rem)] min-h-96 rounded-xl border p-4 lg:sticky lg:top-[4.5rem] lg:block">
-          <h2 className="mb-3 text-sm font-medium">{t('editor.addSongs')}</h2>
+        <aside className="glass wide:sticky wide:top-7 wide:block hidden h-[calc(100svh-6rem)] min-h-96 p-4 [--glass-r:24px]">
+          <h2 className="text-ink-2 mb-3 px-1 text-[0.9375rem] font-semibold">
+            {t('editor.addSongs')}
+          </h2>
           <form.Subscribe selector={(state) => state.values.songs}>
             {(songs) => (
               <div className="h-[calc(100%-2rem)]">

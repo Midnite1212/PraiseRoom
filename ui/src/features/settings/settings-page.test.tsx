@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { changeLanguage } from '@/i18n';
+import { syncAccent } from '@/lib/accent';
 import { syncTypeface } from '@/lib/typeface';
 
 import { SettingsPage } from './settings-page';
@@ -11,6 +12,7 @@ afterEach(async () => {
   await changeLanguage('en');
   localStorage.clear();
   delete document.documentElement.dataset.typeface;
+  delete document.documentElement.dataset.palette;
 });
 
 describe('SettingsPage', () => {
@@ -48,5 +50,17 @@ describe('SettingsPage', () => {
 
     expect(screen.getByRole('radio', { name: 'Largest' })).toBeChecked();
     expect(localStorage.getItem('lyrics-size')).toBe('2xl');
+  });
+
+  it('applies the chosen accent colour and keeps it for next time', async () => {
+    const stop = syncAccent();
+    render(<SettingsPage />);
+    expect(screen.getByRole('radio', { name: 'Electric blue' })).toBeChecked();
+
+    await userEvent.click(screen.getByRole('radio', { name: 'Signal orange' }));
+
+    expect(document.documentElement.dataset.palette).toBe('signal');
+    expect(localStorage.getItem('accent')).toBe('signal');
+    stop();
   });
 });

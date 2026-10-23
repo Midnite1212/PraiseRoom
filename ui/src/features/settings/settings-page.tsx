@@ -1,127 +1,195 @@
+import { ToggleGroup as ToggleGroupPrimitive } from 'radix-ui';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { LanguageChoice, ThemeChoice } from '@/components/layout/preference-choices';
+import { PageHeader } from '@/components/page/page-header';
 import { LYRICS_SIZES, useLyricsSize } from '@/features/reader/lyrics-size';
-import { changeLanguage, LANGUAGES } from '@/i18n';
+import { ACCENTS, useAccent } from '@/lib/accent';
 import { TYPEFACES, useTypeface } from '@/lib/typeface';
 import { cn } from '@/lib/utils';
 
-const isOneOf = <T extends string>(values: readonly T[], value: string): value is T =>
-  values.some((option) => option === value);
+function SettingsSection({
+  id,
+  title,
+  description,
+  children,
+}: {
+  id: string;
+  title: string;
+  description: string;
+  children: ReactNode;
+}) {
+  return (
+    <section aria-labelledby={id} className="flex flex-col gap-2.5">
+      <div className="px-1">
+        <h2 id={id} className="text-[0.9375rem] font-semibold">
+          {title}
+        </h2>
+        <p className="text-ink-2 text-[0.8125rem]">{description}</p>
+      </div>
+      {children}
+    </section>
+  );
+}
 
-const SELECTED = 'data-[state=on]:border-primary data-[state=on]:bg-accent';
+type Tile<T extends string> = {
+  value: T;
+  label: ReactNode;
+  ariaLabel?: string;
+  attributes?: Record<`data-${string}`, string>;
+};
 
-const LANGUAGE_CODES = LANGUAGES.map(({ code }) => code);
+// One choice from several, shown as tiles that preview what they choose.
+function ChoiceTiles<T extends string>({
+  value,
+  tiles,
+  onChange,
+  label,
+  className,
+  tileClassName,
+}: {
+  value: T;
+  tiles: readonly Tile<T>[];
+  onChange: (value: T) => void;
+  label: string;
+  className?: string;
+  tileClassName?: string;
+}) {
+  return (
+    <ToggleGroupPrimitive.Root
+      type="single"
+      value={value}
+      onValueChange={(next) => {
+        const tile = tiles.find((candidate) => candidate.value === next);
+        if (tile) onChange(tile.value);
+      }}
+      aria-label={label}
+      className={cn('grid gap-1.5', className)}
+    >
+      {tiles.map((tile) => (
+        <ToggleGroupPrimitive.Item
+          key={tile.value}
+          value={tile.value}
+          aria-label={tile.ariaLabel}
+          {...tile.attributes}
+          className={cn(
+            'bg-fill-hover hover:bg-fill-press data-[state=on]:bg-fill-on rounded-2xl text-left transition-colors data-[state=on]:shadow-[inset_0_0_0_1px_color-mix(in_oklch,var(--brand)_30%,transparent)]',
+            tileClassName
+          )}
+        >
+          {tile.label}
+        </ToggleGroupPrimitive.Item>
+      ))}
+    </ToggleGroupPrimitive.Root>
+  );
+}
 
 export function SettingsPage() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [typeface, setTypeface] = useTypeface();
   const [lyricsSize, setLyricsSize] = useLyricsSize();
+  const [accent, setAccent] = useAccent();
 
   return (
-    <section className="mx-auto flex max-w-3xl flex-col gap-4">
-      <h1 className="text-2xl font-semibold">{t('settings.title')}</h1>
+    <>
+      <PageHeader title={t('settings.title')} description={t('settings.description')} />
+      <div className="flex max-w-2xl flex-col gap-7">
+        <SettingsSection
+          id="settings-language"
+          title={t('language.label')}
+          description={t('settings.language.description')}
+        >
+          <LanguageChoice size="lg" fullWidth />
+        </SettingsSection>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('language.label')}</CardTitle>
-          <CardDescription>{t('settings.language.description')}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ToggleGroup
-            type="single"
-            variant="outline"
-            value={i18n.language}
-            onValueChange={(value) => {
-              if (isOneOf(LANGUAGE_CODES, value)) void changeLanguage(value);
-            }}
-            aria-label={t('language.label')}
-            className="grid w-full grid-cols-2"
-          >
-            {LANGUAGES.map(({ code, label }) => (
-              <ToggleGroupItem
-                key={code}
-                value={code}
-                lang={code}
-                className={cn('h-11 text-base', SELECTED)}
-              >
-                {label}
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
-        </CardContent>
-      </Card>
+        <SettingsSection
+          id="settings-theme"
+          title={t('theme.label')}
+          description={t('settings.theme.description')}
+        >
+          <ThemeChoice size="lg" fullWidth />
+        </SettingsSection>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('settings.font.title')}</CardTitle>
-          <CardDescription>{t('settings.font.description')}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ToggleGroup
-            type="single"
-            variant="outline"
+        <SettingsSection
+          id="settings-accent"
+          title={t('settings.accent.title')}
+          description={t('settings.accent.description')}
+        >
+          <ChoiceTiles
+            value={accent}
+            onChange={setAccent}
+            label={t('settings.accent.title')}
+            className="wide:grid-cols-4 grid-cols-2"
+            tileClassName="flex items-center gap-2.5 px-3.5 py-3 text-sm font-semibold"
+            tiles={ACCENTS.map((value) => ({
+              value,
+              label: (
+                <>
+                  <span
+                    aria-hidden
+                    data-palette={value}
+                    className="bg-brand size-4 flex-none rounded-full shadow-[inset_0_0_0_1px_var(--hairline)]"
+                  />
+                  {t(`settings.accent.options.${value}`)}
+                </>
+              ),
+            }))}
+          />
+        </SettingsSection>
+
+        <SettingsSection
+          id="settings-font"
+          title={t('settings.font.title')}
+          description={t('settings.font.description')}
+        >
+          <ChoiceTiles
             value={typeface}
-            onValueChange={(value) => {
-              if (isOneOf(TYPEFACES, value)) setTypeface(value);
-            }}
-            aria-label={t('settings.font.title')}
-            className="grid w-full grid-cols-1 sm:grid-cols-2"
-          >
-            {TYPEFACES.map((option) => (
-              <ToggleGroupItem
-                key={option}
-                value={option}
-                data-typeface={option}
-                className={cn('h-auto flex-col items-start gap-1 px-4 py-3 font-sans', SELECTED)}
-              >
-                <span className="text-base">{t(`settings.font.options.${option}`)}</span>
-                <span className="text-muted-foreground text-sm font-normal">
-                  {t('settings.font.sample')}
-                </span>
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
-        </CardContent>
-      </Card>
+            onChange={setTypeface}
+            label={t('settings.font.title')}
+            className="wide:grid-cols-2 grid-cols-1"
+            tileClassName="flex flex-col gap-1 px-4 py-3 font-sans"
+            tiles={TYPEFACES.map((value) => ({
+              value,
+              attributes: { 'data-typeface': value },
+              label: (
+                <>
+                  <span className="text-base font-semibold">
+                    {t(`settings.font.options.${value}`)}
+                  </span>
+                  <span className="text-ink-2 text-sm">{t('settings.font.sample')}</span>
+                </>
+              ),
+            }))}
+          />
+        </SettingsSection>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>{t('settings.textSize.title')}</CardTitle>
-          <CardDescription>{t('settings.textSize.description')}</CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          <ToggleGroup
-            type="single"
-            variant="outline"
+        <SettingsSection
+          id="settings-text-size"
+          title={t('settings.textSize.title')}
+          description={t('settings.textSize.description')}
+        >
+          <ChoiceTiles
             value={lyricsSize}
-            onValueChange={(value) => {
-              if (isOneOf(LYRICS_SIZES, value)) setLyricsSize(value);
-            }}
-            aria-label={t('settings.textSize.title')}
-            className="grid w-full grid-cols-5"
-          >
-            {LYRICS_SIZES.map((option) => (
-              <ToggleGroupItem
-                key={option}
-                value={option}
-                data-lyrics-size={option}
-                aria-label={t(`settings.textSize.options.${option}`)}
-                className={cn('text-lyrics h-14 font-normal', SELECTED)}
-              >
-                Aa
-              </ToggleGroupItem>
-            ))}
-          </ToggleGroup>
+            onChange={setLyricsSize}
+            label={t('settings.textSize.title')}
+            className="grid-cols-5"
+            tileClassName="font-lyrics text-lyrics grid h-14 place-items-center text-center"
+            tiles={LYRICS_SIZES.map((value) => ({
+              value,
+              ariaLabel: t(`settings.textSize.options.${value}`),
+              attributes: { 'data-lyrics-size': value },
+              label: 'Aa',
+            }))}
+          />
           <p
             data-lyrics-size={lyricsSize}
-            className="bg-sheet text-sheet-foreground font-lyrics text-lyrics rounded-xl border p-4"
+            className="bg-fill-hover font-lyrics text-lyrics rounded-2xl p-4"
           >
             {t('settings.textSize.preview')}
           </p>
-        </CardContent>
-      </Card>
-    </section>
+        </SettingsSection>
+      </div>
+    </>
   );
 }

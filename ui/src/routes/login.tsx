@@ -5,11 +5,10 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
-import { LanguageSwitch } from '@/components/layout/language-switch';
-import { ThemeToggle } from '@/components/layout/theme-toggle';
+import { LanguageChoice, ThemeChoice } from '@/components/layout/preference-choices';
+import { BrandMark } from '@/components/primitives/brand-mark';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { sessionQueryOptions } from '@/features/auth/session';
@@ -81,86 +80,91 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center gap-4 p-4">
-      <div className="flex w-full max-w-sm justify-end gap-1">
-        <LanguageSwitch />
-        <ThemeToggle />
+    <div className="relative flex min-h-svh flex-col items-center justify-center gap-5 p-4">
+      <div aria-hidden className="ground-wash pointer-events-none fixed inset-0" />
+      <div className="relative flex items-center gap-2 text-lg font-bold tracking-[-0.01em]">
+        <BrandMark className="size-5" />
+        {t('app.name')}
       </div>
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="font-heading text-xl">{t('login.title')}</CardTitle>
-          <CardDescription>{t('login.description')}</CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          {errorKey ? (
-            <Alert variant="destructive">
-              <AlertDescription>{t(errorKey)}</AlertDescription>
-            </Alert>
-          ) : null}
-          <form
-            noValidate
-            onSubmit={(event) => {
-              event.preventDefault();
-              void form.handleSubmit();
-            }}
-          >
-            <FieldGroup>
-              <form.Field name="email">
-                {(field) => {
-                  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
-                  return (
-                    <Field data-invalid={isInvalid}>
-                      <FieldLabel htmlFor={field.name}>{t('login.email')}</FieldLabel>
-                      <Input
-                        id={field.name}
-                        name={field.name}
-                        type="email"
-                        autoComplete="email"
-                        value={field.state.value}
-                        aria-invalid={isInvalid}
-                        onBlur={field.handleBlur}
-                        onChange={(event) => field.handleChange(event.target.value)}
-                      />
-                      {isInvalid ? <FieldError errors={field.state.meta.errors} /> : null}
-                    </Field>
-                  );
-                }}
-              </form.Field>
-              <form.Field name="password">
-                {(field) => {
-                  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
-                  return (
-                    <Field data-invalid={isInvalid}>
-                      <FieldLabel htmlFor={field.name}>{t('login.password')}</FieldLabel>
-                      <Input
-                        id={field.name}
-                        name={field.name}
-                        type="password"
-                        autoComplete="current-password"
-                        value={field.state.value}
-                        aria-invalid={isInvalid}
-                        onBlur={field.handleBlur}
-                        onChange={(event) => field.handleChange(event.target.value)}
-                      />
-                      {isInvalid ? <FieldError errors={field.state.meta.errors} /> : null}
-                    </Field>
-                  );
-                }}
-              </form.Field>
-              <form.Subscribe selector={(state) => state.isSubmitting}>
-                {(isSubmitting) => (
-                  <Button type="submit" disabled={isSubmitting}>
-                    {t('login.submit')}
-                  </Button>
-                )}
-              </form.Subscribe>
-            </FieldGroup>
-          </form>
-          <Button variant="outline" onClick={() => void handleGoogle()}>
-            {t('login.google')}
-          </Button>
-        </CardContent>
-      </Card>
+      <main className="glass relative flex w-full max-w-sm flex-col gap-4 p-5 [--glass-r:28px]">
+        <div>
+          <h1 className="text-[1.75rem] leading-tight font-bold tracking-[-0.03em]">
+            {t('login.title')}
+          </h1>
+          <p className="text-ink-2 mt-1 text-sm">{t('login.description')}</p>
+        </div>
+        {errorKey ? (
+          <Alert variant="destructive">
+            <AlertDescription>{t(errorKey)}</AlertDescription>
+          </Alert>
+        ) : null}
+        <form
+          noValidate
+          onSubmit={(event) => {
+            event.preventDefault();
+            void form.handleSubmit();
+          }}
+        >
+          <FieldGroup>
+            <form.Field name="email">
+              {(field) => {
+                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>{t('login.email')}</FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      type="email"
+                      autoComplete="email"
+                      value={field.state.value}
+                      aria-invalid={isInvalid}
+                      onBlur={field.handleBlur}
+                      onChange={(event) => field.handleChange(event.target.value)}
+                    />
+                    {isInvalid ? <FieldError errors={field.state.meta.errors} /> : null}
+                  </Field>
+                );
+              }}
+            </form.Field>
+            <form.Field name="password">
+              {(field) => {
+                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
+                return (
+                  <Field data-invalid={isInvalid}>
+                    <FieldLabel htmlFor={field.name}>{t('login.password')}</FieldLabel>
+                    <Input
+                      id={field.name}
+                      name={field.name}
+                      type="password"
+                      autoComplete="current-password"
+                      value={field.state.value}
+                      aria-invalid={isInvalid}
+                      onBlur={field.handleBlur}
+                      onChange={(event) => field.handleChange(event.target.value)}
+                    />
+                    {isInvalid ? <FieldError errors={field.state.meta.errors} /> : null}
+                  </Field>
+                );
+              }}
+            </form.Field>
+            <form.Subscribe selector={(state) => state.isSubmitting}>
+              {(isSubmitting) => (
+                <Button type="submit" disabled={isSubmitting}>
+                  {t('login.submit')}
+                </Button>
+              )}
+            </form.Subscribe>
+          </FieldGroup>
+        </form>
+        <Button variant="secondary" onClick={() => void handleGoogle()}>
+          {t('login.google')}
+        </Button>
+      </main>
+      <div className="relative flex flex-wrap justify-center gap-2">
+        <LanguageChoice />
+        <ThemeChoice />
+      </div>
     </div>
   );
 }
