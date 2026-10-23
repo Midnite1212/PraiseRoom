@@ -3,7 +3,12 @@ import type { ReactNode } from 'react';
 import { chordToNumberParts } from '@/features/chords/nashville';
 import { type ChordLine, parseChordLyrics } from '@/features/chords/parse';
 import { type MusicKey, semitonesBetween, transposeChord } from '@/features/chords/theory';
-import type { ChordNotation, ReaderMode } from '@/features/reader/chord-display';
+import {
+  type Accidentals,
+  type ChordNotation,
+  chordsUseFlats,
+  type ReaderMode,
+} from '@/features/reader/chord-display';
 import { cn } from '@/lib/utils';
 
 import {
@@ -16,6 +21,7 @@ type LyricsSheetProps = {
   chordLyrics: string;
   mode: ReaderMode;
   notation: ChordNotation;
+  accidentals?: Accidentals;
   originalKey: MusicKey | null;
   playKey: MusicKey | null;
   columns?: LyricsColumns;
@@ -26,7 +32,8 @@ type ChordRenderer = (chord: string) => ReactNode;
 const createChordRenderer = (
   notation: ChordNotation,
   originalKey: MusicKey | null,
-  playKey: MusicKey | null
+  playKey: MusicKey | null,
+  accidentals: Accidentals
 ): ChordRenderer => {
   if (notation === 'numbers' && originalKey) {
     return (chord) => {
@@ -44,7 +51,7 @@ const createChordRenderer = (
     };
   }
   const semitones = originalKey && playKey ? semitonesBetween(originalKey, playKey) : 0;
-  const useFlats = playKey?.prefersFlats ?? false;
+  const useFlats = chordsUseFlats(accidentals, playKey);
   return (chord) => transposeChord(chord, semitones, useFlats);
 };
 
@@ -83,12 +90,13 @@ export function LyricsSheet({
   chordLyrics,
   mode,
   notation,
+  accidentals = 'auto',
   originalKey,
   playKey,
   columns = DEFAULT_LYRICS_COLUMNS,
 }: LyricsSheetProps) {
   const sections = parseChordLyrics(chordLyrics);
-  const renderChord = createChordRenderer(notation, originalKey, playKey);
+  const renderChord = createChordRenderer(notation, originalKey, playKey, accidentals);
   const showChords = mode === 'chords';
 
   return (

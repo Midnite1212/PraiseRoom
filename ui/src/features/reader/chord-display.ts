@@ -1,3 +1,4 @@
+import type { MusicKey } from '@/features/chords/theory';
 import { createStoredChoice } from '@/lib/stored-choice';
 
 export const READER_MODES = ['chords', 'lyrics'] as const;
@@ -13,3 +14,11 @@ export const useChordNotation = createStoredChoice(
   CHORD_NOTATIONS,
   'letters'
 ).use;
+
+export const ACCIDENTALS = ['auto', 'sharp', 'flat'] as const;
+export type Accidentals = (typeof ACCIDENTALS)[number];
+
+export const useAccidentals = createStoredChoice('chord-accidentals', ACCIDENTALS, 'auto').use;
+
+export const chordsUseFlats = (accidentals: Accidentals, playKey: MusicKey | null): boolean =>
+  accidentals === 'auto' ? (playKey?.prefersFlats ?? false) : accidentals === 'flat';
