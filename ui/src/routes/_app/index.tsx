@@ -17,7 +17,9 @@ import { groupSetlists } from '@/features/setlists/list';
 import { ownFolders } from '@/features/setlists/permissions';
 import { SetlistRow } from '@/features/setlists/setlist-row';
 import { useSetlistNames } from '@/features/setlists/use-setlist-names';
-import { songSearchQueryOptions } from '@/features/songs/api';
+import { recentSongsQueryOptions } from '@/features/songs/api';
+import { nextSetSongIds } from '@/features/songs/next-set';
+import { SongRows } from '@/features/songs/song-rows';
 
 export const Route = createFileRoute('/_app/')({
   loader: async ({ context }) => {
@@ -47,7 +49,7 @@ function HomePage() {
   const { data: setlists } = useSuspenseQuery(setlistsQueryOptions());
   const { data: folders } = useQuery(foldersQueryOptions());
   const { data: people } = useQuery(peopleQueryOptions());
-  const { data: library } = useQuery(songSearchQueryOptions({ keyword: '', page: 1 }));
+  const { data: recent } = useQuery(recentSongsQueryOptions());
   const names = useSetlistNames(session);
 
   const upcoming = groupSetlists(setlists, new Date(now)).upcoming;
@@ -69,14 +71,14 @@ function HomePage() {
       <div className="wide:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] wide:items-start grid gap-x-10 gap-y-2">
         <div className="min-w-0">
           {next ? (
-            <NextUp session={session} setlist={next} names={names} now={now} />
+            <NextUp session={session} setlist={next} now={now} />
           ) : (
             <EmptyState title={t('home.nothingNext')}>{t('home.nothingNextHint')}</EmptyState>
           )}
           {later.length > 0 ? (
             <>
               <GroupTitle
-                title={t('home.comingUp')}
+                title={t('home.then')}
                 count={later.length}
                 action={<AllLink to="/setlists" label={t('home.allSetlists')} />}
               />
@@ -109,11 +111,19 @@ function HomePage() {
               ))}
             </ul>
           )}
-          <GroupTitle
-            title={t('home.library')}
-            count={library?.totalCount}
-            action={<AllLink to="/songs" label={t('home.allSongs')} />}
-          />
+          {recent && recent.data.length > 0 ? (
+            <>
+              <GroupTitle
+                title={t('home.recentlyAdded')}
+                action={<AllLink to="/songs" label={t('home.allSongs')} />}
+              />
+              <SongRows
+                songs={recent.data}
+                sort="title"
+                nextSetSongIds={nextSetSongIds(setlists, now)}
+              />
+            </>
+          ) : null}
         </div>
       </div>
     </>

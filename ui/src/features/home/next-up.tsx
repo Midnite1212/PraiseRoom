@@ -1,67 +1,78 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
-import { Folder, Link as LinkIcon, Play } from 'pixelarticons/react';
+import { ArrowRight, Link as LinkIcon } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 
 import { DateBlock } from '@/components/primitives/date-block';
 import { whenLabel } from '@/components/primitives/set-status';
-import { Tag } from '@/components/primitives/tag';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Session } from '@/features/auth/session';
 import { keyForSong, type SetlistSummary, setlistQueryOptions } from '@/features/setlists/api';
-import type { SetlistNames } from '@/features/setlists/setlist-row';
 import { useSetlistActions } from '@/features/setlists/use-setlist-actions';
 
-// The next setlist: the one glass card on Home, since it is what you came to open.
+// The next setlist: the one glass card on Home. The whole card opens it, sharing sits in its
+// corner, and the songs are listed with the key each is played in.
 export function NextUp({
   session,
   setlist,
-  names,
   now,
 }: {
   session: Session;
   setlist: SetlistSummary;
-  names: SetlistNames;
   now: number;
 }) {
   const { t, i18n } = useTranslation();
   const { data: detail, isPending } = useQuery(setlistQueryOptions(setlist._id));
   const actions = useSetlistActions(session, setlist);
-  const when = setlist.date ? whenLabel(setlist.date, now, i18n.language) : null;
-  const weekday = setlist.date
-    ? new Intl.DateTimeFormat(i18n.language, { weekday: 'short' }).format(new Date(setlist.date))
-    : null;
+  const meta = [
+    setlist.date
+      ? new Intl.DateTimeFormat(i18n.language, { weekday: 'long' }).format(new Date(setlist.date))
+      : null,
+    setlist.date ? whenLabel(setlist.date, now, i18n.language) : null,
+    t('reader.songCount', { count: setlist.songs.length }),
+  ].filter((part) => part !== null);
 
   return (
-    <section aria-labelledby="next-up" className="glass p-[18px] [--glass-r:28px]">
-      <div className="grid grid-cols-[52px_minmax(0,1fr)] items-center gap-3.5">
+    <section
+      aria-labelledby="next-up"
+      className="glass ease-liquid focus-within:outline-chord wide:mt-0 group/next relative mt-2 p-[18px] transition-transform duration-[420ms] [--glass-r:28px] focus-within:outline-2 focus-within:outline-offset-[3px] has-[a:hover]:-translate-y-0.5 has-[a:hover]:[--glass-fill:var(--glass-tint-over)]"
+    >
+      <div className="grid grid-cols-[52px_minmax(0,1fr)_auto_auto] items-center gap-3.5">
         <DateBlock date={setlist.date} status="next" />
         <div className="min-w-0">
-          <p className="text-chord mb-0.5 text-[0.8125rem] font-semibold">
-            {when ? t('home.upNextWhen', { when }) : t('home.upNext')}
-          </p>
-          <h2 id="next-up" className="truncate text-[1.375rem] font-bold tracking-[-0.02em]">
-            {setlist.name}
+          <h2 id="next-up" className="m-0 text-[1.375rem] font-bold tracking-[-0.02em]">
+            <Link
+              to="/setlists/$setlistId"
+              params={{ setlistId: setlist._id }}
+              className="block truncate outline-none after:absolute after:inset-0 after:z-[1] after:rounded-[28px]"
+            >
+              {setlist.name}
+            </Link>
           </h2>
-          <p className="text-ink-2 mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-[0.8125rem]">
-            <span>
-              {weekday ? `${weekday} · ` : null}
-              {t('reader.songCount', { count: setlist.songs.length })}
-            </span>
-            {setlist.groupIds.flatMap((id) => {
-              const name = names.folders.get(id);
-              return name
-                ? [
-                    <Tag key={id}>
-                      <Folder />
-                      {name}
-                    </Tag>,
-                  ]
-                : [];
-            })}
-          </p>
+          <p className="text-ink-2 mt-1 truncate text-sm">{meta.join(' · ')}</p>
         </div>
+        <span
+          aria-hidden
+          className="text-ink-2 wide:inline-flex hidden h-9 -translate-x-1.5 items-center gap-1 self-start text-[0.8125rem] font-semibold opacity-0 transition-[opacity,transform] duration-300 ease-out group-has-[a:focus-visible]/next:translate-x-0 group-has-[a:focus-visible]/next:opacity-100 group-has-[a:hover]/next:translate-x-0 group-has-[a:hover]/next:opacity-100"
+        >
+          {t('home.open')}
+          <ArrowRight />
+        </span>
+        {actions.canShare ? (
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={actions.copyLink}
+            aria-label={t('reader.copyLink')}
+            title={t('reader.copyLink')}
+            className="relative z-[2] -mt-1 -mr-1.5 self-start"
+          >
+            <LinkIcon />
+          </Button>
+        ) : (
+          <span />
+        )}
       </div>
       {isPending ? (
         <Skeleton className="mt-4 h-36 w-full" />
@@ -83,20 +94,6 @@ export function NextUp({
           ))}
         </ol>
       ) : null}
-      <div className="mt-3.5 flex gap-2">
-        <Button asChild>
-          <Link to="/setlists/$setlistId" params={{ setlistId: setlist._id }}>
-            <Play />
-            {t('home.openSetlist')}
-          </Link>
-        </Button>
-        {actions.canShare ? (
-          <Button variant="secondary" onClick={actions.copyLink}>
-            <LinkIcon />
-            {t('setlists.share')}
-          </Button>
-        ) : null}
-      </div>
     </section>
   );
 }

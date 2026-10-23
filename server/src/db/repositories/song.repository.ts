@@ -1,4 +1,4 @@
-import { SQL, and, arrayOverlaps, asc, count, eq, ilike, or, sql } from 'drizzle-orm';
+import { SQL, and, arrayOverlaps, asc, count, desc, eq, ilike, or, sql } from 'drizzle-orm';
 
 import { PublicSongRecord, SongRecord, SongViewRecord } from '../../types/song.types';
 import {
@@ -31,7 +31,7 @@ export const SONG_FIELDS = [
 
 export type SongField = (typeof SONG_FIELDS)[number];
 export type SongFields = Partial<Record<SongField, unknown>>;
-export type SongSortField = 'title' | 'code';
+export type SongSortField = 'title' | 'code' | 'recent';
 
 export type SongSearch = {
   keyword: string;
@@ -117,10 +117,12 @@ const searchCondition = ({ keyword, code, tempo, themes }: SongSearch): SQL | un
   return and(...conditions);
 };
 
-const searchOrder = (sortBy: SongSortField): SQL[] =>
-  sortBy === 'code'
+const searchOrder = (sortBy: SongSortField): SQL[] => {
+  if (sortBy === 'recent') return [desc(songs.createdAt), desc(songs.id)];
+  return sortBy === 'code'
     ? [sql`${songs.code} collate "C" asc nulls first`, asc(songs.id)]
     : [sql`${songs.title} collate "C" asc`, asc(songs.id)];
+};
 
 export const songRepository = {
   async create(fields: SongFields): Promise<SongRecord> {
