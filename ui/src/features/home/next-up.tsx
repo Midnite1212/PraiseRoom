@@ -4,6 +4,7 @@ import { Folder, Link as LinkIcon, Play } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 
 import { DateBlock } from '@/components/primitives/date-block';
+import { whenLabel } from '@/components/primitives/set-status';
 import { Tag } from '@/components/primitives/tag';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -11,17 +12,6 @@ import type { Session } from '@/features/auth/session';
 import { keyForSong, type SetlistSummary, setlistQueryOptions } from '@/features/setlists/api';
 import type { SetlistNames } from '@/features/setlists/setlist-row';
 import { useSetlistActions } from '@/features/setlists/use-setlist-actions';
-
-const DAY_MS = 86_400_000;
-
-const daysUntil = (date: string, now: number): number => {
-  const today = new Date(now);
-  const start = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
-  const day = new Date(date);
-  return Math.round(
-    (new Date(day.getFullYear(), day.getMonth(), day.getDate()).getTime() - start) / DAY_MS
-  );
-};
 
 // The next setlist: the one glass card on Home, since it is what you came to open.
 export function NextUp({
@@ -38,12 +28,7 @@ export function NextUp({
   const { t, i18n } = useTranslation();
   const { data: detail, isPending } = useQuery(setlistQueryOptions(setlist._id));
   const actions = useSetlistActions(session, setlist);
-  const when = setlist.date
-    ? new Intl.RelativeTimeFormat(i18n.language, { numeric: 'auto' }).format(
-        daysUntil(setlist.date, now),
-        'day'
-      )
-    : null;
+  const when = setlist.date ? whenLabel(setlist.date, now, i18n.language) : null;
   const weekday = setlist.date
     ? new Intl.DateTimeFormat(i18n.language, { weekday: 'short' }).format(new Date(setlist.date))
     : null;
@@ -51,7 +36,7 @@ export function NextUp({
   return (
     <section aria-labelledby="next-up" className="glass p-[18px] [--glass-r:28px]">
       <div className="grid grid-cols-[52px_minmax(0,1fr)] items-center gap-3.5">
-        <DateBlock date={setlist.date} now={now} />
+        <DateBlock date={setlist.date} status="next" />
         <div className="min-w-0">
           <p className="text-chord mb-0.5 text-[0.8125rem] font-semibold">
             {when ? t('home.upNextWhen', { when }) : t('home.upNext')}

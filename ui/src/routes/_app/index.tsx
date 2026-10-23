@@ -83,7 +83,7 @@ function HomePage() {
               <ul className={LIST_CLASSES}>
                 {later.map((setlist) => (
                   <li key={setlist._id}>
-                    <SetlistRow session={session} setlist={setlist} names={names} now={now} />
+                    <SetlistRow session={session} setlist={setlist} names={names} status="up" />
                   </li>
                 ))}
               </ul>

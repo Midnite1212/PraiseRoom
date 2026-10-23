@@ -102,6 +102,8 @@
       "slow": "慢",
       "mediumSlow": "中慢"
     },
+    "keyLabel": "調 {{key}}",
+    "tempoLabel": "節奏：{{tempo}}",
     "searchWeb": "包括網上結果",
     "searchTooLong": "搜尋內容請少於 100 個字元。",
     "sortHint": {
@@ -133,6 +135,8 @@
     "title": "歌單",
     "empty": "你還沒有歌單。",
     "noDate": "未定日期",
+    "stripEmpty": "尚未有歌曲",
+    "stripLabel": "{{songs}}：{{titles}}",
     "upcoming": "即將舉行",
     "past": "過往",
     "undated": "未定日期",

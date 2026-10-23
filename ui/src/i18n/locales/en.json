@@ -102,6 +102,8 @@
       "slow": "Slow",
       "mediumSlow": "Medium slow"
     },
+    "keyLabel": "Key {{key}}",
+    "tempoLabel": "Tempo: {{tempo}}",
     "searchWeb": "Include results from the web",
     "searchTooLong": "Keep the search under 100 characters.",
     "sortHint": {
@@ -133,6 +135,8 @@
     "title": "Setlists",
     "empty": "You have no setlists yet.",
     "noDate": "No date",
+    "stripEmpty": "No songs yet",
+    "stripLabel": "{{songs}}: {{titles}}",
     "upcoming": "Upcoming",
     "past": "Past",
     "undated": "No date",

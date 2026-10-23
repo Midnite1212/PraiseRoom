@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils';
 const AVATAR_SIZES = {
   md: 'size-8 text-[0.8125rem]',
   sm: 'size-7 text-xs',
+  xs: 'size-[18px] text-[0.6875rem]',
 } as const;
 
 export const toInitials = (name: string): string =>

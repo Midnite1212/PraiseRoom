@@ -3,6 +3,8 @@ import { useTranslation } from 'react-i18next';
 
 import { cn } from '@/lib/utils';
 
+import type { SetStatus } from './set-status';
+
 const BOX_SIZES = {
   md: 'size-[52px] rounded-[14px]',
   sm: 'size-11 rounded-xl',
@@ -36,16 +38,14 @@ export function RowTile({
   );
 }
 
-const WEEK_MS = 7 * 86_400_000;
-
-// A setlist's date as day and month; within the coming week it lights up.
+// A setlist's date as day and month; only the next set lights up.
 export function DateBlock({
   date,
-  now,
+  status,
   size = 'md',
 }: {
   date: string | null | undefined;
-  now: number;
+  status: SetStatus;
   size?: BoxSize;
 }) {
   const { t, i18n } = useTranslation();
@@ -58,11 +58,8 @@ export function DateBlock({
       </RowTile>
     );
   }
-  const today = new Date(now);
-  const startOfToday = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
-  const distance = parsed.getTime() - startOfToday;
   return (
-    <RowTile size={size} highlight={distance >= 0 && distance <= WEEK_MS}>
+    <RowTile size={size} highlight={status === 'next'}>
       <b className={cn('font-mono font-bold', size === 'md' ? 'text-xl' : 'text-base')}>
         {new Intl.DateTimeFormat(i18n.language, { day: 'numeric' }).format(parsed)}
       </b>
