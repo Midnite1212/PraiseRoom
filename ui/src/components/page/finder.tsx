@@ -3,6 +3,7 @@ import type { Ref } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 type FinderProps = {
   value: string;
@@ -13,9 +14,10 @@ type FinderProps = {
   onFilter?: () => void;
   maxLength?: number;
   inputRef?: Ref<HTMLInputElement>;
+  sticky?: boolean;
 };
 
-// Search (and filter) under the page title. It sticks as the list scrolls: under the top bar on phones,
+// Search (and filter) under the page title. It sticks as the list scrolls (unless `sticky` is off): under the top bar on phones,
 // at the top of the window on wide screens, with its own fade band behind it once the page has moved.
 export function Finder({
   value,
@@ -26,15 +28,20 @@ export function Finder({
   onFilter,
   maxLength,
   inputRef,
+  sticky = true,
 }: FinderProps) {
   const { t } = useTranslation();
   return (
     <div
       data-finder
-      className="wide:top-3.5 sticky top-[calc(var(--top)+58px)] z-20 mb-1.5 flex gap-2"
+      className={cn(
+        'z-20 mb-1.5 flex gap-2',
+        sticky ? 'wide:top-3.5 sticky top-[calc(var(--top)+58px)]' : 'relative'
+      )}
     >
       <div
         aria-hidden
+        hidden={!sticky}
         className="finder-band wide:-inset-x-12 wide:-top-3.5 pointer-events-none absolute -inset-x-(--pg) top-[calc((var(--top)+58px)*-1)] -bottom-[18px] -z-10 opacity-0 transition-opacity duration-200 ease-out in-[.scrolled]:opacity-100"
       />
       <search className="glass glass-over flex h-12 min-w-0 flex-1 items-center gap-2 pr-1.5 pl-4">

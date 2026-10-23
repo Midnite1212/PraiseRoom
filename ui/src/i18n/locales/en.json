@@ -339,6 +339,7 @@
     "noMatchesHint": "Try another name.",
     "namePlaceholder": "Your team or small group",
     "actions": "Folder actions",
+    "closePreview": "Close folder (Esc)",
     "rename": "Rename",
     "youMadeThis": "You made this folder",
     "from": "From {{name}}",

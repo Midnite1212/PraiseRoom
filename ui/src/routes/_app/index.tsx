@@ -10,7 +10,7 @@ import { PageHeader } from '@/components/page/page-header';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { peopleQueryOptions } from '@/features/folders/api';
-import { FolderRow } from '@/features/folders/folder-card';
+import { FolderRow } from '@/features/folders/folder-row';
 import { NextUp } from '@/features/home/next-up';
 import { foldersQueryOptions, setlistsQueryOptions } from '@/features/setlists/api';
 import { groupSetlists } from '@/features/setlists/list';
