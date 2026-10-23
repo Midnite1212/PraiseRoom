@@ -51,4 +51,32 @@ describe('filterSetlists', () => {
       filterSetlists(all, { search: '', ownership: 'shared', userId: 'me' }).map(({ name }) => name)
     ).toEqual(['Youth Night']);
   });
+
+  it('keeps setlists in any chosen folder', () => {
+    const inFolders = [
+      { ...setlist('Care group', null), groupIds: ['care'] },
+      { ...setlist('Youth', null), groupIds: ['youth'] },
+      setlist('Loose', null),
+    ];
+    expect(
+      filterSetlists(inFolders, {
+        search: '',
+        ownership: 'all',
+        userId: 'me',
+        folderIds: ['care', 'youth'],
+      }).map(({ name }) => name)
+    ).toEqual(['Care group', 'Youth']);
+  });
+
+  it('keeps only the chosen calendar day', () => {
+    const dated = [
+      setlist('Thursday', new Date(2026, 9, 29).toISOString()),
+      setlist('Sunday', new Date(2026, 10, 1).toISOString()),
+    ];
+    expect(
+      filterSetlists(dated, { search: '', ownership: 'all', userId: 'me', day: '2026-10-29' }).map(
+        ({ name }) => name
+      )
+    ).toEqual(['Thursday']);
+  });
 });

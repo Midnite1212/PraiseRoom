@@ -1,4 +1,5 @@
 import type { SetlistSummary } from './api';
+import { toDateInputValue } from './format-date';
 
 export type SetlistOwnership = 'all' | 'mine' | 'shared';
 
@@ -36,13 +37,26 @@ export const groupSetlists = (setlists: readonly SetlistSummary[], now: Date): S
   return groups;
 };
 
+export type SetlistFilters = {
+  search: string;
+  ownership: SetlistOwnership;
+  userId: string;
+  // Keeps setlists in any of these folders; empty keeps all.
+  folderIds?: readonly string[];
+  // A local calendar day, `YYYY-MM-DD`.
+  day?: string;
+};
+
 export const filterSetlists = (
   setlists: readonly SetlistSummary[],
-  { search, ownership, userId }: { search: string; ownership: SetlistOwnership; userId: string }
+  { search, ownership, userId, folderIds = [], day }: SetlistFilters
 ): SetlistSummary[] => {
   const query = search.trim().toLocaleLowerCase();
   return setlists.filter((setlist) => {
     if (query && !setlist.name.toLocaleLowerCase().includes(query)) return false;
+    if (folderIds.length > 0 && !setlist.groupIds.some((id) => folderIds.includes(id)))
+      return false;
+    if (day && toDateInputValue(setlist.date) !== day) return false;
     if (ownership === 'mine') return setlist.createdBy === userId;
     if (ownership === 'shared') return setlist.createdBy !== userId;
     return true;

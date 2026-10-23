@@ -123,7 +123,7 @@
     "past": "過往",
     "undated": "未定日期",
     "searchLabel": "搜尋歌單",
-    "searchPlaceholder": "按名稱搜尋",
+    "searchPlaceholder": "搜尋歌單",
     "show": "顯示",
     "ownership": {
       "all": "全部",
@@ -133,7 +133,38 @@
     "shared": "共享",
     "noMatches": "沒有相符的歌單。",
     "open": "開啟",
-    "actions": "{{name}}的操作"
+    "actions": "{{name}}的操作",
+    "comingUp_one": "即將有 {{count}} 個歌單",
+    "comingUp_other": "即將有 {{count}} 個歌單",
+    "noMatchesHint": "試試其他關鍵字，或清除篩選。",
+    "share": "分享",
+    "delete": "刪除",
+    "more": "更多",
+    "filters": {
+      "title": "篩選歌單",
+      "matches_one": "{{count}} 個歌單符合",
+      "matches_other": "{{count}} 個歌單符合",
+      "show_one": "顯示 {{count}} 個歌單",
+      "show_other": "顯示 {{count}} 個歌單",
+      "madeBy": "建立者",
+      "inFolders": "所在資料夾",
+      "ownership": {
+        "all": "任何人",
+        "mine": "我",
+        "shared": "其他人"
+      },
+      "chip": {
+        "mine": "由我建立",
+        "shared": "由其他人建立"
+      }
+    },
+    "calendar": {
+      "label": "月曆",
+      "previousMonth": "上個月",
+      "nextMonth": "下個月",
+      "hint": "有歌單的日子。點選即可顯示。",
+      "showing": "顯示 {{day}}"
+    }
   },
   "reader": {
     "setlist": "歌單",

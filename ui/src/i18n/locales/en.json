@@ -123,7 +123,7 @@
     "past": "Past",
     "undated": "No date",
     "searchLabel": "Search setlists",
-    "searchPlaceholder": "Search by name",
+    "searchPlaceholder": "Search setlists",
     "show": "Show",
     "ownership": {
       "all": "All",
@@ -133,7 +133,38 @@
     "shared": "Shared",
     "noMatches": "No setlists match.",
     "open": "Open",
-    "actions": "Actions for {{name}}"
+    "actions": "Actions for {{name}}",
+    "comingUp_one": "{{count}} setlist coming up",
+    "comingUp_other": "{{count}} setlists coming up",
+    "noMatchesHint": "Try another search, or clear the filters.",
+    "share": "Share",
+    "delete": "Delete",
+    "more": "More",
+    "filters": {
+      "title": "Filter setlists",
+      "matches_one": "{{count}} setlist matches",
+      "matches_other": "{{count}} setlists match",
+      "show_one": "Show {{count}} setlist",
+      "show_other": "Show {{count}} setlists",
+      "madeBy": "Made by",
+      "inFolders": "In folders",
+      "ownership": {
+        "all": "Anyone",
+        "mine": "Me",
+        "shared": "Others"
+      },
+      "chip": {
+        "mine": "Made by me",
+        "shared": "Made by others"
+      }
+    },
+    "calendar": {
+      "label": "Calendar",
+      "previousMonth": "Previous month",
+      "nextMonth": "Next month",
+      "hint": "Days with a setlist. Click one to show it.",
+      "showing": "Showing {{day}}"
+    }
   },
   "reader": {
     "setlist": "Setlist",
