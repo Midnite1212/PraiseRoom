@@ -456,6 +456,14 @@
         "signal": "Signal orange"
       }
     },
+    "glass": {
+      "title": "Glass",
+      "description": "Refraction bends the background at glass edges. Chrome, Edge and Brave only.",
+      "options": {
+        "frosted": "Frosted",
+        "refract": "Refraction"
+      }
+    },
     "description": "How the app looks and reads on this device.",
     "theme": {
       "description": "Dark suits dim rooms and stages."

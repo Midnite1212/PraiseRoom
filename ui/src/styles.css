@@ -292,6 +292,37 @@
   --brand: oklch(0.73 0.19 45);
 }
 
+@property --sheen {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+/* Refraction thins the glass so the bend shows through (`.refract` on `<html>`, src/lib/liquid-glass.ts). */
+.refract {
+  --lg-spec: oklch(1 0 0 / 0.55);
+  --lg-tone: brightness(1.08);
+}
+
+.refract.dark {
+  --lg-spec: oklch(1 0 0 / 0.2);
+  --lg-tone: brightness(0.82);
+}
+
+@media (prefers-contrast: no-preference) {
+  .refract {
+    --glass-tint: oklch(1 0 0 / 0.26);
+    --glass-tint-over: oklch(1 0 0 / 0.56);
+    --glass-tint-strong: oklch(0.99 0 0 / 0.7);
+  }
+
+  .refract.dark {
+    --glass-tint: oklch(0.22 0 0 / 0.2);
+    --glass-tint-over: oklch(0.14 0 0 / 0.48);
+    --glass-tint-strong: oklch(0.16 0 0 / 0.62);
+  }
+}
+
 /* Increased contrast: near-opaque glass, stronger secondary ink and edges. */
 @media (prefers-contrast: more) {
   :root {
@@ -458,6 +489,38 @@
     pointer-events: none;
   }
 
+  /* Refraction (Chromium only, `src/lib/liquid-glass.ts`): the backdrop swaps to the element's SVG filter,
+     the tint thins so the bend shows through, and a sheen follows the pointer. */
+  .refract .glass::after {
+    background:
+      radial-gradient(
+        120px 84px at var(--mx, 50%) var(--my, 0%),
+        color-mix(in oklch, var(--lg-spec) calc(var(--sheen) * 100%), transparent),
+        transparent 70%
+      ),
+      var(--glass-fill, var(--glass-tint));
+    -webkit-backdrop-filter: var(--lg, blur(var(--glass-blur, 12px)) saturate(185%)) var(--lg-tone);
+    backdrop-filter: var(--lg, blur(var(--glass-blur, 12px)) saturate(185%)) var(--lg-tone);
+    transition:
+      background-color 300ms var(--ease-out),
+      --sheen 420ms var(--ease-out);
+  }
+
+  .refract .glass::before {
+    padding: 1.25px;
+    background:
+      radial-gradient(84px 56px at var(--mx, 50%) var(--my, 0%), var(--rim-hi), transparent 70%),
+      linear-gradient(
+        155deg,
+        var(--rim-hi) 0%,
+        var(--rim-lo) 26%,
+        transparent 50%,
+        var(--rim-lo) 76%,
+        var(--rim-hi) 100%
+      ),
+      linear-gradient(var(--rim-edge), var(--rim-edge));
+  }
+
   /* Glass that floats over moving content carries a denser tint so its own labels always win. */
   .glass-over {
     --glass-fill: var(--glass-tint-over);
@@ -466,6 +529,7 @@
   .glass-strong {
     --glass-fill: var(--glass-tint-strong);
     --glass-blur: 24px;
+    --lg-blur: 8;
   }
 
   .glass-danger {
