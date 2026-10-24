@@ -507,6 +507,7 @@
       "description": "Used across the app on this device.",
       "sample": "Aa 讚美祢",
       "options": {
+        "plex": "IBM Plex",
         "geist": "Geist",
         "hanken-grotesk": "Hanken Grotesk",
         "pixel": "Pixel",

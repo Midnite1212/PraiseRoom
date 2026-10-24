@@ -16,9 +16,9 @@ afterEach(async () => {
 });
 
 describe('SettingsPage', () => {
-  it('selects Geist and large by default', () => {
+  it('selects IBM Plex and large by default', () => {
     render(<SettingsPage />);
-    expect(screen.getByRole('radio', { name: /Geist/ })).toBeChecked();
+    expect(screen.getByRole('radio', { name: /IBM Plex/ })).toBeChecked();
     expect(screen.getByRole('radio', { name: 'Large' })).toBeChecked();
   });
 

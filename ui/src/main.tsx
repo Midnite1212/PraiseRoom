@@ -18,6 +18,11 @@ import './i18n';
 import '@fontsource-variable/geist';
 import '@fontsource-variable/geist-mono';
 import '@fontsource-variable/hanken-grotesk';
+import '@fontsource-variable/ibm-plex-sans';
+
+import '@fontsource/ibm-plex-mono/500.css';
+import '@fontsource/ibm-plex-mono/600.css';
+import '@fontsource/ibm-plex-mono/700.css';
 import '@fontsource/fusion-pixel-12px-proportional-tc';
 import '@fontsource/geist-pixel';
 
