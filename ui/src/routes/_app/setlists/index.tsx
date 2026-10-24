@@ -25,6 +25,7 @@ import { SetlistPreview } from '@/features/setlists/setlist-preview';
 import { ManagedSetlistRow } from '@/features/setlists/setlist-row';
 import { useSetlistNames } from '@/features/setlists/use-setlist-names';
 import { useIsWide } from '@/hooks/use-wide';
+import { dateLocale } from '@/lib/date-locale';
 
 const setlistsSearchSchema = z.object({
   q: z.string().default('').catch(''),
@@ -145,7 +146,7 @@ function SetlistsPage() {
       ? [
           {
             key: 'day',
-            label: new Intl.DateTimeFormat(i18n.language, {
+            label: new Intl.DateTimeFormat(dateLocale(i18n.language), {
               day: 'numeric',
               month: 'short',
             }).format(new Date(`${search.day}T00:00:00`)),

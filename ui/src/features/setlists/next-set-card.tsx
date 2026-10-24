@@ -7,6 +7,7 @@ import { whenLabel } from '@/components/primitives/set-status';
 import { SetStrip } from '@/components/primitives/set-strip';
 import { Button } from '@/components/ui/button';
 import type { Session } from '@/features/auth/session';
+import { dateLocale } from '@/lib/date-locale';
 
 import type { SetlistSummary } from './api';
 import { useSetlistActions } from './use-setlist-actions';
@@ -26,7 +27,9 @@ export function NextSetCard({
   const actions = useSetlistActions(session, setlist);
   const parts = [
     setlist.date
-      ? new Intl.DateTimeFormat(i18n.language, { weekday: 'long' }).format(new Date(setlist.date))
+      ? new Intl.DateTimeFormat(dateLocale(i18n.language), { weekday: 'long' }).format(
+          new Date(setlist.date)
+        )
       : null,
     setlist.date ? whenLabel(setlist.date, now, i18n.language) : null,
     t('reader.songCount', { count: setlist.songs.length }),
@@ -38,7 +41,7 @@ export function NextSetCard({
       className="glass focus-within:outline-chord relative mt-2 p-[18px] [--glass-r:28px] focus-within:outline-2 focus-within:outline-offset-[3px]"
     >
       <div className="grid grid-cols-[52px_minmax(0,1fr)_auto] items-center gap-3.5">
-        <DateBlock date={setlist.date} status="next" />
+        <DateBlock date={setlist.date} status="up" />
         <div className="min-w-0">
           <h2 id="next-set" className="m-0 text-[1.375rem] font-bold tracking-[-0.02em]">
             <Link

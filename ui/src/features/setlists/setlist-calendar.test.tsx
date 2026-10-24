@@ -37,7 +37,7 @@ describe('SetlistCalendar', () => {
     const { rerender } = render(
       <SetlistCalendar setlists={SETLISTS} now={NOW} day={undefined} onDayChange={onDayChange} />
     );
-    expect(screen.getByText('Coming')).toBeInTheDocument();
+    expect(screen.getByText('Later')).toBeInTheDocument();
     rerender(
       <SetlistCalendar setlists={SETLISTS} now={NOW} day="2030-06-20" onDayChange={onDayChange} />
     );

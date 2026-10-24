@@ -20,6 +20,7 @@ import { useSetlistNames } from '@/features/setlists/use-setlist-names';
 import { recentSongsQueryOptions } from '@/features/songs/api';
 import { nextSetSongIds } from '@/features/songs/next-set';
 import { SongRows } from '@/features/songs/song-rows';
+import { dateLocale } from '@/lib/date-locale';
 
 export const Route = createFileRoute('/_app/')({
   loader: async ({ context }) => {
@@ -62,7 +63,7 @@ function HomePage() {
     <>
       <PageHeader
         title={t('home.welcome', { name: session.fullName })}
-        description={new Intl.DateTimeFormat(i18n.language, {
+        description={new Intl.DateTimeFormat(dateLocale(i18n.language), {
           weekday: 'long',
           day: 'numeric',
           month: 'long',

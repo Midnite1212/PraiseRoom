@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { dateLocale } from '@/lib/date-locale';
 import { cn } from '@/lib/utils';
 
 import type { SetStatus } from './set-status';
@@ -61,10 +62,10 @@ export function DateBlock({
   return (
     <RowTile size={size} highlight={status === 'next'}>
       <b className={cn('font-mono font-bold', size === 'md' ? 'text-xl' : 'text-base')}>
-        {new Intl.DateTimeFormat(i18n.language, { day: 'numeric' }).format(parsed)}
+        {new Intl.DateTimeFormat(dateLocale(i18n.language), { day: 'numeric' }).format(parsed)}
       </b>
       <small className="text-ink-2 mt-1 text-[0.6875rem] font-semibold">
-        {new Intl.DateTimeFormat(i18n.language, { month: 'short' }).format(parsed)}
+        {new Intl.DateTimeFormat(dateLocale(i18n.language), { month: 'short' }).format(parsed)}
       </small>
     </RowTile>
   );

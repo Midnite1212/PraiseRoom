@@ -25,7 +25,7 @@
   "user": {
     "menu": "帳戶",
     "appearance": "外觀",
-    "settingsHint": "字體大小、歌詞及和弦",
+    "settingsHint": "閱讀、和弦及外觀",
     "settings": "設定",
     "signOut": "登出",
     "signOutFailed": "未能登出，請再試一次。",
@@ -201,7 +201,7 @@
       "hint": "有歌單的日子。點選即可顯示。",
       "showing": "顯示 {{day}}",
       "next": "下一個",
-      "coming": "即將",
+      "later": "之後",
       "played": "已完成",
       "showAll": "顯示全部"
     },
