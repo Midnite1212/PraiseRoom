@@ -13,7 +13,7 @@ export function BrandMark({ className }: { className?: string }) {
       height={200}
       draggable={false}
       className={cn(
-        '-m-1.5 size-10 flex-none select-none drop-shadow-[0_2px_6px_color-mix(in_oklch,var(--brand)_45%,transparent)]',
+        '-m-1.5 size-10 max-w-none flex-none select-none drop-shadow-[0_2px_6px_color-mix(in_oklch,var(--brand)_45%,transparent)]',
         className
       )}
     />

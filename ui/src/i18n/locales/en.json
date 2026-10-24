@@ -6,6 +6,8 @@
     "home": "Home",
     "songs": "Songs",
     "toggleSidebar": "Toggle sidebar",
+    "collapseSidebar": "Collapse sidebar",
+    "expandSidebar": "Expand sidebar",
     "setlists": "Setlists",
     "folders": "Folders",
     "pages": "Pages",
