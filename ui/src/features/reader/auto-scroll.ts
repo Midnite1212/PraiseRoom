@@ -85,6 +85,12 @@ const isPageAtEnd = () =>
 
 const scrollPageBy = (pixels: number) => window.scrollBy({ top: pixels, behavior: 'instant' });
 
+const isElementAtEnd = (element: HTMLElement) =>
+  element.scrollTop + element.clientHeight >= element.scrollHeight - END_TOLERANCE_PX;
+
+const scrollElementBy = (element: HTMLElement, pixels: number) =>
+  element.scrollBy({ top: pixels, behavior: 'instant' });
+
 const CONTROLS = 'button, a, input, select, [role="dialog"], [role="menu"], [role="radio"]';
 const SCROLL_KEYS = new Set(['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' ']);
 
@@ -93,10 +99,11 @@ const isInControls = (target: EventTarget | null) =>
 
 // The reader's own scroll gestures (wheel, a drag, the scroll keys, the scrollbar). A tap does not count,
 // so the tray can be opened and closed while the page keeps moving.
-const isUserScroll = (event: Event) => {
+const isUserScroll = (event: Event, scrollTarget: HTMLElement | null) => {
   if (event instanceof KeyboardEvent)
     return SCROLL_KEYS.has(event.key) && !isInControls(event.target);
-  if (event.type === 'pointerdown') return event.target === document.documentElement;
+  if (event.type === 'pointerdown')
+    return event.target === (scrollTarget ?? document.documentElement);
   return !isInControls(event.target);
 };
 
@@ -111,8 +118,12 @@ export type AutoScroll = {
 
 // Auto-scroll for one song on screen. It stops itself at the end of the song, when the reader scrolls by
 // hand, and when `songKey` changes. Speed changes apply on the next frame. A reduced-motion setting does
-// not change it: the reader starts it, can pause it, and the speeds are what a band reads by.
-export function useAutoScroll(songKey: string): AutoScroll {
+// not change it: the reader starts it, can pause it, and the speeds are what a band reads by. It scrolls the
+// page, or `scrollTarget` when the song sits in a scrolling pane of its own (the left pane when split).
+export function useAutoScroll(
+  songKey: string,
+  scrollTarget: HTMLElement | null = null
+): AutoScroll {
   const { t } = useTranslation();
   const isWide = useIsWide();
   const [speed] = useScrollSpeed();
@@ -122,12 +133,12 @@ export function useAutoScroll(songKey: string): AutoScroll {
   useEffect(() => {
     if (!running) return undefined;
     const pause = (event: Event) => {
-      if (isUserScroll(event)) setStartedFor(null);
+      if (isUserScroll(event, scrollTarget)) setStartedFor(null);
     };
     const scroller = createAutoScroller({
       pixelsPerSecond: PIXELS_PER_SECOND[speed],
-      scrollBy: scrollPageBy,
-      isAtEnd: isPageAtEnd,
+      scrollBy: scrollTarget ? (pixels) => scrollElementBy(scrollTarget, pixels) : scrollPageBy,
+      isAtEnd: scrollTarget ? () => isElementAtEnd(scrollTarget) : isPageAtEnd,
       onEnd: () => {
         setStartedFor(null);
         toast(t('reader.autoScroll.end'));
@@ -139,7 +150,7 @@ export function useAutoScroll(songKey: string): AutoScroll {
       scroller.stop();
       for (const type of USER_SCROLL_EVENTS) window.removeEventListener(type, pause);
     };
-  }, [running, speed, t]);
+  }, [running, scrollTarget, speed, t]);
 
   return {
     running,

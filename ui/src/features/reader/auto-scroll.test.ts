@@ -159,4 +159,17 @@ describe('useAutoScroll', () => {
     rerender({ key: 'b' });
     expect(result.current.running).toBe(false);
   });
+
+  it('scrolls its own pane instead of the page when given one', () => {
+    const scrollBy = vi.fn<(options: ScrollToOptions) => void>();
+    const pane = Object.assign(document.createElement('div'), { scrollBy });
+    vi.spyOn(pane, 'scrollHeight', 'get').mockReturnValue(100_000);
+    const { result } = renderHook(() => useAutoScroll('a', pane));
+    act(() => result.current.toggle());
+    act(() => {
+      vi.advanceTimersByTime(1000);
+    });
+    expect(scrollBy).toHaveBeenCalled();
+    expect(window.scrollBy).not.toHaveBeenCalled();
+  });
 });
