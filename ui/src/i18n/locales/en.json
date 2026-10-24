@@ -291,6 +291,7 @@
     "columns": "Lyric columns: {{columns}}",
     "close": "Close",
     "reading": "Reading",
+    "fullWidth": "Full width",
     "keepAwake": "Keep screen awake",
     "awakeOn": "On while this page is open",
     "awakeOff": "Not supported in this browser",

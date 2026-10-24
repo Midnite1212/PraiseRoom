@@ -4,6 +4,7 @@ import { useScrolledClass } from '@/hooks/use-scrolled-class';
 import { cn } from '@/lib/utils';
 
 import { useKeepAwake, useWakeLock } from './keep-awake';
+import { useReaderWidth } from './reader-width';
 import { useScrollingClass } from './use-scrolling-class';
 
 type ReaderLayoutProps = {
@@ -52,6 +53,8 @@ export function ReaderLayout({
   useScrolledClass();
   useScrollingClass();
   const [keepAwake] = useKeepAwake();
+  const [width] = useReaderWidth();
+  const isFull = width === 'full';
   useWakeLock(keepAwake === 'on');
   const offsetClass = sidebar
     ? 'wide:[--side-w:296px]'
@@ -60,7 +63,14 @@ export function ReaderLayout({
       : undefined;
 
   return (
-    <div className={cn('relative min-h-svh [--bar-h:0px] [--side-w:0px]', offsetClass)}>
+    <div
+      className={cn(
+        'relative min-h-svh [--bar-h:0px] [--side-w:0px]',
+        isFull &&
+          'wide:[--frame-l:max(10px,env(safe-area-inset-left))] wide:[--frame-r:max(10px,env(safe-area-inset-right))]',
+        offsetClass
+      )}
+    >
       <div aria-hidden className="ground-wash pointer-events-none fixed inset-0 z-0" />
       <div
         aria-hidden
@@ -114,7 +124,9 @@ export function ReaderLayout({
         className={cn(
           isSplit
             ? 'fixed top-[calc(var(--top)+var(--top-h)+var(--bar-h)+10px)] right-(--frame-r) bottom-0 left-[calc(var(--frame-l)+var(--side-w))] z-[1] grid grid-cols-2'
-            : 'wide:max-w-[calc(1240px+var(--side-w))] wide:pt-[calc(var(--top)+var(--top-h)+var(--bar-h)+40px)] wide:pb-20 wide:pl-[calc(var(--side-w)+34px)] relative z-[1] mx-auto max-w-[760px] px-[18px] pt-[calc(var(--top)+var(--top-h)+40px)] pb-[calc(var(--dock-h)+48px+env(safe-area-inset-bottom))]'
+            : 'wide:pt-[calc(var(--top)+var(--top-h)+var(--bar-h)+40px)] wide:pb-20 wide:pl-[calc(var(--side-w)+34px)] relative z-[1] mx-auto max-w-[760px] px-[18px] pt-[calc(var(--top)+var(--top-h)+40px)] pb-[calc(var(--dock-h)+48px+env(safe-area-inset-bottom))]',
+          !isSplit &&
+            (isFull ? 'wide:max-w-none wide:pr-8' : 'wide:max-w-[calc(1240px+var(--side-w))]')
         )}
       >
         {children}
