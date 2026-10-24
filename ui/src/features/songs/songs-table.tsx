@@ -131,7 +131,7 @@ export function SongsTable({
                       type="button"
                       onClick={() => onSort(columnSort)}
                       className={cn(
-                        'hover:bg-fill-hover hover:text-ink inline-flex h-9 items-center gap-1 rounded-[10px] px-2.5 text-xs font-semibold transition-colors duration-150',
+                        'hover:liquid-hover hover:text-ink inline-flex h-9 items-center gap-1 rounded-[10px] px-2.5 text-xs font-semibold transition-colors duration-150',
                         isSorted ? 'text-ink' : 'text-ink-3'
                       )}
                     >

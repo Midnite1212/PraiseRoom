@@ -12,4 +12,4 @@ export function BackLabel({ children }: { children: ReactNode }) {
 }
 
 export const BACK_LINK_CLASSES =
-  'text-ink-2 hover:bg-fill-hover hover:text-ink mb-1.5 -ml-2.5 hidden h-9 items-center gap-0.5 rounded-full pr-3 pl-1.5 text-sm font-semibold wide:inline-flex [&_svg]:size-icon';
+  'text-ink-2 hover:liquid-hover hover:text-ink mb-1.5 -ml-2.5 hidden h-9 items-center gap-0.5 rounded-full pr-3 pl-1.5 text-sm font-semibold wide:inline-flex [&_svg]:size-icon';

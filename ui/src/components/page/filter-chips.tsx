@@ -15,7 +15,7 @@ export function FilterChips({ filters }: { filters: readonly ActiveFilter[] }) {
           type="button"
           onClick={filter.onRemove}
           aria-label={t('filters.remove', { name: filter.label })}
-          className="bg-fill-on [&_svg]:size-icon [&_svg]:text-ink-2 inline-flex h-[30px] items-center gap-1 rounded-full pr-1.5 pl-3 text-[0.8125rem] font-semibold"
+          className="liquid-on [&_svg]:size-icon [&_svg]:text-ink-2 inline-flex h-[30px] items-center gap-1 rounded-full pr-1.5 pl-3 text-[0.8125rem] font-semibold"
         >
           {filter.label}
           <Close />

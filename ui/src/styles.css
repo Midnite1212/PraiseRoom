@@ -208,6 +208,15 @@
   --fill-hover: oklch(0 0 0 / 0.06);
   --fill-press: oklch(0 0 0 / 0.11);
   --fill-on: color-mix(in oklch, var(--brand) 14%, transparent);
+  --liquid-hi: oklch(1 0 0 / 0.75);
+  --liquid-lo: oklch(0 0 0 / 0.07);
+  --liquid-rim: oklch(1 0 0 / 0.85);
+  --liquid-hover-edge:
+    inset 0 1px 0 color-mix(in oklch, var(--liquid-rim) 50%, transparent),
+    inset 0 -1px 0 color-mix(in oklch, var(--liquid-lo) 50%, transparent);
+  --liquid-on-edge:
+    inset 0 1px 0 var(--liquid-rim), inset 0 -1px 1px var(--liquid-lo),
+    inset 0 0 0 1px color-mix(in oklch, var(--brand) 20%, transparent);
   --pixel-off: oklch(0 0 0 / 0.14);
   --pixel-played: oklch(0 0 0 / 0.45);
   --pixel-on: var(--brand);
@@ -282,6 +291,9 @@
   --fill-hover: oklch(1 0 0 / 0.09);
   --fill-press: oklch(1 0 0 / 0.15);
   --fill-on: color-mix(in oklch, var(--brand) 32%, transparent);
+  --liquid-hi: oklch(1 0 0 / 0.17);
+  --liquid-lo: oklch(0 0 0 / 0.24);
+  --liquid-rim: oklch(1 0 0 / 0.2);
   --pixel-off: oklch(1 0 0 / 0.18);
   --pixel-played: oklch(1 0 0 / 0.52);
   --pixel-glow: color-mix(in oklch, var(--brand) 80%, transparent);
@@ -664,8 +676,7 @@
     left: 3px;
     width: calc((100% - 6px) / var(--seg-n));
     border-radius: 999px;
-    background: var(--fill-on);
-    box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--brand) 30%, transparent);
+    @apply liquid-on;
     transform: translateX(calc(var(--seg-i) * 100%));
     transition: transform 480ms var(--ease-liquid);
     pointer-events: none;
@@ -802,6 +813,34 @@
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
+}
+
+/* Liquid fills: a drop of glass whose highlight follows the pointer (`--mx` and `--my`, set by
+   src/lib/liquid-pointer.ts) and, when selected, with an accent pool at the bottom. Each utility
+   declares its own token so the gradient reads the pointer position of the element it sits on. */
+@utility liquid-hover {
+  --liquid-hover:
+    radial-gradient(
+      90% 120% at var(--mx, 30%) var(--my, -20%),
+      color-mix(in oklch, var(--liquid-hi) 55%, transparent),
+      transparent 70%
+    ),
+    var(--fill-hover);
+  background: var(--liquid-hover);
+  box-shadow: var(--liquid-hover-edge);
+}
+
+@utility liquid-on {
+  --liquid-on:
+    radial-gradient(90% 120% at var(--mx, 30%) var(--my, -20%), var(--liquid-hi), transparent 70%),
+    radial-gradient(
+      70% 80% at 65% 125%,
+      color-mix(in oklch, var(--brand) 34%, transparent),
+      transparent 70%
+    ),
+    var(--fill-on);
+  background: var(--liquid-on);
+  box-shadow: var(--liquid-on-edge);
 }
 
 @media (prefers-reduced-motion: reduce) {

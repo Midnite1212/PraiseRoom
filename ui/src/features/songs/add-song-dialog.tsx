@@ -66,7 +66,7 @@ function Choice({
     <button
       type="button"
       onClick={onClick}
-      className="hover:bg-fill-hover [&_svg]:size-icon flex min-h-[60px] w-full items-center gap-3 rounded-2xl px-2.5 py-1.5 text-left transition-colors"
+      className="hover:liquid-hover [&_svg]:size-icon flex min-h-[60px] w-full items-center gap-3 rounded-2xl px-2.5 py-1.5 text-left transition-colors"
     >
       <RowTile size="sm">{icon}</RowTile>
       <span className="min-w-0 flex-1">

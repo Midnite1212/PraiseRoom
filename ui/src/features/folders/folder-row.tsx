@@ -50,7 +50,7 @@ export function FolderRow({ session, folder, people, now, pane }: FolderRowProps
     cn(
       'sleeve-host min-h-[72px]',
       pane?.isOpen ? 'grid-cols-[56px_minmax(0,1fr)]' : 'grid-cols-[56px_minmax(0,1fr)_auto]',
-      pane?.selected && 'bg-fill-on hover:bg-fill-on'
+      pane?.selected && 'liquid-on hover:liquid-on'
     )
   );
   const content = (

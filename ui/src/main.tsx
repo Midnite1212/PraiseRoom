@@ -8,6 +8,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { syncAccent } from '@/lib/accent';
 import { syncGlassStyle } from '@/lib/liquid-glass';
+import { syncLiquidPointer } from '@/lib/liquid-pointer';
 import { createQueryClient } from '@/lib/query-client';
 import { listenForStaleChunks } from '@/lib/reload-on-stale-chunk';
 import { syncTypeface } from '@/lib/typeface';
@@ -32,6 +33,7 @@ listenForStaleChunks();
 syncTypeface();
 syncAccent();
 syncGlassStyle();
+syncLiquidPointer();
 
 const queryClient = createQueryClient();
 const router = createAppRouter(queryClient);

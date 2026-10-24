@@ -161,10 +161,10 @@ export function SetlistCalendar({ setlists, now, day, onDayChange }: SetlistCale
               className={cn(
                 cellClasses,
                 column,
-                'text-ink hover:bg-fill-hover aria-pressed:bg-fill-on after:absolute after:bottom-[5px] after:size-1',
+                'text-ink hover:liquid-hover aria-pressed:liquid-on aria-pressed:hover:liquid-on after:absolute after:bottom-[5px] after:size-1',
                 DOT_CLASSES[dayStatus(sets.statuses)],
                 isToday && 'bg-fill-hover shadow-[inset_0_0_0_1px_var(--ink-3)]',
-                list.litDay === key && 'bg-fill-on'
+                list.litDay === key && 'liquid-on'
               )}
             >
               {index + 1}

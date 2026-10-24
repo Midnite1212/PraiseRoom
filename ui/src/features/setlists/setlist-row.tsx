@@ -38,7 +38,7 @@ const useRowPick = (setlist: SetlistSummary) => {
     void navigate({ to: '/setlists/$setlistId', params: { setlistId: setlist._id } });
 
   return {
-    rowClassName: cn((isSelected || isLit) && 'bg-fill-on hover:bg-fill-on'),
+    rowClassName: cn((isSelected || isLit) && 'liquid-on hover:liquid-on'),
     rowProps: day ? dayLinkHandlers(list, day) : {},
     linkProps: {
       'data-setlist-id': setlist._id,

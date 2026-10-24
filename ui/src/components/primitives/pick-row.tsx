@@ -27,7 +27,7 @@ export function PickRow({
       aria-pressed={checked}
       disabled={disabled}
       onClick={onToggle}
-      className="group/pick enabled:hover:bg-fill-hover aria-pressed:enabled:bg-fill-on flex min-h-[60px] w-full items-center gap-3 rounded-2xl px-2.5 py-1.5 text-left transition-colors disabled:opacity-50"
+      className="group/pick enabled:hover:liquid-hover aria-pressed:enabled:liquid-on aria-pressed:enabled:hover:liquid-on flex min-h-[60px] w-full items-center gap-3 rounded-2xl px-2.5 py-1.5 text-left transition-colors disabled:opacity-50"
     >
       {leading}
       <span className="min-w-0 flex-1">
