@@ -35,6 +35,10 @@ export const ROUTE_PERMISSIONS: Record<string, PermissionConfig> = {
     requiresAuth: true,
     description: 'Delete ownership record',
   },
+  'PUT /api/ownerships/delete-account': {
+    requiresAuth: true,
+    description: "Delete the caller's setlists, folders and ownership record",
+  },
 
   // Group routes
   'POST /api/groups/create': {

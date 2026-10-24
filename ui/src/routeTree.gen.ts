@@ -10,8 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteImport } from './routes/_app'
+import { Route as CheckEmailRouteImport } from './routes/check-email'
+import { Route as ForgotRouteImport } from './routes/forgot'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as ResetRouteImport } from './routes/reset'
+import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as AppAccountIndexRouteImport } from './routes/_app/account/index'
+import { Route as AppAccountPasswordRouteImport } from './routes/_app/account/password'
 import { Route as AppFoldersIndexRouteImport } from './routes/_app/folders/index'
 import { Route as AppFoldersFolderIdRouteImport } from './routes/_app/folders/$folderId'
 import { Route as AppJoinTokenRouteImport } from './routes/_app/join/$token'
@@ -29,14 +35,44 @@ const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckEmailRoute = CheckEmailRouteImport.update({
+  id: '/check-email',
+  path: '/check-email',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotRoute = ForgotRouteImport.update({
+  id: '/forgot',
+  path: '/forgot',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetRoute = ResetRouteImport.update({
+  id: '/reset',
+  path: '/reset',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignUpRoute = SignUpRouteImport.update({
+  id: '/sign-up',
+  path: '/sign-up',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAccountIndexRoute = AppAccountIndexRouteImport.update({
+  id: '/account/',
+  path: '/account/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAccountPasswordRoute = AppAccountPasswordRouteImport.update({
+  id: '/account/password',
+  path: '/account/password',
   getParentRoute: () => AppRoute,
 } as any)
 const AppFoldersIndexRoute = AppFoldersIndexRouteImport.update({
@@ -103,13 +139,19 @@ const AppSongsSongIdEditRoute = AppSongsSongIdEditRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
+  '/check-email': typeof CheckEmailRoute
+  '/forgot': typeof ForgotRoute
   '/login': typeof LoginRoute
+  '/reset': typeof ResetRoute
+  '/sign-up': typeof SignUpRoute
+  '/account/password': typeof AppAccountPasswordRoute
   '/folders/$folderId': typeof AppFoldersFolderIdRoute
   '/join/$token': typeof AppJoinTokenRoute
   '/setlists/$setlistId': typeof AppSetlistsSetlistIdRoute
   '/setlists/new': typeof AppSetlistsNewRoute
   '/songs/$songId': typeof AppSongsSongIdRoute
   '/setlist/view/$setlistId': typeof SetlistViewSetlistIdRoute
+  '/account/': typeof AppAccountIndexRoute
   '/folders/': typeof AppFoldersIndexRoute
   '/setlists/': typeof AppSetlistsIndexRoute
   '/settings/': typeof AppSettingsIndexRoute
@@ -118,14 +160,20 @@ export interface FileRoutesByFullPath {
   '/songs/$songId/edit': typeof AppSongsSongIdEditRoute
 }
 export interface FileRoutesByTo {
+  '/check-email': typeof CheckEmailRoute
+  '/forgot': typeof ForgotRoute
   '/login': typeof LoginRoute
+  '/reset': typeof ResetRoute
+  '/sign-up': typeof SignUpRoute
   '/': typeof AppIndexRoute
+  '/account/password': typeof AppAccountPasswordRoute
   '/folders/$folderId': typeof AppFoldersFolderIdRoute
   '/join/$token': typeof AppJoinTokenRoute
   '/setlists/$setlistId': typeof AppSetlistsSetlistIdRoute
   '/setlists/new': typeof AppSetlistsNewRoute
   '/songs/$songId': typeof AppSongsSongIdRoute
   '/setlist/view/$setlistId': typeof SetlistViewSetlistIdRoute
+  '/account': typeof AppAccountIndexRoute
   '/folders': typeof AppFoldersIndexRoute
   '/setlists': typeof AppSetlistsIndexRoute
   '/settings': typeof AppSettingsIndexRoute
@@ -136,14 +184,20 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
+  '/check-email': typeof CheckEmailRoute
+  '/forgot': typeof ForgotRoute
   '/login': typeof LoginRoute
+  '/reset': typeof ResetRoute
+  '/sign-up': typeof SignUpRoute
   '/_app/': typeof AppIndexRoute
+  '/_app/account/password': typeof AppAccountPasswordRoute
   '/_app/folders/$folderId': typeof AppFoldersFolderIdRoute
   '/_app/join/$token': typeof AppJoinTokenRoute
   '/_app/setlists/$setlistId': typeof AppSetlistsSetlistIdRoute
   '/_app/setlists/new': typeof AppSetlistsNewRoute
   '/_app/songs/$songId': typeof AppSongsSongIdRoute
   '/setlist/view/$setlistId': typeof SetlistViewSetlistIdRoute
+  '/_app/account/': typeof AppAccountIndexRoute
   '/_app/folders/': typeof AppFoldersIndexRoute
   '/_app/setlists/': typeof AppSetlistsIndexRoute
   '/_app/settings/': typeof AppSettingsIndexRoute
@@ -155,13 +209,19 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/check-email'
+    | '/forgot'
     | '/login'
+    | '/reset'
+    | '/sign-up'
+    | '/account/password'
     | '/folders/$folderId'
     | '/join/$token'
     | '/setlists/$setlistId'
     | '/setlists/new'
     | '/songs/$songId'
     | '/setlist/view/$setlistId'
+    | '/account/'
     | '/folders/'
     | '/setlists/'
     | '/settings/'
@@ -170,14 +230,20 @@ export interface FileRouteTypes {
     | '/songs/$songId/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/check-email'
+    | '/forgot'
     | '/login'
+    | '/reset'
+    | '/sign-up'
     | '/'
+    | '/account/password'
     | '/folders/$folderId'
     | '/join/$token'
     | '/setlists/$setlistId'
     | '/setlists/new'
     | '/songs/$songId'
     | '/setlist/view/$setlistId'
+    | '/account'
     | '/folders'
     | '/setlists'
     | '/settings'
@@ -187,14 +253,20 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_app'
+    | '/check-email'
+    | '/forgot'
     | '/login'
+    | '/reset'
+    | '/sign-up'
     | '/_app/'
+    | '/_app/account/password'
     | '/_app/folders/$folderId'
     | '/_app/join/$token'
     | '/_app/setlists/$setlistId'
     | '/_app/setlists/new'
     | '/_app/songs/$songId'
     | '/setlist/view/$setlistId'
+    | '/_app/account/'
     | '/_app/folders/'
     | '/_app/setlists/'
     | '/_app/settings/'
@@ -205,7 +277,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
+  CheckEmailRoute: typeof CheckEmailRoute
+  ForgotRoute: typeof ForgotRoute
   LoginRoute: typeof LoginRoute
+  ResetRoute: typeof ResetRoute
+  SignUpRoute: typeof SignUpRoute
   SetlistViewSetlistIdRoute: typeof SetlistViewSetlistIdRoute
 }
 
@@ -218,6 +294,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/check-email': {
+      id: '/check-email'
+      path: '/check-email'
+      fullPath: '/check-email'
+      preLoaderRoute: typeof CheckEmailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot': {
+      id: '/forgot'
+      path: '/forgot'
+      fullPath: '/forgot'
+      preLoaderRoute: typeof ForgotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -225,11 +315,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset': {
+      id: '/reset'
+      path: '/reset'
+      fullPath: '/reset'
+      preLoaderRoute: typeof ResetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-up': {
+      id: '/sign-up'
+      path: '/sign-up'
+      fullPath: '/sign-up'
+      preLoaderRoute: typeof SignUpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app/': {
       id: '/_app/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/account/': {
+      id: '/_app/account/'
+      path: '/account'
+      fullPath: '/account/'
+      preLoaderRoute: typeof AppAccountIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/account/password': {
+      id: '/_app/account/password'
+      path: '/account/password'
+      fullPath: '/account/password'
+      preLoaderRoute: typeof AppAccountPasswordRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/folders/': {
@@ -321,11 +439,13 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
+  AppAccountPasswordRoute: typeof AppAccountPasswordRoute
   AppFoldersFolderIdRoute: typeof AppFoldersFolderIdRoute
   AppJoinTokenRoute: typeof AppJoinTokenRoute
   AppSetlistsSetlistIdRoute: typeof AppSetlistsSetlistIdRoute
   AppSetlistsNewRoute: typeof AppSetlistsNewRoute
   AppSongsSongIdRoute: typeof AppSongsSongIdRoute
+  AppAccountIndexRoute: typeof AppAccountIndexRoute
   AppFoldersIndexRoute: typeof AppFoldersIndexRoute
   AppSetlistsIndexRoute: typeof AppSetlistsIndexRoute
   AppSettingsIndexRoute: typeof AppSettingsIndexRoute
@@ -336,11 +456,13 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
+  AppAccountPasswordRoute: AppAccountPasswordRoute,
   AppFoldersFolderIdRoute: AppFoldersFolderIdRoute,
   AppJoinTokenRoute: AppJoinTokenRoute,
   AppSetlistsSetlistIdRoute: AppSetlistsSetlistIdRoute,
   AppSetlistsNewRoute: AppSetlistsNewRoute,
   AppSongsSongIdRoute: AppSongsSongIdRoute,
+  AppAccountIndexRoute: AppAccountIndexRoute,
   AppFoldersIndexRoute: AppFoldersIndexRoute,
   AppSetlistsIndexRoute: AppSetlistsIndexRoute,
   AppSettingsIndexRoute: AppSettingsIndexRoute,
@@ -353,7 +475,11 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
+  CheckEmailRoute: CheckEmailRoute,
+  ForgotRoute: ForgotRoute,
   LoginRoute: LoginRoute,
+  ResetRoute: ResetRoute,
+  SignUpRoute: SignUpRoute,
   SetlistViewSetlistIdRoute: SetlistViewSetlistIdRoute,
 }
 export const routeTree = rootRouteImport

@@ -2,12 +2,13 @@ import { RequestHandler, Response } from 'express';
 
 import { ownershipRepository } from '../db/repositories/ownership.repository';
 import { AuthenticatedRequest } from '../policies/permissionMiddleware';
+import { OwnershipRecord } from '../types/ownership.types';
 import { canEditSetlists, ownedEntryIds, sendForbidden } from '../utils/authorization';
 import { pick } from '../utils/pick';
 import { sendError, sendResponse } from '../utils/response';
 import { isObjectIdString, isUserIdString } from '../utils/validation';
 
-const OWNERSHIP_FIELDS = ['setlistIds'] as const;
+const OWNERSHIP_FIELDS = ['fullName', 'setlistIds'] as const;
 
 const parseEntryIds = (value: unknown): string[] | null => {
   if (!Array.isArray(value)) return null;
@@ -89,7 +90,8 @@ const updateOwnership: RequestHandler = async (
     return;
   }
 
-  const setlistIds = parseEntryIds(toUpdate.setlistIds);
+  const hasSetlistIds = 'setlistIds' in toUpdate;
+  const setlistIds = hasSetlistIds ? parseEntryIds(toUpdate.setlistIds) : [];
   if (!setlistIds) {
     sendResponse(res, 400, 'Invalid setlist ids');
     return;
@@ -106,21 +108,26 @@ const updateOwnership: RequestHandler = async (
       return;
     }
 
-    const storedSetlistIds = new Set(ownedEntryIds(existing.setlistIds));
-    const addedSetlistIds = setlistIds.filter((setlistId) => !storedSetlistIds.has(setlistId));
-    if (
-      addedSetlistIds.length > 0 &&
-      !(await canEditSetlists(req.user, addedSetlistIds, existing))
-    ) {
-      sendForbidden(res);
-      return;
+    let ownership: OwnershipRecord | null = existing;
+    if (hasSetlistIds) {
+      const storedSetlistIds = new Set(ownedEntryIds(existing.setlistIds));
+      const addedSetlistIds = setlistIds.filter((setlistId) => !storedSetlistIds.has(setlistId));
+      if (
+        addedSetlistIds.length > 0 &&
+        !(await canEditSetlists(req.user, addedSetlistIds, existing))
+      ) {
+        sendForbidden(res);
+        return;
+      }
+      ownership = await ownershipRepository.replaceSetlistEntries(
+        id,
+        req.user.id,
+        toUpdate.setlistIds
+      );
     }
-
-    const ownership = await ownershipRepository.replaceSetlistEntries(
-      id,
-      req.user.id,
-      toUpdate.setlistIds
-    );
+    if (ownership && 'fullName' in toUpdate) {
+      ownership = await ownershipRepository.rename(id, req.user.id, toUpdate.fullName);
+    }
 
     if (ownership) {
       sendResponse(res, 200, ownership);
@@ -162,4 +169,20 @@ const deleteOwnership: RequestHandler = async (
   }
 };
 
-export { createOwnership, getOwnership, updateOwnership, deleteOwnership };
+const deleteAccountData: RequestHandler = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<void> => {
+  if (!req.user) {
+    sendResponse(res, 401, 'Unauthorized');
+    return;
+  }
+
+  try {
+    sendResponse(res, 200, await ownershipRepository.deleteAccountData(req.user.id));
+  } catch (error: unknown) {
+    sendError(res, error);
+  }
+};
+
+export { createOwnership, getOwnership, updateOwnership, deleteOwnership, deleteAccountData };

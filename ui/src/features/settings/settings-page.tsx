@@ -1,4 +1,5 @@
-import { Logout } from 'pixelarticons/react';
+import { Link } from '@tanstack/react-router';
+import { ChevronRight, Logout } from 'pixelarticons/react';
 import { ToggleGroup as ToggleGroupPrimitive } from 'radix-ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -131,6 +132,12 @@ function AccountLine({ session }: { session: Session }) {
       <span className="bg-fill-on rounded-full px-2 py-0.5 text-[0.6875rem] font-semibold">
         {t(`user.accessType.${session.accessType}`)}
       </span>
+      <Button asChild variant="ghost" size="sm" className="ml-auto">
+        <Link to="/account">
+          {t('user.account')}
+          <ChevronRight />
+        </Link>
+      </Button>
     </div>
   );
 }

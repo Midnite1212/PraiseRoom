@@ -89,6 +89,7 @@ describe('permissionMiddleware', () => {
         'PUT /api/groups/members': 1,
         'PUT /api/groups/update': 1,
         'PUT /api/ownerships/delete': 1,
+        'PUT /api/ownerships/delete-account': 1,
         'PUT /api/ownerships/update': 1,
         'PUT /api/setlists/delete': 1,
         'PUT /api/setlists/update': 1,

@@ -2,16 +2,18 @@ import type { ReactNode } from 'react';
 
 import { cn } from '@/lib/utils';
 
-// A group of rows under a plain heading and a one-line description.
+// A group of rows under a plain heading, with an optional count beside it and a one-line description.
 export function SettingsGroup({
   id,
   title,
   description,
+  count,
   children,
 }: {
   id: string;
   title: string;
-  description: string;
+  description?: string;
+  count?: number;
   children: ReactNode;
 }) {
   return (
@@ -19,8 +21,11 @@ export function SettingsGroup({
       <header className="mb-1">
         <h2 id={id} className="m-0 text-lg font-bold tracking-[-0.01em]">
           {title}
+          {count === undefined ? null : (
+            <small className="text-ink-3 ml-1.5 font-mono text-xs font-semibold">{count}</small>
+          )}
         </h2>
-        <p className="text-ink-3 mt-1 text-[0.8125rem]">{description}</p>
+        {description ? <p className="text-ink-3 mt-1 text-[0.8125rem]">{description}</p> : null}
       </header>
       {children}
     </section>

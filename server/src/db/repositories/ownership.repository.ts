@@ -6,16 +6,27 @@ import {
   OwnershipSummary,
   StoredOwnershipEntry,
 } from '../../types/ownership.types';
-import { InvalidInputError, castOptionalString } from '../cast';
+import { InvalidInputError, castBoundedText, castOptionalString } from '../cast';
 import { getDb } from '../connect';
 import { generateObjectId, toObjectId } from '../objectId';
-import { ownershipGroups, ownershipSetlists, ownerships } from '../schema';
+import {
+  groupSetlists,
+  groups,
+  ownershipGroups,
+  ownershipSetlists,
+  ownerships,
+  setlists,
+} from '../schema';
 import { Executor, groupBy, presentFields, unique } from './shared';
 
 export type CallerAccess = {
   groupIds: StoredOwnershipEntry[];
   setlistIds: StoredOwnershipEntry[];
 };
+
+export const FULL_NAME_MAX_LENGTH = 60;
+
+export type AccountDataDeleted = { setlists: number; folders: number };
 
 export type OwnershipCreate = Pick<OwnershipRecord, 'userId' | 'fullName' | 'accessType'>;
 
@@ -146,7 +157,7 @@ export const ownershipRepository = {
         createdAt: now,
         updatedAt: now,
       })
-      .onConflictDoUpdate({ target: ownerships.userId, set: { updatedAt: now } })
+      .onConflictDoUpdate({ target: ownerships.userId, set: { isDeleted: false, updatedAt: now } })
       .returning();
     const [record] = await assembleRecords(db, rows);
     return record;
@@ -209,6 +220,71 @@ export const ownershipRepository = {
       }
       const [record] = await assembleRecords(tx, [row]);
       return record;
+    });
+  },
+
+  async rename(id: string, userId: string, fullName: unknown): Promise<OwnershipRecord | null> {
+    const name = castBoundedText('fullName', fullName, FULL_NAME_MAX_LENGTH);
+    if (name === null) throw new InvalidInputError('fullName');
+    const db = getDb();
+    const rows = await db
+      .update(ownerships)
+      .set({ fullName: name, updatedAt: new Date() })
+      .where(
+        and(
+          eq(ownerships.id, toObjectId(id)),
+          eq(ownerships.userId, userId),
+          eq(ownerships.isDeleted, false)
+        )
+      )
+      .returning();
+    const [record] = await assembleRecords(db, rows);
+    return record ?? null;
+  },
+
+  async deleteAccountData(userId: string): Promise<AccountDataDeleted> {
+    return getDb().transaction(async (tx) => {
+      const now = new Date();
+      const folders = await tx
+        .update(groups)
+        .set({ isDeleted: true, updatedAt: now })
+        .where(and(eq(groups.createdBy, userId), eq(groups.isDeleted, false)))
+        .returning({ id: groups.id });
+      const folderIds = folders.map(({ id }) => id);
+      if (folderIds.length > 0) {
+        await tx
+          .update(ownerships)
+          .set({ updatedAt: now })
+          .where(
+            inArray(
+              ownerships.id,
+              tx
+                .select({ id: ownershipGroups.ownershipId })
+                .from(ownershipGroups)
+                .where(inArray(ownershipGroups.groupId, folderIds))
+            )
+          );
+        await tx.delete(ownershipGroups).where(inArray(ownershipGroups.groupId, folderIds));
+        await tx.delete(groupSetlists).where(inArray(groupSetlists.groupId, folderIds));
+      }
+      const made = await tx
+        .update(setlists)
+        .set({ isDeleted: true, updatedAt: now })
+        .where(and(eq(setlists.createdBy, userId), eq(setlists.isDeleted, false)))
+        .returning({ id: setlists.id });
+      const removed = await tx
+        .update(ownerships)
+        .set({ isDeleted: true, updatedAt: now })
+        .where(isLiveUser([userId]))
+        .returning({ id: ownerships.id });
+      const ownershipIds = removed.map(({ id }) => id);
+      if (ownershipIds.length > 0) {
+        await tx.delete(ownershipGroups).where(inArray(ownershipGroups.ownershipId, ownershipIds));
+        await tx
+          .delete(ownershipSetlists)
+          .where(inArray(ownershipSetlists.ownershipId, ownershipIds));
+      }
+      return { setlists: made.length, folders: folderIds.length };
     });
   },
 
