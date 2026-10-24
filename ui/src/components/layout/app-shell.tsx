@@ -89,7 +89,7 @@ function PageChrome({
               aria-label={t('app.name')}
               className="flex items-center gap-3 font-bold tracking-[-0.01em] whitespace-nowrap"
             >
-              <BrandMark className="-ml-2.5 transition-opacity duration-150 ease-out group-data-[rail=folded]/rail:ml-[-6px] group-data-[rail=folded]/rail:group-focus-within/brand:opacity-0 group-data-[rail=folded]/rail:group-hover/brand:opacity-0" />
+              <BrandMark className="-ml-2.5 transition-opacity duration-150 ease-out group-data-[rail=folded]/rail:ml-[-6px] group-data-[rail=folded]/rail:group-hover/brand:opacity-0 group-data-[rail=folded]/rail:group-has-focus-visible/brand:opacity-0" />
               <span className="group-data-[rail=folded]/rail:hidden">{t('app.name')}</span>
             </Link>
             {isNarrow ? null : (
