@@ -24,7 +24,7 @@ Praise Room runs on its own, with no outside site behind its sign-in or data:
 | Accounts and sign-in | An external site's login and a shared JWT key | [Neon Auth](https://neon.com/docs/auth/overview) (managed Better Auth) in this app's own Neon project, with email and password or Google sign-in                                                |
 | Database             | MongoDB with Mongoose                         | [Neon](https://neon.com) Postgres with Drizzle ORM and versioned SQL migrations; songs were imported once from the MongoDB export, while setlists, folders, and ownership records started fresh |
 | Hosting              | DreamHost, deployed by GitHub Actions         | [Vercel](https://vercel.com) services: the Express API as one function and the UI as a static site behind one domain, deploying only from `main`                                                |
-| UI                   | Create React App, MUI, Redux                  | Rebuilt from scratch (see below); the previous UI is kept in `old-ui/` as a frozen reference                                                                                                    |
+| UI                   | Create React App, MUI, Redux                  | Rebuilt from scratch (see below)                                                                                                                                                                |
 
 The server proxies `/api/auth/*` to Neon Auth on the app's own domain, so session cookies are first-party (which keeps Safari working) and the browser never talks to Neon directly. API requests carry a short-lived JWT that the server verifies against Neon Auth's public keys.
 
@@ -32,12 +32,11 @@ The server proxies `/api/auth/*` to Neon Auth on the app's own domain, so sessio
 
 Independent packages in one repo, each with its own lockfile (no workspaces):
 
-| Folder    | What it is                                                                       | Package manager |
-| --------- | -------------------------------------------------------------------------------- | --------------- |
-| `ui/`     | The production UI                                                                | pnpm            |
-| `server/` | Express API, database access, and the auth proxy                                 | pnpm            |
-| `old-ui/` | The previous UI: not deployed, kept as the reference for screens not yet rebuilt | pnpm            |
-| root      | Husky, lint-staged, and commitlint                                               | pnpm            |
+| Folder    | What it is                                       | Package manager |
+| --------- | ------------------------------------------------ | --------------- |
+| `ui/`     | The production UI                                | pnpm            |
+| `server/` | Express API, database access, and the auth proxy | pnpm            |
+| root      | Husky, lint-staged, and commitlint               | pnpm            |
 
 ## Tech stack
 
@@ -118,7 +117,7 @@ The UI hides what you can't do, but the server enforces every rule.
 
 ## Still to rebuild
 
-The new UI doesn't have these old-UI screens yet; their URLs show "not found" until they're rebuilt (`old-ui/` shows how they worked): sign-up, password reset, adding and editing songs, and the profile page.
+The UI doesn't have these screens yet; their URLs show "not found" until they're rebuilt: sign-up, password reset, and the profile page.
 
 ## Contributing
 
@@ -126,7 +125,7 @@ Issues live on GitHub: [`Midnite1212/PraiseRoom`](https://github.com/Midnite1212
 
 1. **Branch** from `main` as `<issue#>-<type>-<description>`, for example `80-feature-setlist-editor`. Types: `feature`, `hotfix`, `docs`, `chore`.
 2. **Commit** from the command line so the hooks run (formatting, linting, and the message check). Every message starts with the branch's issue number: `GH-80: add the song search panel`.
-3. **Open a pull request** into `main` titled `GH-<issue#>: …`, with `Closes #<issue#>` on the first line of the description; see `.claude/docs/pr-description.md` for the format. The PR checks run lint, both UIs' checks, and the server's.
+3. **Open a pull request** into `main` titled `GH-<issue#>: …`, with `Closes #<issue#>` on the first line of the description; see `.claude/docs/pr-description.md` for the format. The PR checks run lint, the UI's checks, and the server's.
 4. **Stacked pull requests:** retarget each one to `main` before merging, so its issue closes automatically.
 
 Rebase onto `main` (`git pull --rebase`) instead of merging it into your branch.
@@ -135,7 +134,7 @@ Rebase onto `main` (`git pull --rebase`) instead of merging it into your branch.
 
 The repo carries instructions for Claude Code, Codex, Cursor, OpenCode, and Copilot:
 
-- `AGENTS.md` (shared rules), `ui/AGENTS.md` (new UI), and `old-ui/AGENTS.md` (old UI), each with a `CLAUDE.md` symlink.
+- `AGENTS.md` (shared rules) and `ui/AGENTS.md` (UI), each with a `CLAUDE.md` symlink.
 - `ui/docs/patterns/`: living component, data, routing, form, table, i18n, and testing patterns that agents and teammates update alongside the code.
 - Agent personas and skills in `.claude/agents/` and `.claude/skills/` (also at `.agents/skills/`), plus OpenCode and Cursor pointers.
 - MCP servers for the shadcn registry and Context7 docs in `.mcp.json`, `.cursor/mcp.json`, `.vscode/mcp.json`, and `opencode.json`.

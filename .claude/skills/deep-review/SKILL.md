@@ -18,9 +18,7 @@ This is a thorough code review that goes beyond surface-level changes to ensure 
 
 ## Step 3: Deep Analysis - Potential Bugs
 
-Files in `ui/` follow `ui/AGENTS.md` and `ui/docs/patterns/` (see "New UI checks" below); the import, safety, pattern, and routing checks that follow are for `old-ui/`.
-
-### New UI checks (`ui/`)
+### UI checks (`ui/`)
 
 - `pnpm typecheck`, `pnpm lint` (type-aware), `pnpm format:check`, `pnpm test`, and `pnpm build` pass in `ui/`; no `any`, `!`, silencing `as`, or `oxlint-disable` added to get there.
 - Every API response is parsed by a Zod schema through `apiRequest`; query keys come from the feature's `queryOptions` factory; mutations invalidate the right keys and toast both outcomes.
@@ -29,37 +27,10 @@ Files in `ui/` follow `ui/AGENTS.md` and `ui/docs/patterns/` (see "New UI checks
 - Every new string has keys in both `en.json` and `zh-Hant.json`; no server text rendered.
 - Styling uses tokens only; new colours are added to `src/styles.css` for light and dark; layout works at 390 px.
 - Pattern changes are written to `ui/docs/patterns/` in the same PR, do not contradict `ui/AGENTS.md`, and match their reference code.
-
-For each changed file, check for:
-
-### Import Consistency
-
-- API calls go through `customAxios` from `components/custom/customAxios`; type-only `AxiosResponse` imports from `axios` are fine.
-- Relative imports only; the `#/` alias resolves through Vite, but the codebase does not use it.
-- MUI icons imported by path (`@mui/icons-material/Delete`).
-- No react-router v5 APIs (`useHistory`, `Switch`, `withRouter`). This repo is on v6.
-- Everything used is imported; no circular import through the `reducers` or `helpers` barrels.
-
-### Type and Runtime Safety
-
-- `pnpm exec tsc --noEmit` passes in `old-ui/` and `server/`. Check whether the PR passes it by adding `any`, `as`, or `!` rather than by fixing types.
-- Every `.map`, `.filter`, `.length`, and nested property on fetched data is guarded, especially nullable fields (`publicLink`, `date`, `code`, `simplifiedChordLyrics`, populated `songs`).
-- `useParams` values checked before use; `/setlist/:id?` makes `id` optional.
-- Loading, empty, and error states rendered; async work in `try/catch` with user-visible feedback.
-- Effects have correct dependency arrays and clean up timers, listeners, and in-flight requests; no state updates after unmount.
+- Fetched arrays and nullable fields are guarded; loading, empty, and error states are rendered.
 - Chord-lyrics parsing changes tested against a song with `{Section}` blocks, inline `[Chord]`s, a chords-only intro, and an empty `simplifiedChordLyrics`.
-
-### Pattern Consistency
-
-- Read the sibling feature folder, `components/custom/`, and `helpers/` to confirm the change follows the closest existing pattern; name the precedent file.
-- If a change is applied to some call sites but not others (e.g. one of a desktop/`*Mobile.tsx` pair, or one of the three setlist-loading paths), grep for the rest and flag the gap.
-- Do not flag pre-existing mess in untouched code; do flag new code that copies it.
-
-### Routing and Access
-
-- New routes are `routes.ts` entries with a unique `key` and valid `permissions` (`noUser`, `user`, `admin`, `public`).
-- Paths do not collide under v6 ranking with `/setlist/:id?`, `/setlist/details/:id?`, `/setlist/folder/:id?`, `/setlist/add`, `/setlist/edit/:id`, `/setlist/view/:id`.
-- Path changes do not break existing links, `navigate()` calls, or public setlist links already shared (`publicLink`).
+- Path changes do not break existing links or public setlist links already shared (`/setlist/view/:id`).
+- If a change is applied to some call sites but not others, grep for the rest and flag the gap. Do not flag pre-existing mess in untouched code; do flag new code that copies it.
 
 ### Backend changes (when the PR touches `server/`)
 
@@ -73,9 +44,9 @@ For each changed file, check for:
 
 ### Breaking Changes
 
-- Removed or renamed exports are not used elsewhere (grep the `helpers` and `reducers` barrels and every consumer).
+- Removed or renamed exports are not used elsewhere (grep every consumer).
 - Response shape changes are matched in every UI caller.
-- Redux slice shape changes: persisted state from older clients still loads (redux-persist rehydrates the old shape).
+- Stored per-device choices (`createStoredChoice`) still load values saved by older clients.
 
 ## Step 4: Cross-Reference Analysis
 
@@ -83,7 +54,7 @@ For each changed file, check for:
 - Run `detect_changes({scope: "compare", base_ref: "<base>"})` to confirm the affected execution flows match the PR's intent.
 - For server changes, `explain({target: "<controller file>"})` to list taint findings from request input to Mongoose.
 - Read the actual content of related files, not just diffs, to ensure compatibility.
-- Check the change against both desktop and mobile render paths when a component has a `*Mobile.tsx` twin.
+- Check the change at both phone and desktop widths.
 
 ## Step 5: Output Format
 
@@ -117,7 +88,7 @@ Rate each area of change:
 
 - Route matching and access gating
 - Server permissions and ownership checks
-- State management and persisted Redux state
+- Query cache and stored per-device choices
 - Data fetching and data-shape guards
 - Chord parsing and transposition
 - Mobile / desktop parity

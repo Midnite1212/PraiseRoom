@@ -29,30 +29,6 @@ jobs:
       - run: pnpm lint
       - run: pnpm format:check
 
-  old-ui:
-    name: 'Old UI'
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: old-ui
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          package_json_file: old-ui/package.json
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: pnpm
-          cache-dependency-path: old-ui/pnpm-lock.yaml
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm typecheck
-      - run: pnpm lint
-      - run: pnpm format:check
-      - run: pnpm test
-        env:
-          CI: true
-
   ui:
     name: 'UI'
     runs-on: ubuntu-latest

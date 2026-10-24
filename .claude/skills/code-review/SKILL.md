@@ -13,9 +13,9 @@ description: When asked for "code review" of the current branch or a PR in prais
 
 ## What to look for here specifically
 
-The repo has two UIs with different bars. Review each changed file against its own folder's rules: `ui/AGENTS.md` and `ui/docs/patterns/` for `ui/`, `old-ui/AGENTS.md` for `old-ui/`.
+Review each changed file in `ui/` against `ui/AGENTS.md` and `ui/docs/patterns/`, and each file in `server/` against the backend section of `AGENTS.md`.
 
-### New UI (`ui/`)
+### UI (`ui/`)
 
 The bar is the written standard, not "better than before".
 
@@ -25,20 +25,14 @@ The bar is the written standard, not "better than before".
 - shadcn files in `src/components/ui/` changed only when unavoidable, and noted.
 - Checks: `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm test`, and `pnpm build` in `ui/` are clean.
 
-### Old UI (`old-ui/`)
+### Server (`server/`)
 
-`old-ui/` is no longer deployed and is frozen; flag any change there that isn't needed as a reference fix. The code is uneven, so calibrate: the bar is "does this PR make its corner better or at least not worse", not "does this file now meet the style guide".
+- A new endpoint has a route line and a `ROUTE_PERMISSIONS` entry; writes check that `req.user` owns the target; `req.body` is picked, not passed to a repository; an update for a missing id returns 404; reads and updates filter `is_deleted`; `error.message` is not sent to the client; user text in `ilike` goes through `containsPattern`.
+- Checks: `pnpm typecheck`, `pnpm lint`, and `pnpm test` in `server/` are clean.
 
-- Flag new code that copies a bad neighbouring pattern: inline hex colours or pixel sizes, a new `*Mobile.tsx` twin, `style={{}}`, `makeStyles`, a new `any` / `as` cast / non-null `!`, index keys on reorderable lists, a bare `axios` import instead of `customAxios`, a `#/` import. Do not flag pre-existing mess the PR did not touch.
-- TypeScript: new `any`, unchecked `axios` responses (no generic), `catch (err: any)`, and casts that hide a wrong type.
-- react-router v6 only: any `useHistory`, `Switch`, or `props.history` is a bug.
-- New routes: an entry in `routes.ts` with a unique `key`, correct `permissions`, and no collision with existing setlist paths.
-- Data fetching: errors surface to the user (Snackbar), success is not claimed without checking the result, raw server error text is not rendered, fetched arrays and nullable fields are guarded.
-- Effects: complete dependency arrays, no new `exhaustive-deps` warnings, no `useUser()` inside list items.
-- Backend changes in the same PR: a new endpoint has both a route line and a `ROUTE_PERMISSIONS` entry; writes check that `req.user` owns the target; `req.body` is not passed straight to Mongoose; no `upsert: true` on updates; queries filter `isDeleted: false`; `error.message` is not sent to the client; user input in `$regex` is escaped.
-- Mobile and desktop both covered when layout changed.
+### Both
+
 - No member data in the diff, fixtures, or screenshots.
-- Lint and type-check: `pnpm lint` and `pnpm exec tsc --noEmit` (old-ui and server) are clean on the branch.
 
 ## Output
 
