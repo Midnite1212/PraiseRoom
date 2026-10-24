@@ -19,6 +19,7 @@ import { useIsWide } from '@/hooks/use-wide';
 
 import { updateSetlist } from '../api';
 import { toDateInputValue } from '../format-date';
+import { AddPanel } from './add-panel';
 import { FlowBar } from './flow-bar';
 import { DateChip, FoldersChip } from './setlist-chips';
 import {
@@ -34,7 +35,6 @@ import {
   stepSongKey,
   toggleFolder,
 } from './setlist-draft';
-import { SongPicker } from './song-picker';
 import { SongRows } from './song-rows';
 
 type SetlistEditorProps = {
@@ -70,14 +70,16 @@ export function SetlistEditor({ session, setlistId, initialDraft, now }: Setlist
   });
 
   const change = (next: SetlistDraft) => history.set(next);
+  const today = toDateInputValue(new Date(now).toISOString());
   const songIds = new Set(draft.songs.map(({ _id }) => _id));
 
   const remove = (song: DraftSong) => {
     change(removeSong(draft, song._id));
     goneToast(t('editor.removed', { title: song.title }));
   };
-  const toggleSong = (song: SongSummary) =>
-    songIds.has(song._id) ? change(removeSong(draft, song._id)) : change(addSong(draft, song));
+  const add = (song: SongSummary) => {
+    if (!songIds.has(song._id)) change(addSong(draft, song));
+  };
 
   const done = async () => {
     if (!hasName(draft)) {
@@ -94,7 +96,7 @@ export function SetlistEditor({ session, setlistId, initialDraft, now }: Setlist
     await navigate({ to: '/setlists', search: { set: setlistId } });
   };
 
-  const picker = <SongPicker selectedIds={songIds} onToggle={toggleSong} />;
+  const picker = <AddPanel setlistId={setlistId} draft={draft} today={today} onAdd={add} />;
 
   return (
     <EditorFrame
@@ -140,7 +142,7 @@ export function SetlistEditor({ session, setlistId, initialDraft, now }: Setlist
         <>
           <DateChip
             value={draft.date}
-            today={toDateInputValue(new Date(now).toISOString())}
+            today={today}
             onChange={(date) => change({ ...draft, date })}
           />
           <FoldersChip

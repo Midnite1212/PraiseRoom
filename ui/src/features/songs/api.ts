@@ -126,6 +126,29 @@ export const recentSongsQueryOptions = () =>
       }),
   });
 
+const LIBRARY_PAGE_SIZE = 100;
+const LIBRARY_MAX_PAGES = 10;
+
+// Every song, for features that rank the whole library on the client. Capped at 1,000 songs.
+export const songLibraryQueryOptions = () =>
+  queryOptions({
+    queryKey: ['songs', 'library'],
+    staleTime: 5 * 60_000,
+    queryFn: async ({ signal }) => {
+      const fetchPage = (page: number) =>
+        apiRequest('/api/songs/search', songSearchResponseSchema, {
+          query: { page, limit: LIBRARY_PAGE_SIZE },
+          signal,
+        });
+      const first = await fetchPage(1);
+      const lastPage = Math.min(first.totalPages, LIBRARY_MAX_PAGES);
+      const rest = await Promise.all(
+        Array.from({ length: Math.max(lastPage - 1, 0) }, (_, index) => fetchPage(index + 2))
+      );
+      return [first, ...rest].flatMap((page) => page.data);
+    },
+  });
+
 export const songSchema = readerSongSchema.extend({ recommendedKeys: z.array(z.string()) });
 
 export type Song = z.infer<typeof songSchema>;

@@ -52,7 +52,17 @@ const DRAFT: SetlistDraft = {
 
 const updates: unknown[] = [];
 
-const stubApi = (updateStatus = 200) =>
+const LIBRARY_SONG = {
+  _id: 'c',
+  title: 'Song c',
+  artist: 'Y',
+  originalKey: 'A',
+  tempo: ['Slow'],
+  timeSignature: ['4/4'],
+  themes: [],
+};
+
+const stubApi = (updateStatus = 200, library: unknown[] = []) =>
   vi.stubGlobal(
     'fetch',
     vi.fn<typeof fetch>((input, init) => {
@@ -68,7 +78,12 @@ const stubApi = (updateStatus = 200) =>
       }
       if (url.includes('/api/songs/search')) {
         return Promise.resolve(
-          Response.json({ data: [], totalCount: 0, currentPage: 1, totalPages: 1 })
+          Response.json({
+            data: library,
+            totalCount: library.length,
+            currentPage: 1,
+            totalPages: 1,
+          })
         );
       }
       return Promise.resolve(Response.json([]));
@@ -132,6 +147,16 @@ describe('SetlistEditor', () => {
     await user.click(screen.getByRole('button', { name: 'Done' }));
     await waitFor(() => expect(updates).toHaveLength(2));
     expect(updates[1]).toMatchObject({ songNotes: [] });
+  });
+
+  it('adds a suggested song from the add panel to the set', async () => {
+    stubApi(200, [LIBRARY_SONG]);
+    const user = userEvent.setup();
+    renderEditor();
+    expect(await screen.findByText('Not sung lately')).toBeInTheDocument();
+    await user.click(await screen.findByRole('button', { name: 'Add Song c' }));
+    expect(screen.queryByRole('button', { name: 'Add Song c' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Remove Song c' })).toBeInTheDocument();
   });
 
   it('undoes the last change', async () => {

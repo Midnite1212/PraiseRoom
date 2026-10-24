@@ -398,7 +398,22 @@
     "addDate": "Add a date",
     "noDate": "No date",
     "noFolder": "No folder",
-    "foldersHint": "Everyone in these folders can open and edit this setlist."
+    "foldersHint": "Everyone in these folders can open and edit this setlist.",
+    "suggest": {
+      "search": "Search {{count}} songs",
+      "searchLabel": "Search songs to add",
+      "results": "Results",
+      "noMatch": "No songs match",
+      "noMatchHint": "Try another word.",
+      "recentInFolder": "Recent in {{folder}}",
+      "recentInFolders": "Recent in {{folder}} and others",
+      "recentInSetlists": "Recent in your setlists",
+      "lately": "Not sung lately",
+      "lastSung": "Last sung {{date}}",
+      "neverSung": "Not sung yet",
+      "fits": "Fits this set's themes",
+      "foot": "Search to see the whole library."
+    }
   },
   "folders": {
     "title": "Folders",

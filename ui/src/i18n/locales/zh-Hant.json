@@ -398,7 +398,22 @@
     "addDate": "加入日期",
     "noDate": "不設日期",
     "noFolder": "沒有資料夾",
-    "foldersHint": "這些資料夾內的所有人都可以開啟及編輯此歌單。"
+    "foldersHint": "這些資料夾內的所有人都可以開啟及編輯此歌單。",
+    "suggest": {
+      "search": "搜尋 {{count}} 首詩歌",
+      "searchLabel": "搜尋要加入的詩歌",
+      "results": "結果",
+      "noMatch": "找不到詩歌",
+      "noMatchHint": "試試其他字詞。",
+      "recentInFolder": "「{{folder}}」最近用過",
+      "recentInFolders": "「{{folder}}」等資料夾最近用過",
+      "recentInSetlists": "你的歌單最近用過",
+      "lately": "久未詠唱",
+      "lastSung": "上次唱於 {{date}}",
+      "neverSung": "未唱過",
+      "fits": "配合這份歌單的主題",
+      "foot": "搜尋即可瀏覽整個詩歌庫。"
+    }
   },
   "folders": {
     "title": "資料夾",
