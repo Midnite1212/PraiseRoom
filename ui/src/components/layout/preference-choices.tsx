@@ -15,10 +15,21 @@ const THEME_ICONS = { light: Sun, system: Monitor, dark: Moon } as const;
 
 const COMPACT_LANGUAGE_LABELS: Record<LanguageCode, string> = { en: 'EN', 'zh-Hant': '繁' };
 
-type ChoiceProps = { size?: 'sm' | 'md' | 'lg'; fullWidth?: boolean; compact?: boolean };
+type ChoiceProps = {
+  size?: 'sm' | 'md' | 'lg';
+  fullWidth?: boolean;
+  compact?: boolean;
+  className?: string;
+};
 
-// Light · System · Dark for this device; compact shows icons only.
-export function ThemeChoice({ size = 'sm', fullWidth = false, compact = false }: ChoiceProps) {
+// Light · System · Dark for this device; compact shows icons only, `withIcons` an icon before each name.
+export function ThemeChoice({
+  size = 'sm',
+  fullWidth = false,
+  compact = false,
+  withIcons = false,
+  className,
+}: ChoiceProps & { withIcons?: boolean }) {
   const { t } = useTranslation();
   const { theme, setTheme } = useTheme();
   return (
@@ -28,9 +39,22 @@ export function ThemeChoice({ size = 'sm', fullWidth = false, compact = false }:
       label={t('theme.label')}
       size={size}
       fullWidth={fullWidth}
+      className={className}
       optionClassName={compact ? 'w-11 px-0' : undefined}
       options={THEMES.map((value) => {
         const Icon = THEME_ICONS[value];
+        if (withIcons) {
+          return {
+            value,
+            label: (
+              <>
+                <Icon />
+                {t(value === 'system' ? 'theme.auto' : `theme.${value}`)}
+              </>
+            ),
+            ariaLabel: value === 'system' ? t('theme.matchDevice') : undefined,
+          };
+        }
         const name = value === 'system' && compact ? t('theme.matchDevice') : t(`theme.${value}`);
         return compact ? { value, label: <Icon />, ariaLabel: name } : { value, label: name };
       })}
@@ -39,7 +63,12 @@ export function ThemeChoice({ size = 'sm', fullWidth = false, compact = false }:
 }
 
 // English · 繁體中文, each named in its own language; compact shows EN · 繁.
-export function LanguageChoice({ size = 'sm', fullWidth = false, compact = false }: ChoiceProps) {
+export function LanguageChoice({
+  size = 'sm',
+  fullWidth = false,
+  compact = false,
+  className,
+}: ChoiceProps) {
   const { t, i18n } = useTranslation();
   const language = LANGUAGES.find(({ code }) => code === i18n.language)?.code ?? 'en';
   return (
@@ -49,6 +78,7 @@ export function LanguageChoice({ size = 'sm', fullWidth = false, compact = false
       label={t('language.label')}
       size={size}
       fullWidth={fullWidth}
+      className={className}
       optionClassName={compact ? 'w-11 px-0' : undefined}
       options={LANGUAGES.map(({ code, label }) => ({
         value: code,

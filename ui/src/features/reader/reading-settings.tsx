@@ -35,7 +35,7 @@ function ChordStyleLabel({ style }: { style: ChordStyle }) {
   );
 }
 
-function ColourDots() {
+export function ColourDots() {
   return (
     <span aria-hidden className="inline-flex gap-[3px]">
       <i className="bg-chord size-[7px]" />

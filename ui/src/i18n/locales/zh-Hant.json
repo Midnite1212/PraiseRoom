@@ -19,7 +19,8 @@
     "light": "淺色",
     "dark": "深色",
     "matchDevice": "跟隨此裝置",
-    "system": "跟隨系統"
+    "system": "跟隨系統",
+    "auto": "自動"
   },
   "language": {
     "label": "語言"
@@ -655,13 +656,31 @@
   },
   "settings": {
     "title": "設定",
-    "language": {
-      "description": "套用於此裝置上的整個應用程式。"
+    "songs": {
+      "title": "歌曲",
+      "description": "每次打開歌曲時，歌詞和和弦的顯示方式。"
+    },
+    "playing": {
+      "title": "演奏",
+      "description": "在手機或平板打開歌曲時。"
+    },
+    "look": {
+      "title": "外觀及語言",
+      "description": "套用於整個應用程式。"
+    },
+    "textSize": {
+      "title": "歌詞大小",
+      "hint": "{{size}}。歌曲內的 Aa 按鈕也會更改此設定。",
+      "options": {
+        "sm": "小",
+        "md": "中",
+        "lg": "大",
+        "xl": "特大",
+        "2xl": "最大"
+      }
     },
     "font": {
       "title": "字型",
-      "description": "套用於此裝置上的整個應用程式。",
-      "sample": "Aa 讚美祢",
       "options": {
         "plex": "IBM Plex",
         "geist": "Geist",
@@ -671,21 +690,30 @@
         "system": "系統"
       }
     },
-    "textSize": {
-      "title": "歌詞大小",
-      "description": "套用於此裝置上閱讀歌曲時。",
-      "preview": "你們要向耶和華唱新歌",
-      "options": {
-        "sm": "小",
-        "md": "中",
-        "lg": "大",
-        "xl": "特大",
-        "2xl": "最大"
-      }
+    "notation": {
+      "numbers": "數字在任何調都適用",
+      "letters": "依歌曲的調顯示字母"
+    },
+    "chordStyle": {
+      "full": "包含七和弦、掛留及轉位低音",
+      "simple": "只顯示基本和弦"
+    },
+    "accidentals": {
+      "auto": "跟隨調號",
+      "sharp": "一律用升號",
+      "flat": "一律用降號"
+    },
+    "colourChords": {
+      "hint": "一、四、五級及小和弦各有顏色"
+    },
+    "scrollSpeed": {
+      "hint": "按下播放後開始"
+    },
+    "keepAwake": {
+      "hint": "打開歌曲時保持亮着"
     },
     "accent": {
       "title": "強調色",
-      "description": "黑白配上一種顏色，只套用於這部裝置。",
       "options": {
         "electric": "電光藍",
         "violet": "紫外光",
@@ -695,15 +723,24 @@
     },
     "glass": {
       "title": "玻璃效果",
-      "description": "折射會令玻璃邊緣的背景彎曲。只適用於 Chrome、Edge 和 Brave。",
+      "hint": "折射會令玻璃邊緣的背景彎曲。只適用於 Chrome、Edge 和 Brave。",
       "options": {
         "frosted": "磨砂",
         "refract": "折射"
       }
     },
-    "description": "這部裝置上的外觀及閱讀方式。",
-    "theme": {
-      "description": "深色適合昏暗的房間及台上。"
+    "foot": "設定只儲存在此裝置，所以手機和電腦可以各自設定。",
+    "preview": {
+      "label": "預覽",
+      "aria": "以這些設定顯示的歌曲預覽",
+      "note": "更改會即時套用。",
+      "title": "向耶和華歌唱",
+      "subtitle": "詩篇 96",
+      "numbersKey": "1 = {{key}}",
+      "full": "完整和弦",
+      "simple": "簡化和弦",
+      "coloured": "已上色",
+      "chart": "{第一節}\n[E]向耶和華[A]唱一首[B7]新的[C#m]歌；\n[E]全地都要[B]向耶和華[E]歌唱。"
     }
   },
   "filters": {
