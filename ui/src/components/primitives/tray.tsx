@@ -17,6 +17,15 @@ import { useIsWide } from '@/hooks/use-wide';
 import { cn } from '@/lib/utils';
 
 const CLOSE_DISTANCE = 56;
+// A control marked `data-keeps-tray` (auto-scroll's play button) can be used with the tray open.
+const keepOpenOnOutsideControl = (event: {
+  target: EventTarget | null;
+  preventDefault: () => void;
+}) => {
+  if (event.target instanceof Element && event.target.closest('[data-keeps-tray]'))
+    event.preventDefault();
+};
+
 const IGNORED_DRAG_TARGETS = 'button, output, input, [role="radio"], [role="switch"]';
 
 // Phones: a downward drag on the tray's own surface follows the finger and closes it past CLOSE_DISTANCE.
@@ -111,6 +120,7 @@ function PhoneTray({
       <DialogPortal>
         <DialogPrimitive.Content
           aria-describedby={undefined}
+          onInteractOutside={keepOpenOnOutsideControl}
           {...dragHandlers}
           className={cn(
             'glass glass-strong text-ink fixed right-2.5 bottom-[calc(var(--bottom)+var(--dock-h)+10px)] left-2.5 z-50 mx-auto flex max-w-[560px] origin-bottom touch-none flex-col px-3.5 pt-3 pb-3.5 text-sm outline-none [--glass-r:28px] [translate:0_var(--tray-drag,0px)] transition-[translate] duration-200 ease-out data-dragging:transition-none data-open:animate-sheet-in data-closed:animate-sheet-out',
@@ -153,6 +163,7 @@ export function Tray(props: TrayProps) {
       <PopoverTrigger asChild>{trigger}</PopoverTrigger>
       <PopoverContent
         aria-label={title}
+        onInteractOutside={keepOpenOnOutsideControl}
         align={align}
         collisionPadding={12}
         className={cn(

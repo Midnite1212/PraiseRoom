@@ -19,6 +19,8 @@ import { LYRICS_SIZES, stepLyricsSize, useLyricsSize } from '@/features/reader/l
 import { useIsWide } from '@/hooks/use-wide';
 import { cn } from '@/lib/utils';
 
+import { type AutoScroll } from './auto-scroll';
+import { ScrollSpeedRow } from './auto-scroll-controls';
 import type { ReaderSong } from './song';
 
 const NOTATION_LABELS = { numbers: '1 4 5', letters: 'A B C' } as const;
@@ -132,8 +134,9 @@ function SizeStep({
   );
 }
 
-// Aa: a live tray for the lyric size, with a tick per size.
-export function ReadingPanel({ trigger }: { trigger: ReactElement }) {
+// Aa: a live tray for the lyric size, with a tick per size, and (where the page can scroll by itself) the
+// scroll speed.
+export function ReadingPanel({ trigger, auto }: { trigger: ReactElement; auto?: AutoScroll }) {
   const { t } = useTranslation();
   const [size, setSize] = useLyricsSize();
   const index = LYRICS_SIZES.indexOf(size);
@@ -166,17 +169,19 @@ export function ReadingPanel({ trigger }: { trigger: ReactElement }) {
           onClick={() => setSize(stepLyricsSize(size, 1))}
         />
       </div>
+      {auto ? <ScrollSpeedRow auto={auto} /> : null}
     </Tray>
   );
 }
 
 // Wide screens: Aa in the top row (phones have it in the dock).
-export function WideReadingControls() {
+export function WideReadingControls({ auto }: { auto?: AutoScroll }) {
   const { t } = useTranslation();
   const isWide = useIsWide();
   if (!isWide) return null;
   return (
     <ReadingPanel
+      auto={auto}
       trigger={
         <Button
           variant="glass"
