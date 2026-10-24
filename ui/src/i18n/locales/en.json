@@ -572,7 +572,7 @@
     "codeLabel": "Song code",
     "hintTap": "Tap a word to put a chord over it. The palette follows the key of {{key}}.",
     "hintClick": "Click a word to put a chord over it. The palette follows the key of {{key}}.",
-    "hintEmpty": "Start with a section, then type its lyrics.",
+    "hintEmpty": "Start with a section, or switch to Text to paste a whole chart.",
     "unnamedSection": "Unnamed section",
     "sectionName": "Section name",
     "editLyrics": "Edit lyrics",
@@ -598,7 +598,21 @@
     "setChord": "Set",
     "removeChord": "Remove {{chord}}",
     "needsTitle": "Give the song a title before you leave.",
-    "needsLyrics": "A song needs some lyrics before you leave."
+    "needsLyrics": "A song needs some lyrics before you leave.",
+    "mode": {
+      "label": "Edit as",
+      "song": "Song",
+      "text": "Text"
+    },
+    "text": {
+      "label": "Lyrics and chords",
+      "placeholder": "{Verse 1}\n[G]Amazing grace, how [C]sweet the [G]sound",
+      "hint": "Chords go in brackets before their syllable and section names in braces. Paste a chart with chords above the lyrics and they are placed for you.",
+      "previewLabel": "Preview: click a word to put a chord over it",
+      "previewHint": "Click a word to put a chord over it.",
+      "previewEmpty": "Your song appears here as you type.",
+      "chartFolded": "Chords placed over their words"
+    }
   },
   "settings": {
     "title": "Settings",

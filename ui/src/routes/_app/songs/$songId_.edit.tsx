@@ -25,6 +25,7 @@ export const Route = createFileRoute('/_app/songs/$songId_/edit')({
 
 function EditSongPage() {
   const { songId } = Route.useParams();
+  const { mode } = Route.useSearch();
   const { data: song } = useSuspenseQuery(songQueryOptions(songId));
-  return <SongEditor key={song._id} song={song} />;
+  return <SongEditor key={song._id} song={song} initialMode={mode ?? 'song'} />;
 }

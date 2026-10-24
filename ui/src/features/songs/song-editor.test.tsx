@@ -60,6 +60,11 @@ afterEach(() => {
 
 const lastUpdate = () => updates.at(-1);
 
+const openText = async (user: ReturnType<typeof userEvent.setup>) => {
+  await user.click(await screen.findByRole('radio', { name: 'Text' }));
+  return screen.findByRole('textbox', { name: 'Lyrics and chords' });
+};
+
 describe('SongEditor', () => {
   it('shows the song as sections of words and saves nothing until something changes', async () => {
     renderWithQueryAndRouter(<SongEditor song={song} />);
@@ -174,5 +179,67 @@ describe('SongEditor', () => {
 
     expect(toast.error).toHaveBeenCalledWith('Give the song a title before you leave.');
     expect(updates).toHaveLength(0);
+  });
+
+  describe('Text mode', () => {
+    it('opens on Text mode with the textarea focused when asked to', async () => {
+      renderWithQueryAndRouter(<SongEditor song={song} initialMode="text" />);
+
+      const text = await screen.findByRole('textbox', { name: 'Lyrics and chords' });
+      expect(text).toHaveFocus();
+      expect(screen.getByRole('radio', { name: 'Text' })).toBeChecked();
+    });
+
+    it('shows the song as ChordPro and saves what is typed', async () => {
+      const user = userEvent.setup();
+      renderWithQueryAndRouter(<SongEditor song={song} />);
+
+      const text = await openText(user);
+      expect(text).toHaveValue(song.chordLyrics);
+      await user.type(text, '\n\nmore');
+      expect(text).toHaveValue(`${song.chordLyrics}\n\nmore`);
+
+      await waitFor(() => expect(lastUpdate()?.chordLyrics).toBe(`${song.chordLyrics}\n\nmore`), {
+        timeout: 3000,
+      });
+    });
+
+    it('puts a chord from the live preview into the text and undoes it', async () => {
+      const user = userEvent.setup();
+      renderWithQueryAndRouter(<SongEditor song={song} />);
+
+      const text = await openText(user);
+      await user.click(screen.getByRole('button', { name: 'Add a chord to Second' }));
+      await user.click(await screen.findByRole('button', { name: /^AIV$/ }));
+      expect(text).toHaveValue('{Verse 1}\n[E]Test [A]line\n\n{Chorus}\n[A]Second words');
+
+      await user.click(screen.getByRole('button', { name: 'Undo' }));
+      expect(text).toHaveValue(song.chordLyrics);
+    });
+
+    it('folds a pasted chords-above-lyrics chart into inline chords', async () => {
+      const user = userEvent.setup();
+      renderWithQueryAndRouter(<SongEditor song={{ ...song, chordLyrics: '{Verse 1}' }} />);
+
+      const text = await openText(user);
+      await user.click(text);
+      await user.paste('G   C\nHello there');
+
+      expect(text).toHaveValue('{Verse 1}[G]Hell[C]o there');
+      expect(toast).toHaveBeenCalledWith('Chords placed over their words');
+    });
+
+    it('keeps the same draft when switching back to Song mode', async () => {
+      const user = userEvent.setup();
+      renderWithQueryAndRouter(<SongEditor song={song} />);
+
+      const text = await openText(user);
+      await user.clear(text);
+      await user.click(text);
+      await user.paste('{Chorus}\n[G]Hi there');
+      await user.click(screen.getByRole('radio', { name: 'Song' }));
+
+      expect(await screen.findByRole('button', { name: 'Chord G on Hi' })).toBeInTheDocument();
+    });
   });
 });

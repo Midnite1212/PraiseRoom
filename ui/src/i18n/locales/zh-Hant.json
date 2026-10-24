@@ -572,7 +572,7 @@
     "codeLabel": "歌曲編號",
     "hintTap": "點一個字，在上面放和弦。和弦選單跟隨 {{key}} 調。",
     "hintClick": "按一個字，在上面放和弦。和弦選單跟隨 {{key}} 調。",
-    "hintEmpty": "先新增一個段落，再輸入歌詞。",
+    "hintEmpty": "先新增一個段落，或切換到「文字」貼上整份譜。",
     "unnamedSection": "未命名段落",
     "sectionName": "段落名稱",
     "editLyrics": "編輯歌詞",
@@ -598,7 +598,21 @@
     "setChord": "設定",
     "removeChord": "移除 {{chord}}",
     "needsTitle": "離開前請先為歌曲命名。",
-    "needsLyrics": "離開前，歌曲需要有一些歌詞。"
+    "needsLyrics": "離開前，歌曲需要有一些歌詞。",
+    "mode": {
+      "label": "編輯方式",
+      "song": "歌曲",
+      "text": "文字"
+    },
+    "text": {
+      "label": "歌詞與和弦",
+      "placeholder": "{Verse 1}\n[G]奇異恩典，何等[C]甘甜，[G]我罪",
+      "hint": "和弦放在音節前的方括號內，段落名稱放在大括號內。貼上和弦在歌詞上方的譜，和弦會自動歸位。",
+      "previewLabel": "預覽：點選字詞以加上和弦",
+      "previewHint": "點選字詞以在其上加和弦。",
+      "previewEmpty": "輸入時，歌曲會顯示在這裡。",
+      "chartFolded": "和弦已放到對應的字上"
+    }
   },
   "settings": {
     "title": "設定",
