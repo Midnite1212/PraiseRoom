@@ -188,9 +188,10 @@
   --ink-2: oklch(0.38 0 0);
   --ink-3: oklch(0.5 0 0);
   --hairline: oklch(0 0 0 / 0.12);
-  --glass-tint: oklch(1 0 0 / 0.6);
-  --glass-tint-strong: oklch(1 0 0 / 0.86);
-  --glass-tint-over: oklch(1 0 0 / 0.76);
+  --glass-tint: oklch(1 0 0 / 0.42);
+  --glass-tint-strong: oklch(1 0 0 / 0.8);
+  --glass-tint-over: oklch(1 0 0 / 0.66);
+  --glass-sheen: oklch(1 0 0 / 0.5);
   --rim-hi: oklch(1 0 0 / 0.95);
   --rim-lo: oklch(1 0 0 / 0.3);
   --rim-edge: oklch(0 0 0 / 0.1);
@@ -260,12 +261,13 @@
   --ink-2: oklch(0.78 0 0);
   --ink-3: oklch(0.62 0 0);
   --hairline: oklch(1 0 0 / 0.14);
-  --glass-tint: oklch(0.2 0 0 / 0.56);
-  --glass-tint-strong: oklch(0.15 0 0 / 0.82);
-  --glass-tint-over: oklch(0.16 0 0 / 0.74);
+  --glass-tint: oklch(0.22 0 0 / 0.34);
+  --glass-tint-strong: oklch(0.16 0 0 / 0.72);
+  --glass-tint-over: oklch(0.17 0 0 / 0.6);
+  --glass-sheen: oklch(1 0 0 / 0.13);
   --rim-hi: oklch(1 0 0 / 0.6);
-  --rim-lo: oklch(1 0 0 / 0.08);
-  --rim-edge: oklch(1 0 0 / 0.08);
+  --rim-lo: oklch(1 0 0 / 0.12);
+  --rim-edge: oklch(1 0 0 / 0.1);
   --shadow: oklch(0 0 0 / 0.7);
   --fill-hover: oklch(1 0 0 / 0.09);
   --fill-press: oklch(1 0 0 / 0.15);
@@ -511,9 +513,11 @@
     inset: 0;
     z-index: -1;
     border-radius: inherit;
-    background: var(--glass-fill, var(--glass-tint));
-    -webkit-backdrop-filter: blur(var(--glass-blur, 14px)) saturate(185%) brightness(1.04);
-    backdrop-filter: blur(var(--glass-blur, 14px)) saturate(185%) brightness(1.04);
+    background:
+      radial-gradient(140% 70% at 28% -10%, var(--glass-sheen), transparent 62%),
+      var(--glass-fill, var(--glass-tint));
+    -webkit-backdrop-filter: blur(var(--glass-blur, 12px)) saturate(220%) brightness(1.08);
+    backdrop-filter: blur(var(--glass-blur, 12px)) saturate(220%) brightness(1.08);
     pointer-events: none;
     transition: background-color 300ms var(--ease-out);
   }
@@ -525,16 +529,7 @@
     z-index: 1;
     border-radius: inherit;
     padding: 1px;
-    background:
-      linear-gradient(
-        150deg,
-        var(--rim-hi) 0%,
-        var(--rim-lo) 28%,
-        transparent 50%,
-        var(--rim-lo) 74%,
-        color-mix(in oklch, var(--rim-hi) 60%, transparent) 100%
-      ),
-      linear-gradient(var(--rim-edge), var(--rim-edge));
+    background: var(--rim-edge);
     -webkit-mask:
       linear-gradient(black 0 0) content-box,
       linear-gradient(black 0 0);
@@ -555,8 +550,8 @@
         transparent 70%
       ),
       var(--glass-fill, var(--glass-tint));
-    -webkit-backdrop-filter: var(--lg, blur(var(--glass-blur, 14px)) saturate(185%)) var(--lg-tone);
-    backdrop-filter: var(--lg, blur(var(--glass-blur, 14px)) saturate(185%)) var(--lg-tone);
+    -webkit-backdrop-filter: var(--lg, blur(var(--glass-blur, 12px)) saturate(220%)) var(--lg-tone);
+    backdrop-filter: var(--lg, blur(var(--glass-blur, 12px)) saturate(220%)) var(--lg-tone);
     transition:
       background-color 300ms var(--ease-out),
       --sheen 420ms var(--ease-out);
