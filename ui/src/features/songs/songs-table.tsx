@@ -1,6 +1,7 @@
 import { useNavigate } from '@tanstack/react-router';
 import { createColumnHelper, FlexRender, tableFeatures, useTable } from '@tanstack/react-table';
 import type { TFunction } from 'i18next';
+import { ChevronDown, ChevronUp } from 'pixelarticons/react';
 import type { KeyboardEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -9,7 +10,7 @@ import { KeyChip } from '@/components/primitives/key-chip';
 import { TempoMeter } from '@/components/primitives/tempo-meter';
 import { cn } from '@/lib/utils';
 
-import type { SongSummary } from './api';
+import type { SongSort, SongSummary, SortDirection } from './api';
 
 const features = tableFeatures({});
 
@@ -43,6 +44,13 @@ const createColumns = (t: TFunction) =>
     }),
   ]);
 
+const SORT_BY_COLUMN: Readonly<Record<string, SongSort>> = {
+  title: 'title',
+  originalKey: 'key',
+  tempo: 'tempo',
+  code: 'code',
+};
+
 const columnMeta = (meta: unknown): ColumnMeta =>
   typeof meta === 'object' && meta !== null ? meta : {};
 
@@ -55,10 +63,16 @@ const isEditable = (target: EventTarget) =>
 export function SongsTable({
   songs,
   selectedId,
+  sort,
+  dir,
+  onSort,
   onSelect,
 }: {
   songs: SongSummary[];
   selectedId?: string;
+  sort: SongSort;
+  dir: SortDirection;
+  onSort: (sort: SongSort) => void;
   onSelect: (songId: string) => void;
 }) {
   const { t } = useTranslation();
@@ -99,17 +113,37 @@ export function SongsTable({
       <thead>
         {table.getHeaderGroups().map((headerGroup) => (
           <tr key={headerGroup.id}>
-            {headerGroup.headers.map((header) => (
-              <th
-                key={header.id}
-                className={cn(
-                  'text-ink-3 bg-ground/92 sticky top-20 z-[5] h-9 px-3 text-left text-xs font-semibold',
-                  columnMeta(header.column.columnDef.meta).headClassName
-                )}
-              >
-                {header.isPlaceholder ? null : <FlexRender header={header} />}
-              </th>
-            ))}
+            {headerGroup.headers.map((header) => {
+              const columnSort = SORT_BY_COLUMN[header.column.id];
+              const isSorted = columnSort === sort;
+              const SortIcon = dir === 'asc' ? ChevronDown : ChevronUp;
+              return (
+                <th
+                  key={header.id}
+                  aria-sort={isSorted ? (dir === 'asc' ? 'ascending' : 'descending') : undefined}
+                  className={cn(
+                    'bg-ground/92 sticky top-20 z-[5] h-9 p-0 text-left text-xs font-semibold',
+                    columnMeta(header.column.columnDef.meta).headClassName
+                  )}
+                >
+                  {header.isPlaceholder ? null : columnSort ? (
+                    <button
+                      type="button"
+                      onClick={() => onSort(columnSort)}
+                      className={cn(
+                        'hover:bg-fill-hover hover:text-ink inline-flex h-9 items-center gap-1 rounded-[10px] px-2.5 text-xs font-semibold transition-colors duration-150',
+                        isSorted ? 'text-ink' : 'text-ink-3'
+                      )}
+                    >
+                      <FlexRender header={header} />
+                      {isSorted ? <SortIcon aria-hidden className="size-3.5" /> : null}
+                    </button>
+                  ) : (
+                    <FlexRender header={header} />
+                  )}
+                </th>
+              );
+            })}
           </tr>
         ))}
       </thead>

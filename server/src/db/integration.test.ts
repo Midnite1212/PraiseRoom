@@ -218,6 +218,14 @@ describe(
           'Undersc0re',
         ]);
 
+        assert.deepEqual(await titles({ sortBy: 'code', order: 'desc' }), [
+          'Undersc0re',
+          'amazing love',
+          'Under_score',
+          'Amazing Grace',
+          '100% Yours',
+        ]);
+
         const page = await ok(searchSongs, { query: { limit: '2', page: '2' } });
         assert.deepEqual(
           page.data.map((found: Body) => found.title),
@@ -231,6 +239,54 @@ describe(
           },
           { currentPage: 2, totalCount: 5, totalPages: 3 }
         );
+      });
+    });
+
+    describe('song keys and tempo', () => {
+      it('filters by original key and sorts by key or tempo in either direction', async () => {
+        for (const [title, fields] of [
+          ['Alpha', { originalKey: 'Em', tempo: ['Slow', 'Fast'] }],
+          ['Bravo', { originalKey: 'E', tempo: ['Medium'] }],
+          ['Charlie', { originalKey: 'Bb', tempo: [] }],
+          ['Delta', { originalKey: 'C', tempo: ['Medium Slow'] }],
+          ['Echo', { originalKey: 'Em', tempo: ['Slow'] }],
+        ] as const) {
+          await ok(createSong, { body: song(title, fields), user: ADMIN });
+        }
+        const titles = async (query: Body) =>
+          (await ok(searchSongs, { query })).data.map((found: Body) => found.title);
+
+        assert.deepEqual(await titles({ sortBy: 'key' }), [
+          'Delta',
+          'Bravo',
+          'Alpha',
+          'Echo',
+          'Charlie',
+        ]);
+        assert.deepEqual(await titles({ sortBy: 'key', order: 'desc' }), [
+          'Charlie',
+          'Alpha',
+          'Echo',
+          'Bravo',
+          'Delta',
+        ]);
+        assert.deepEqual(await titles({ sortBy: 'tempo' }), [
+          'Charlie',
+          'Echo',
+          'Delta',
+          'Bravo',
+          'Alpha',
+        ]);
+        assert.deepEqual(await titles({ sortBy: 'tempo', order: 'desc' }), [
+          'Alpha',
+          'Bravo',
+          'Delta',
+          'Echo',
+          'Charlie',
+        ]);
+        assert.deepEqual(await titles({ keys: ['E', 'Em'] }), ['Alpha', 'Bravo', 'Echo']);
+        assert.deepEqual(await titles({ keys: 'Em', tempo: 'Slow' }), ['Alpha', 'Echo']);
+        assert.deepEqual(await songRepository.listOriginalKeys(), ['Bb', 'C', 'E', 'Em']);
       });
     });
 

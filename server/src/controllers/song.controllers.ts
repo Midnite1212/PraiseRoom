@@ -1,7 +1,8 @@
 import { Request, RequestHandler, Response } from 'express';
 
 import { hasNulCharacter } from '../db/cast';
-import { SONG_FIELDS, songRepository } from '../db/repositories/song.repository';
+import { SONG_FIELDS, SongSortField, songRepository } from '../db/repositories/song.repository';
+import { MUSIC_KEYS } from '../db/schema';
 import { pick } from '../utils/pick';
 import { sendError, sendResponse } from '../utils/response';
 import { isObjectIdString } from '../utils/validation';
@@ -20,6 +21,18 @@ const toSearchArray = (value: unknown): string[] | null => {
   if (Array.isArray(value) && value.every(isSearchString)) return value;
   return null;
 };
+
+const isMusicKey = (value: string): boolean => MUSIC_KEYS.some((key) => key === value);
+
+const toKeyArray = (value: unknown): string[] | null => {
+  const keys = toSearchArray(value);
+  return keys?.every(isMusicKey) ? keys : null;
+};
+
+const SORT_FIELDS: readonly SongSortField[] = ['code', 'key', 'tempo', 'recent'];
+
+const toSortField = (value: unknown): SongSortField =>
+  SORT_FIELDS.find((field) => field === value) ?? 'title';
 
 const toPositiveInteger = (value: unknown, fallback: number): number => {
   if (typeof value !== 'string') return fallback;
@@ -69,15 +82,18 @@ const getSong: RequestHandler = async (req: Request, res: Response): Promise<voi
 };
 
 const searchSongs: RequestHandler = async (req: Request, res: Response): Promise<void> => {
-  const { keyword, code, tempo, themes, sortBy, page, limit } = req.query;
+  const { keyword, code, tempo, themes, keys, sortBy, order, page, limit } = req.query;
 
   const tempoArray = toSearchArray(tempo);
   const themesArray = toSearchArray(themes);
+  const keysArray = toKeyArray(keys);
   if (
     (keyword !== undefined && !isSearchString(keyword)) ||
     (code !== undefined && !isSearchString(code)) ||
     tempoArray === null ||
-    themesArray === null
+    themesArray === null ||
+    keysArray === null ||
+    (order !== undefined && order !== 'asc' && order !== 'desc')
   ) {
     sendResponse(res, 400, 'Invalid search parameters');
     return;
@@ -92,7 +108,9 @@ const searchSongs: RequestHandler = async (req: Request, res: Response): Promise
       code: isSearchString(code) ? code : '',
       tempo: tempoArray,
       themes: themesArray,
-      sortBy: sortBy === 'code' || sortBy === 'recent' ? sortBy : 'title',
+      keys: keysArray,
+      sortBy: toSortField(sortBy),
+      descending: order === 'desc',
       offset: (parsedPage - 1) * parsedLimit,
       limit: parsedLimit,
     });
@@ -102,6 +120,14 @@ const searchSongs: RequestHandler = async (req: Request, res: Response): Promise
       currentPage: parsedPage,
       totalPages: Math.ceil(totalCount / parsedLimit),
     });
+  } catch (error: unknown) {
+    sendError(res, error);
+  }
+};
+
+const listSongKeys: RequestHandler = async (_req: Request, res: Response): Promise<void> => {
+  try {
+    sendResponse(res, 200, await songRepository.listOriginalKeys());
   } catch (error: unknown) {
     sendError(res, error);
   }
@@ -157,4 +183,4 @@ const deleteSong: RequestHandler = async (req: Request, res: Response): Promise<
   }
 };
 
-export { createSong, getSong, getSongView, updateSong, deleteSong, searchSongs };
+export { createSong, getSong, getSongView, listSongKeys, updateSong, deleteSong, searchSongs };

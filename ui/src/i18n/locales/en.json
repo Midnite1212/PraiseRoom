@@ -93,6 +93,8 @@
       "show_one": "Show {{count}} song",
       "show_other": "Show {{count}} songs",
       "more": "More",
+      "originalKey": "Original key",
+      "keyChip": "Key {{key}}",
       "sortBy": "Sort by"
     },
     "tempo": {
@@ -105,8 +107,14 @@
     "tempoLabel": "Tempo: {{tempo}}",
     "searchWeb": "Include results from the web",
     "searchTooLong": "Keep the search under 100 characters.",
+    "groups": {
+      "key": "Key of {{key}}",
+      "noTempo": "No tempo"
+    },
     "sortHint": {
       "title": "A–Z",
+      "key": "By key",
+      "tempo": "By tempo",
       "code": "By code"
     },
     "previewHint": "Click to preview · double-click or Enter to open",

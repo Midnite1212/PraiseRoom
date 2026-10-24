@@ -3,6 +3,7 @@ import {
   deleteSong,
   getSong,
   getSongView,
+  listSongKeys,
   searchSongs,
   updateSong,
 } from '../controllers/song.controllers';
@@ -22,6 +23,7 @@ router.get('/api/songs/get-view', getSongView);
 router.put('/api/songs/update', updateSong);
 router.put('/api/songs/delete', deleteSong);
 router.get('/api/songs/search', searchSongs);
+router.get('/api/songs/keys', listSongKeys);
 router.get('/api/songs/import/search', searchImportCandidates);
 router.post('/api/songs/import/fetch', fetchImportChart);
 router.post('/api/songs/import/convert', convertImportText);

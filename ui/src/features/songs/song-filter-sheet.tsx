@@ -4,9 +4,24 @@ import { useTranslation } from 'react-i18next';
 import { FilterSection, FilterSheet, FilterToggle } from '@/components/page/filter-sheet';
 import { Segmented } from '@/components/primitives/segmented';
 
-import { SONG_SORTS, type SongSort, TEMPO_LABEL_KEYS, TEMPO_OPTIONS, THEME_OPTIONS } from './api';
+import {
+  SONG_SORTS,
+  type SongSort,
+  type SortDirection,
+  TEMPO_LABEL_KEYS,
+  TEMPO_OPTIONS,
+  THEME_OPTIONS,
+} from './api';
+import { KEY_FILTER_OPTIONS, type KeyFilterOption } from './key-options';
 
-export type SongFilterValues = { tempo: string[]; themes: string[]; web: boolean; sort: SongSort };
+export type SongFilterValues = {
+  tempo: string[];
+  themes: string[];
+  keys: KeyFilterOption[];
+  web: boolean;
+  sort: SongSort;
+  dir: SortDirection;
+};
 
 const TEMPO_ICONS = {
   Fast: SpeedFast,
@@ -15,14 +30,15 @@ const TEMPO_ICONS = {
   Slow: SpeedSlow,
 } as const;
 
-const toggle = (values: readonly string[], value: string): string[] =>
+const toggle = <T extends string>(values: readonly T[], value: T): T[] =>
   values.includes(value) ? values.filter((item) => item !== value) : [...values, value];
 
-type SongFilterSheetProps = SongFilterValues & {
+type SongFilterSheetProps = Omit<SongFilterValues, 'dir'> & {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   matchCount: number | undefined;
   canSearchWeb: boolean;
+  availableKeys: ReadonlySet<string> | undefined;
   onChange: (filters: Partial<SongFilterValues>) => void;
 };
 
@@ -31,10 +47,12 @@ export function SongFilterSheet({
   onOpenChange,
   tempo,
   themes,
+  keys,
   web,
   sort,
   matchCount,
   canSearchWeb,
+  availableKeys,
   onChange,
 }: SongFilterSheetProps) {
   const { t } = useTranslation();
@@ -47,7 +65,9 @@ export function SongFilterSheet({
       summary={t('songs.filters.matches', { count })}
       showLabel={t('songs.filters.show', { count })}
       canShow={count > 0}
-      onReset={() => onChange({ tempo: [], themes: [], web: false, sort: 'title' })}
+      onReset={() =>
+        onChange({ tempo: [], themes: [], keys: [], web: false, sort: 'title', dir: 'asc' })
+      }
     >
       <FilterSection
         title={t('songs.filters.tempo')}
@@ -86,10 +106,32 @@ export function SongFilterSheet({
           ))}
         </div>
       </FilterSection>
+      <FilterSection
+        title={t('songs.filters.originalKey')}
+        onClear={keys.length > 0 ? () => onChange({ keys: [] }) : undefined}
+      >
+        <div className="grid grid-cols-6 gap-1">
+          {KEY_FILTER_OPTIONS.map((option) => {
+            const pressed = keys.includes(option);
+            return (
+              <button
+                key={option}
+                type="button"
+                aria-pressed={pressed}
+                disabled={!pressed && availableKeys !== undefined && !availableKeys.has(option)}
+                onClick={() => onChange({ keys: toggle(keys, option) })}
+                className="bg-fill-hover text-ink aria-pressed:bg-chord aria-pressed:text-ground disabled:text-ink-3 h-10 rounded-xl font-mono text-sm font-semibold transition-colors duration-150 disabled:opacity-50"
+              >
+                {option}
+              </button>
+            );
+          })}
+        </div>
+      </FilterSection>
       <FilterSection title={t('songs.filters.sortBy')}>
         <Segmented
           value={sort}
-          onChange={(next) => onChange({ sort: next })}
+          onChange={(next) => onChange({ sort: next, dir: 'asc' })}
           label={t('songs.filters.sortBy')}
           fullWidth
           options={SONG_SORTS.map((value) => ({ value, label: t(`songs.columns.${value}`) }))}

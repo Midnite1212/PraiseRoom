@@ -21,11 +21,14 @@ const BAR_HEIGHTS = ['h-1', 'h-1.5', 'h-2', 'h-2.5'] as const;
 export const tempoLevel = (tempo: readonly string[]): number =>
   Math.max(0, ...tempo.map((name) => TEMPOS[name]?.level ?? 0));
 
+export const tempoLabelKey = (tempo: readonly string[]) =>
+  Object.values(TEMPOS).find((entry) => entry.level === tempoLevel(tempo))?.labelKey;
+
 // Tempo as four rising bars, lit up to the song's level.
 export function TempoMeter({ tempo, className }: { tempo: readonly string[]; className?: string }) {
   const { t } = useTranslation();
   const level = tempoLevel(tempo);
-  const labelKey = Object.values(TEMPOS).find((entry) => entry.level === level)?.labelKey;
+  const labelKey = tempoLabelKey(tempo);
   if (!labelKey) return null;
   const label = t(labelKey);
   return (

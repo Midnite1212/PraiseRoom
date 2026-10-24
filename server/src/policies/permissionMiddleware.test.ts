@@ -74,6 +74,7 @@ describe('permissionMiddleware', () => {
         'GET /api/songs/get-view': 0,
         'GET /api/songs/import/metadata': 2,
         'GET /api/songs/import/search': 2,
+        'GET /api/songs/keys': 0,
         'GET /api/songs/search': 0,
         'POST /api/groups/create': 1,
         'POST /api/ownerships/create': 1,

@@ -65,7 +65,7 @@ export function SongRows({
   if (songs.length === 0)
     return <EmptyState title={t('songs.empty')}>{t('songs.emptyHint')}</EmptyState>;
 
-  const groups = grouped ? groupSongs(songs, sort) : null;
+  const groups = grouped ? groupSongs(songs, sort, t) : null;
   if (!groups)
     return (
       <ul className={LIST_CLASSES}>
