@@ -15,9 +15,8 @@
 If your work involves the task below, read the corresponding document/section first:
 
 - write a commit message, branch name, or PR title/description → `.claude/docs/commit-convention.md` and `.claude/docs/pr-description.md`
-- write or change code in the new UI (`ui/`) → `ui/AGENTS.md` and the `ui-frontend` skill (or subagent)
+- write or change code in the UI (`ui/`) → `ui/AGENTS.md` and the `ui-frontend` skill (or subagent)
 - add or change a component pattern, folder layout, or data pattern in `ui/` → `ui/docs/patterns/` and the `ui-patterns` skill
-- fix something in the old UI (`old-ui/`) → `old-ui/AGENTS.md` and the `old-ui-frontend` skill (or subagent)
 - write or change any backend code → `#backend-express`
 - add or change an API endpoint → `#backend-express` (routes, `ROUTE_PERMISSIONS`, and the controller shape)
 - touch login, JWT, the bearer header, or Neon Auth → `#auth-flow`
@@ -31,7 +30,7 @@ If your work involves the task below, read the corresponding document/section fi
 
 ---
 
-> This file is the single source of shared instructions for **all** agentic coding assistants (Claude Code, Codex, OpenCode, Cursor, Copilot, and others). `CLAUDE.md` is a symlink to `AGENTS.md`; edit `AGENTS.md` only. Each UI has its own nested `AGENTS.md` (with a `CLAUDE.md` symlink) that tools load for files under that folder: `ui/AGENTS.md` and `old-ui/AGENTS.md`. Skills, docs, and agent personas live under `.claude/` and are exposed to every tool: `.agents/skills` is a symlink to `.claude/skills` (Codex, Cursor, OpenCode read it), and `.opencode/agent/` and `.cursor/agents/` hold OpenCode's and Cursor's pointers to the subagents. Copilot reads `.github/copilot-instructions.md` plus the path-specific files in `.github/instructions/`. Keep `.claude/settings.local.json` out of git.
+> This file is the single source of shared instructions for **all** agentic coding assistants (Claude Code, Codex, OpenCode, Cursor, Copilot, and others). `CLAUDE.md` is a symlink to `AGENTS.md`; edit `AGENTS.md` only. `ui/` has its own nested `AGENTS.md` (with a `CLAUDE.md` symlink) that tools load for files under that folder. Skills, docs, and agent personas live under `.claude/` and are exposed to every tool: `.agents/skills` is a symlink to `.claude/skills` (Codex, Cursor, OpenCode read it), and `.opencode/agent/` and `.cursor/agents/` hold OpenCode's and Cursor's pointers to the subagents. Copilot reads `.github/copilot-instructions.md` plus the path-specific files in `.github/instructions/`. Keep `.claude/settings.local.json` out of git.
 
 # praise-room
 
@@ -42,7 +41,6 @@ A worship app built as a passion project by churchgoers in Hong Kong: a song lib
 Independent packages in one repo, no workspaces wiring:
 
 - `ui/` — **the production UI, still being rebuilt**: React 19 with the React Compiler, TypeScript 7, Vite 8, Tailwind v4 + shadcn/ui, TanStack Router/Query/Form/Table, pnpm. Old routes it doesn't have yet (public setlist links, password reset, sign-up, song and setlist editing, profile) show not-found until rebuilt. Rules in `ui/AGENTS.md`.
-- `old-ui/` — the previous UI, no longer deployed: React 18 TypeScript SPA on Vite 8, MUI v5, Redux Toolkit, react-router-dom v6, pnpm. Kept as the reference for screens not yet rebuilt; frozen. Rules in `old-ui/AGENTS.md`.
 - `server/` — Express 4 + Drizzle ORM on Postgres (Neon) in **TypeScript 7**, run with `tsx`, pnpm
 - Root `package.json` — Husky, lint-staged, commitlint, and oxlint and oxfmt for the root files, pnpm
 
@@ -63,12 +61,11 @@ Tracking is GitHub Issues on `Midnite1212/PraiseRoom`; issue numbers below #2 in
 
 ```bash
 # Install (separate installs, no workspaces); the root install also enables the husky hooks
-pnpm install && (cd server && pnpm install) && (cd ui && pnpm install) && (cd old-ui && pnpm install)
+pnpm install && (cd server && pnpm install) && (cd ui && pnpm install)
 
-# Run locally (two terminals): the server, plus whichever UI you are working on (both use :3000)
+# Run locally (two terminals): the server and the UI (:3000)
 cd server && pnpm dev           # Express on :1338 via tsx watch
-cd ui && pnpm dev               # new UI; see ui/AGENTS.md for its other scripts
-cd old-ui && pnpm dev           # old UI; see old-ui/AGENTS.md
+cd ui && pnpm dev               # UI; see ui/AGENTS.md for its other scripts
 
 # Server (in server/)
 pnpm typecheck                  # tsc --noEmit; 0 errors required (noUnusedLocals and noUnusedParameters are on)
@@ -78,7 +75,7 @@ pnpm db:generate                # drizzle-kit generate: new SQL migration in ser
 pnpm db:migrate                 # drizzle-kit migrate: apply pending migrations to DATABASE_URL
 pnpm import:songs --file <songs.json> [--apply]  # one-off MongoDB songs import; see #cutover-from-mongodb-songs-only
 
-# Lint and format: each package (root, server/, old-ui/, ui/) runs its own oxlint and oxfmt with its own config
+# Lint and format: each package (root, server/, ui/) runs its own oxlint and oxfmt with its own config
 pnpm lint                       # oxlint --deny-warnings (ui/ and server/ add --type-aware); 0 problems required
 pnpm format                     # oxfmt in place; `pnpm format:check` is what CI runs. From the root it formats every package with its own config
 
@@ -91,7 +88,6 @@ Every package has an `.oxfmtrc.json` (2-space, single quotes, semicolons, `print
 ## Technology Stack
 
 - **New UI** (`ui/`): see `ui/AGENTS.md`.
-- **Old UI** (`old-ui/`): see `old-ui/AGENTS.md`.
 - **Server**: TypeScript 7 (`tsc` type-checks, `tsx` runs it and the tests), Express 4, Drizzle ORM (`drizzle-orm`, `drizzle-kit`) over node-postgres (`pg`) on Neon Postgres, `jose` (JWKS verification)
 
 Majors only. Each folder's `package.json` is the source of truth for exact versions; check it before relying on an API.
@@ -191,7 +187,7 @@ Then set the Vercel `DATABASE_URL` to Neon's pooled `-pooler` URL and redeploy.
 
 - Users, sessions, and sign-in live in Neon Auth (Managed Better Auth) in this app's own Neon project. This repo has no dependency on an outside site for auth; there is no `/external-api` proxy and no `MAIN_URL`.
 - This server verifies Neon Auth's EdDSA JWTs against its JWKS (`jose`, `src/utils/verify-jwt.ts`) instead of a shared `JWT_KEY`, and reads **`Authorization: Bearer <token>`**. `req.user` (`AuthenticatedRequest`) holds the decoded `{ id, emailAddress, name }` plus `accessType` loaded from `ownerships.access_type` by the token's `sub` (Neon Auth tokens carry no custom claims). Trust `req.user` for identity; never trust a `userId` or `accessType` sent in the request body.
-- The server proxies every `/api/auth/*` request to `NEON_AUTH_BASE_URL` (`server/src/auth/neonAuth.routes.ts`: Neon cookies only, `set-auth-jwt` passed through, cookies rewritten to first-party) and finishes Google OAuth at `GET /api/auth-callback?next=<path>`. Both UIs talk to this proxy on their own origin and read the API JWT from the `set-auth-jwt` header of `get-session`; neither uses the Neon Auth SDK. Each UI's client is described in its `AGENTS.md`.
+- The server proxies every `/api/auth/*` request to `NEON_AUTH_BASE_URL` (`server/src/auth/neonAuth.routes.ts`: Neon cookies only, `set-auth-jwt` passed through, cookies rewritten to first-party) and finishes Google OAuth at `GET /api/auth-callback?next=<path>`. The UI talks to this proxy on its own origin and reads the API JWT from the `set-auth-jwt` header of `get-session`; it does not use the Neon Auth SDK. The client is described in `ui/AGENTS.md`.
 
 ## Data Handling
 
@@ -208,15 +204,15 @@ Neon Auth owns user accounts (name, email, password); this repo's own data carri
 
 - `server/.env` (loaded by `dotenv` in `app.ts`): `PORT`, `BASE_URL`, `NEON_AUTH_BASE_URL` (the Neon Auth base URL), `DATABASE_URL` (Postgres connection string; Neon's pooled `-pooler` URL with `sslmode=require` works), optional `DATABASE_POOL_MAX` (connections per function instance, default 3). Without `NEON_AUTH_BASE_URL`, `/api/auth/*` returns 503 `'Sign-in is not configured'` and the server can't verify bearer tokens.
 - `DATABASE_URL_TEST` (shell only, never in `.env`): a disposable Postgres database for `pnpm test`; the integration suite migrates it and truncates every table, so it refuses to run unless the database name contains `test` and differs from `DATABASE_URL`, and is skipped when unset (CI runs without it).
-- `ui/.env` and `old-ui/.env`: none required today. Both auth clients talk to `${window.location.origin}/api/auth`, so there is no `VITE_*` var to configure.
+- `ui/.env`: none required today. The auth client talks to `${window.location.origin}/api/auth`, so there is no `VITE_*` var to configure.
 - `NODE_ENV=test` means "local development" in this repo: it disables static serving of `server/client/` when `app.ts` runs directly. The `dev` script sets it through `cross-env`.
 - Vercel project (all environments): `NEON_AUTH_BASE_URL`, `BASE_URL` (the public origin `publicLink` is built from), `DATABASE_URL` (the Neon pooled `-pooler` connection string with `sslmode=require`) for the `server` service at runtime. The `ui` service needs no build-time env vars. The Neon integration may also add `VITE_NEON_AUTH_URL`; nothing reads it, because the UI reaches Neon Auth through `/api/auth`. `PORT` is not used on Vercel.
 
 ## CI / Deploy (`.github/workflows/`)
 
-- Hosting is one Vercel project in [services](https://vercel.com/docs/services) mode, configured by the root `vercel.json`: `server` (`server/`, Express preset, one Vercel Function from `app.ts`) and `ui` (`ui/`, Vite preset, installed with pnpm from `ui/pnpm-lock.yaml`, static `dist/`, with a service-level rewrite to `/index.html` for client routes, since the Vite preset has no SPA fallback). `old-ui/` is not deployed. Top-level rewrites send `/api/*` to `server` and everything else to `ui`; each service receives the original path, and routing into a service is final. Each service installs with its own lockfile. Vercel deploys from the connected Git repo, and `git.deploymentEnabled` limits automatic deployments to `main`, so PRs get no preview; there is no deploy workflow.
+- Hosting is one Vercel project in [services](https://vercel.com/docs/services) mode, configured by the root `vercel.json`: `server` (`server/`, Express preset, one Vercel Function from `app.ts`) and `ui` (`ui/`, Vite preset, installed with pnpm from `ui/pnpm-lock.yaml`, static `dist/`, with a service-level rewrite to `/index.html` for client routes, since the Vite preset has no SPA fallback). Top-level rewrites send `/api/*` to `server` and everything else to `ui`; each service receives the original path, and routing into a service is final. Each service installs with its own lockfile. Vercel deploys from the connected Git repo, and `git.deploymentEnabled` limits automatic deployments to `main`, so PRs get no preview; there is no deploy workflow.
 - Node 24 everywhere: `engines.node` (`24.x`) in each `package.json` sets the Vercel build and function runtime, and `.nvmrc` and CI match it.
-- `pr-check.yml` runs on PRs to `main`: root lint, old UI typecheck and tests, new UI checks (pnpm install, typecheck, oxlint, oxfmt check, tests, build), and server typecheck and tests (Node 24). Keep them green.
+- `pr-check.yml` runs on PRs to `main`: root lint, UI checks (pnpm install, typecheck, oxlint, oxfmt check, tests, build), and server typecheck and tests (Node 24). Keep them green.
 - `.github/copilot-instructions.md` and `.github/instructions/*.instructions.md` are Copilot's short summaries; the `AGENTS.md` files are the source of truth when they differ.
 
 ## PR and Commit References
@@ -237,11 +233,11 @@ Read `.claude/docs/commit-convention.md` and `.claude/docs/pr-description.md` be
 ## Tooling
 
 - `gh` CLI for issues and PRs: `gh issue view <n> -R Midnite1212/PraiseRoom --comments`, `gh pr view --json baseRefName`, `gh pr create -R Midnite1212/PraiseRoom --base main` (without `-R`, `gh` can resolve to the repo this one was forked from).
-- Skills in `.claude/skills/` (also reachable as `.agents/skills/`): `ui-frontend`, `ui-patterns`, `old-ui-frontend`, `code-review`, `deep-review`, `gh-execute`, plus the `gitnexus-*` set (regenerated by `gitnexus analyze`; do not hand-edit). Every tool that supports `SKILL.md` finds them there.
+- Skills in `.claude/skills/` (also reachable as `.agents/skills/`): `ui-frontend`, `ui-patterns`, `code-review`, `deep-review`, `gh-execute`, plus the `gitnexus-*` set (regenerated by `gitnexus analyze`; do not hand-edit). Every tool that supports `SKILL.md` finds them there.
 - GitNexus is expected in this repo (see `#gitnexus-setup` and the block at the end of this file). The committed parts are the skills and that block; the index itself is per-machine.
-- Agent personas in `.claude/agents/`: `ui-frontend.md` (new UI) and `old-ui-frontend.md` (old UI). Claude Code dispatches them as subagents, OpenCode via `.opencode/agent/`, Cursor via `.cursor/agents/`, and every other tool through the skill of the same name, which points at the same file. Edit the `.claude/agents/` files only; the others are pointers.
+- Agent personas in `.claude/agents/`: `ui-frontend.md` (UI). Claude Code dispatches it as subagents, OpenCode via `.opencode/agent/`, Cursor via `.cursor/agents/`, and every other tool through the skill of the same name, which points at the same file. Edit the `.claude/agents/` files only; the others are pointers.
 - Docs in `.claude/docs/`: `commit-convention.md`, `pr-description.md`. New-UI patterns in `ui/docs/patterns/`.
-- MCP servers for the new UI (shadcn registry, Context7 docs) are configured per tool: `.mcp.json` (Claude Code), `.cursor/mcp.json`, `.vscode/mcp.json` (Copilot in VS Code), `opencode.json`; Codex reads `~/.codex/config.toml`, so `ui/AGENTS.md` has the snippet. TanStack docs come from `@tanstack/cli` in `ui/` (`pnpm exec tanstack search-docs …`).
+- MCP servers for the UI (shadcn registry, Context7 docs) are configured per tool: `.mcp.json` (Claude Code), `.cursor/mcp.json`, `.vscode/mcp.json` (Copilot in VS Code), `opencode.json`; Codex reads `~/.codex/config.toml`, so `ui/AGENTS.md` has the snippet. TanStack docs come from `@tanstack/cli` in `ui/` (`pnpm exec tanstack search-docs …`).
 
 ## GitNexus Setup
 
