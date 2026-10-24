@@ -55,10 +55,10 @@ function PublicSetlistPage() {
             <Link
               to="/login"
               search={{ redirect: `/setlist/view/${setlistId}` }}
-              aria-label={t('login.submit')}
+              aria-label={t('auth.signIn.submit')}
             >
               <Login className="wide:hidden" />
-              <span className="wide:inline hidden">{t('login.submit')}</span>
+              <span className="wide:inline hidden">{t('auth.signIn.submit')}</span>
             </Link>
           )}
         </Button>

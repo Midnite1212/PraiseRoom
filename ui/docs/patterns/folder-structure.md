@@ -8,7 +8,8 @@ src/
     __root.tsx             root layout, not-found and error screens, dev-only devtools
     _app.tsx               signed-in layout: session guard + AppShell
     _app/<page>/index.tsx  signed-in pages
-    login.tsx              signed-out pages sit beside _app
+    login.tsx              signed-out pages (login, sign-up, forgot, check-email, reset) sit beside _app
+    _app/account/          account and change-password pages
   features/<feature>/      everything one feature owns: api.ts, components, schemas, hooks
   components/ui/           shadcn components (vendored; added with `pnpm exec shadcn add`), restyled to the design
   components/primitives/   design pieces any feature uses: segmented control, vinyl, date tile, menus, panels

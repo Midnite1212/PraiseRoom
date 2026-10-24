@@ -37,7 +37,8 @@
       "member": "成員",
       "editor": "編輯",
       "admin": "管理員"
-    }
+    },
+    "account": "帳戶"
   },
   "home": {
     "greeting": "歡迎，{{name}}",
@@ -54,20 +55,15 @@
     "recentlyAdded": "最近新增",
     "allSongs": "所有歌曲"
   },
-  "login": {
-    "title": "登入",
-    "description": "使用電郵及密碼，或以 Google 繼續。",
-    "email": "電郵",
-    "password": "密碼",
-    "submit": "登入",
-    "google": "以 Google 繼續",
-    "invalidCredentials": "電郵或密碼不正確。",
-    "verifyEmail": "請先驗證你的電郵，然後再登入。",
-    "failed": "未能登入，請再試一次。"
-  },
   "validation": {
     "emailInvalid": "請輸入有效的電郵地址。",
-    "passwordRequired": "請輸入密碼。"
+    "passwordRequired": "請輸入密碼。",
+    "nameRequired": "請輸入團隊認識你的名字。",
+    "emailRequired": "請輸入電郵地址。",
+    "newPasswordRequired": "請輸入密碼。",
+    "currentPasswordRequired": "請輸入目前的密碼。",
+    "passwordShort": "請至少使用 8 個字元。",
+    "passwordMismatch": "兩次輸入的密碼不一致。"
   },
   "songs": {
     "title": "歌曲",
@@ -767,5 +763,165 @@
     "empty": "沒有你可以編輯的未來或未定日期歌單。",
     "alreadyIn": "已在這個歌單",
     "close": "關閉"
+  },
+  "auth": {
+    "email": "電郵",
+    "password": "密碼",
+    "forgotIt": "忘記密碼？",
+    "typeItAgain": "再輸入一次",
+    "showPassword": "顯示密碼",
+    "hidePassword": "隱藏密碼",
+    "orWithEmail": "或使用電郵",
+    "backToSignIn": "返回登入",
+    "strength": {
+      "empty": "至少 8 個字元。一句簡短的句子就很好。",
+      "short_one": "還差 {{count}} 個字元",
+      "short_other": "還差 {{count}} 個字元",
+      "fair": "長度足夠，再長一點更安全。",
+      "good": "不錯",
+      "strong": "很強"
+    },
+    "google": {
+      "continue": "使用 Google 繼續",
+      "signUp": "使用 Google 註冊"
+    },
+    "art": {
+      "label": "第一節 · E",
+      "tagline": "為你的敬拜團隊準備詩歌、和弦與歌單，全部在同一處。"
+    },
+    "signIn": {
+      "title": "登入",
+      "description": "歡迎回來。你的詩歌和歌單都在原處。",
+      "submit": "登入",
+      "newHere": "第一次使用 Praise Room？",
+      "createAccount": "建立帳戶"
+    },
+    "signUp": {
+      "title": "建立你的帳戶",
+      "description": "儲存歌單、記住你的調，並與團隊分享。",
+      "name": "你的名字",
+      "submit": "建立帳戶",
+      "privacy": "隊友只會看到你的名字，看不到你的電郵。",
+      "haveAccount": "已經有帳戶？",
+      "signIn": "登入"
+    },
+    "forgot": {
+      "title": "重設密碼",
+      "description": "輸入你登入用的電郵，我們會寄出設定新密碼的連結。",
+      "submit": "寄出連結",
+      "remembered": "想起來了？",
+      "signIn": "登入"
+    },
+    "checkEmail": {
+      "title": "請查看你的電郵",
+      "resetBody": "如果 {{email}} 有帳戶，設定新密碼的連結正在寄來。請在此裝置上開啟。",
+      "verifyBody": "我們已寄出連結到 {{email}}。請開啟連結確認帳戶，然後登入。",
+      "sendAgain": "再寄一次",
+      "differentEmail": "使用其他電郵",
+      "sentAgain": "已再寄出連結",
+      "spam": "幾分鐘後仍未收到？請檢查垃圾郵件匣。"
+    },
+    "reset": {
+      "title": "設定新密碼",
+      "description": "你會在其他裝置上被登出。",
+      "newPassword": "新密碼",
+      "submit": "儲存密碼",
+      "saved": "密碼已儲存，請用新密碼登入。",
+      "expiredTitle": "此連結已失效",
+      "expiredBody": "重設連結只能使用一次，而且只在短時間內有效。請重新索取。",
+      "sendNew": "寄出新連結"
+    },
+    "errors": {
+      "invalidCredentials": "電郵或密碼不正確。",
+      "verifyEmail": "請先驗證電郵，然後再登入。",
+      "emailTaken": "這個電郵已有帳戶，請嘗試登入。",
+      "wrongPassword": "這不是你目前的密碼。",
+      "invalidToken": "此連結已失效，請重新索取。",
+      "tooMany": "嘗試次數過多，請稍後再試。",
+      "freshSession": "為了你的安全，請重新登入後再試。",
+      "lastLogin": "這是你唯一的登入方式，請先設定密碼。",
+      "failed": "發生錯誤，請再試一次。"
+    }
+  },
+  "account": {
+    "title": "帳戶",
+    "loadFailed": "無法載入，請重新整理頁面再試。",
+    "count": {
+      "folders_one": "{{count}} 個資料夾",
+      "folders_other": "{{count}} 個資料夾",
+      "setlists_one": "{{count}} 份歌單",
+      "setlists_other": "{{count}} 份歌單"
+    },
+    "hero": {
+      "counts": "{{folders}} · 已建立 {{setlists}}"
+    },
+    "profile": {
+      "title": "個人資料",
+      "name": "名字",
+      "nameHint": "資料夾裡的人會看到"
+    },
+    "email": {
+      "title": "電郵",
+      "hint": "用來登入，其他成員看不到。",
+      "change": "更改",
+      "changeTitle": "更改電郵",
+      "changeDescription": "我們會寄出連結到新地址，開啟後電郵才會更改。",
+      "newEmail": "新電郵",
+      "send": "寄出連結",
+      "sent": "連結已寄到 {{email}}"
+    },
+    "methods": {
+      "title": "登入方式",
+      "password": "密碼",
+      "passwordChanged": "於 {{date}} 更改",
+      "passwordNotSet": "未設定",
+      "change": "更改",
+      "notConnected": "未連結",
+      "connect": "連結",
+      "disconnect": "解除連結",
+      "googleDisconnected": "已解除 Google 連結",
+      "connectFailed": "無法連結 Google，請再試一次。",
+      "disconnectFailed": "無法解除 Google 連結，請再試一次。"
+    },
+    "sessions": {
+      "title": "已登入的裝置",
+      "thisDevice": "此裝置",
+      "active": "{{when}}使用過",
+      "justNow": "剛剛",
+      "unknownDevice": "未知裝置",
+      "signOutOf": "登出 {{device}}",
+      "signedOutOf": "已登出 {{device}}",
+      "signOutOthers": "登出其他 {{count}} 部裝置",
+      "signedOutOthers": "已登出其他裝置",
+      "signOutFailed": "無法登出該裝置，請再試一次。"
+    },
+    "access": {
+      "title": "你可以做什麼",
+      "member": "瀏覽詩歌，並建立歌單和資料夾。管理員可以讓你編輯詩歌。",
+      "editor": "新增和編輯詩歌，並建立歌單和資料夾。只有管理員可以更改你的角色。",
+      "admin": "編輯者能做的一切，另可管理任何歌單或資料夾。"
+    },
+    "delete": {
+      "title": "刪除帳戶",
+      "description": "會刪除你建立的 {{setlists}}和 {{folders}}。你新增的詩歌會保留在詩庫中。",
+      "descriptionGeneric": "會刪除你建立的歌單和資料夾。你新增的詩歌會保留在詩庫中。",
+      "action": "刪除",
+      "confirmTitle": "要刪除你的帳戶嗎？",
+      "confirmDescription": "你會在所有裝置上被登出。你建立的歌單和資料夾會為所有人刪除；你新增的詩歌會保留在詩庫中。此操作無法復原。",
+      "done": "已刪除你的帳戶",
+      "failed": "無法刪除你的帳戶，請再試一次。"
+    },
+    "password": {
+      "title": "更改密碼",
+      "description": "至少 8 個字元。一句簡短的句子容易記住，也難以猜到。",
+      "current": "目前的密碼",
+      "new": "新密碼",
+      "signOutOthers": "登出我的其他裝置",
+      "otherDevices_one": "另外 {{count}} 部裝置",
+      "otherDevices_other": "另外 {{count}} 部裝置",
+      "submit": "更改密碼",
+      "changed": "密碼已更改",
+      "changedOthers": "密碼已更改，其他裝置已登出。"
+    }
   }
 }

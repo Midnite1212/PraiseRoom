@@ -37,7 +37,8 @@
       "member": "Member",
       "editor": "Editor",
       "admin": "Admin"
-    }
+    },
+    "account": "Account"
   },
   "home": {
     "greeting": "Welcome, {{name}}",
@@ -54,20 +55,15 @@
     "recentlyAdded": "Recently added",
     "allSongs": "All songs"
   },
-  "login": {
-    "title": "Sign in",
-    "description": "Use your email and password, or continue with Google.",
-    "email": "Email",
-    "password": "Password",
-    "submit": "Sign in",
-    "google": "Continue with Google",
-    "invalidCredentials": "Incorrect email or password.",
-    "verifyEmail": "Please verify your email first, then sign in.",
-    "failed": "Could not sign in. Please try again."
-  },
   "validation": {
     "emailInvalid": "Enter a valid email address.",
-    "passwordRequired": "Enter your password."
+    "passwordRequired": "Enter your password.",
+    "nameRequired": "Add the name your team knows you by.",
+    "emailRequired": "Enter your email.",
+    "newPasswordRequired": "Enter a password.",
+    "currentPasswordRequired": "Enter your current password.",
+    "passwordShort": "Use at least 8 characters.",
+    "passwordMismatch": "The two passwords don’t match."
   },
   "songs": {
     "title": "Songs",
@@ -767,5 +763,165 @@
     "empty": "No upcoming or undated setlists you can edit.",
     "alreadyIn": "Already in this set",
     "close": "Close"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "forgotIt": "Forgot it?",
+    "typeItAgain": "Type it again",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "orWithEmail": "or with email",
+    "backToSignIn": "Back to sign in",
+    "strength": {
+      "empty": "At least 8 characters. A short sentence works well.",
+      "short_one": "{{count}} more character",
+      "short_other": "{{count}} more characters",
+      "fair": "Long enough. Longer is stronger.",
+      "good": "Good",
+      "strong": "Strong"
+    },
+    "google": {
+      "continue": "Continue with Google",
+      "signUp": "Sign up with Google"
+    },
+    "art": {
+      "label": "Verse 1 · E",
+      "tagline": "Songs, chords and setlists for your worship team, in one place."
+    },
+    "signIn": {
+      "title": "Sign in",
+      "description": "Welcome back. Your songs and setlists are where you left them.",
+      "submit": "Sign in",
+      "newHere": "New to Praise Room?",
+      "createAccount": "Create an account"
+    },
+    "signUp": {
+      "title": "Create your account",
+      "description": "Save setlists, keep your keys and share them with your team.",
+      "name": "Your name",
+      "submit": "Create account",
+      "privacy": "Your teammates see your name, never your email.",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign in"
+    },
+    "forgot": {
+      "title": "Reset your password",
+      "description": "Enter the email you sign in with and we’ll send you a link to set a new password.",
+      "submit": "Send link",
+      "remembered": "Remembered it?",
+      "signIn": "Sign in"
+    },
+    "checkEmail": {
+      "title": "Check your email",
+      "resetBody": "If {{email}} has an account, a link to set a new password is on its way. Open it on this device.",
+      "verifyBody": "We sent a link to {{email}}. Open it to confirm your account, then sign in.",
+      "sendAgain": "Send it again",
+      "differentEmail": "Use a different email",
+      "sentAgain": "Sent another link",
+      "spam": "Nothing after a few minutes? Check your spam folder."
+    },
+    "reset": {
+      "title": "Set a new password",
+      "description": "You’ll be signed out everywhere else.",
+      "newPassword": "New password",
+      "submit": "Save password",
+      "saved": "Password saved. Sign in with it.",
+      "expiredTitle": "This link has expired",
+      "expiredBody": "Reset links work once and only for a short time. Ask for a new one.",
+      "sendNew": "Send a new link"
+    },
+    "errors": {
+      "invalidCredentials": "Incorrect email or password.",
+      "verifyEmail": "Please verify your email first, then sign in.",
+      "emailTaken": "There is already an account with that email. Try signing in.",
+      "wrongPassword": "That isn’t your current password.",
+      "invalidToken": "This link has expired. Ask for a new one.",
+      "tooMany": "Too many tries. Wait a moment and try again.",
+      "freshSession": "For your security, sign in again and retry.",
+      "lastLogin": "This is your only way to sign in. Set a password first.",
+      "failed": "Something went wrong. Please try again."
+    }
+  },
+  "account": {
+    "title": "Account",
+    "loadFailed": "Couldn’t load this. Reload the page to try again.",
+    "count": {
+      "folders_one": "{{count}} folder",
+      "folders_other": "{{count}} folders",
+      "setlists_one": "{{count}} setlist",
+      "setlists_other": "{{count}} setlists"
+    },
+    "hero": {
+      "counts": "{{folders}} · {{setlists}} made"
+    },
+    "profile": {
+      "title": "Profile",
+      "name": "Name",
+      "nameHint": "Shown to people in your folders"
+    },
+    "email": {
+      "title": "Email",
+      "hint": "You sign in with it. Other members never see it.",
+      "change": "Change",
+      "changeTitle": "Change your email",
+      "changeDescription": "We’ll send a link to the new address. Your email changes once you open it.",
+      "newEmail": "New email",
+      "send": "Send link",
+      "sent": "Link sent to {{email}}"
+    },
+    "methods": {
+      "title": "Ways to sign in",
+      "password": "Password",
+      "passwordChanged": "Changed {{date}}",
+      "passwordNotSet": "Not set",
+      "change": "Change",
+      "notConnected": "Not connected",
+      "connect": "Connect",
+      "disconnect": "Disconnect",
+      "googleDisconnected": "Google disconnected",
+      "connectFailed": "Couldn’t connect Google. Please try again.",
+      "disconnectFailed": "Couldn’t disconnect Google. Please try again."
+    },
+    "sessions": {
+      "title": "Signed in on",
+      "thisDevice": "This device",
+      "active": "Active {{when}}",
+      "justNow": "just now",
+      "unknownDevice": "Unknown device",
+      "signOutOf": "Sign out of {{device}}",
+      "signedOutOf": "Signed out of {{device}}",
+      "signOutOthers": "Sign out of the other {{count}}",
+      "signedOutOthers": "Signed out of your other devices",
+      "signOutFailed": "Couldn’t sign out that device. Please try again."
+    },
+    "access": {
+      "title": "What you can do",
+      "member": "Browse songs, and make setlists and folders. An admin can give you song editing.",
+      "editor": "Add and edit songs, and make setlists and folders. Only an admin can change your role.",
+      "admin": "Everything an editor can do, plus manage any setlist or folder."
+    },
+    "delete": {
+      "title": "Delete account",
+      "description": "Deletes the {{setlists}} and {{folders}} you made. Songs you added stay in the library.",
+      "descriptionGeneric": "Deletes the setlists and folders you made. Songs you added stay in the library.",
+      "action": "Delete",
+      "confirmTitle": "Delete your account?",
+      "confirmDescription": "You’ll be signed out everywhere. Setlists and folders you made are deleted for everyone; songs you added stay in the library. This can’t be undone.",
+      "done": "Deleted your account",
+      "failed": "Couldn’t delete your account. Please try again."
+    },
+    "password": {
+      "title": "Change password",
+      "description": "At least 8 characters. A short sentence is easy to remember and hard to guess.",
+      "current": "Current password",
+      "new": "New password",
+      "signOutOthers": "Sign out on my other devices",
+      "otherDevices_one": "{{count}} other device",
+      "otherDevices_other": "{{count}} other devices",
+      "submit": "Change password",
+      "changed": "Password changed",
+      "changedOthers": "Password changed. Other devices signed out."
+    }
   }
 }

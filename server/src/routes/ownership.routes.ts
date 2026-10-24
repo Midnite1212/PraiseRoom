@@ -1,5 +1,6 @@
 import {
   createOwnership,
+  deleteAccountData,
   deleteOwnership,
   getOwnership,
   updateOwnership,
@@ -12,5 +13,6 @@ router.post('/api/ownerships/create', createOwnership);
 router.get('/api/ownerships/get', getOwnership);
 router.put('/api/ownerships/update', updateOwnership);
 router.put('/api/ownerships/delete', deleteOwnership);
+router.put('/api/ownerships/delete-account', deleteAccountData);
 
 export default router.getRouter();

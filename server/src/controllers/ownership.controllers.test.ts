@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { afterEach, beforeEach, describe, it, mock } from 'node:test';
 
+import { InvalidInputError } from '../db/cast';
 import { ownershipRepository } from '../db/repositories/ownership.repository';
 import { setlistRepository } from '../db/repositories/setlist.repository';
 import { FakeRequestInit, callHandler, createRequest, createResponse } from '../testing/http';
@@ -9,6 +10,7 @@ import { SetlistAccess } from '../types/setlist.types';
 import { TokenUser } from '../utils/verify-jwt';
 import {
   createOwnership,
+  deleteAccountData,
   deleteOwnership,
   getOwnership,
   updateOwnership,
@@ -149,7 +151,7 @@ describe('ownership controllers', () => {
         { id: OWNERSHIP_ID, setlistIds: [] },
         { _id: OWNERSHIP_ID },
         { _id: OWNERSHIP_ID, groupIds: [] },
-        { _id: OWNERSHIP_ID, fullName: 'Name', userId: USER_ID },
+        { _id: OWNERSHIP_ID, userId: USER_ID, accessType: 'admin' },
       ]) {
         const res = await call(updateOwnership, { body, user: USER });
         assert.equal(res.statusCode, 400, JSON.stringify(body));
@@ -270,6 +272,104 @@ describe('ownership controllers', () => {
       });
       assert.equal(res.statusCode, 404);
       assert.equal(res.body, 'Ownership not found');
+    });
+  });
+
+  describe('updateOwnership name', () => {
+    const record = (fullName: string): OwnershipRecord => ({
+      _id: OWNERSHIP_ID,
+      accessType: 'member',
+      createdAt: STORED_AT,
+      fullName,
+      groupIds: [],
+      isDeleted: false,
+      setlistIds: [],
+      updatedAt: STORED_AT,
+      userId: USER_ID,
+    });
+
+    it('renames the caller record without touching setlists', async () => {
+      mock.method(ownershipRepository, 'findLiveById', async () => record('Name'));
+      const replace = mock.method(ownershipRepository, 'replaceSetlistEntries', async () => null);
+      const rename = mock.method(ownershipRepository, 'rename', async () => record('New'));
+      const res = await call(updateOwnership, {
+        body: { _id: OWNERSHIP_ID, fullName: 'New', userId: OTHER_USER_ID },
+        user: USER,
+      });
+      assert.deepEqual(rename.mock.calls[0]?.arguments, [OWNERSHIP_ID, USER_ID, 'New']);
+      assert.equal(replace.mock.callCount(), 0);
+      assert.equal(res.statusCode, 200);
+    });
+
+    it('forbids renaming the record of another user', async () => {
+      mock.method(ownershipRepository, 'findLiveById', async () => ({
+        ...record('Name'),
+        userId: OTHER_USER_ID,
+      }));
+      const rename = mock.method(ownershipRepository, 'rename', async () => null);
+      const res = await call(updateOwnership, {
+        body: { _id: OWNERSHIP_ID, fullName: 'New' },
+        user: USER,
+      });
+      assert.equal(res.statusCode, 403);
+      assert.equal(rename.mock.callCount(), 0);
+    });
+
+    it('returns 404 when the record disappears before the rename', async () => {
+      mock.method(ownershipRepository, 'findLiveById', async () => record('Name'));
+      mock.method(ownershipRepository, 'rename', async () => null);
+      const res = await call(updateOwnership, {
+        body: { _id: OWNERSHIP_ID, fullName: 'New' },
+        user: USER,
+      });
+      assert.equal(res.statusCode, 404);
+    });
+
+    it('answers a name the repository rejects with 400', async () => {
+      mock.method(ownershipRepository, 'findLiveById', async () => record('Name'));
+      mock.method(ownershipRepository, 'rename', async () => {
+        throw new InvalidInputError('fullName');
+      });
+      const res = await call(updateOwnership, {
+        body: { _id: OWNERSHIP_ID, fullName: '  ' },
+        user: USER,
+      });
+      assert.equal(res.statusCode, 400);
+    });
+  });
+
+  describe('deleteAccountData', () => {
+    it('rejects a request without req.user', async () => {
+      const remove = mock.method(ownershipRepository, 'deleteAccountData', async () => ({
+        folders: 0,
+        setlists: 0,
+      }));
+      const res = await call(deleteAccountData, { body: { userId: USER_ID } });
+      assert.equal(res.statusCode, 401);
+      assert.equal(remove.mock.callCount(), 0);
+    });
+
+    it('deletes the data of the caller from req.user, ignoring any id in the request', async () => {
+      const remove = mock.method(ownershipRepository, 'deleteAccountData', async () => ({
+        folders: 1,
+        setlists: 2,
+      }));
+      const res = await call(deleteAccountData, {
+        body: { userId: OTHER_USER_ID },
+        query: { userId: OTHER_USER_ID },
+        user: USER,
+      });
+      assert.deepEqual(remove.mock.calls[0]?.arguments, [USER_ID]);
+      assert.equal(res.statusCode, 200);
+      assert.deepEqual(res.body, { folders: 1, setlists: 2 });
+    });
+
+    it('reports a failure as a generic 500', async () => {
+      mock.method(ownershipRepository, 'deleteAccountData', async () => {
+        throw new Error('boom');
+      });
+      const res = await call(deleteAccountData, { user: USER });
+      assert.equal(res.statusCode, 500);
     });
   });
 

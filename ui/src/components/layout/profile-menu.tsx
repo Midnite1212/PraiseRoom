@@ -33,7 +33,7 @@ export function ProfileMenu({ session, trigger }: { session: Session; trigger: R
       showCloseButton={false}
       header={
         <MenuRow asChild className="min-h-0 gap-3.5 rounded-2xl py-2 pr-2.5 pl-2">
-          <Link to="/settings">
+          <Link to="/account">
             <Vinyl initial={toInitials(session.fullName)} size="lg" spinning />
             <span className="min-w-0 flex-1">
               <b className="block truncate text-base">{session.fullName}</b>
