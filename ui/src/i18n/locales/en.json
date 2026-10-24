@@ -19,7 +19,8 @@
     "light": "Light",
     "dark": "Dark",
     "matchDevice": "Match this device",
-    "system": "System"
+    "system": "System",
+    "auto": "Auto"
   },
   "language": {
     "label": "Language"
@@ -655,13 +656,31 @@
   },
   "settings": {
     "title": "Settings",
-    "language": {
-      "description": "Used across the app on this device."
+    "songs": {
+      "title": "Songs",
+      "description": "How lyrics and chords look whenever you open a song."
+    },
+    "playing": {
+      "title": "Playing",
+      "description": "While a song is open on your phone or tablet."
+    },
+    "look": {
+      "title": "Look and language",
+      "description": "For the whole app."
+    },
+    "textSize": {
+      "title": "Lyrics size",
+      "hint": "{{size}}. The Aa button in a song changes this too.",
+      "options": {
+        "sm": "Small",
+        "md": "Medium",
+        "lg": "Large",
+        "xl": "Extra large",
+        "2xl": "Largest"
+      }
     },
     "font": {
       "title": "Font",
-      "description": "Used across the app on this device.",
-      "sample": "Aa 讚美祢",
       "options": {
         "plex": "IBM Plex",
         "geist": "Geist",
@@ -671,21 +690,30 @@
         "system": "System"
       }
     },
-    "textSize": {
-      "title": "Lyrics size",
-      "description": "Used when reading songs on this device.",
-      "preview": "Sing to the Lord a new song",
-      "options": {
-        "sm": "Small",
-        "md": "Medium",
-        "lg": "Large",
-        "xl": "Extra large",
-        "2xl": "Largest"
-      }
+    "notation": {
+      "numbers": "Numbers work in every key",
+      "letters": "Letters in the song’s key"
+    },
+    "chordStyle": {
+      "full": "Sevenths, sus and slash bass",
+      "simple": "Plain chords only"
+    },
+    "accidentals": {
+      "auto": "Whatever the key uses",
+      "sharp": "Always sharps",
+      "flat": "Always flats"
+    },
+    "colourChords": {
+      "hint": "1, 4, 5 and minors differ"
+    },
+    "scrollSpeed": {
+      "hint": "Starts when you press play"
+    },
+    "keepAwake": {
+      "hint": "Stays on while a song is open"
     },
     "accent": {
-      "title": "Accent colour",
-      "description": "Black and white with one colour, on this device.",
+      "title": "Accent",
       "options": {
         "electric": "Electric blue",
         "violet": "Ultraviolet",
@@ -695,15 +723,24 @@
     },
     "glass": {
       "title": "Glass",
-      "description": "Refraction bends the background at glass edges. Chrome, Edge and Brave only.",
+      "hint": "Refraction bends the background at glass edges. Chrome, Edge and Brave only.",
       "options": {
         "frosted": "Frosted",
         "refract": "Refraction"
       }
     },
-    "description": "How the app looks and reads on this device.",
-    "theme": {
-      "description": "Dark suits dim rooms and stages."
+    "foot": "Saved on this device, so your phone and laptop can be set up differently.",
+    "preview": {
+      "label": "Preview",
+      "aria": "Preview of a song with these settings",
+      "note": "Changes apply as you make them.",
+      "title": "Sing to the Lord",
+      "subtitle": "Psalm 96",
+      "numbersKey": "1 = {{key}}",
+      "full": "full chords",
+      "simple": "simple chords",
+      "coloured": "coloured",
+      "chart": "{Verse 1}\n[E]Sing to the [A]Lord a [B7]new [C#m]song;\n[E]sing to the [B]Lord, all the [E]earth."
     }
   },
   "filters": {
