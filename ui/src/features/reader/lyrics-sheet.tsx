@@ -24,6 +24,7 @@ import {
   LYRICS_COLUMN_CLASSES,
   type LyricsColumns,
 } from './lyrics-columns';
+import { groupWordUnits } from './word-units';
 
 type LyricsSheetProps = {
   chordLyrics: string;
@@ -100,19 +101,23 @@ export function LyricLine({
   }
   return (
     <p className={cn('flex flex-wrap items-end', centered && 'justify-center')}>
-      {line.segments.map(({ id, chord, lyric }) => (
-        <span key={id} className="inline-flex max-w-full min-w-0 flex-col">
-          <span
-            className={cn(
-              'min-h-[1.3em] pr-[0.45em] font-mono leading-[1.3] font-semibold',
-              chord && colourKey
-                ? CHORD_CLASS_COLOURS[classifyChord(chord, colourKey)]
-                : 'text-chord'
-            )}
-          >
-            {chord ? renderChord(chord) : null}
-          </span>
-          <span className="break-words whitespace-pre-wrap">{lyric === '' ? ' ' : lyric}</span>
+      {groupWordUnits(line.segments).map((unit) => (
+        <span key={unit.id} className="inline-flex max-w-full min-w-0">
+          {unit.pieces.map(({ id, chord, text }) => (
+            <span key={id} className="inline-flex max-w-full min-w-0 flex-col">
+              <span
+                className={cn(
+                  'min-h-[1.3em] pr-[0.45em] font-mono leading-[1.3] font-semibold',
+                  chord && colourKey
+                    ? CHORD_CLASS_COLOURS[classifyChord(chord, colourKey)]
+                    : 'text-chord'
+                )}
+              >
+                {chord ? renderChord(chord) : null}
+              </span>
+              <span className="break-words whitespace-pre-wrap">{text === '' ? ' ' : text}</span>
+            </span>
+          ))}
         </span>
       ))}
     </p>
@@ -157,7 +162,7 @@ export function LyricsSheet({
           )}
         >
           {section.label ? (
-            <h3 className="text-label mb-[0.55em] flex items-center gap-2 font-sans text-xs leading-none font-bold tracking-[0.12em] uppercase before:size-1.5 before:bg-current">
+            <h3 className="text-label bg-fill-hover before:bg-brand mb-[0.7em] flex w-fit items-center gap-2 rounded-md px-2 py-1.5 font-mono text-xs leading-none font-bold tracking-[0.12em] uppercase before:size-1.5">
               {section.label}
             </h3>
           ) : null}

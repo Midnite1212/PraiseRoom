@@ -43,7 +43,7 @@ export function AutoScrollButton({
   return (
     <Button
       variant="glass"
-      size={placement === 'top' ? 'icon-lg' : 'default'}
+      size={placement === 'top' ? 'icon-lg' : 'dock'}
       aria-label={label}
       title={label}
       aria-pressed={auto.running}
@@ -51,7 +51,6 @@ export function AutoScrollButton({
       onClick={auto.toggle}
       className={cn(
         'aria-pressed:[--glass-fill:color-mix(in_oklch,var(--chord)_28%,var(--glass-tint))]',
-        placement === 'dock' && 'h-14 w-[52px] px-0',
         className
       )}
     >

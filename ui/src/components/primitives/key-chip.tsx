@@ -31,13 +31,13 @@ export function KeyTile({
   return (
     <span
       className={cn(
-        'bg-fill-hover grid size-11 flex-none place-content-center rounded-xl text-center leading-none',
+        'bg-fill-hover grid h-12 w-11 flex-none content-center justify-items-center gap-[3px] rounded-xl text-center leading-none',
         className
       )}
     >
       <b className="font-mono text-base font-bold">{musicKey}</b>
       {timeSignature ? (
-        <small className="text-ink-3 mt-1 font-mono text-[0.6875rem] font-semibold">
+        <small className="text-ink-3 font-mono text-[0.6875rem] font-semibold">
           {timeSignature}
         </small>
       ) : null}

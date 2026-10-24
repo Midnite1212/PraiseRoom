@@ -528,14 +528,15 @@ describe('setlist controllers', () => {
       assert.equal(list.mock.callCount(), 0);
     });
 
-    it('lists every live setlist for an admin without reading ownership', async () => {
-      const findCallerAccess = mockOwnership(null);
+    it('lists only the setlists an admin created, owns, or reaches through a folder', async () => {
+      const findCallerAccess = mockOwnership({ groupIds: [entry(GROUP_ID)], setlistIds: [] });
       const list = mock.method(setlistRepository, 'listLiveReachable', async () => []);
       const res = await call(getSetlist, { user: ADMIN });
-      assert.deepEqual(list.mock.calls[0]?.arguments, [{ all: true }]);
-      assert.equal(findCallerAccess.mock.callCount(), 0);
+      assert.deepEqual(findCallerAccess.mock.calls[0]?.arguments, [ADMIN.id]);
+      assert.deepEqual(list.mock.calls[0]?.arguments, [
+        { createdBy: ADMIN.id, groupIds: [GROUP_ID], setlistIds: [] },
+      ]);
       assert.equal(res.statusCode, 200);
-      assert.deepEqual(res.body, []);
     });
 
     it('lists only setlists the caller created, owns, or reaches through a folder', async () => {

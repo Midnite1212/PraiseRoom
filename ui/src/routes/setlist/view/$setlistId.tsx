@@ -40,7 +40,7 @@ function PublicSetlistPage() {
       songNumber={song}
       onSongChange={(number) => void navigate({ search: { song: number }, replace: true })}
       actions={
-        <Button asChild variant="glass" className="wide:w-auto wide:px-4 size-12 px-0 text-sm">
+        <Button asChild variant="glass" size="icon-lg" className="wide:w-auto wide:px-4 text-sm">
           {session ? (
             <Link
               to="/setlists/$setlistId"

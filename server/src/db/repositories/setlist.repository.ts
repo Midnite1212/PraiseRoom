@@ -47,9 +47,7 @@ export type SetlistField = (typeof SETLIST_FIELDS)[number];
 export type SetlistFields = Partial<Record<SetlistField, unknown>>;
 export type SetlistCreate = SetlistFields & { _id: string; createdBy: string; publicLink: string };
 export type SetlistView = 'full' | 'public';
-export type SetlistReach =
-  | { all: true }
-  | { setlistIds: string[]; groupIds: string[]; createdBy?: string };
+export type SetlistReach = { setlistIds: string[]; groupIds: string[]; createdBy?: string };
 export type FindGroupAccess = (ids: string[]) => Promise<GroupAccess[]>;
 export type GroupLinkResolver = (
   requested: string[],
@@ -352,7 +350,6 @@ const writeLinks = async (tx: Transaction, setlistId: string, values: SetlistVal
 };
 
 const reachCondition = (reach: SetlistReach): SQL | undefined => {
-  if ('all' in reach) return eq(setlists.isDeleted, false);
   const setlistIds = reach.setlistIds.map(toObjectId);
   const groupIds = reach.groupIds.map(toObjectId);
   const access: SQL[] = [];

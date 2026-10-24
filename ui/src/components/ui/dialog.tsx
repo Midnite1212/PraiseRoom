@@ -4,11 +4,12 @@ import { Dialog as DialogPrimitive } from 'radix-ui';
 import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
+import { useKeyboardInset } from '@/hooks/use-keyboard-inset';
 
 // Praise Room: dialogs are glass sheets that rise from the bottom on phones and sit in the middle on
 // wide screens. Hosts can widen one with `[--dw:520px]`.
 const SHEET_CLASSES =
-  'glass glass-strong fixed z-50 flex flex-col [--glass-r:32px] right-2.5 bottom-(--bottom) left-2.5 mx-auto max-h-[min(82svh,720px)] max-w-[560px] origin-bottom px-4 pt-[18px] pb-4 text-sm text-ink outline-none data-open:animate-sheet-in data-closed:animate-sheet-out wide:top-1/2 wide:right-auto wide:bottom-auto wide:left-1/2 wide:w-[min(var(--dw,480px),calc(100vw-48px))] wide:max-w-none wide:max-h-[min(80vh,720px)] wide:-translate-x-1/2 wide:-translate-y-1/2 wide:origin-center';
+  'glass glass-strong fixed z-50 flex flex-col [--glass-r:32px] right-2.5 bottom-[calc(var(--bottom)+var(--kb,0px))] left-2.5 mx-auto max-h-[min(82svh,720px,calc(100svh-var(--kb,0px)-var(--bottom)-0.75rem))] max-w-[560px] origin-bottom px-4 pt-[18px] pb-4 text-sm text-ink outline-none data-open:animate-sheet-in data-closed:animate-sheet-out wide:top-1/2 wide:right-auto wide:bottom-auto wide:left-1/2 wide:w-[min(var(--dw,480px),calc(100vw-48px))] wide:max-w-none wide:max-h-[min(80vh,720px)] wide:-translate-x-1/2 wide:-translate-y-1/2 wide:origin-center';
 
 const SCRIM_CLASSES =
   'fixed inset-0 isolate z-50 bg-scrim data-open:animate-scrim-in data-closed:animate-scrim-out';
@@ -53,6 +54,7 @@ function DialogContent({
   // Pinned under the scrolling content, so its buttons stay in reach on long sheets.
   footer?: React.ReactNode;
 }) {
+  useKeyboardInset();
   return (
     <DialogPortal>
       <DialogOverlay />

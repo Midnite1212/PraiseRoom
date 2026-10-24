@@ -152,35 +152,6 @@ export function SongEditor({ song, initialMode = 'song' }: { song: Song; initial
           />
         </div>
       }
-      actions={
-        <Segmented
-          value={mode}
-          onChange={setMode}
-          label={t('songEditor.mode.label')}
-          size="sm"
-          glass
-          options={[
-            {
-              value: 'song',
-              label: (
-                <>
-                  <Music />
-                  {t('songEditor.mode.song')}
-                </>
-              ),
-            },
-            {
-              value: 'text',
-              label: (
-                <>
-                  <Article />
-                  {t('songEditor.mode.text')}
-                </>
-              ),
-            },
-          ]}
-        />
-      }
       status={autosave.status}
       onRetry={autosave.retry}
       canUndo={history.canUndo}
@@ -211,6 +182,37 @@ export function SongEditor({ song, initialMode = 'song' }: { song: Song; initial
         </>
       }
     >
+      <div className="mb-5 flex items-center gap-3">
+        <span className="text-ink-2 text-[0.8125rem] font-semibold">
+          {t('songEditor.mode.label')}
+        </span>
+        <Segmented
+          value={mode}
+          onChange={setMode}
+          label={t('songEditor.mode.label')}
+          size="md"
+          options={[
+            {
+              value: 'song',
+              label: (
+                <>
+                  <Music />
+                  {t('songEditor.mode.song')}
+                </>
+              ),
+            },
+            {
+              value: 'text',
+              label: (
+                <>
+                  <Article />
+                  {t('songEditor.mode.text')}
+                </>
+              ),
+            },
+          ]}
+        />
+      </div>
       <div data-lyrics-size={lyricsSize}>
         {mode === 'text' ? (
           <SongTextMode

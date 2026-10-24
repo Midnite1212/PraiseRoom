@@ -36,6 +36,8 @@ const buttonVariants = cva(
         'icon-xs': 'size-7',
         'icon-sm': 'size-9',
         'icon-lg': 'size-12',
+        dock: 'h-14 w-[52px]',
+        'dock-step': 'h-11 w-10',
       },
     },
     defaultVariants: {
