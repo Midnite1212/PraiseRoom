@@ -2,11 +2,13 @@ import { ChevronLeft, ChevronRight } from 'pixelarticons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { nextSetlistId, type SetStatus, setStatus } from '@/components/primitives/set-status';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 import type { SetlistSummary } from './api';
 import { toDateInputValue } from './format-date';
+import { dayLinkHandlers, useSetlistList } from './setlist-list-context';
 
 type SetlistCalendarProps = {
   setlists: readonly SetlistSummary[];
@@ -28,8 +30,24 @@ const FIRST_COLUMN = [
   'col-start-7',
 ] as const;
 
-// Wide screens: a month beside the list, with a lit pixel on each day that has a setlist.
-// Choosing a day shows only that day's setlists; choosing it again clears it.
+const DOT_CLASSES: Partial<Record<SetStatus, string>> = {
+  next: 'after:bg-pixel-on after:shadow-[0_0_6px_var(--pixel-glow)]',
+  up: 'after:bg-ink/40',
+  past: 'after:bg-ink/70',
+};
+
+const LEGEND = [
+  { status: 'next', labelKey: 'setlists.calendar.next' },
+  { status: 'up', labelKey: 'setlists.calendar.coming' },
+  { status: 'past', labelKey: 'setlists.calendar.played' },
+] as const;
+
+// A day shows the status of its next set, else of its first.
+const dayStatus = (statuses: readonly SetStatus[]): SetStatus =>
+  statuses.find((status) => status === 'next') ?? statuses[0] ?? 'undated';
+
+// Wide screens: a compact month in the side column, a dot on each day that has a setlist coloured
+// by its status. Choosing a day shows only that day's setlists; choosing it again clears it.
 export function SetlistCalendar({ setlists, now, day, onDayChange }: SetlistCalendarProps) {
   const { t, i18n } = useTranslation();
   const today = new Date(now);
@@ -39,11 +57,17 @@ export function SetlistCalendar({ setlists, now, day, onDayChange }: SetlistCale
   const lead = (month.getDay() + 6) % 7;
   const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
   const todayKey = toDateInputValue(today.toISOString());
+  const list = useSetlistList();
+  const nextId = nextSetlistId(setlists, now);
 
-  const namesByDay = new Map<string, string[]>();
+  const setsByDay = new Map<string, { names: string[]; statuses: SetStatus[] }>();
   for (const setlist of setlists) {
     const key = toDateInputValue(setlist.date);
-    if (key) namesByDay.set(key, [...(namesByDay.get(key) ?? []), setlist.name]);
+    if (!key) continue;
+    const entry = setsByDay.get(key) ?? { names: [], statuses: [] };
+    entry.names.push(setlist.name);
+    entry.statuses.push(setStatus(setlist, nextId, now));
+    setsByDay.set(key, entry);
   }
 
   // Monday first; 2024-01-01 was a Monday.
@@ -58,14 +82,14 @@ export function SetlistCalendar({ setlists, now, day, onDayChange }: SetlistCale
     new Intl.DateTimeFormat(i18n.language, { day: 'numeric', month: 'long' }).format(date);
 
   const cellClasses =
-    'relative grid aspect-square place-items-center rounded-xl font-mono text-[0.8125rem] font-semibold';
+    'relative grid h-[34px] place-items-center rounded-[10px] font-mono text-[0.8125rem] font-semibold';
 
   return (
     <section
       aria-label={t('setlists.calendar.label')}
-      className="glass wide:block sticky top-7 hidden px-3 pt-3.5 pb-3 [--glass-r:24px]"
+      className="glass px-2.5 pt-3 pb-2.5 [--glass-r:24px]"
     >
-      <div className="mb-2 ml-1.5 flex items-center justify-between">
+      <div className="mb-1 ml-1.5 flex items-center justify-between">
         <b className="font-semibold">
           {new Intl.DateTimeFormat(i18n.language, { month: 'long', year: 'numeric' }).format(month)}
         </b>
@@ -88,12 +112,12 @@ export function SetlistCalendar({ setlists, now, day, onDayChange }: SetlistCale
           </Button>
         </span>
       </div>
-      <div className="grid grid-cols-7 gap-0.5 text-center">
+      <div className="grid grid-cols-7 text-center">
         {weekdays.map((weekday) => (
           <span
             key={weekday.key}
             aria-hidden
-            className="text-ink-3 py-1 text-[0.6875rem] font-semibold"
+            className="text-ink-3 py-0.5 text-[0.6875rem] font-semibold"
           >
             {weekday.label}
           </span>
@@ -101,10 +125,10 @@ export function SetlistCalendar({ setlists, now, day, onDayChange }: SetlistCale
         {Array.from({ length: daysInMonth }, (_, index) => {
           const date = new Date(year, monthIndex, index + 1);
           const key = `${year}-${pad(monthIndex + 1)}-${pad(index + 1)}`;
-          const names = namesByDay.get(key);
+          const sets = setsByDay.get(key);
           const isToday = key === todayKey;
           const column = index === 0 ? FIRST_COLUMN[lead] : undefined;
-          if (!names) {
+          if (!sets) {
             return (
               <span
                 key={key}
@@ -112,7 +136,7 @@ export function SetlistCalendar({ setlists, now, day, onDayChange }: SetlistCale
                   cellClasses,
                   column,
                   'text-ink-2',
-                  isToday && 'text-ink shadow-[inset_0_0_0_1px_var(--ink-3)]'
+                  isToday && 'bg-fill-hover text-ink shadow-[inset_0_0_0_1px_var(--ink-3)]'
                 )}
               >
                 {index + 1}
@@ -124,14 +148,17 @@ export function SetlistCalendar({ setlists, now, day, onDayChange }: SetlistCale
               key={key}
               type="button"
               aria-pressed={day === key}
-              aria-label={`${dayLabel(date)}: ${names.join(', ')}`}
-              title={names.join(', ')}
+              aria-label={`${dayLabel(date)}: ${sets.names.join(', ')}`}
+              title={sets.names.join(', ')}
               onClick={() => onDayChange(day === key ? undefined : key)}
+              {...dayLinkHandlers(list, key)}
               className={cn(
                 cellClasses,
                 column,
-                'text-ink hover:bg-fill-hover aria-pressed:bg-fill-on after:bg-pixel-on after:absolute after:bottom-[5px] after:size-1',
-                isToday && 'shadow-[inset_0_0_0_1px_var(--ink-3)]'
+                'text-ink hover:bg-fill-hover aria-pressed:bg-fill-on after:absolute after:bottom-[5px] after:size-1',
+                DOT_CLASSES[dayStatus(sets.statuses)],
+                isToday && 'bg-fill-hover shadow-[inset_0_0_0_1px_var(--ink-3)]',
+                list.litDay === key && 'bg-fill-on'
               )}
             >
               {index + 1}
@@ -139,16 +166,36 @@ export function SetlistCalendar({ setlists, now, day, onDayChange }: SetlistCale
           );
         })}
       </div>
-      <p className="border-hairline text-ink-3 mx-1.5 mt-2.5 flex items-center gap-2 border-t pt-2.5 text-xs">
-        <i aria-hidden className="bg-pixel-on size-1 flex-none" />
-        {day
-          ? t('setlists.calendar.showing', {
+      <p className="border-hairline text-ink-3 mx-1 mt-1.5 flex flex-wrap items-center gap-x-1 gap-y-1 border-t pt-2 text-xs">
+        {day ? (
+          <>
+            {t('setlists.calendar.showing', {
               day: new Intl.DateTimeFormat(i18n.language, {
                 day: 'numeric',
                 month: 'short',
               }).format(new Date(`${day}T00:00:00`)),
-            })
-          : t('setlists.calendar.hint')}
+            })}
+            <span aria-hidden>·</span>
+            <Button variant="link" size="xs" onClick={() => onDayChange(undefined)}>
+              {t('setlists.calendar.showAll')}
+            </Button>
+          </>
+        ) : (
+          LEGEND.map(({ status, labelKey }) => (
+            <span key={status} className="mr-2 inline-flex items-center gap-1.5 last:mr-0">
+              <i
+                aria-hidden
+                className={cn(
+                  'size-1.5 flex-none',
+                  status === 'next' && 'bg-pixel-on',
+                  status === 'up' && 'bg-ink/40',
+                  status === 'past' && 'bg-ink/70'
+                )}
+              />
+              {t(labelKey)}
+            </span>
+          ))
+        )}
       </p>
     </section>
   );

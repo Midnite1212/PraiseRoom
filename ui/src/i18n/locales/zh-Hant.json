@@ -191,13 +191,29 @@
       "previousMonth": "上個月",
       "nextMonth": "下個月",
       "hint": "有歌單的日子。點選即可顯示。",
-      "showing": "顯示 {{day}}"
+      "showing": "顯示 {{day}}",
+      "next": "下一個",
+      "coming": "即將",
+      "played": "已完成",
+      "showAll": "顯示全部"
     },
     "then": "接著",
     "comingUp": "即將到來",
     "played": "已完成",
     "showPlayed": "展開",
-    "hidePlayed": "收起"
+    "hidePlayed": "收起",
+    "preview": {
+      "label": "{{name}}的預覽",
+      "close": "關閉預覽",
+      "closeHint": "關閉預覽（Esc）",
+      "noDate": "未定日期",
+      "youMadeThis": "你建立的",
+      "from": "來自 {{name}}",
+      "inFolders": "所在資料夾",
+      "openNamed": "開啟 {{name}}",
+      "noSongs": "尚未有歌曲",
+      "noSongsHint": "編輯歌單來加入歌曲。"
+    }
   },
   "reader": {
     "setlist": "歌單",
