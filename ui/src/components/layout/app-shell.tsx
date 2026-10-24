@@ -89,7 +89,7 @@ function PageChrome({
               aria-label={t('app.name')}
               className="flex items-center gap-3 font-bold tracking-[-0.01em] whitespace-nowrap"
             >
-              <BrandMark className="-ml-2.5 transition-opacity duration-150 ease-out group-data-[rail=folded]/rail:ml-[-6px] group-data-[rail=folded]/rail:group-hover/brand:opacity-0 group-data-[rail=folded]/rail:group-has-focus-visible/brand:opacity-0" />
+              <BrandMark className="-ml-2.5 group-data-[rail=folded]/rail:ml-[-6px]" />
               <span className="group-data-[rail=folded]/rail:hidden">{t('app.name')}</span>
             </Link>
             {isNarrow ? null : (
@@ -99,7 +99,7 @@ function PageChrome({
                 aria-expanded={!folded}
                 title={`${toggleLabel} (${shortcut})`}
                 onClick={() => setRail(toggledRail(rail))}
-                className="text-ink-3 hover:text-ink focus-visible:ring-ring [&_svg]:size-icon ml-auto grid size-9 flex-none place-items-center rounded-full transition-[color,opacity] duration-150 ease-out outline-none group-data-[rail=folded]/rail:absolute group-data-[rail=folded]/rail:inset-0 group-data-[rail=folded]/rail:m-auto group-data-[rail=folded]/rail:opacity-0 group-data-[rail=folded]/rail:group-hover/brand:opacity-100 focus-visible:opacity-100 focus-visible:ring-2"
+                className="text-ink-3 hover:text-ink focus-visible:ring-ring [&_svg]:size-icon ml-auto grid size-9 flex-none place-items-center rounded-full transition-colors duration-150 ease-out outline-none group-data-[rail=folded]/rail:absolute group-data-[rail=folded]/rail:top-1/2 group-data-[rail=folded]/rail:left-[calc(100%-6px)] group-data-[rail=folded]/rail:-translate-y-1/2 focus-visible:ring-2"
               >
                 <SidebarIcon />
               </button>
