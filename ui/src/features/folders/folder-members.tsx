@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 
 import { LIST_CLASSES, listRowClasses, RowText } from '@/components/page/list-row';
 import { InitialAvatar } from '@/components/primitives/avatar';
+import { goneToast } from '@/components/primitives/gone-toast';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -40,7 +41,6 @@ import {
   type Person,
   peopleQueryOptions,
 } from './api';
-import { goneToast } from './gone-toast';
 
 export const useFolderMembers = (folder: Folder) => {
   const { t } = useTranslation();
@@ -96,7 +96,7 @@ function MemberRows({ session, folder, canEdit, onRemove }: Omit<MembersProps, '
               <Button
                 variant="link"
                 size="sm"
-                className="text-destructive"
+                className="text-danger-quiet hover:text-destructive"
                 onClick={() => onRemove(person)}
               >
                 {t('folders.leave')}
@@ -310,7 +310,7 @@ export function RemoveMemberDialog({
       goneToast(t('folders.left', { name: folder.groupName }));
       await navigate({ to: '/folders' });
     } else {
-      toast.success(t('folders.memberRemoved', { name: person.fullName }));
+      goneToast(t('folders.memberRemoved', { name: person.fullName }));
     }
   };
 

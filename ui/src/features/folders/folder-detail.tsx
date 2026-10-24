@@ -17,6 +17,7 @@ import { z } from 'zod';
 
 import { AppBarSlot } from '@/components/layout/app-bar-slots';
 import { AvatarStack } from '@/components/primitives/avatar';
+import { goneToast } from '@/components/primitives/gone-toast';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -44,7 +45,6 @@ import {
 } from '@/features/folders/folder-members';
 import { AddSetlistsDialog, FolderSetlists } from '@/features/folders/folder-setlists';
 import { FolderSleeve } from '@/features/folders/folder-sleeve';
-import { goneToast } from '@/features/folders/gone-toast';
 import { canDeleteFolder, canEditFolder } from '@/features/folders/permissions';
 import { useFolderCover } from '@/features/folders/use-folder-cover';
 import type { Folder } from '@/features/setlists/api';
