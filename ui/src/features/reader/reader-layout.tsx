@@ -24,6 +24,8 @@ type ReaderLayoutProps = {
   // Phones: the set's progress under the top row, and the bottom dock.
   progress?: ReactNode;
   dock: ReactNode;
+  // Wide screens, two songs side by side: `children` are the panes, each scrolling on its own under the top row.
+  isSplit?: boolean;
   children: ReactNode;
 };
 
@@ -40,6 +42,7 @@ export function ReaderLayout({
   songbar,
   progress,
   dock,
+  isSplit = false,
   children,
 }: ReaderLayoutProps) {
   useScrolledClass();
@@ -56,7 +59,10 @@ export function ReaderLayout({
       <div aria-hidden className="ground-wash pointer-events-none fixed inset-0 z-0" />
       <div
         aria-hidden
-        className="edge-top pointer-events-none fixed inset-x-0 top-0 z-20 h-[calc(var(--top)+var(--top-h)+var(--bar-h)+22px)] opacity-0 transition-opacity duration-200 ease-out in-[.scrolled]:opacity-100"
+        className={cn(
+          'edge-top pointer-events-none fixed inset-x-0 top-0 z-20 h-[calc(var(--top)+var(--top-h)+var(--bar-h)+22px)] opacity-0 transition-opacity duration-200 ease-out in-[.scrolled]:opacity-100',
+          isSplit && 'hidden'
+        )}
       />
       <div
         aria-hidden
@@ -94,7 +100,13 @@ export function ReaderLayout({
         </div>
       ) : null}
 
-      <main className="wide:max-w-[calc(1240px+var(--side-w))] wide:pt-[calc(var(--top)+var(--top-h)+var(--bar-h)+40px)] wide:pb-20 wide:pl-[calc(var(--side-w)+34px)] relative z-[1] mx-auto max-w-[760px] px-[18px] pt-[calc(var(--top)+var(--top-h)+40px)] pb-[calc(var(--dock-h)+48px+env(safe-area-inset-bottom))]">
+      <main
+        className={cn(
+          isSplit
+            ? 'fixed top-[calc(var(--top)+var(--top-h)+var(--bar-h)+10px)] right-(--frame-r) bottom-0 left-[calc(var(--frame-l)+var(--side-w))] z-[1] grid grid-cols-2'
+            : 'wide:max-w-[calc(1240px+var(--side-w))] wide:pt-[calc(var(--top)+var(--top-h)+var(--bar-h)+40px)] wide:pb-20 wide:pl-[calc(var(--side-w)+34px)] relative z-[1] mx-auto max-w-[760px] px-[18px] pt-[calc(var(--top)+var(--top-h)+40px)] pb-[calc(var(--dock-h)+48px+env(safe-area-inset-bottom))]'
+        )}
+      >
         {children}
       </main>
 

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { BrandMark } from '@/components/primitives/brand-mark';
 import { Panel } from '@/components/primitives/panel';
+import { Segmented } from '@/components/primitives/segmented';
 import { Button } from '@/components/ui/button';
 import { conventionalKey } from '@/features/chords/key-spelling';
 import { keyLabel, type MusicKey, parseKey } from '@/features/chords/theory';
@@ -17,6 +18,8 @@ import { ReaderModes } from '@/features/reader/reader-modes';
 import { ReadingSettings } from '@/features/reader/reading-settings';
 import { useSongCapo } from '@/features/reader/song-capo';
 import { SongReader } from '@/features/reader/song-reader';
+import { ViewOneIcon, ViewSplitIcon } from '@/features/reader/view-icons';
+import { useIsWide } from '@/hooks/use-wide';
 import { createStoredChoice } from '@/lib/stored-choice';
 
 import { keyForSong, noteForSong, publicSetlistUrl, type Setlist } from '../api';
@@ -30,6 +33,46 @@ import {
   SetlistSongbar,
   SetlistSongRows,
 } from './setlist-songs';
+import {
+  pinAfterMove,
+  pinAfterPick,
+  READER_LAYOUTS,
+  type ReaderLayoutChoice,
+  rightPane,
+  useReaderLayout,
+} from './split-panes';
+import { SplitView } from './split-view';
+
+const LAYOUT_ICONS = { one: ViewOneIcon, split: ViewSplitIcon } as const;
+
+// Wide screens: One | Split, kept per device.
+function LayoutToggle({
+  layout,
+  onChange,
+}: {
+  layout: ReaderLayoutChoice;
+  onChange: (layout: ReaderLayoutChoice) => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <Segmented
+      glass
+      size="lg"
+      value={layout}
+      onChange={onChange}
+      label={t('reader.layout')}
+      optionClassName="min-w-11 px-2.5"
+      options={READER_LAYOUTS.map((value) => {
+        const Icon = LAYOUT_ICONS[value];
+        return {
+          value,
+          label: <Icon />,
+          ariaLabel: t(value === 'one' ? 'reader.oneSong' : 'reader.splitSongs'),
+        };
+      })}
+    />
+  );
+}
 
 // A hook-named alias, so the React Compiler calls it on every render instead of memoizing it.
 const useSongListVisibility = createStoredChoice(
@@ -72,6 +115,10 @@ export function MusicianView({
   const [isReordering, setIsReordering] = useState(false);
   const [isBarOrderOpen, setIsBarOrderOpen] = useState(false);
   const isSidebarShown = songList === 'shown';
+  const isWide = useIsWide();
+  const [layout, setLayout] = useReaderLayout();
+  const [pinnedId, setPinnedId] = useState<string | null>(null);
+  const [leftPane, setLeftPane] = useState<HTMLElement | null>(null);
 
   const { order, isCustom, setOrder, reset } = useLocalOrder(
     setlist._id,
@@ -88,10 +135,15 @@ export function MusicianView({
   const song = entries[currentIndex];
   const [capo, changeCapo] = useSongCapo(song?._id ?? '', song?.capo);
   const nextSong = entries[currentIndex + 1];
-  const auto = useAutoScroll(song?._id ?? '');
+  const isSplit = isWide && layout === 'split' && songCount > 1;
+  const auto = useAutoScroll(song?._id ?? '', isSplit ? leftPane : null);
+  const songIds = entries.map((entry) => entry._id);
+  const right = isSplit ? rightPane(songIds, currentIndex, pinnedId) : null;
 
   const goToSong = (number: number) => {
-    if (number >= 1 && number <= songCount) onSongChange(number);
+    if (number < 1 || number > songCount) return;
+    setPinnedId(pinAfterMove(songIds, pinnedId, number - 1));
+    onSongChange(number);
   };
 
   useEffect(() => {
@@ -115,10 +167,13 @@ export function MusicianView({
   };
   const songs = entries.map((entry, index) => {
     const playKey = playKeyFor(index);
+    const isShown = right !== null && right.index === index;
     return {
       id: entry._id,
       title: entry.title,
       keyLabel: playKey ? keyLabel(playKey) : entry.originalKey,
+      isShown,
+      tag: isShown && right.isPinned ? t('reader.pinned') : undefined,
     };
   });
   const select = (number: number) => {
@@ -175,7 +230,9 @@ export function MusicianView({
 
   const originalKey = parseKey(song.originalKey);
   const playKey = playKeyFor(currentIndex);
-  const changeKey = (key: MusicKey) => setChosenKeys((keys) => ({ ...keys, [song._id]: key.root }));
+  const changeKeyFor = (songId: string, key: MusicKey) =>
+    setChosenKeys((keys) => ({ ...keys, [songId]: key.root }));
+  const changeKey = (key: MusicKey) => changeKeyFor(song._id, key);
   const sidebarLabel = isSidebarShown ? t('reader.hideSongList') : t('reader.showSongList');
   const listProps = { songs, currentIndex, onSelect: select };
   const editableListProps = { ...listProps, isEditing: isReordering, onReorder: reorder };
@@ -207,10 +264,12 @@ export function MusicianView({
         </>
       }
       modes={<ReaderModes />}
+      isSplit={isSplit}
       auto={<AutoScrollButton auto={auto} placement="top" className="wide:inline-flex hidden" />}
       compactTitle={song.title}
       actions={
         <>
+          {isWide && songCount > 1 ? <LayoutToggle layout={layout} onChange={setLayout} /> : null}
           <WideReadingControls auto={auto} />
           {readingSettings}
           {actions}
@@ -366,26 +425,42 @@ export function MusicianView({
         </>
       }
     >
-      <SongReader
-        key={song._id}
-        song={song}
-        playKey={playKey}
-        onPlayKeyChange={changeKey}
-        capo={capo}
-        onCapoChange={changeCapo}
-        note={noteForSong(setlist, song._id)}
-      >
-        {currentIndex === songCount - 1 ? (
-          <div className="border-hairline text-ink-2 mt-10 flex items-center gap-3.5 border-t py-5">
-            <span aria-hidden className="flex gap-1">
-              {songs.map(({ id }) => (
-                <i key={id} className="bg-pixel-played size-2" />
-              ))}
-            </span>
-            {t('reader.endOfSet')}
-          </div>
-        ) : null}
-      </SongReader>
+      {right ? (
+        <SplitView
+          entries={entries}
+          songs={songs}
+          currentIndex={currentIndex}
+          rightIndex={right.index}
+          isPinned={right.isPinned}
+          playKeyFor={playKeyFor}
+          onPlayKeyChange={changeKeyFor}
+          noteFor={(songId) => noteForSong(setlist, songId)}
+          onPlay={(index) => goToSong(index + 1)}
+          onShowBeside={(songId) => setPinnedId(pinAfterPick(songIds, currentIndex, songId))}
+          leftPaneRef={setLeftPane}
+        />
+      ) : (
+        <SongReader
+          key={song._id}
+          song={song}
+          playKey={playKey}
+          onPlayKeyChange={changeKey}
+          capo={capo}
+          onCapoChange={changeCapo}
+          note={noteForSong(setlist, song._id)}
+        >
+          {currentIndex === songCount - 1 ? (
+            <div className="border-hairline text-ink-2 mt-10 flex items-center gap-3.5 border-t py-5">
+              <span aria-hidden className="flex gap-1">
+                {songs.map(({ id }) => (
+                  <i key={id} className="bg-pixel-played size-2" />
+                ))}
+              </span>
+              {t('reader.endOfSet')}
+            </div>
+          ) : null}
+        </SongReader>
+      )}
     </ReaderLayout>
   );
 }

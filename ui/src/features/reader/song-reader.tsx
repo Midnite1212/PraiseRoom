@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { type MusicKey, parseKey } from '@/features/chords/theory';
 import { useIsWide } from '@/hooks/use-wide';
+import { cn } from '@/lib/utils';
 
 import {
   useAccidentals,
@@ -27,6 +28,8 @@ type SongReaderProps = {
   onCapoChange?: (capo: number | null) => void;
   // The setlist's note on this song; shown under the artist in Chords mode only.
   note?: string;
+  // A pane of the split reader: a smaller title, and the id another pane's title does not share.
+  pane?: 'left' | 'right';
   children?: ReactNode;
 };
 
@@ -39,6 +42,7 @@ export function SongReader({
   capo = 0,
   onCapoChange,
   note = '',
+  pane,
   children,
 }: SongReaderProps) {
   const { t } = useTranslation();
@@ -52,15 +56,21 @@ export function SongReader({
   const [lyricsColumns, setLyricsColumns] = useLyricsColumns();
   const originalKey = parseKey(song.originalKey);
   const showChordControls = mode === 'chords' && originalKey && playKey;
+  const titleId = pane === 'right' ? 'song-title-right' : 'song-title';
 
   return (
-    <article data-lyrics-size={lyricsSize} aria-labelledby="song-title" className="min-w-0">
+    <article data-lyrics-size={lyricsSize} aria-labelledby={titleId} className="min-w-0">
       <header className="mb-[18px]">
         <div className="flex items-start gap-0.5">
           <h1
-            id="song-title"
+            id={titleId}
             data-page-title
-            className="wide:text-[clamp(2rem,1rem+1.8vw,3rem)] text-[clamp(1.75rem,1.2rem+2.2vw,2.5rem)] leading-[1.08] font-bold tracking-[-0.03em] text-balance"
+            className={cn(
+              'text-[clamp(1.75rem,1.2rem+2.2vw,2.5rem)] leading-[1.08] font-bold tracking-[-0.03em] text-balance',
+              pane
+                ? 'wide:text-[clamp(1.75rem,0.9rem+1.6vw,2.625rem)]'
+                : 'wide:text-[clamp(2rem,1rem+1.8vw,3rem)]'
+            )}
           >
             {song.title}
           </h1>
