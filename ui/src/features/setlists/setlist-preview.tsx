@@ -4,6 +4,11 @@ import { Close, Folder, Link as LinkIcon, PenSquare, Play } from 'pixelarticons/
 import { useTranslation } from 'react-i18next';
 
 import { EmptyState } from '@/components/page/empty-state';
+import {
+  SLIDE_OVER_CLASSES,
+  SLIDE_OVER_CLOSE_CLASSES,
+  type SlideOver,
+} from '@/components/page/slide-over';
 import { DateBlock } from '@/components/primitives/date-block';
 import { setStatus, whenLabel } from '@/components/primitives/set-status';
 import { Tag } from '@/components/primitives/tag';
@@ -12,6 +17,7 @@ import { Button } from '@/components/ui/button';
 import type { Session } from '@/features/auth/session';
 import { folderSlug } from '@/features/folders/api';
 import { dateLocale } from '@/lib/date-locale';
+import { cn } from '@/lib/utils';
 
 import {
   foldersQueryOptions,
@@ -30,7 +36,7 @@ type SetlistPreviewProps = {
   names: SetlistNames;
   nextId: string | null;
   now: number;
-  onClose: () => void;
+  slideOver: SlideOver;
 };
 
 // Wide Setlists: the picked setlist in full beside the list. The list already has its songs'
@@ -41,7 +47,7 @@ export function SetlistPreview({
   names,
   nextId,
   now,
-  onClose,
+  slideOver,
 }: SetlistPreviewProps) {
   const { t, i18n } = useTranslation();
   const actions = useSetlistActions(session, setlist);
@@ -83,14 +89,18 @@ export function SetlistPreview({
   });
 
   return (
-    <aside aria-label={t('setlists.preview.label', { name: setlist.name })} className="relative">
+    <aside
+      aria-label={t('setlists.preview.label', { name: setlist.name })}
+      {...slideOver.panelProps}
+      className={cn('relative', SLIDE_OVER_CLASSES)}
+    >
       <Button
         variant="ghost"
         size="icon"
-        onClick={onClose}
+        onClick={slideOver.close}
         aria-label={t('setlists.preview.close')}
         title={t('setlists.preview.closeHint')}
-        className="absolute -top-1 right-0 z-[2]"
+        className={cn('absolute -top-1 right-0 z-[2]', SLIDE_OVER_CLOSE_CLASSES)}
       >
         <Close />
       </Button>

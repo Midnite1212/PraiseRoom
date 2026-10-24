@@ -9,6 +9,11 @@ import { EmptyState } from '@/components/page/empty-state';
 import { Finder } from '@/components/page/finder';
 import { LIST_CLASSES } from '@/components/page/list-row';
 import { PageHeader } from '@/components/page/page-header';
+import {
+  SLIDE_OVER_CLASSES,
+  SLIDE_OVER_CLOSE_CLASSES,
+  useSlideOver,
+} from '@/components/page/slide-over';
 import { Fab } from '@/components/primitives/fab';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -58,26 +63,25 @@ function FoldersPage() {
   const mine = own
     .filter((folder) => !query || folder.groupName.toLocaleLowerCase().includes(query))
     .toSorted((a, b) => a.groupName.localeCompare(b.groupName));
-  const chosen = isRoomy ? own.find((folder) => folder._id === chosenId) : undefined;
+  const chosen = isWide ? own.find((folder) => folder._id === chosenId) : undefined;
   const paneId = chosen?._id;
   const newLabel = t('folders.new');
 
-  const closePane = () => {
+  const slideOver = useSlideOver(chosen !== undefined, () => {
     void navigate({ search: {} }).then(() => {
-      document.querySelector<HTMLElement>(`[data-folder-row="${chosenId}"]`)?.focus();
+      document.querySelector<HTMLElement>(`[data-folder-row="${paneId}"]`)?.focus();
     });
-  };
+  });
+  const closePane = slideOver.close;
 
   useEffect(() => {
     const close = (event: KeyboardEvent) => {
       if (event.key !== 'Escape' || event.defaultPrevented || isEditable(event.target)) return;
-      void navigate({ search: {} }).then(() => {
-        document.querySelector<HTMLElement>(`[data-folder-row="${paneId}"]`)?.focus();
-      });
+      closePane();
     };
     if (paneId) window.addEventListener('keydown', close);
     return () => window.removeEventListener('keydown', close);
-  }, [paneId, navigate]);
+  }, [paneId, closePane]);
 
   return (
     <>
@@ -118,8 +122,8 @@ function FoldersPage() {
                     people={people}
                     now={now}
                     pane={
-                      isRoomy
-                        ? { selected: folder._id === chosen?._id, isOpen: !!chosen }
+                      isWide
+                        ? { selected: folder._id === chosen?._id, isOpen: !!chosen && isRoomy }
                         : undefined
                     }
                   />
@@ -129,11 +133,18 @@ function FoldersPage() {
           )}
         </div>
         {chosen ? (
-          <div className="border-hairline animate-pane-in relative min-w-0 border-l pl-10">
+          <aside
+            aria-label={chosen.groupName}
+            {...slideOver.panelProps}
+            className={cn(
+              'roomy:border-hairline roomy:animate-pane-in roomy:border-l roomy:pl-10 relative min-w-0',
+              SLIDE_OVER_CLASSES
+            )}
+          >
             <Button
               variant="ghost"
               size="icon"
-              className="absolute -top-1 -right-2 z-10"
+              className={cn('absolute -top-1 -right-2 z-10', SLIDE_OVER_CLOSE_CLASSES)}
               aria-label={t('folders.closePreview')}
               title={t('folders.closePreview')}
               onClick={closePane}
@@ -149,7 +160,7 @@ function FoldersPage() {
                 inPane
               />
             </Suspense>
-          </div>
+          </aside>
         ) : null}
       </div>
       <Fab aria-label={newLabel} title={newLabel} onClick={() => setIsCreateOpen(true)}>

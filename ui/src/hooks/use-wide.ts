@@ -31,3 +31,11 @@ export const ROOMY_QUERY = '(min-width: 1100px) and (min-height: 600px)';
 export function useIsRoomy() {
   return useMediaQuery(ROOMY_QUERY, true);
 }
+
+// Wide but not roomy: an iPad in portrait. The sidebar stays folded, two-column pages stack, and the panes
+// that sit beside a list slide over it. The `compact:` variant in `src/styles.css` repeats this text.
+export const COMPACT_QUERY = '(min-width: 768px) and (max-width: 1099px) and (min-height: 600px)';
+
+export function useIsCompact() {
+  return useMediaQuery(COMPACT_QUERY, false);
+}

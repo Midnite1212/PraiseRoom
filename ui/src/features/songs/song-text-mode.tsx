@@ -66,7 +66,7 @@ export function SongTextMode({
   };
 
   return (
-    <div className="wide:grid-cols-2 wide:gap-6 grid items-start gap-3">
+    <div className="roomy:grid-cols-2 roomy:gap-6 grid items-start gap-3">
       <div className="flex flex-col gap-2">
         <label htmlFor={fieldId} className="text-ink-3 text-xs font-semibold">
           {t('songEditor.text.label')}
@@ -95,7 +95,7 @@ export function SongTextMode({
       </div>
       <section
         aria-label={t('songEditor.text.previewLabel')}
-        className="border-hairline font-lyrics text-lyrics wide:block wide:sticky wide:top-6 wide:mt-6 wide:min-h-[max(360px,calc(100vh-360px))] wide:max-h-[calc(100vh-48px)] hidden overflow-y-auto rounded-2xl border px-6 py-5 leading-[1.45]"
+        className="border-hairline font-lyrics text-lyrics wide:block roomy:sticky roomy:top-6 wide:mt-6 wide:min-h-[max(360px,calc(100vh-360px))] roomy:max-h-[calc(100vh-48px)] hidden overflow-y-auto rounded-2xl border px-6 py-5 leading-[1.45]"
       >
         {sections.length === 0 ? (
           <p className="text-ink-3 font-sans text-[0.8125rem]">

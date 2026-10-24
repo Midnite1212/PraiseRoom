@@ -11,6 +11,7 @@ import { Finder } from '@/components/page/finder';
 import { GroupTitle } from '@/components/page/group-title';
 import { LoadingStatus } from '@/components/page/loading-status';
 import { PageHeader } from '@/components/page/page-header';
+import { useSlideOver } from '@/components/page/slide-over';
 import { Fab } from '@/components/primitives/fab';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -25,7 +26,6 @@ import {
   songKeysQueryOptions,
   songListInfiniteQueryOptions,
   songSearchQueryOptions,
-  songSlug,
   type SongSort,
   TEMPO_LABEL_KEYS,
   TEMPO_OPTIONS,
@@ -39,7 +39,7 @@ import { MAX_KEYWORD_LENGTH, toSearchKeyword } from '@/features/songs/song-searc
 import { SongsTable } from '@/features/songs/songs-table';
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { useNearEnd } from '@/hooks/use-near-end';
-import { useIsRoomy, useIsWide } from '@/hooks/use-wide';
+import { useIsWide } from '@/hooks/use-wide';
 import { cn } from '@/lib/utils';
 
 const songsSearchSchema = z.object({
@@ -91,7 +91,6 @@ function SongsPage() {
   const { q, tempo, themes, keys, web, sort, dir, song: selectedId } = search;
   const navigate = Route.useNavigate();
   const isWide = useIsWide();
-  const isRoomy = useIsRoomy();
   const searchInput = useRef<HTMLInputElement>(null);
   const [text, setText] = useState(q);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -160,9 +159,9 @@ function SongsPage() {
 
   const songs = data?.pages.flatMap((result) => result.data) ?? [];
   const totalCount = data?.pages[0]?.totalCount;
-  const selectedSong = isRoomy ? songs.find((song) => song._id === selectedId) : undefined;
+  const selectedSong = isWide ? songs.find((song) => song._id === selectedId) : undefined;
   const hasStaleSelection =
-    isRoomy && selectedId !== undefined && !selectedSong && !isFetching && data !== undefined;
+    isWide && selectedId !== undefined && !selectedSong && !isFetching && data !== undefined;
   useEffect(() => {
     if (hasStaleSelection)
       void navigate({ search: (previous) => ({ ...previous, song: undefined }), replace: true });
@@ -176,6 +175,7 @@ function SongsPage() {
     setSearch({ song: undefined });
   };
   const isPreviewOpen = selectedSong !== undefined;
+  const slideOver = useSlideOver(isPreviewOpen, closePreview);
   useEffect(() => {
     if (!isPreviewOpen) return undefined;
     const onKeyDown = (event: globalThis.KeyboardEvent) => {
@@ -185,7 +185,7 @@ function SongsPage() {
         event.target.closest('input, textarea, select, [contenteditable], [role="dialog"]')
       )
         return;
-      closePreview();
+      slideOver.close();
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
@@ -208,7 +208,10 @@ function SongsPage() {
         }
       />
       <div
-        className={cn(selectedSong && 'grid grid-cols-[minmax(0,1fr)_25rem] items-start gap-10')}
+        className={cn(
+          selectedSong &&
+            'roomy:grid roomy:grid-cols-[minmax(0,1fr)_25rem] roomy:items-start roomy:gap-10'
+        )}
       >
         <div className="min-w-0">
           <Finder
@@ -253,16 +256,7 @@ function SongsPage() {
                   sort={sort}
                   dir={dir}
                   onSort={sortBy}
-                  onSelect={(songId) => {
-                    const song = songs.find(({ _id }) => _id === songId);
-                    if (isRoomy) setSearch({ song: songId });
-                    else if (song) {
-                      void navigate({
-                        to: '/songs/$songSlug',
-                        params: { songSlug: songSlug(song) },
-                      });
-                    }
-                  }}
+                  onSelect={(songId) => setSearch({ song: songId })}
                 />
               ) : (
                 <SongRows
@@ -297,7 +291,7 @@ function SongsPage() {
             song={selectedSong}
             session={session}
             canEdit={canAdd}
-            onClose={closePreview}
+            slideOver={slideOver}
           />
         ) : null}
       </div>
