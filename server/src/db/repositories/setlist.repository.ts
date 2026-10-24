@@ -312,6 +312,35 @@ export const setlistRepository = {
     });
   },
 
+  async duplicateLive(
+    sourceId: string,
+    { _id, createdBy, publicLink, name }: SetlistCreate
+  ): Promise<SetlistRecord | null> {
+    const copyName = name === undefined ? undefined : castRequiredString('name', name);
+    return getDb().transaction(async (tx) => {
+      const [source] = await tx.select().from(setlists).where(isLiveSetlist(sourceId));
+      if (!source) return null;
+      const links = (await loadLinks(tx, [source.id])).get(source.id);
+      const id = toObjectId(_id);
+      const now = new Date();
+      const [row] = await tx
+        .insert(setlists)
+        .values({
+          id,
+          name: copyName ?? source.name,
+          date: null,
+          createdBy,
+          publicLink,
+          createdAt: now,
+          updatedAt: now,
+        })
+        .returning();
+      await writeLinks(tx, id, { songs: links?.songIds, songKeys: links?.songKeys });
+      const [record] = await assembleRecords(tx, [row]);
+      return record;
+    });
+  },
+
   async findLiveById(id: string, view: SetlistView) {
     const rows = await getDb().select().from(setlists).where(isLiveSetlist(id));
     const [record] = await populate(rows, view);

@@ -94,3 +94,15 @@ export const updateSetlist = (setlistId: string, input: SetlistInput) =>
 
 export const deleteSetlist = (setlistId: string) =>
   apiRequest('/api/setlists/delete', z.unknown(), { method: 'PUT', body: { id: setlistId } });
+
+export const duplicateSetlist = (setlistId: string, name: string) =>
+  apiRequest('/api/setlists/duplicate', savedSetlistSchema, {
+    method: 'POST',
+    body: { id: setlistId, name },
+  });
+
+export const setSetlistFolders = (setlistId: string, groupIds: string[]) =>
+  apiRequest('/api/setlists/update', savedSetlistSchema, {
+    method: 'PUT',
+    body: { id: setlistId, groupIds },
+  });

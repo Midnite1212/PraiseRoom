@@ -1,17 +1,9 @@
 import { Link, useNavigate } from '@tanstack/react-router';
-import {
-  Bulletlist,
-  Folder,
-  Link as LinkIcon,
-  MoreHorizontal,
-  PenSquare,
-  Trash,
-} from 'pixelarticons/react';
-import type { KeyboardEvent, MouseEvent, ReactNode } from 'react';
+import { Folder, Link as LinkIcon, MoreHorizontal, PenSquare, Trash } from 'pixelarticons/react';
+import { type KeyboardEvent, type MouseEvent, type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { listRowClasses } from '@/components/page/list-row';
-import { ActionMenu, MenuRow, MenuSeparator } from '@/components/primitives/action-menu';
 import { AuthorLine } from '@/components/primitives/author-line';
 import { DateBlock } from '@/components/primitives/date-block';
 import type { SetStatus } from '@/components/primitives/set-status';
@@ -25,6 +17,7 @@ import { cn } from '@/lib/utils';
 
 import type { SetlistSummary } from './api';
 import { formatSetlistDate, toDateInputValue } from './format-date';
+import { SetlistActionMenu } from './setlist-action-menu';
 import { dayLinkHandlers, useSetlistList } from './setlist-list-context';
 import { useSetlistActions } from './use-setlist-actions';
 
@@ -195,9 +188,10 @@ export function ManagedSetlistRow({
   compact = false,
   ...props
 }: Omit<SetlistRowProps, 'actions'> & { compact?: boolean }) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { setlist } = props;
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const actions = useSetlistActions(props.session, setlist);
   const edit = () =>
     void navigate({ to: '/setlists/$setlistId/edit', params: { setlistId: setlist._id } });
@@ -230,18 +224,15 @@ export function ManagedSetlistRow({
   ];
 
   const menu = (
-    <ActionMenu
-      align="end"
-      title={setlist.name}
-      description={
-        setlist.date
-          ? new Intl.DateTimeFormat(dateLocale(i18n.language), {
-              weekday: 'long',
-              day: 'numeric',
-              month: 'long',
-            }).format(new Date(setlist.date))
-          : t('setlists.noDate')
-      }
+    <SetlistActionMenu
+      session={props.session}
+      setlist={setlist}
+      names={props.names}
+      status={props.status}
+      actions={actions}
+      onEdit={edit}
+      open={isMenuOpen}
+      onOpenChange={setIsMenuOpen}
       trigger={
         <Button
           variant="ghost"
@@ -253,40 +244,12 @@ export function ManagedSetlistRow({
           <MoreHorizontal />
         </Button>
       }
-    >
-      <MenuRow asChild>
-        <Link to="/setlists/$setlistId" params={{ setlistId: setlist._id }}>
-          <Bulletlist />
-          {t('setlists.open')}
-        </Link>
-      </MenuRow>
-      {actions.canEdit ? (
-        <MenuRow onSelect={edit}>
-          <PenSquare />
-          {t('editor.edit')}
-        </MenuRow>
-      ) : null}
-      {actions.canShare ? (
-        <MenuRow onSelect={actions.copyLink}>
-          <LinkIcon />
-          {t('reader.copyLink')}
-        </MenuRow>
-      ) : null}
-      {actions.canDelete ? (
-        <>
-          <MenuSeparator />
-          <MenuRow tone="danger" onSelect={actions.requestDelete}>
-            <Trash />
-            {t('setlists.delete')}
-          </MenuRow>
-        </>
-      ) : null}
-    </ActionMenu>
+    />
   );
 
   return (
     <>
-      <SwipeRow actions={swipeActions}>
+      <SwipeRow actions={swipeActions} onLongPress={() => setIsMenuOpen(true)}>
         {compact ? (
           <PlayedSetlistRow {...props} actions={menu} />
         ) : (
@@ -294,6 +257,7 @@ export function ManagedSetlistRow({
         )}
       </SwipeRow>
       {actions.confirmDelete}
+      {actions.folderDialog}
     </>
   );
 }

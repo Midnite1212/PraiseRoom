@@ -17,6 +17,9 @@ const SetMenuOpenContext = createContext<(open: boolean) => void>(() => undefine
 
 type ActionMenuProps = {
   trigger: ReactElement;
+  // Control the menu from outside, for example to open it with a long-press.
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
   title: ReactNode;
   description?: ReactNode;
   leading?: ReactNode;
@@ -30,6 +33,8 @@ type ActionMenuProps = {
 // A ⋯ menu: anchored to its button on wide screens, a sheet from the bottom on phones.
 export function ActionMenu({
   trigger,
+  open,
+  onOpenChange,
   title,
   description,
   leading,
@@ -40,7 +45,9 @@ export function ActionMenu({
   className,
 }: ActionMenuProps) {
   const isWide = useIsWide();
-  const [isOpen, setIsOpen] = useState(false);
+  const [ownOpen, setOwnOpen] = useState(false);
+  const isOpen = open ?? ownOpen;
+  const setIsOpen = onOpenChange ?? setOwnOpen;
   if (isWide) {
     return (
       <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -120,13 +127,46 @@ export function MenuRow({
       }}
       className={cn(
         'hover:bg-fill-hover flex min-h-[46px] w-full items-center gap-3 rounded-2xl px-3 text-left font-semibold transition-colors [&_svg]:size-icon [&_svg]:flex-none',
-        tone === 'danger' ? 'text-destructive' : '[&_svg]:text-ink-2',
+        tone === 'danger'
+          ? 'text-danger-quiet hover:bg-danger-tint hover:text-destructive'
+          : '[&_svg]:text-ink-2',
         className
       )}
     >
       {children}
     </Comp>
   );
+}
+
+type MenuTileProps = {
+  children: ReactNode;
+  onSelect?: () => void;
+  disabled?: boolean;
+  asChild?: boolean;
+};
+
+// A quick action: an icon over its label. Lay tiles out in a `grid grid-cols-3`.
+export function MenuTile({ children, onSelect, disabled = false, asChild = false }: MenuTileProps) {
+  const setMenuOpen = use(SetMenuOpenContext);
+  const Comp = asChild ? Slot.Root : 'button';
+  return (
+    <Comp
+      {...(asChild ? {} : { type: 'button' as const, disabled })}
+      onClick={() => {
+        setMenuOpen(false);
+        onSelect?.();
+      }}
+      className="bg-fill-hover hover:bg-fill-press disabled:hover:bg-fill-hover [&_svg]:size-icon grid justify-items-center gap-1.5 rounded-2xl px-1 pt-3.5 pb-3 text-[0.8125rem] font-semibold transition-colors disabled:opacity-40"
+    >
+      {children}
+    </Comp>
+  );
+}
+
+// Closes the menu it sits in: the close button of a custom header.
+export function MenuClose({ children }: { children: ReactElement }) {
+  const setMenuOpen = use(SetMenuOpenContext);
+  return <Slot.Root onClick={() => setMenuOpen(false)}>{children}</Slot.Root>;
 }
 
 export function MenuSeparator() {

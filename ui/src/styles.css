@@ -103,6 +103,7 @@
   --color-glass-strong: var(--glass-tint-strong);
   --color-danger: var(--destructive);
   --color-danger-tint: var(--danger-tint);
+  --color-danger-quiet: var(--danger-quiet);
   --color-scrim: var(--scrim);
   --color-cover: var(--cover);
   --color-cover-light: var(--cover-light);
@@ -204,6 +205,7 @@
   --pixel-on: var(--brand);
   --pixel-glow: color-mix(in oklch, var(--brand) 40%, transparent);
   --danger-tint: color-mix(in oklch, var(--destructive) 14%, transparent);
+  --danger-quiet: color-mix(in oklch, var(--destructive) 45%, var(--ink-2));
   --scrim: oklch(0 0 0 / 0.45);
   --cover: oklch(0.16 0 0);
   --cover-light: oklch(1 0 0 / 0.86);

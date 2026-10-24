@@ -1,10 +1,16 @@
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { type ReactNode, type SyntheticEvent, useEffect, useRef, useState } from 'react';
 
 import { useIsWide } from '@/hooks/use-wide';
 import { cn } from '@/lib/utils';
 
 const DRAG_THRESHOLD = 8;
 const OVERSHOOT = 24;
+const LONG_PRESS_MS = 520;
+const PRESS_FEEDBACK_MS = 140;
+
+// A menu portaled out of the row still bubbles its events through React's tree.
+const isInside = (event: SyntheticEvent<HTMLElement>) =>
+  event.target instanceof Node && event.currentTarget.contains(event.target);
 
 export type SwipeAction = {
   key: string;
@@ -14,13 +20,16 @@ export type SwipeAction = {
   tone?: 'default' | 'danger';
 };
 
-// Phones: swipe a row left to reveal its actions; tap elsewhere or swipe back to close. Wide screens
-// show the row as it is and offer the same actions from its ⋯ menu.
+// Phones: swipe a row left to reveal its actions; tap elsewhere or swipe back to close. Holding a row
+// (`onLongPress`) without moving shows a press and then fires. Wide screens show the row as it is and
+// offer the same actions from its ⋯ menu.
 export function SwipeRow({
   actions,
+  onLongPress,
   children,
 }: {
   actions: readonly SwipeAction[];
+  onLongPress?: () => void;
   children: ReactNode;
 }) {
   const isWide = useIsWide();
@@ -31,7 +40,29 @@ export function SwipeRow({
     null
   );
   const swallowClick = useRef(false);
+  const holdTimers = useRef<number[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+
+  const cancelHold = () => {
+    for (const timer of holdTimers.current) window.clearTimeout(timer);
+    holdTimers.current = [];
+    delete rowRef.current?.dataset.holding;
+  };
+
+  const startHold = () => {
+    cancelHold();
+    holdTimers.current = [
+      window.setTimeout(() => {
+        if (rowRef.current) rowRef.current.dataset.holding = '';
+      }, PRESS_FEEDBACK_MS),
+      window.setTimeout(() => {
+        drag.current = null;
+        swallowClick.current = true;
+        cancelHold();
+        onLongPress?.();
+      }, LONG_PRESS_MS),
+    ];
+  };
 
   const place = (offset: number | null) => {
     const row = rowRef.current;
@@ -50,6 +81,13 @@ export function SwipeRow({
     place(open ? -(actionsRef.current?.offsetWidth ?? 0) : null);
   };
 
+  useEffect(
+    () => () => {
+      for (const timer of holdTimers.current) window.clearTimeout(timer);
+    },
+    []
+  );
+
   useEffect(() => {
     if (!isOpen) return undefined;
     const closeOnOutsideTap = (event: PointerEvent) => {
@@ -61,7 +99,7 @@ export function SwipeRow({
     return () => document.removeEventListener('pointerdown', closeOnOutsideTap);
   }, [isOpen]);
 
-  if (isWide || actions.length === 0) return <li>{children}</li>;
+  if (isWide || (actions.length === 0 && !onLongPress)) return <li>{children}</li>;
 
   return (
     <li ref={hostRef} className="group/swipe relative overflow-hidden rounded-2xl">
@@ -93,6 +131,9 @@ export function SwipeRow({
       <div
         ref={rowRef}
         onPointerDown={(event) => {
+          if (!isInside(event)) return;
+          swallowClick.current = false;
+          if (onLongPress && !isOpen && event.isPrimary && event.button === 0) startHold();
           drag.current = {
             x0: event.clientX,
             y0: event.clientY,
@@ -106,6 +147,7 @@ export function SwipeRow({
           if (!state) return;
           state.dx = event.clientX - state.x0;
           const dy = event.clientY - state.y0;
+          if (Math.abs(state.dx) >= DRAG_THRESHOLD || Math.abs(dy) >= DRAG_THRESHOLD) cancelHold();
           if (Math.abs(state.dx) < DRAG_THRESHOLD || Math.abs(state.dx) < Math.abs(dy)) return;
           if (!state.moved) {
             state.moved = true;
@@ -116,6 +158,7 @@ export function SwipeRow({
           place(Math.min(0, Math.max(-max - OVERSHOOT, state.base + state.dx)));
         }}
         onPointerUp={(event) => {
+          cancelHold();
           const state = drag.current;
           drag.current = null;
           delete event.currentTarget.dataset.dragging;
@@ -129,6 +172,7 @@ export function SwipeRow({
           }
         }}
         onPointerCancel={(event) => {
+          cancelHold();
           drag.current = null;
           delete event.currentTarget.dataset.dragging;
           settle(isOpen);
@@ -138,13 +182,16 @@ export function SwipeRow({
             delete hostRef.current.dataset.swiping;
           }
         }}
+        onContextMenu={
+          onLongPress ? (event) => isInside(event) && event.preventDefault() : undefined
+        }
         onClickCapture={(event) => {
-          if (!swallowClick.current) return;
+          if (!swallowClick.current || !isInside(event)) return;
           swallowClick.current = false;
           event.preventDefault();
           event.stopPropagation();
         }}
-        className="group-data-swiping/swipe:bg-ground ease-liquid relative translate-x-(--swipe) touch-pan-y transition-transform duration-[380ms] [--swipe:0px] data-dragging:transition-none"
+        className="group-data-swiping/swipe:bg-ground ease-liquid data-holding:bg-fill-press relative translate-x-(--swipe) touch-pan-y rounded-2xl transition-transform duration-[380ms] [--swipe:0px] [-webkit-touch-callout:none] data-dragging:transition-none data-holding:scale-[0.98]"
       >
         {children}
       </div>

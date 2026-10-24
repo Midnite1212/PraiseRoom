@@ -79,6 +79,7 @@ describe('permissionMiddleware', () => {
         'POST /api/groups/create': 1,
         'POST /api/ownerships/create': 1,
         'POST /api/setlists/create': 1,
+        'POST /api/setlists/duplicate': 1,
         'POST /api/songs/create': 2,
         'POST /api/songs/import/convert': 2,
         'POST /api/songs/import/fetch': 2,

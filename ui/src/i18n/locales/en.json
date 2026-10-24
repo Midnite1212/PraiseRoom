@@ -176,6 +176,20 @@
     "share": "Share",
     "delete": "Delete",
     "more": "More",
+    "menu": {
+      "delete": "Delete setlist",
+      "close": "Close",
+      "duplicate": "Duplicate",
+      "copyName": "{{name}} (copy)",
+      "duplicated": "Made a copy of {{name}}",
+      "duplicateFailed": "Could not duplicate the setlist. Please try again.",
+      "addToFolder": "Add to a folder",
+      "folderDescription": "Everyone in these folders can open and edit this setlist.",
+      "foldersSaved": "Folders updated.",
+      "foldersFailed": "Could not update the folders. Please try again.",
+      "madeThisEditable": "made this; you can edit it.",
+      "madeThis": "made this."
+    },
     "filters": {
       "title": "Filter setlists",
       "matches_one": "{{count}} setlist matches",
