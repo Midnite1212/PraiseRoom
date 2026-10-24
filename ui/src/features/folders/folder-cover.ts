@@ -1,62 +1,64 @@
-import { nextSetlistId, setStatus, type SetStatus } from '@/components/primitives/set-status';
+import { nextSetlistId } from '@/components/primitives/set-status';
 import type { SetlistSummary } from '@/features/setlists/api';
 
-export const CELL_CLASSES = {
-  a: 'bg-brand',
-  w: 'bg-cover-light',
-  u: 'bg-cover-soft',
-  g: 'bg-cover-dim',
-  '': '',
-} as const;
+export const GLYPH_SIZE = 5;
+const GLYPH_HALF = Math.ceil(GLYPH_SIZE / 2);
+const MIN_LIT = 9;
+const MAX_LIT = 16;
+const MAX_TRIES = 64;
 
-export type Cell = keyof typeof CELL_CLASSES;
+// One `[data-cover-hue]` rule per hue in src/styles.css.
+export const COVER_HUES = 8;
 
-const SIZE = 6;
-const STATUS_CELLS: Record<SetStatus, Cell> = { next: 'a', past: 'w', up: 'u', undated: 'g' };
+export type FolderCover = { glyph: readonly boolean[]; hue: number };
 
-// Column width and gap that fit n columns in the grid, widest first.
-const columnLayout = (count: number): { width: number; gap: number } => {
-  for (const [width, gap] of [
-    [2, 1],
-    [1, 1],
-    [1, 0],
-  ] as const) {
-    if (count * width + (count - 1) * gap <= SIZE) return { width, gap };
+// FNV-1a over the id's characters.
+const hashId = (id: string): number => {
+  let hash = 0x811c9dc5;
+  for (const char of id) {
+    hash ^= char.codePointAt(0) ?? 0;
+    hash = Math.imul(hash, 0x01000193);
   }
-  return { width: 1, gap: 0 };
+  return hash >>> 0;
 };
 
-type CoverSetlist = Pick<SetlistSummary, '_id' | 'date' | 'songs'>;
-
-const timeOf = (setlist: CoverSetlist): number => {
-  const time = setlist.date ? new Date(setlist.date).getTime() : Number.NaN;
-  return Number.isNaN(time) ? Infinity : time;
+// Mulberry32: a small seeded generator, so a folder draws the same glyph on every device.
+const seededRandom = (seed: number) => {
+  let state = seed;
+  return (): number => {
+    state = (state + 0x6d2b79f5) | 0;
+    let t = Math.imul(state ^ (state >>> 15), 1 | state);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
 };
 
-// An equaliser of the folder's latest setlists: one column each, oldest on the left, one pixel per song
-// stacked from the floor. `nextId` is the soonest upcoming setlist across everything the user can see.
-export const coverCells = (
-  setlists: readonly CoverSetlist[],
-  nextId: string | null,
-  now: number
-): Cell[] => {
-  const columns = setlists.toSorted((a, b) => timeOf(a) - timeOf(b)).slice(-SIZE);
-  const { width, gap } = columnLayout(columns.length);
-  const offset = Math.floor((SIZE - (columns.length * width + (columns.length - 1) * gap)) / 2);
-  const cells: Cell[] = [];
-  for (let row = 0; row < SIZE; row += 1) {
-    for (let column = 0; column < SIZE; column += 1) {
-      const relative = column - offset;
-      const setlist =
-        relative >= 0 && relative % (width + gap) < width
-          ? columns[Math.floor(relative / (width + gap))]
-          : undefined;
-      const lit = setlist !== undefined && SIZE - row <= Math.min(SIZE, setlist.songs.length);
-      cells.push(lit ? STATUS_CELLS[setStatus(setlist, nextId, now)] : '');
-    }
+const mirror = (half: readonly boolean[]): boolean[] =>
+  Array.from({ length: GLYPH_SIZE * GLYPH_SIZE }, (_, index) => {
+    const row = Math.floor(index / GLYPH_SIZE);
+    const column = index % GLYPH_SIZE;
+    return half[row * GLYPH_HALF + Math.min(column, GLYPH_SIZE - 1 - column)] ?? false;
+  });
+
+const isBalanced = (glyph: readonly boolean[]): boolean => {
+  const lit = glyph.filter(Boolean).length;
+  const centre = glyph.some((on, index) => on && index % GLYPH_SIZE === GLYPH_HALF - 1);
+  return lit >= MIN_LIT && lit <= MAX_LIT && centre;
+};
+
+// A folder's cover: a mirrored 5×5 pixel glyph and a hue, both drawn from its id so they never change.
+export const folderCover = (folderId: string): FolderCover => {
+  const seed = hashId(folderId);
+  const random = seededRandom(seed);
+  let glyph: boolean[] = [];
+  for (let attempt = 0; attempt < MAX_TRIES; attempt += 1) {
+    glyph = mirror(Array.from({ length: GLYPH_SIZE * GLYPH_HALF }, () => random() < 0.5));
+    if (isBalanced(glyph)) break;
   }
-  return cells;
+  return { glyph, hue: (seed >>> 5) % COVER_HUES };
 };
+
+type CoverSetlist = Pick<SetlistSummary, '_id' | 'date'>;
 
 // The folder's soonest setlist dated today or later.
 export const nextFolderDate = (setlists: readonly CoverSetlist[], now: number): string | null => {

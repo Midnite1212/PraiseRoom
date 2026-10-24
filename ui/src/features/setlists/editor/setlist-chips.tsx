@@ -93,10 +93,10 @@ function FolderPickRow({
   onToggle: () => void;
 }) {
   const { t } = useTranslation();
-  const { cells } = useFolderCover(folder, now);
+  const { cover } = useFolderCover(folder, now);
   return (
     <PickRow
-      leading={<FolderSleeve cells={cells} size="pick" />}
+      leading={<FolderSleeve cover={cover} size="pick" />}
       title={folder.groupName}
       hint={memberCount === undefined ? undefined : t('folders.members', { count: memberCount })}
       checked={checked}

@@ -184,10 +184,8 @@
   --color-danger-quiet: var(--danger-quiet);
   --color-ok: var(--ok);
   --color-scrim: var(--scrim);
-  --color-cover: var(--cover);
-  --color-cover-light: var(--cover-light);
-  --color-cover-soft: var(--cover-soft);
-  --color-cover-dim: var(--cover-dim);
+  --color-cover-tint: var(--cover-tint);
+  --color-cover-ink: var(--cover-ink);
   --color-on-brand: var(--on-brand);
 
   --color-sheet: var(--sheet);
@@ -295,10 +293,6 @@
   --danger-tint: color-mix(in oklch, var(--destructive) 14%, transparent);
   --danger-quiet: color-mix(in oklch, var(--destructive) 45%, var(--ink-2));
   --scrim: oklch(0 0 0 / 0.45);
-  --cover: oklch(0.92 0 0);
-  --cover-light: oklch(0.2 0 0 / 0.85);
-  --cover-soft: oklch(0 0 0 / 0.28);
-  --cover-dim: oklch(0 0 0 / 0.12);
 
   --background: var(--ground);
   --foreground: var(--ink);
@@ -368,10 +362,6 @@
   --liquid-rim: oklch(1 0 0 / 0.2);
   --pixel-off: oklch(1 0 0 / 0.18);
   --pixel-played: oklch(1 0 0 / 0.52);
-  --cover: oklch(0.16 0 0);
-  --cover-light: oklch(1 0 0 / 0.86);
-  --cover-soft: oklch(1 0 0 / 0.34);
-  --cover-dim: oklch(1 0 0 / 0.16);
   --pixel-glow: color-mix(in oklch, var(--brand) 80%, transparent);
   --scrim: oklch(0 0 0 / 0.55);
 
@@ -439,6 +429,41 @@
 [data-palette='signal'].dark,
 .dark [data-palette='signal'] {
   --chord-five: oklch(0.88 0.15 100);
+}
+
+/* Folder cover hues: `data-cover-hue` (0 to `COVER_HUES - 1`, src/features/folders/folder-cover.ts) picks
+   one, and the cover's tint and ink follow the theme. */
+[data-cover-hue] {
+  --cover-tint: oklch(0.93 0.05 var(--cover-hue));
+  --cover-ink: oklch(0.5 0.16 var(--cover-hue));
+}
+.dark [data-cover-hue] {
+  --cover-tint: oklch(0.27 0.07 var(--cover-hue));
+  --cover-ink: oklch(0.85 0.14 var(--cover-hue));
+}
+[data-cover-hue='0'] {
+  --cover-hue: 25;
+}
+[data-cover-hue='1'] {
+  --cover-hue: 60;
+}
+[data-cover-hue='2'] {
+  --cover-hue: 100;
+}
+[data-cover-hue='3'] {
+  --cover-hue: 150;
+}
+[data-cover-hue='4'] {
+  --cover-hue: 190;
+}
+[data-cover-hue='5'] {
+  --cover-hue: 235;
+}
+[data-cover-hue='6'] {
+  --cover-hue: 285;
+}
+[data-cover-hue='7'] {
+  --cover-hue: 330;
 }
 
 @property --sheen {
