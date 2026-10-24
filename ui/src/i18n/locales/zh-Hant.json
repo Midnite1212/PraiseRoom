@@ -176,6 +176,20 @@
     "share": "分享",
     "delete": "刪除",
     "more": "更多",
+    "menu": {
+      "delete": "刪除歌單",
+      "close": "關閉",
+      "duplicate": "複製",
+      "copyName": "{{name}}（副本）",
+      "duplicated": "已複製「{{name}}」",
+      "duplicateFailed": "無法複製歌單，請再試一次。",
+      "addToFolder": "加入資料夾",
+      "folderDescription": "這些資料夾裡的所有人都能開啟並編輯這份歌單。",
+      "foldersSaved": "已更新資料夾。",
+      "foldersFailed": "無法更新資料夾，請再試一次。",
+      "madeThisEditable": "建立了這份歌單，你可以編輯。",
+      "madeThis": "建立了這份歌單。"
+    },
     "filters": {
       "title": "篩選歌單",
       "matches_one": "{{count}} 個歌單符合",

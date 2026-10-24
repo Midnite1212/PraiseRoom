@@ -17,6 +17,7 @@ import { TokenUser } from '../utils/verify-jwt';
 import {
   createSetlist,
   deleteSetlist,
+  duplicateSetlist,
   getSetlist,
   keepSetlistSongKeys,
   parseSongKeys,
@@ -389,6 +390,59 @@ describe('setlist controllers', () => {
       }
       const arg = create.mock.calls[0]?.arguments[0];
       assert.equal(arg?.publicLink, `http://localhost:8080/setlist/view/${arg?._id}`);
+    });
+  });
+
+  describe('duplicateSetlist', () => {
+    it('rejects a request without req.user', async () => {
+      const duplicate = mock.method(setlistRepository, 'duplicateLive', async () => ({}));
+      const res = await call(duplicateSetlist, { body: { id: SETLIST_ID } });
+      assert.equal(res.statusCode, 401);
+      assert.equal(duplicate.mock.callCount(), 0);
+    });
+
+    it('rejects a missing or invalid id', async () => {
+      const duplicate = mock.method(setlistRepository, 'duplicateLive', async () => ({}));
+      for (const body of [undefined, {}, { id: 'nope' }, { id: [SETLIST_ID] }]) {
+        const res = await call(duplicateSetlist, { body, user: USER });
+        assert.equal(res.statusCode, 400);
+        assert.equal(res.body, 'Missing required fields');
+      }
+      assert.equal(duplicate.mock.callCount(), 0);
+    });
+
+    it('copies for the caller with a server-set _id, createdBy and publicLink', async () => {
+      const copy = { _id: OTHER_SETLIST_ID };
+      const duplicate = mock.method(setlistRepository, 'duplicateLive', async () => copy);
+      const res = await call(duplicateSetlist, {
+        body: {
+          createdBy: 'someone-else',
+          groupIds: [GROUP_ID],
+          id: SETLIST_ID,
+          name: 'Sunday copy',
+          publicLink: 'https://evil.example',
+        },
+        user: USER,
+      });
+      const [sourceId, arg] = duplicate.mock.calls[0]?.arguments ?? [];
+      assert.equal(sourceId, SETLIST_ID);
+      assert.ok(arg);
+      const { _id, ...rest } = arg;
+      assert.match(_id, /^[0-9a-f]{24}$/);
+      assert.deepEqual(rest, {
+        createdBy: USER.id,
+        name: 'Sunday copy',
+        publicLink: `https://worship.example/setlist/view/${_id}`,
+      });
+      assert.equal(res.statusCode, 200);
+      assert.equal(res.body, copy);
+    });
+
+    it('returns 404 when no live setlist matches', async () => {
+      mock.method(setlistRepository, 'duplicateLive', async () => null);
+      const res = await call(duplicateSetlist, { body: { id: SETLIST_ID }, user: USER });
+      assert.equal(res.statusCode, 404);
+      assert.equal(res.body, 'Setlist not found');
     });
   });
 

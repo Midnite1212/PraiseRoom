@@ -153,6 +153,41 @@ const createSetlist: RequestHandler = async (
   }
 };
 
+const duplicateSetlist: RequestHandler = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<void> => {
+  if (!req.user) {
+    sendResponse(res, 401, 'Unauthorized');
+    return;
+  }
+
+  const id: unknown = req.body?.id;
+  if (!isObjectIdString(id)) {
+    sendResponse(res, 400, 'Missing required fields');
+    return;
+  }
+
+  const _id = generateObjectId();
+  const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+
+  try {
+    const setlist = await setlistRepository.duplicateLive(id, {
+      ...pick(req.body, ['name']),
+      _id,
+      createdBy: req.user.id,
+      publicLink: `${baseUrl}/setlist/view/${_id}`,
+    });
+    if (setlist) {
+      sendResponse(res, 200, setlist);
+    } else {
+      sendResponse(res, 404, 'Setlist not found');
+    }
+  } catch (error: unknown) {
+    sendError(res, error);
+  }
+};
+
 const getSetlist: RequestHandler = async (
   req: AuthenticatedRequest,
   res: Response
@@ -307,4 +342,4 @@ const deleteSetlist: RequestHandler = async (
   }
 };
 
-export { createSetlist, getSetlist, updateSetlist, deleteSetlist };
+export { createSetlist, deleteSetlist, duplicateSetlist, getSetlist, updateSetlist };

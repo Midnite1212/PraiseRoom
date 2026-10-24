@@ -71,6 +71,10 @@ export const ROUTE_PERMISSIONS: Record<string, PermissionConfig> = {
     requiresAuth: true,
     description: 'Create new setlist',
   },
+  'POST /api/setlists/duplicate': {
+    requiresAuth: true,
+    description: 'Copy a setlist for the caller',
+  },
   'GET /api/setlists/get': {
     requiresAuth: false,
     optionalAuth: true,
