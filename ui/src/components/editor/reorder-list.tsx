@@ -129,7 +129,7 @@ export function ReorderList<T>({
               aria-label={t('editor.frame.moveHandle', { title: getLabel(item) })}
               onPointerDown={(event) => startDrag(event, key, index)}
               onKeyDown={(event) => moveWithKeys(event, item, index)}
-              className="text-ink-3 hover:text-ink hover:bg-fill-hover grid size-9 flex-none cursor-grab touch-none place-items-center rounded-xl transition-colors active:cursor-grabbing"
+              className="text-ink-3 hover:text-ink hover:bg-fill-hover wide:w-9 grid h-11 w-7 flex-none cursor-grab touch-none place-items-center rounded-xl transition-colors active:cursor-grabbing"
             >
               <svg viewBox="0 0 18 18" className="size-icon fill-current" aria-hidden>
                 <rect x="3" y="6" width="12" height="2" />

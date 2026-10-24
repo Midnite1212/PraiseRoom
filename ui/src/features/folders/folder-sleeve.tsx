@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { CELL_CLASSES, type Cell } from './folder-cover';
 
 const SLEEVE_SIZES = {
+  pick: 'w-9 mr-1.5 [&_[data-cover]]:rounded-md',
   row: 'w-12 mr-2 [&_[data-cover]]:rounded-lg',
   hero: 'w-24 mr-4 wide:w-[152px] wide:mr-[26px]',
   pane: 'w-24 mr-4 wide:w-[120px] wide:mr-5',

@@ -23,6 +23,11 @@ export const tempoLevel = (tempo: readonly string[]): number =>
 
 export const tempoLabelKey = (tempo: readonly string[]) =>
   Object.values(TEMPOS).find((entry) => entry.level === tempoLevel(tempo))?.labelKey;
+// The translation key for the tempo the meter shows, undefined when none is known.
+export const tempoLabelKey = (tempo: readonly string[]) => {
+  const level = tempoLevel(tempo);
+  return Object.values(TEMPOS).find((entry) => entry.level === level)?.labelKey;
+};
 
 // Tempo as four rising bars, lit up to the song's level.
 export function TempoMeter({ tempo, className }: { tempo: readonly string[]; className?: string }) {

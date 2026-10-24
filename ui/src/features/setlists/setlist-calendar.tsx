@@ -8,7 +8,7 @@ import { dateLocale } from '@/lib/date-locale';
 import { cn } from '@/lib/utils';
 
 import type { SetlistSummary } from './api';
-import { toDateInputValue } from './format-date';
+import { toDateInputValue, weekdayLabels } from './format-date';
 import { dayLinkHandlers, useSetlistList } from './setlist-list-context';
 
 type SetlistCalendarProps = {
@@ -79,6 +79,7 @@ export function SetlistCalendar({ setlists, now, day, onDayChange }: SetlistCale
       label: new Intl.DateTimeFormat(dateLocale(i18n.language), { weekday: 'narrow' }).format(date),
     };
   });
+  const weekdays = weekdayLabels(i18n.language);
   const dayLabel = (date: Date) =>
     new Intl.DateTimeFormat(dateLocale(i18n.language), { day: 'numeric', month: 'long' }).format(
       date
