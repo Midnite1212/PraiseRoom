@@ -2,6 +2,8 @@ import {
   createGroup,
   deleteGroup,
   getGroup,
+  getInviteToken,
+  joinGroup,
   updateGroup,
   updateGroupMembers,
 } from '../controllers/group.controllers';
@@ -13,6 +15,8 @@ router.post('/api/groups/create', createGroup);
 router.get('/api/groups/get', getGroup);
 router.put('/api/groups/update', updateGroup);
 router.put('/api/groups/members', updateGroupMembers);
+router.put('/api/groups/invite', getInviteToken);
+router.put('/api/groups/join', joinGroup);
 router.put('/api/groups/delete', deleteGroup);
 
 export default router.getRouter();

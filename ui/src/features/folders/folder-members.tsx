@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { Close, Logout, Plus, Search, UserPlus, Users } from 'pixelarticons/react';
+import { Close, Link, Logout, Plus, Search, UserPlus, Users } from 'pixelarticons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -35,6 +35,8 @@ import type { Folder } from '@/features/setlists/api';
 import {
   changeFolderMembers,
   FOLDER_RELATED_QUERY_KEYS,
+  inviteQueryOptions,
+  inviteUrl,
   membersOf,
   type Person,
   peopleQueryOptions,
@@ -180,6 +182,43 @@ export function MembersSheet({
   );
 }
 
+function InviteLinkRow({ folderId }: { folderId: string }) {
+  const { t } = useTranslation();
+  const { data } = useQuery(inviteQueryOptions(folderId));
+  const url = data ? inviteUrl(data.token) : null;
+
+  const copy = async () => {
+    if (!url) return;
+    try {
+      await navigator.clipboard.writeText(url);
+      toast.success(t('folders.inviteCopied'));
+    } catch {
+      toast.error(t('folders.inviteCopyFailed'));
+    }
+  };
+
+  return (
+    <div className="bg-fill-on flex items-center gap-3 rounded-2xl p-3">
+      <span className="bg-fill-hover [&_svg]:size-icon grid size-[52px] shrink-0 place-content-center rounded-[14px]">
+        <Link />
+      </span>
+      <div className="min-w-0 flex-1">
+        <b className="block text-sm">{t('folders.inviteLink')}</b>
+        {url ? (
+          <small className="text-ink-2 block truncate font-mono text-xs">
+            {url.replace(/^https?:\/\//, '')}
+          </small>
+        ) : (
+          <Skeleton className="mt-1 h-3.5 w-40 max-w-full" />
+        )}
+      </div>
+      <Button variant="link" size="sm" disabled={!url} onClick={() => void copy()}>
+        {t('folders.copy')}
+      </Button>
+    </div>
+  );
+}
+
 export function AddPeopleDialog({
   folder,
   open,
@@ -224,6 +263,7 @@ export function AddPeopleDialog({
             {t('folders.addPeopleDescription', { name: folder.groupName })}
           </DialogDescription>
         </DialogHeader>
+        <InviteLinkRow folderId={folder._id} />
         <label className="bg-fill-hover [&_svg]:size-icon [&_svg]:text-ink-2 flex h-12 items-center gap-2.5 rounded-2xl px-3.5">
           <Search />
           <input

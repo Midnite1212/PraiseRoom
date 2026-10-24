@@ -1,8 +1,12 @@
 const OBJECT_ID_PATTERN = /^[0-9a-fA-F]{24}$/;
+const INVITE_TOKEN_PATTERN = /^[A-Za-z0-9_-]{24}$/;
 const USER_ID_PATTERN = /^[A-Za-z0-9_-]{1,64}$/;
 
 export const isUserIdString = (value: unknown): value is string =>
   typeof value === 'string' && USER_ID_PATTERN.test(value);
+
+export const isInviteToken = (value: unknown): value is string =>
+  typeof value === 'string' && INVITE_TOKEN_PATTERN.test(value);
 
 export const isObjectIdString = (value: unknown): value is string =>
   typeof value === 'string' && OBJECT_ID_PATTERN.test(value);

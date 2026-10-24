@@ -29,6 +29,13 @@
       "when": 1792427967969,
       "tag": "0003_song_capo",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1792815116613,
+      "tag": "0004_lethal_ben_parker",
+      "breakpoints": true
     }
   ]
 }

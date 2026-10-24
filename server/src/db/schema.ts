@@ -147,6 +147,7 @@ export const groups = pgTable(
     groupName: text('group_name').notNull(),
     createdBy: text('created_by'),
     lastUpdatedBy: text('last_updated_by'),
+    inviteToken: text('invite_token').unique('groups_invite_token_unique'),
     isDeleted: boolean('is_deleted').notNull().default(false),
     ...timestamps,
   },

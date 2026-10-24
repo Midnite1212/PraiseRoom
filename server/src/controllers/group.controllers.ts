@@ -14,7 +14,12 @@ import {
 } from '../utils/authorization';
 import { pick } from '../utils/pick';
 import { sendError, sendResponse } from '../utils/response';
-import { isObjectIdString, isUserIdString, toObjectIdList } from '../utils/validation';
+import {
+  isInviteToken,
+  isObjectIdString,
+  isUserIdString,
+  toObjectIdList,
+} from '../utils/validation';
 
 const parseUserIds = (value: unknown): string[] | null => {
   if (value === undefined) return [];
@@ -188,6 +193,82 @@ const updateGroupMembers: RequestHandler = async (
   }
 };
 
+const getInviteToken: RequestHandler = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<void> => {
+  if (!req.user) {
+    sendResponse(res, 401, 'Unauthorized');
+    return;
+  }
+
+  const groupId: unknown = req.body?.groupId;
+  const reset: unknown = req.body?.reset;
+
+  if (!isObjectIdString(groupId) || (reset !== undefined && typeof reset !== 'boolean')) {
+    sendResponse(res, 400, 'Missing required fields');
+    return;
+  }
+
+  try {
+    const group = await groupRepository.findLiveAccess(groupId);
+    if (!group) {
+      sendResponse(res, 404, 'Group not found');
+      return;
+    }
+    if (!canEditGroup(req.user, group, await findCallerOwnership(req.user))) {
+      sendForbidden(res);
+      return;
+    }
+
+    const token = await groupRepository.ensureInviteToken(groupId, reset === true);
+    if (!token) {
+      sendResponse(res, 404, 'Group not found');
+      return;
+    }
+    sendResponse(res, 200, { token });
+  } catch (error: unknown) {
+    sendError(res, error);
+  }
+};
+
+const joinGroup: RequestHandler = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<void> => {
+  if (!req.user) {
+    sendResponse(res, 401, 'Unauthorized');
+    return;
+  }
+
+  const token: unknown = req.body?.token;
+  if (!isInviteToken(token)) {
+    sendResponse(res, 400, 'Missing required fields');
+    return;
+  }
+
+  try {
+    const group = await groupRepository.findLiveAccessByInviteToken(token);
+    if (!group) {
+      sendResponse(res, 404, 'Invite link not found');
+      return;
+    }
+    if (!(await findCallerOwnership(req.user))) {
+      sendForbidden(res);
+      return;
+    }
+
+    await ownershipRepository.changeGroupMembership({
+      entry: toOwnershipEntry(group),
+      add: [req.user.id],
+      remove: [],
+    });
+    sendResponse(res, 200, { groupId: group._id });
+  } catch (error: unknown) {
+    sendError(res, error);
+  }
+};
+
 const deleteGroup: RequestHandler = async (
   req: AuthenticatedRequest,
   res: Response
@@ -225,4 +306,12 @@ const deleteGroup: RequestHandler = async (
   }
 };
 
-export { createGroup, getGroup, updateGroup, updateGroupMembers, deleteGroup };
+export {
+  createGroup,
+  getGroup,
+  getInviteToken,
+  joinGroup,
+  updateGroup,
+  updateGroupMembers,
+  deleteGroup,
+};
