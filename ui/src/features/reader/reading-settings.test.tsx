@@ -7,7 +7,7 @@ import {
 } from '@tanstack/react-router';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { ReadingSettings } from './reading-settings';
 
@@ -54,6 +54,29 @@ describe('ReadingSettings', () => {
     await user.click(colour);
     expect(colour).toBeChecked();
     expect(localStorage.getItem('chord-colour')).toBe('on');
+  });
+
+  it('stores the keep screen awake switch, on by default, with a note', async () => {
+    Object.defineProperty(navigator, 'wakeLock', {
+      configurable: true,
+      value: { request: vi.fn<() => Promise<void>>() },
+    });
+    const user = await renderSettings();
+
+    const awake = screen.getByRole('switch', { name: 'Keep screen awake' });
+    expect(awake).toBeChecked();
+    expect(screen.getByText('On while this page is open')).toBeInTheDocument();
+    await user.click(awake);
+    expect(awake).not.toBeChecked();
+    expect(localStorage.getItem('keep-awake')).toBe('off');
+    expect(screen.queryByText('On while this page is open')).not.toBeInTheDocument();
+    Reflect.deleteProperty(navigator, 'wakeLock');
+  });
+
+  it('says so where the browser has no Wake Lock', async () => {
+    await renderSettings();
+
+    expect(screen.getByText('Not supported in this browser')).toBeInTheDocument();
   });
 
   it('has theme and language controls', async () => {

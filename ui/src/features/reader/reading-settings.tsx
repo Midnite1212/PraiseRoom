@@ -17,6 +17,7 @@ import {
   useChordStyle,
   useColourChords,
 } from './chord-display';
+import { useKeepAwake, wakeLockSupported } from './keep-awake';
 
 const ACCIDENTAL_LABELS = { sharp: 'F#', flat: 'Gb' } as const;
 
@@ -48,6 +49,12 @@ export function ReadingSettings({ showSettingsLink = true }: { showSettingsLink?
   const [chordStyle, setChordStyle] = useChordStyle();
   const [accidentals, setAccidentals] = useAccidentals();
   const [colourChords, setColourChords] = useColourChords();
+  const [keepAwake, setKeepAwake] = useKeepAwake();
+  const awakeHint = wakeLockSupported()
+    ? keepAwake === 'on'
+      ? t('reader.awakeOn')
+      : undefined
+    : t('reader.awakeOff');
 
   return (
     <Tray
@@ -108,6 +115,13 @@ export function ReadingSettings({ showSettingsLink = true }: { showSettingsLink?
         </SetRow>
         <SetRow label={t('language.label')}>
           <LanguageChoice compact />
+        </SetRow>
+        <SetRow label={t('reader.keepAwake')} hint={awakeHint}>
+          <Switch
+            aria-label={t('reader.keepAwake')}
+            checked={keepAwake === 'on'}
+            onCheckedChange={(checked) => setKeepAwake(checked ? 'on' : 'off')}
+          />
         </SetRow>
       </div>
       {showSettingsLink ? (
