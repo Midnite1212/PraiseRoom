@@ -4,6 +4,7 @@ import { useScrolledClass } from '@/hooks/use-scrolled-class';
 import { cn } from '@/lib/utils';
 
 import { useKeepAwake, useWakeLock } from './keep-awake';
+import { useScrollingClass } from './use-scrolling-class';
 
 type ReaderLayoutProps = {
   // Start of the top row: the back button.
@@ -46,6 +47,7 @@ export function ReaderLayout({
   children,
 }: ReaderLayoutProps) {
   useScrolledClass();
+  useScrollingClass();
   const [keepAwake] = useKeepAwake();
   useWakeLock(keepAwake === 'on');
   const offsetClass = sidebar
