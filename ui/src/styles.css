@@ -31,6 +31,8 @@
   --animate-sheet-out: sheet-out 200ms var(--ease-out) forwards;
   --animate-pop-in: pop-in 420ms var(--ease-liquid);
   --animate-pop-out: pop-out 160ms var(--ease-out) forwards;
+  --animate-glass-fade-in: glass-fade-in 240ms var(--ease-out) backwards;
+  --animate-glass-fade-out: glass-fade-out 160ms var(--ease-out) forwards;
   --animate-scrim-in: scrim-in 200ms var(--ease-out);
   --animate-scrim-out: scrim-out 220ms var(--ease-out) forwards;
 
@@ -60,26 +62,36 @@
   }
   @keyframes sheet-in {
     from {
-      opacity: 0;
       transform: translateY(24px) scale(0.96);
+      box-shadow: none;
     }
   }
   @keyframes sheet-out {
     to {
-      opacity: 0;
       transform: translateY(24px) scale(0.96);
+      box-shadow: none;
     }
   }
   @keyframes pop-in {
     from {
-      opacity: 0;
       transform: translateY(-8px) scale(0.96);
+      box-shadow: none;
     }
   }
   @keyframes pop-out {
     to {
-      opacity: 0;
       transform: translateY(-8px) scale(0.96);
+      box-shadow: none;
+    }
+  }
+  @keyframes glass-fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes glass-fade-out {
+    to {
+      opacity: 0;
     }
   }
   @keyframes scrim-in {
@@ -620,6 +632,20 @@
       var(--ground);
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
+  }
+
+  /* Floating glass (sheets, trays, popovers, menus) fades its layers and content, never itself: opacity below 1
+     on the host cuts its backdrop blur off from the page, so the blur would only pop in once the fade ends. */
+  .glass:is([role='dialog'], [role='menu'])[data-state='open']::before,
+  .glass:is([role='dialog'], [role='menu'])[data-state='open']::after,
+  .glass:is([role='dialog'], [role='menu'])[data-state='open'] > * {
+    animation: var(--animate-glass-fade-in);
+  }
+
+  .glass:is([role='dialog'], [role='menu'])[data-state='closed']::before,
+  .glass:is([role='dialog'], [role='menu'])[data-state='closed']::after,
+  .glass:is([role='dialog'], [role='menu'])[data-state='closed'] > * {
+    animation: var(--animate-glass-fade-out);
   }
 
   /* Glass that floats over moving content carries a denser tint so its own labels always win. */
