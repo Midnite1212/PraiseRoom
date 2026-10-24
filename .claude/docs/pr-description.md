@@ -47,7 +47,7 @@ Closes #<issue#>
 
 - [ ] Open `/setlist/add` → add three songs → save → reopen
 - [ ] Desktop 1440 and mobile 390
-- [ ] Checks for each folder touched: `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build` in ui/; `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build` in old-ui/; `pnpm typecheck`, `pnpm lint`, `pnpm test` in server/; `pnpm format:check` from the root
+- [ ] Checks for each folder touched: `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build` in ui/; `pnpm typecheck`, `pnpm lint`, `pnpm test` in server/; `pnpm format:check` from the root
 - [ ] Pattern docs changed (new UI): list them, or "none"
 
 ## Not in this PR

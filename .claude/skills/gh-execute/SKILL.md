@@ -18,20 +18,19 @@ If the request is a bare issue with no task checklist and no plan, stop and writ
 
 ## Before the first task
 
-1. Read `AGENTS.md` and follow its Mandatory Procedure for the kind of change ahead, plus `ui/AGENTS.md` or `old-ui/AGENTS.md` for UI work.
+1. Read `AGENTS.md` and follow its Mandatory Procedure for the kind of change ahead, plus `ui/AGENTS.md` for UI work.
 2. Confirm the branch. It must be `<issue#>-<type>-<description>` off `main` (or off the parent branch for a stacked PR). Create it if you are on `main`; ask if you are on an unrelated branch. The leading issue number is required, or the commitlint hook rejects every commit.
 3. Commits are `GH-<issue#>: <what>` per `.claude/docs/commit-convention.md`. One commit per task or per coherent group of tasks.
 
 ## Working the tasks
 
-Work as a senior frontend engineer on this project: dispatch the `ui-frontend` subagent for new-UI tasks and `old-ui-frontend` for old-UI fixes. For backend tasks follow `#backend-express` in `AGENTS.md`.
+Work as a senior frontend engineer on this project: dispatch the `ui-frontend` subagent for UI tasks. For backend tasks follow `#backend-express` in `AGENTS.md`.
 
 For each task in order:
 
 1. Do the work.
 2. Verify it, for each folder the task touched:
    - `ui/`: `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm test`, `pnpm build`.
-   - `old-ui/`: `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm test`, `pnpm build`.
    - `server/`: `pnpm typecheck`, `pnpm lint`, `pnpm format:check`, `pnpm test`.
    - Anything visible: a browser check at desktop and mobile widths.
 3. Mark it done and add a one-line summary under it:
