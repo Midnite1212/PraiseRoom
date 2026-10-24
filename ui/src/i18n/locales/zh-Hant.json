@@ -507,6 +507,7 @@
       "description": "套用於此裝置上的整個應用程式。",
       "sample": "Aa 讚美祢",
       "options": {
+        "plex": "IBM Plex",
         "geist": "Geist",
         "hanken-grotesk": "Hanken Grotesk",
         "pixel": "像素",

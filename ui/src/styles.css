@@ -161,9 +161,9 @@
    the current song and focus. Dark is the default: dim rooms and stages. */
 :root {
   --typeface-han: 'PingFang TC', 'Microsoft JhengHei', 'Noto Sans TC', sans-serif;
-  --typeface-sans: 'Geist Variable', var(--typeface-han);
+  --typeface-sans: 'IBM Plex Sans Variable', var(--typeface-han);
   --typeface-mono:
-    'Geist Mono Variable', ui-monospace, 'SF Mono', Menlo, Consolas, var(--typeface-han), monospace;
+    'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, Consolas, var(--typeface-han), monospace;
   --typeface-lyrics: var(--typeface-sans);
   --lyrics-size: 0.875rem;
   --radius: 0.75rem;
@@ -409,6 +409,9 @@
   }
 }
 
+[data-typeface='plex'] {
+  --typeface-sans: 'IBM Plex Sans Variable', var(--typeface-han);
+}
 [data-typeface='geist'] {
   --typeface-sans: 'Geist Variable', var(--typeface-han);
 }
