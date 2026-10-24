@@ -41,6 +41,7 @@ function SongView({ song }: { song: Song }) {
   const [mode] = useReaderMode();
   const originalKey = parseKey(song.originalKey);
   const [playKey, setPlayKey] = useState<MusicKey | null>(originalKey);
+  const [capo, setCapo] = useState(0);
   const readingTrigger = (className: string) => (
     <Button variant="glass" className={className} aria-label={t('reader.reading')}>
       Aa
@@ -80,12 +81,20 @@ function SongView({ song }: { song: Song }) {
               originalKey={originalKey}
               playKey={playKey}
               onChange={setPlayKey}
+              capo={capo}
+              onCapoChange={setCapo}
             />
           ) : null}
         </>
       }
     >
-      <SongReader song={song} playKey={playKey} onPlayKeyChange={setPlayKey} />
+      <SongReader
+        song={song}
+        playKey={playKey}
+        onPlayKeyChange={setPlayKey}
+        capo={capo}
+        onCapoChange={setCapo}
+      />
     </ReaderLayout>
   );
 }

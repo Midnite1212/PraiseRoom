@@ -62,6 +62,7 @@ export function MusicianView({
   const isWide = useIsWide();
   const [mode] = useReaderMode();
   const [chosenKeys, setChosenKeys] = useState<Record<string, number>>({});
+  const [chosenCapos, setChosenCapos] = useState<Record<string, number>>({});
   const [isListOpen, setIsListOpen] = useState(false);
   const [songList, setSongList] = useSongListVisibility();
   const [isReordering, setIsReordering] = useState(false);
@@ -167,6 +168,8 @@ export function MusicianView({
   const originalKey = parseKey(song.originalKey);
   const playKey = playKeyFor(currentIndex);
   const changeKey = (key: MusicKey) => setChosenKeys((keys) => ({ ...keys, [song._id]: key.root }));
+  const capo = chosenCapos[song._id] ?? 0;
+  const changeCapo = (fret: number) => setChosenCapos((capos) => ({ ...capos, [song._id]: fret }));
   const sidebarLabel = isSidebarShown ? t('reader.hideSongList') : t('reader.showSongList');
   const listProps = { songs, currentIndex, onSelect: select };
   const editableListProps = { ...listProps, isEditing: isReordering, onReorder: reorder };
@@ -359,12 +362,21 @@ export function MusicianView({
               originalKey={originalKey}
               playKey={playKey}
               onChange={changeKey}
+              capo={capo}
+              onCapoChange={changeCapo}
             />
           ) : null}
         </>
       }
     >
-      <SongReader key={song._id} song={song} playKey={playKey} onPlayKeyChange={changeKey}>
+      <SongReader
+        key={song._id}
+        song={song}
+        playKey={playKey}
+        onPlayKeyChange={changeKey}
+        capo={capo}
+        onCapoChange={changeCapo}
+      >
         {currentIndex === songCount - 1 ? (
           <div className="border-hairline text-ink-2 mt-10 flex items-center gap-3.5 border-t py-5">
             <span aria-hidden className="flex gap-1">

@@ -44,3 +44,7 @@ export const signedSemitones = (from: MusicKey, to: MusicKey): number => {
   const up = (((to.root - from.root) % 12) + 12) % 12;
   return up > 6 ? up - 12 : up;
 };
+
+// The key whose shapes to play with a capo on `capo` frets to sound in `playKey`.
+export const shapeKey = (playKey: MusicKey, capo: number): MusicKey =>
+  capo === 0 ? playKey : conventionalKey(playKey.root - capo, playKey.isMinor);

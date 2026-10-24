@@ -5,10 +5,12 @@ import { type MusicKey, parseKey } from '@/features/chords/theory';
 import { useIsWide } from '@/hooks/use-wide';
 
 import {
+  activeCapo,
   useAccidentals,
   useChordNotation,
   useChordStyle,
   useColourChords,
+  useGuitarCapo,
   useReaderMode,
 } from './chord-display';
 import { ChordSettingsPanel } from './chord-settings';
@@ -23,13 +25,22 @@ type SongReaderProps = {
   song: ReaderSong;
   playKey: MusicKey | null;
   onPlayKeyChange: (key: MusicKey) => void;
+  capo?: number;
+  onCapoChange?: (capo: number) => void;
   children?: ReactNode;
 };
 
 // The reading sheet shared by the song view, the setlist view, and the public setlist view: the title
 // with ⓘ, the artist with the song's key and lyric columns, then the lyrics. On phones the key lives in
 // the dock and the notation toggle and the chord-settings gear take its place here.
-export function SongReader({ song, playKey, onPlayKeyChange, children }: SongReaderProps) {
+export function SongReader({
+  song,
+  playKey,
+  onPlayKeyChange,
+  capo = 0,
+  onCapoChange,
+  children,
+}: SongReaderProps) {
   const { t } = useTranslation();
   const isWide = useIsWide();
   const [mode] = useReaderMode();
@@ -37,6 +48,7 @@ export function SongReader({ song, playKey, onPlayKeyChange, children }: SongRea
   const [accidentals] = useAccidentals();
   const [chordStyle] = useChordStyle();
   const [colourChords] = useColourChords();
+  const [guitarCapo] = useGuitarCapo();
   const [lyricsSize] = useLyricsSize();
   const [lyricsColumns, setLyricsColumns] = useLyricsColumns();
   const originalKey = parseKey(song.originalKey);
@@ -60,7 +72,13 @@ export function SongReader({ song, playKey, onPlayKeyChange, children }: SongRea
           <div className="flex items-center gap-1.5">
             {showChordControls ? (
               isWide ? (
-                <KeyPicker originalKey={originalKey} playKey={playKey} onChange={onPlayKeyChange} />
+                <KeyPicker
+                  originalKey={originalKey}
+                  playKey={playKey}
+                  onChange={onPlayKeyChange}
+                  capo={capo}
+                  onCapoChange={onCapoChange}
+                />
               ) : (
                 <>
                   <ChordNotationToggle notation={notation} onChange={setNotation} />
@@ -85,6 +103,7 @@ export function SongReader({ song, playKey, onPlayKeyChange, children }: SongRea
           colourChords={colourChords === 'on'}
           originalKey={originalKey}
           playKey={playKey}
+          capo={activeCapo(guitarCapo, capo)}
           columns={lyricsColumns}
         />
       )}

@@ -3,15 +3,20 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Panel } from '@/components/primitives/panel';
+import { Stepper } from '@/components/primitives/stepper';
 import { Button } from '@/components/ui/button';
-import { conventionalKey, signedSemitones } from '@/features/chords/key-spelling';
+import { conventionalKey, shapeKey, signedSemitones } from '@/features/chords/key-spelling';
 import { keyLabel, type MusicKey } from '@/features/chords/theory';
 import { cn } from '@/lib/utils';
+
+import { activeCapo, MAX_CAPO, useGuitarCapo } from './chord-display';
 
 type KeyPickerProps = {
   originalKey: MusicKey;
   playKey: MusicKey;
   onChange: (key: MusicKey) => void;
+  capo?: number;
+  onCapoChange?: (capo: number) => void;
   // `dock` is the taller pill in the phone's bottom row.
   placement?: 'head' | 'dock';
 };
@@ -20,9 +25,19 @@ const formatOffset = (semitones: number): string =>
   semitones === 0 ? '0' : `${semitones > 0 ? '+' : '−'}${Math.abs(semitones)}`;
 
 // The song's key as a pill (key and offset from the original); it opens the key panel.
-export function KeyPicker({ originalKey, playKey, onChange, placement = 'head' }: KeyPickerProps) {
+export function KeyPicker({
+  originalKey,
+  playKey,
+  onChange,
+  capo = 0,
+  onCapoChange,
+  placement = 'head',
+}: KeyPickerProps) {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
+  const [guitarCapo] = useGuitarCapo();
+  const fret = activeCapo(guitarCapo, capo);
+  const hasCapoRow = guitarCapo === 'on' && onCapoChange !== undefined;
   const offset = signedSemitones(originalKey, playKey);
   const options = Array.from({ length: 12 }, (_, root) =>
     conventionalKey(root, originalKey.isMinor)
@@ -40,7 +55,11 @@ export function KeyPicker({ originalKey, playKey, onChange, placement = 'head' }
       trigger={
         <button
           type="button"
-          aria-label={`${t('reader.key')} ${keyLabel(playKey)}`}
+          aria-label={
+            fret
+              ? `${t('reader.key')} ${keyLabel(playKey)}, ${t('reader.capoFret', { fret })}`
+              : `${t('reader.key')} ${keyLabel(playKey)}`
+          }
           className={cn(
             'inline-flex items-center gap-2 rounded-full pr-2 pl-3.5 text-sm font-semibold whitespace-nowrap transition-[background-color,transform] duration-200 ease-out active:scale-95',
             placement === 'dock'
@@ -57,6 +76,11 @@ export function KeyPicker({ originalKey, playKey, onChange, placement = 'head' }
           >
             {formatOffset(offset)}
           </span>
+          {fret ? (
+            <span className="text-ink-2 text-xs font-semibold">
+              {t('reader.capoFret', { fret })}
+            </span>
+          ) : null}
         </button>
       }
     >
@@ -110,8 +134,36 @@ export function KeyPicker({ originalKey, playKey, onChange, placement = 'head' }
           );
         })}
       </fieldset>
+      {hasCapoRow ? (
+        <div className="flex items-center justify-between gap-2.5">
+          <span className="text-ink-2 text-[0.8125rem] font-semibold">
+            <b className="block font-semibold">{t('reader.capo')}</b>
+            <small className="text-chord block text-xs font-semibold">
+              {fret
+                ? t('reader.playShapes', { key: keyLabel(shapeKey(playKey, fret)) })
+                : t('reader.noCapo')}
+            </small>
+          </span>
+          <Stepper
+            value={fret}
+            decreaseLabel={t('reader.capoDown')}
+            increaseLabel={t('reader.capoUp')}
+            canDecrease={fret > 0}
+            canIncrease={fret < MAX_CAPO}
+            onDecrease={() => onCapoChange(fret - 1)}
+            onIncrease={() => onCapoChange(fret + 1)}
+          />
+        </div>
+      ) : null}
       <div className="grid grid-cols-2 gap-2">
-        <Button variant="secondary" disabled={offset === 0} onClick={() => onChange(originalKey)}>
+        <Button
+          variant="secondary"
+          disabled={offset === 0 && fret === 0}
+          onClick={() => {
+            onChange(originalKey);
+            onCapoChange?.(0);
+          }}
+        >
           {t('reader.resetTo', { key: keyLabel(originalKey) })}
         </Button>
         <Button onClick={() => setIsOpen(false)}>{t('reader.done')}</Button>

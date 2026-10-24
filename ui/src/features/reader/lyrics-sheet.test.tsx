@@ -184,4 +184,55 @@ describe('LyricsSheet', () => {
     );
     expect(screen.getByText('4')).toHaveClass('text-chord');
   });
+
+  it('shows the shapes to play with a capo, after transposing', () => {
+    render(
+      <LyricsSheet
+        chordLyrics={LYRICS}
+        mode="chords"
+        notation="letters"
+        originalKey={G}
+        playKey={A}
+        capo={2}
+      />
+    );
+
+    expect(screen.getByText('G')).toBeInTheDocument();
+    expect(screen.getByText('C')).toBeInTheDocument();
+    expect(screen.getByText('Em7')).toBeInTheDocument();
+    expect(screen.getByText('D/F#')).toBeInTheDocument();
+  });
+
+  it('spells capo shapes by the shape key and honours Simple chords', () => {
+    render(
+      <LyricsSheet
+        chordLyrics="[Dm7]Hold [Gsus4]on"
+        mode="chords"
+        notation="letters"
+        chordStyle="simple"
+        originalKey={parseKey('Dm')}
+        playKey={parseKey('Dm')}
+        capo={3}
+      />
+    );
+
+    expect(screen.getByText('Bm')).toBeInTheDocument();
+    expect(screen.getByText('E')).toBeInTheDocument();
+  });
+
+  it('leaves numbers unchanged by a capo', () => {
+    const { container } = render(
+      <LyricsSheet
+        chordLyrics={LYRICS}
+        mode="chords"
+        notation="numbers"
+        originalKey={G}
+        playKey={A}
+        capo={2}
+      />
+    );
+
+    expect(container).toHaveTextContent('1');
+    expect(container).toHaveTextContent('4');
+  });
 });

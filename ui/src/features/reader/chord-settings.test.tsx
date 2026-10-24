@@ -36,4 +36,16 @@ describe('ChordSettingsPanel', () => {
     expect(colour).toBeChecked();
     expect(localStorage.getItem('chord-colour')).toBe('on');
   });
+
+  it('stores the guitar capo switch, off by default', async () => {
+    const user = userEvent.setup();
+    render(<ChordSettingsPanel />);
+    await user.click(screen.getByRole('button', { name: 'Chord settings' }));
+
+    const capo = screen.getByRole('switch', { name: 'Guitar capo' });
+    expect(capo).not.toBeChecked();
+    await user.click(capo);
+    expect(capo).toBeChecked();
+    expect(localStorage.getItem('guitar-capo')).toBe('on');
+  });
 });

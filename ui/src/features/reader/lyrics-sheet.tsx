@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 
 import { type ChordClass, classifyChord } from '@/features/chords/chord-class';
+import { shapeKey } from '@/features/chords/key-spelling';
 import { chordToNumberParts } from '@/features/chords/nashville';
 import { type ChordLine, parseChordLyrics } from '@/features/chords/parse';
 import {
@@ -33,6 +34,7 @@ type LyricsSheetProps = {
   colourChords?: boolean;
   originalKey: MusicKey | null;
   playKey: MusicKey | null;
+  capo?: number;
   columns?: LyricsColumns;
 };
 
@@ -51,7 +53,8 @@ const createChordRenderer = (
   originalKey: MusicKey | null,
   playKey: MusicKey | null,
   accidentals: Accidentals,
-  chordStyle: ChordStyle
+  chordStyle: ChordStyle,
+  capo: number
 ): ChordRenderer => {
   const shape = (chord: string) => (chordStyle === 'simple' ? simplifyChord(chord) : chord);
   if (notation === 'numbers' && originalKey) {
@@ -69,8 +72,8 @@ const createChordRenderer = (
       );
     };
   }
-  const semitones = originalKey && playKey ? semitonesBetween(originalKey, playKey) : 0;
-  const useFlats = chordsUseFlats(accidentals, playKey);
+  const semitones = originalKey && playKey ? semitonesBetween(originalKey, playKey) - capo : 0;
+  const useFlats = chordsUseFlats(accidentals, playKey && shapeKey(playKey, capo));
   return (chord) => transposeChord(shape(chord), semitones, useFlats);
 };
 
@@ -123,10 +126,18 @@ export function LyricsSheet({
   colourChords = false,
   originalKey,
   playKey,
+  capo = 0,
   columns = DEFAULT_LYRICS_COLUMNS,
 }: LyricsSheetProps) {
   const sections = parseChordLyrics(chordLyrics);
-  const renderChord = createChordRenderer(notation, originalKey, playKey, accidentals, chordStyle);
+  const renderChord = createChordRenderer(
+    notation,
+    originalKey,
+    playKey,
+    accidentals,
+    chordStyle,
+    capo
+  );
   const showChords = mode === 'chords';
 
   return (

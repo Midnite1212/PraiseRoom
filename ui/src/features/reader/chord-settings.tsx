@@ -17,6 +17,7 @@ import {
   useChordNotation,
   useChordStyle,
   useColourChords,
+  useGuitarCapo,
 } from './chord-display';
 
 const ACCIDENTAL_LABELS = { sharp: '#', flat: 'b' } as const;
@@ -53,6 +54,7 @@ export function ChordSettingsPanel({ glass = false }: { glass?: boolean }) {
   const [chordStyle, setChordStyle] = useChordStyle();
   const [accidentals, setAccidentals] = useAccidentals();
   const [colourChords, setColourChords] = useColourChords();
+  const [guitarCapo, setGuitarCapo] = useGuitarCapo();
 
   return (
     <Panel
@@ -104,6 +106,13 @@ export function ChordSettingsPanel({ glass = false }: { glass?: boolean }) {
         </SetRow>
         <SetRow label={t('reader.accidentals')}>
           <AccidentalsControl accidentals={accidentals} onChange={setAccidentals} />
+        </SetRow>
+        <SetRow label={t('reader.guitarCapo')} hint={t('reader.capoHint')}>
+          <Switch
+            aria-label={t('reader.guitarCapo')}
+            checked={guitarCapo === 'on'}
+            onCheckedChange={(checked) => setGuitarCapo(checked ? 'on' : 'off')}
+          />
         </SetRow>
       </div>
       <Button onClick={() => setIsOpen(false)}>{t('reader.done')}</Button>
