@@ -38,7 +38,7 @@ type LyricsSheetProps = {
   columns?: LyricsColumns;
 };
 
-type ChordRenderer = (chord: string) => ReactNode;
+export type ChordRenderer = (chord: string) => ReactNode;
 
 const CHORD_CLASS_COLOURS: Record<ChordClass, string> = {
   one: 'text-chord',
@@ -48,7 +48,7 @@ const CHORD_CLASS_COLOURS: Record<ChordClass, string> = {
   other: 'text-ink-2',
 };
 
-const createChordRenderer = (
+export const createChordRenderer = (
   notation: ChordNotation,
   originalKey: MusicKey | null,
   playKey: MusicKey | null,
@@ -77,16 +77,18 @@ const createChordRenderer = (
   return (chord) => transposeChord(shape(chord), semitones, useFlats);
 };
 
-function LyricLine({
+export function LyricLine({
   line,
   showChords,
   renderChord,
   colourKey,
+  centered = false,
 }: {
   line: ChordLine;
   showChords: boolean;
   renderChord: ChordRenderer;
   colourKey: MusicKey | null;
+  centered?: boolean;
 }) {
   if (line.segments.length === 0) {
     return <div className="h-[0.75em]" aria-hidden />;
@@ -97,7 +99,7 @@ function LyricLine({
     return text.trim() === '' ? null : <p className="whitespace-pre-wrap">{text}</p>;
   }
   return (
-    <p className="flex flex-wrap items-end">
+    <p className={cn('flex flex-wrap items-end', centered && 'justify-center')}>
       {line.segments.map(({ id, chord, lyric }) => (
         <span key={id} className="inline-flex max-w-full min-w-0 flex-col">
           <span

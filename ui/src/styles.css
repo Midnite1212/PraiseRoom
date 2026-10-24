@@ -17,6 +17,7 @@
 
   --animate-view-in: view-in 360ms var(--ease-out);
   --animate-pane-in: pane-in 320ms var(--ease-out);
+  --animate-slide-in: slide-in 420ms var(--ease-out) both;
   --animate-spin-slow: spin 3.2s linear infinite;
   --animate-sheet-in: sheet-in 480ms var(--ease-liquid);
   --animate-sheet-out: sheet-out 200ms var(--ease-out) forwards;
@@ -35,6 +36,12 @@
     from {
       opacity: 0;
       translate: 0 8px;
+    }
+  }
+  @keyframes slide-in {
+    from {
+      opacity: 0;
+      translate: 0 14px;
     }
   }
   @keyframes pane-in {

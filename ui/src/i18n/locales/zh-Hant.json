@@ -342,7 +342,18 @@
     "awakeOff": "此瀏覽器不支援",
     "readingSettings": "閱讀設定",
     "savedHere": "儲存在此裝置",
-    "moreSettings": "更多設定"
+    "moreSettings": "更多設定",
+    "present": {
+      "row": "投放到電視",
+      "hint": "全螢幕，每次一段",
+      "title": "簡報",
+      "showChords": "顯示和弦",
+      "exit": "離開",
+      "songOf": "第 {{index}} 首，共 {{count}} 首",
+      "nextLine": "下一句",
+      "nextSong": "下一首",
+      "endOfSong": "詩歌完"
+    }
   },
   "editor": {
     "newTitle": "新增歌單",

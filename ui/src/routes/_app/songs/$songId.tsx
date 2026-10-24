@@ -12,6 +12,7 @@ import { useAutoScroll } from '@/features/reader/auto-scroll';
 import { AutoScrollButton } from '@/features/reader/auto-scroll-controls';
 import { useReaderMode } from '@/features/reader/chord-display';
 import { KeyPicker } from '@/features/reader/key-picker';
+import { toPresentSong } from '@/features/reader/present-slides';
 import { ReaderBack } from '@/features/reader/reader-back';
 import { ReadingPanel, WideReadingControls } from '@/features/reader/reader-controls';
 import { ReaderLayout } from '@/features/reader/reader-layout';
@@ -65,7 +66,14 @@ function SongView({ song }: { song: Song }) {
       actions={
         <>
           <WideReadingControls auto={auto} />
-          <ReadingSettings />
+          <ReadingSettings
+            present={{
+              songs: [toPresentSong(song, playKey, originalKey, capo)],
+              startIndex: 0,
+              onStart: () => (auto.running ? auto.toggle() : undefined),
+              onExit: () => undefined,
+            }}
+          />
           <AddToSetlist
             song={song}
             session={session}
