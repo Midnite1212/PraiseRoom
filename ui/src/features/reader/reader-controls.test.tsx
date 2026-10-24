@@ -34,12 +34,25 @@ describe('SongInfo', () => {
   it('lists the capo only when the song has one', async () => {
     const user = userEvent.setup();
     const { rerender } = render(<SongInfo song={{ ...song, capo: 6 }} />);
-    await user.click(screen.getByRole('button', { name: 'Song details' }));
+    await user.click(screen.getByRole('button', { name: 'About this song' }));
     expect(screen.getByText('Capo')).toBeInTheDocument();
     expect(screen.getByText('6')).toBeInTheDocument();
 
     rerender(<SongInfo song={{ ...song, capo: null }} />);
     expect(screen.queryByText('Capo')).not.toBeInTheDocument();
+  });
+
+  it('lists the credits only when the song has them', async () => {
+    const user = userEvent.setup();
+    const { rerender } = render(
+      <SongInfo song={{ ...song, credits: 'Words 1779, music 1829.' }} />
+    );
+    await user.click(screen.getByRole('button', { name: 'About this song' }));
+    expect(screen.getByText('Credits')).toBeInTheDocument();
+    expect(screen.getByText('Words 1779, music 1829.')).toBeInTheDocument();
+
+    rerender(<SongInfo song={{ ...song, credits: '  ' }} />);
+    expect(screen.queryByText('Credits')).not.toBeInTheDocument();
   });
 });
 

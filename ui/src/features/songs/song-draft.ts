@@ -12,6 +12,8 @@ import { initialKey } from './key-options';
 
 export const UNKNOWN_ARTIST = 'Unknown';
 
+export const CREDITS_MAX_LENGTH = 500;
+
 export const SECTION_TYPES = ['Verse', 'Chorus', 'Bridge', 'Tag'] as const;
 
 export type SectionType = (typeof SECTION_TYPES)[number];
@@ -29,6 +31,7 @@ export type SongDraft = {
   code: string;
   year: string | null;
   capo: number | null;
+  credits: string;
   sections: DraftSection[];
 };
 
@@ -195,6 +198,7 @@ export const toDraft = (song: Song): SongDraft => {
     code: song.code ?? '',
     year: song.year ?? null,
     capo: song.capo ?? null,
+    credits: song.credits ?? '',
     sections,
   };
 };
@@ -210,6 +214,7 @@ export const toSongInput = (draft: SongDraft): SongInput => ({
   code: draft.code.trim() || null,
   year: draft.year,
   capo: draft.capo,
+  credits: draft.credits.trim() || null,
 });
 
 // What the server needs before it accepts the song: a title and some lyrics.

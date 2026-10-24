@@ -15,6 +15,7 @@ import {
 import { PublicSongRecord, SongRecord, SongViewRecord } from '../../types/song.types';
 import {
   InvalidInputError,
+  castBoundedText,
   castOptionalInteger,
   castOptionalString,
   castRequiredString,
@@ -23,7 +24,7 @@ import {
 } from '../cast';
 import { getDb } from '../connect';
 import { generateObjectId, toObjectId } from '../objectId';
-import { MUSIC_KEYS, songs } from '../schema';
+import { MUSIC_KEYS, SONG_CREDITS_MAX_LENGTH, songs } from '../schema';
 import { presentFields } from './shared';
 
 export const SONG_FIELDS = [
@@ -33,6 +34,7 @@ export const SONG_FIELDS = [
   'tempo',
   'year',
   'capo',
+  'credits',
   'code',
   'timeSignature',
   'simplifiedChordLyrics',
@@ -72,7 +74,7 @@ const toSongViewRecord = (row: SongRow): SongViewRecord => ({
   originalKey: row.originalKey,
   themes: row.themes,
   artist: row.artist,
-  ...presentFields({ year: row.year, code: row.code }),
+  ...presentFields({ year: row.year, credits: row.credits, code: row.code }),
   ...(row.capo === null ? {} : { capo: row.capo }),
   timeSignature: row.timeSignature,
   isVerified: row.isVerified,
@@ -103,6 +105,9 @@ export const toSongValues = (fields: SongFields): SongValues => {
   }
   for (const field of STRING_ARRAY_FIELDS) {
     if (has(fields, field)) values[field] = castStringArray(field, fields[field]);
+  }
+  if (has(fields, 'credits')) {
+    values.credits = castBoundedText('credits', fields.credits, SONG_CREDITS_MAX_LENGTH);
   }
   if (has(fields, 'themes')) {
     values.themes = castStringArray('themes', fields.themes, { itemsRequired: true });

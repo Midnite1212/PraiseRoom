@@ -31,6 +31,7 @@ import {
 } from './song-draft';
 import {
   CodeSettingChip,
+  CreditsSettingChip,
   KeySettingChip,
   TempoSettingChip,
   ThemesSettingChip,
@@ -200,6 +201,11 @@ export function SongEditor({ song, initialMode = 'song' }: { song: Song; initial
           <CodeSettingChip
             value={draft.code}
             onChange={(code) => update({ ...draft, code }, 'code')}
+            onBlur={history.endCoalesce}
+          />
+          <CreditsSettingChip
+            value={draft.credits}
+            onChange={(credits) => update({ ...draft, credits }, 'credits')}
             onBlur={history.endCoalesce}
           />
         </>

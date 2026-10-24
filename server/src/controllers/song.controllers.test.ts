@@ -56,6 +56,7 @@ describe('song controllers', () => {
         artist: 'Artist',
         chordLyrics: '[C]La',
         code: 'S1',
+        credits: 'Words 1779.',
         originalKey: 'C',
         recommendedKeys: ['D'],
         simplifiedChordLyrics: 'La',

@@ -10,6 +10,7 @@ export const readerSongSchema = z.object({
   code: z.string().nullish(),
   year: z.string().nullish(),
   capo: z.number().int().nullish(),
+  credits: z.string().nullish(),
   tempo: z.array(z.string()),
   timeSignature: z.array(z.string()),
   themes: z.array(z.string()),

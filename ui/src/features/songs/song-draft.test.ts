@@ -214,7 +214,16 @@ describe('draft and song input', () => {
       code: 'N001',
       year: '1999',
       capo: 2,
+      credits: null,
     });
+  });
+
+  it('sends trimmed credits and null for blank credits', () => {
+    const draft = toDraft({ ...song, credits: 'Words 1779.' });
+    expect(draft.credits).toBe('Words 1779.');
+    expect(toSongInput({ ...draft, credits: '  Words 1779.\n' }).credits).toBe('Words 1779.');
+    expect(toSongInput({ ...draft, credits: ' \n' }).credits).toBeNull();
+    expect(toDraft(song).credits).toBe('');
   });
 
   it('sends Unknown for a blank artist and null for a blank code', () => {

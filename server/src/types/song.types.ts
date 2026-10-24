@@ -9,6 +9,7 @@ type SongRecord = RecordFields & {
   artist: string;
   year?: string;
   capo?: number;
+  credits?: string;
   code?: string;
   createdBy?: string;
   lastUpdatedBy?: string;

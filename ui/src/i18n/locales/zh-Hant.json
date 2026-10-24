@@ -288,7 +288,8 @@
       "tempo": "速度",
       "timeSignature": "拍號",
       "themes": "主題",
-      "capo": "變調夾"
+      "capo": "變調夾",
+      "credits": "版權資料"
     },
     "openInApp": "在應用程式中開啟",
     "columns": "歌詞欄數：{{columns}}",
@@ -577,7 +578,8 @@
       "tempo": "速度",
       "time": "拍號",
       "themes": "主題",
-      "code": "編號"
+      "code": "編號",
+      "credits": "版權資料"
     },
     "keyTitle": "原調",
     "keyAutoHint": "會跟隨第一個和弦，直到你自己選擇。",
@@ -585,6 +587,9 @@
     "timeTitle": "拍號",
     "themesHint": "用來篩選歌曲，並建議加入聚會。",
     "codeLabel": "歌曲編號",
+    "added": "已填寫",
+    "creditsHint": "作者、年份與版權說明，會顯示在歌曲資料中。",
+    "creditsPlaceholder": "詞 1779 年，曲「New Britain」1829 年。",
     "hintTap": "點一個字，在上面放和弦。和弦選單跟隨 {{key}} 調。",
     "hintClick": "按一個字，在上面放和弦。和弦選單跟隨 {{key}} 調。",
     "hintEmpty": "先新增一個段落，或切換到「文字」貼上整份譜。",

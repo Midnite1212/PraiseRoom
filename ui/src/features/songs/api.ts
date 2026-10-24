@@ -184,6 +184,7 @@ export type SongInput = {
   code: string | null;
   year: string | null;
   capo: number | null;
+  credits: string | null;
 };
 
 const updatedSongSchema = z.object({ _id: z.string() });
