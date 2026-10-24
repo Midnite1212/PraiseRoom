@@ -66,7 +66,7 @@ export function ProfileMenu({ session, trigger }: { session: Session; trigger: R
         </Link>
       </MenuRow>
       <MenuSeparator />
-      <MenuRow onSelect={() => void signOut()} className="text-ink-2">
+      <MenuRow tone="danger" onSelect={() => void signOut()}>
         <Logout />
         {t('user.signOut')}
       </MenuRow>

@@ -16,7 +16,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       mobileOffset={{ top: 'calc(var(--top) + 56px)' }}
       className="toaster group"
       icons={{
-        success: <Check className="text-chord size-icon" />,
+        success: <Check className="text-ok size-icon" />,
         info: <CircleInfo className="text-chord size-icon" />,
         warning: <WarningDiamond className="text-destructive size-icon" />,
         error: <Cancel className="text-destructive size-icon" />,

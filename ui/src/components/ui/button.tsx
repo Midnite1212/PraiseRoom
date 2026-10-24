@@ -11,18 +11,19 @@ const buttonVariants = cva(
       variant: {
         // The one filled button: an ink capsule.
         default: 'bg-primary text-primary-foreground hover:opacity-90',
-        outline: 'bg-fill-hover text-ink hover:bg-fill-press aria-expanded:bg-fill-press',
-        secondary: 'bg-fill-hover text-ink hover:bg-fill-press aria-expanded:bg-fill-press',
+        outline: 'lit-icon bg-fill-hover text-ink hover:bg-fill-press aria-expanded:bg-fill-press',
+        secondary:
+          'lit-icon bg-fill-hover text-ink hover:bg-fill-press aria-expanded:bg-fill-press',
         ghost:
-          'text-ink hover:liquid-hover active:bg-fill-press aria-expanded:bg-fill-hover aria-pressed:liquid-on',
+          'lit-icon text-ink hover:liquid-hover active:bg-fill-press aria-expanded:bg-fill-hover aria-pressed:liquid-on',
         // A floating glass circle or capsule over the page.
         glass:
-          'glass glass-over text-ink hover:bg-fill-hover aria-expanded:bg-fill-hover aria-pressed:bg-fill-on',
+          'lit-icon glass glass-over text-ink hover:bg-fill-hover aria-expanded:bg-fill-hover aria-pressed:bg-fill-on',
         destructive: 'bg-danger-tint text-destructive hover:bg-destructive/20',
         // A glass capsule for leaving or deleting: a whisper of red at rest, full red on hover or focus.
-        exit: 'glass text-[color-mix(in_oklch,var(--destructive)_45%,var(--ink-2))] [--glass-fill:color-mix(in_oklch,var(--destructive)_5%,var(--glass-tint))] hover:text-destructive focus-visible:text-destructive hover:[--glass-fill:color-mix(in_oklch,var(--destructive)_22%,var(--glass-tint))] focus-visible:[--glass-fill:color-mix(in_oklch,var(--destructive)_22%,var(--glass-tint))] hover:[&_svg]:drop-shadow-[0_0_3px_color-mix(in_oklch,var(--destructive)_70%,transparent)]',
+        exit: 'lit-icon-danger glass text-danger-quiet [--glass-fill:color-mix(in_oklch,var(--destructive)_5%,var(--glass-tint))] hover:text-destructive focus-visible:text-destructive hover:[--glass-fill:color-mix(in_oklch,var(--destructive)_22%,var(--glass-tint))] focus-visible:[--glass-fill:color-mix(in_oklch,var(--destructive)_22%,var(--glass-tint))]',
         'destructive-solid': 'bg-destructive text-white hover:opacity-90',
-        link: 'rounded-[10px] text-chord hover:liquid-hover',
+        link: 'lit-icon rounded-[10px] text-chord hover:liquid-hover',
       },
       size: {
         default:

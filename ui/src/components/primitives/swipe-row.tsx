@@ -119,7 +119,7 @@ export function SwipeRow({
             className={cn(
               'flex w-16 flex-col items-center justify-center gap-[3px] rounded-[14px] text-[0.6875rem] font-semibold [&_svg]:size-icon',
               action.tone === 'danger'
-                ? 'bg-destructive/20 text-destructive'
+                ? 'text-danger-quiet bg-destructive/20 active:bg-danger-tint active:text-destructive'
                 : 'bg-fill-press text-ink'
             )}
           >

@@ -128,8 +128,8 @@ export function MenuRow({
       className={cn(
         'flex min-h-[46px] w-full items-center gap-3 rounded-2xl px-3 text-left font-semibold transition-colors [&_svg]:size-icon [&_svg]:flex-none',
         tone === 'danger'
-          ? 'text-danger-quiet hover:bg-danger-tint hover:text-destructive'
-          : 'hover:liquid-hover [&_svg]:text-ink-2',
+          ? 'lit-icon-danger text-danger-quiet hover:bg-danger-tint hover:text-destructive'
+          : 'lit-icon hover:liquid-hover [&_svg]:text-ink-2',
         className
       )}
     >
@@ -156,7 +156,7 @@ export function MenuTile({ children, onSelect, disabled = false, asChild = false
         setMenuOpen(false);
         onSelect?.();
       }}
-      className="bg-fill-hover not-disabled:hover:liquid-hover [&_svg]:size-icon grid justify-items-center gap-1.5 rounded-2xl px-1 pt-3.5 pb-3 text-[0.8125rem] font-semibold transition-colors disabled:opacity-40"
+      className="lit-icon bg-fill-hover not-disabled:hover:liquid-hover [&_svg]:size-icon grid justify-items-center gap-1.5 rounded-2xl px-1 pt-3.5 pb-3 text-[0.8125rem] font-semibold transition-colors disabled:opacity-40"
     >
       {children}
     </Comp>

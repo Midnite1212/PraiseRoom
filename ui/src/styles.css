@@ -112,6 +112,7 @@
   --color-danger: var(--destructive);
   --color-danger-tint: var(--danger-tint);
   --color-danger-quiet: var(--danger-quiet);
+  --color-ok: var(--ok);
   --color-scrim: var(--scrim);
   --color-cover: var(--cover);
   --color-cover-light: var(--cover-light);
@@ -251,6 +252,7 @@
   --chord-minor: oklch(0.5 0.14 305);
   --label: oklch(0.34 0 0);
   --destructive: oklch(0.55 0.21 27);
+  --ok: oklch(0.55 0.15 150);
   --border: var(--hairline);
   --input: var(--hairline);
   --ring: var(--brand);
@@ -306,6 +308,7 @@
   --chord-five: oklch(0.85 0.12 80);
   --chord-minor: oklch(0.8 0.11 305);
   --destructive: oklch(0.7 0.19 25);
+  --ok: oklch(0.8 0.15 150);
 
   color-scheme: dark;
 }
@@ -841,6 +844,44 @@
     var(--fill-on);
   background: var(--liquid-on);
   box-shadow: var(--liquid-on-edge);
+}
+
+/* Lit icons: a pixel icon inside a hovered control turns the accent and glows. `lit-icon-danger` is
+   the red form for controls that remove or end something. Only colour and filter move, so a later
+   icon animation can add its own transform. */
+@utility lit-icon {
+  & svg {
+    transition:
+      color 160ms var(--ease-out),
+      filter 220ms var(--ease-out);
+  }
+  @media (hover: hover) {
+    &:hover:not(
+        :disabled,
+        [aria-disabled='true'],
+        [aria-current='page'],
+        [aria-pressed='true'],
+        [data-status='active']
+      )
+      svg {
+      color: var(--brand);
+      filter: drop-shadow(0 0 3px var(--pixel-glow));
+    }
+  }
+}
+
+@utility lit-icon-danger {
+  & svg {
+    transition:
+      color 160ms var(--ease-out),
+      filter 220ms var(--ease-out);
+  }
+  @media (hover: hover) {
+    &:hover:not(:disabled, [aria-disabled='true']) svg {
+      color: var(--destructive);
+      filter: drop-shadow(0 0 3px color-mix(in oklch, var(--destructive) 70%, transparent));
+    }
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

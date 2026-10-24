@@ -21,7 +21,7 @@ export function SaveStatus({ status, onRetry, className }: SaveStatusProps) {
         className
       )}
     >
-      {status === 'saved' ? <Check className="size-3.5" aria-hidden /> : null}
+      {status === 'saved' ? <Check className="text-ok size-3.5" aria-hidden /> : null}
       {t(`editor.frame.${status === 'error' ? 'saveFailed' : status}`)}
       {status === 'error' && onRetry ? (
         <button

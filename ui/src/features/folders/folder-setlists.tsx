@@ -8,6 +8,7 @@ import { EmptyState } from '@/components/page/empty-state';
 import { GroupTitle } from '@/components/page/group-title';
 import { LIST_CLASSES } from '@/components/page/list-row';
 import { DateBlock } from '@/components/primitives/date-block';
+import { goneToast } from '@/components/primitives/gone-toast';
 import { PickRow } from '@/components/primitives/pick-row';
 import { nextSetlistId, setStatus } from '@/components/primitives/set-status';
 import { Button } from '@/components/ui/button';
@@ -101,7 +102,7 @@ export function FolderSetlists({ session, folder, canEdit, now }: FolderSetlists
                           folder.setlistIds.filter((id) => id !== setlist._id),
                           {
                             onSuccess: () =>
-                              toast.success(t('folders.setlistRemoved', { name: setlist.name })),
+                              goneToast(t('folders.setlistRemoved', { name: setlist.name })),
                           }
                         )
                       }
