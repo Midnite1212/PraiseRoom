@@ -612,6 +612,16 @@
       linear-gradient(var(--rim-edge), var(--rim-edge));
   }
 
+  /* While the reader scrolls (`use-scrolling-class.ts`), glass holds its tint over bare ground instead of
+     re-blurring the moving song every frame. Sheets keep their blur. */
+  .scrolling .glass:not([role='dialog'])::after {
+    background:
+      linear-gradient(var(--glass-fill, var(--glass-tint)), var(--glass-fill, var(--glass-tint))),
+      var(--ground);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
   /* Glass that floats over moving content carries a denser tint so its own labels always win. */
   .glass-over {
     --glass-fill: var(--glass-tint-over);
@@ -791,6 +801,11 @@
     backdrop-filter: blur(6px);
     -webkit-mask-image: linear-gradient(transparent, black 50%);
     mask-image: linear-gradient(transparent, black 50%);
+  }
+
+  .scrolling :is(.edge-top, .edge-bottom) {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 
   /* While the finder sticks it carries its own fade band behind it, up under the top bar. */
