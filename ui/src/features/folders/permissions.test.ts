@@ -23,6 +23,7 @@ const session = (groupIds: string[], accessType: Session['accessType'] = 'member
 
 const folder = (createdBy: string | null): Folder => ({
   _id: 'folder-a',
+  urlKey: 'k3x9p2',
   groupName: 'Team',
   setlistIds: [],
   createdBy,

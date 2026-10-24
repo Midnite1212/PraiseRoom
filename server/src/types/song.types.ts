@@ -1,6 +1,7 @@
 import { RecordFields } from './record.types';
 
 type SongRecord = RecordFields & {
+  urlKey: string;
   title: string;
   tempo: string[];
   originalKey: string;

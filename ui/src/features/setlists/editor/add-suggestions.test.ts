@@ -7,6 +7,7 @@ import { shortTheme, suggestSongs } from './add-suggestions';
 
 const song = (id: string, themes: string[] = []): SongSummary => ({
   _id: id,
+  urlKey: 'k3x9p2',
   title: `Song ${id}`,
   artist: 'Artist',
   originalKey: 'G',
@@ -22,6 +23,7 @@ const setlist = (
   groupIds: string[] = []
 ): SetlistSummary => ({
   _id: id,
+  urlKey: 'a7m4qd',
   name: `Set ${id}`,
   date,
   groupIds,

@@ -9,6 +9,7 @@ import { SongsTable } from './songs-table';
 
 const song = (id: string, title: string): SongSummary => ({
   _id: id,
+  urlKey: 'k3x9p2',
   title,
   artist: 'Test Artist',
   originalKey: 'G',

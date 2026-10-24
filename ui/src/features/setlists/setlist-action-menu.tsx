@@ -26,7 +26,7 @@ import { Button } from '@/components/ui/button';
 import type { Session } from '@/features/auth/session';
 import { dateLocale } from '@/lib/date-locale';
 
-import type { SetlistSummary } from './api';
+import { type SetlistSummary, setlistSlug } from './api';
 import type { SetlistNames } from './setlist-row';
 import type { useSetlistActions } from './use-setlist-actions';
 
@@ -100,7 +100,7 @@ export function SetlistActionMenu({
       <div className="mx-1">
         <div className="mb-2 grid grid-cols-3 gap-1.5">
           <MenuTile asChild>
-            <Link to="/setlists/$setlistId" params={{ setlistId: setlist._id }}>
+            <Link to="/setlists/$setlistSlug" params={{ setlistSlug: setlistSlug(setlist) }}>
               <Play />
               {t('setlists.open')}
             </Link>

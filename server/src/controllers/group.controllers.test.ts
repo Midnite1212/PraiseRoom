@@ -40,6 +40,7 @@ const call = async (handler: Parameters<typeof callHandler>[0], init: FakeReques
 
 const storedGroup = (fields: Partial<GroupAccess> = {}): GroupAccess => ({
   _id: GROUP_ID,
+  urlKey: 'p8w2nz',
   createdAt: CREATED_AT,
   groupName: 'Team',
   ...fields,
@@ -139,6 +140,27 @@ describe('group controllers', () => {
   });
 
   describe('getGroup', () => {
+    it('reads a group by its url key', async () => {
+      const group = storedRecord();
+      const findLiveByUrlKey = mock.method(groupRepository, 'findLiveByUrlKey', async () => group);
+      const res = await call(getGroup, { query: { key: 'p8w2nz' } });
+      assert.deepEqual(findLiveByUrlKey.mock.calls[0]?.arguments, ['p8w2nz']);
+      assert.equal(res.statusCode, 200);
+      assert.equal(res.body, group);
+    });
+
+    it('rejects an invalid url key and 404s a missing one', async () => {
+      const findLiveByUrlKey = mock.method(groupRepository, 'findLiveByUrlKey', async () => null);
+      for (const key of ['bad', '', ['p8w2nz']]) {
+        const res = await call(getGroup, { query: { key } });
+        assert.equal(res.statusCode, 400);
+        assert.equal(res.body, 'Invalid group key');
+      }
+      assert.equal(findLiveByUrlKey.mock.callCount(), 0);
+      const res = await call(getGroup, { query: { key: 'p8w2nz' } });
+      assert.equal(res.statusCode, 404);
+    });
+
     it('rejects an invalid id before querying', async () => {
       const findLiveById = mockRecord(null);
       for (const id of ['bad', '', [GROUP_ID], { $ne: null }]) {
@@ -550,7 +572,7 @@ describe('group controllers', () => {
         },
       ]);
       assert.equal(res.statusCode, 200);
-      assert.deepEqual(res.body, { groupId: GROUP_ID });
+      assert.deepEqual(res.body, { groupId: GROUP_ID, urlKey: 'p8w2nz', groupName: 'Team' });
     });
 
     it('succeeds when the caller is already a member', async () => {
@@ -562,7 +584,7 @@ describe('group controllers', () => {
       }));
       const res = await call(joinGroup, { body: { token: TOKEN }, user: USER });
       assert.equal(res.statusCode, 200);
-      assert.deepEqual(res.body, { groupId: GROUP_ID });
+      assert.deepEqual(res.body, { groupId: GROUP_ID, urlKey: 'p8w2nz', groupName: 'Team' });
     });
 
     it('maps an unexpected error to a generic 500', async () => {

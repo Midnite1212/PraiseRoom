@@ -10,6 +10,7 @@ const NOW = new Date(2030, 5, 15, 12).getTime();
 
 const setlist = (_id: string, name: string, day: number): SetlistSummary => ({
   _id,
+  urlKey: 'k3x9p2',
   name,
   date: new Date(2030, 5, day).toISOString(),
   groupIds: [],

@@ -7,31 +7,37 @@ import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ReaderBack } from '@/features/reader/reader-back';
-import { setlistQueryOptions } from '@/features/setlists/api';
+import { setlistQueryOptions, setlistSlug } from '@/features/setlists/api';
 import { MusicianView } from '@/features/setlists/musician-view/musician-view';
 import { canEditSetlist } from '@/features/setlists/permissions';
-import { ensureOrNotFound } from '@/lib/ensure-or-not-found';
+import { ensureFromSlug } from '@/lib/ensure-or-not-found';
 
 const musicianSearchSchema = z.object({
   song: z.number().int().min(1).default(1).catch(1),
 });
 
-export const Route = createFileRoute('/_app/setlists/$setlistId')({
+export const Route = createFileRoute('/_app/setlists/$setlistSlug')({
   staticData: { chrome: 'reader' },
   validateSearch: musicianSearchSchema,
-  loader: ({ context, params }) =>
-    ensureOrNotFound(context.queryClient, setlistQueryOptions(params.setlistId)),
+  loader: async ({ context, params }) => {
+    const { urlKey } = await ensureFromSlug(
+      context.queryClient,
+      params.setlistSlug,
+      setlistQueryOptions
+    );
+    return { urlKey };
+  },
   pendingComponent: MusicianPending,
   component: MusicianPage,
 });
 
 function MusicianPage() {
   const { t } = useTranslation();
-  const { setlistId } = Route.useParams();
+  const { urlKey } = Route.useLoaderData();
   const { song } = Route.useSearch();
   const { session } = Route.useRouteContext();
   const navigate = Route.useNavigate();
-  const { data: setlist } = useSuspenseQuery(setlistQueryOptions(setlistId));
+  const { data: setlist } = useSuspenseQuery(setlistQueryOptions(urlKey));
 
   return (
     <MusicianView
@@ -43,7 +49,11 @@ function MusicianPage() {
       actions={
         canEditSetlist(session, setlist) ? (
           <Button asChild variant="glass" size="icon-lg" aria-label={t('editor.edit')}>
-            <Link to="/setlists/$setlistId/edit" params={{ setlistId }} title={t('editor.edit')}>
+            <Link
+              to="/setlists/$setlistSlug/edit"
+              params={{ setlistSlug: setlistSlug(setlist) }}
+              title={t('editor.edit')}
+            >
               <PenSquare />
             </Link>
           </Button>

@@ -17,6 +17,7 @@ import { sendError, sendResponse } from '../utils/response';
 import {
   isInviteToken,
   isObjectIdString,
+  isUrlKeyString,
   isUserIdString,
   toObjectIdList,
 } from '../utils/validation';
@@ -70,9 +71,23 @@ const createGroup: RequestHandler = async (
 };
 
 const getGroup: RequestHandler = async (req: Request, res: Response): Promise<void> => {
-  const { id } = req.query;
+  const { id, key } = req.query;
 
   try {
+    if (key !== undefined) {
+      if (!isUrlKeyString(key)) {
+        sendResponse(res, 400, 'Invalid group key');
+        return;
+      }
+      const group = await groupRepository.findLiveByUrlKey(key);
+      if (group) {
+        sendResponse(res, 200, group);
+      } else {
+        sendResponse(res, 404, 'Group not found');
+      }
+      return;
+    }
+
     if (id !== undefined) {
       if (!isObjectIdString(id)) {
         sendResponse(res, 400, 'Invalid group id');
@@ -263,7 +278,11 @@ const joinGroup: RequestHandler = async (
       add: [req.user.id],
       remove: [],
     });
-    sendResponse(res, 200, { groupId: group._id });
+    sendResponse(res, 200, {
+      groupId: group._id,
+      urlKey: group.urlKey,
+      groupName: group.groupName,
+    });
   } catch (error: unknown) {
     sendError(res, error);
   }

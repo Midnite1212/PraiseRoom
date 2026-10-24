@@ -55,16 +55,16 @@ const FOLDER_NAME_CLASSES = 'm-0 leading-[1.08] font-bold tracking-[-0.03em] tex
 type Sheet = 'members' | 'add-people' | 'add-setlists' | 'delete' | null;
 
 type FolderDetailProps = {
-  folderId: string;
+  urlKey: string;
   session: Session;
   now: number;
   inPane?: boolean;
 };
 
 // A folder's page: on phones it is the whole route, on wide screens the Folders page opens it in a pane.
-export function FolderDetail({ folderId, session, now, inPane = false }: FolderDetailProps) {
+export function FolderDetail({ urlKey, session, now, inPane = false }: FolderDetailProps) {
   const { t } = useTranslation();
-  const { data: folder } = useSuspenseQuery(folderQueryOptions(folderId));
+  const { data: folder } = useSuspenseQuery(folderQueryOptions(urlKey));
   const { people, members } = useFolderMembers(folder);
   const { cells } = useFolderCover(folder, now);
   const [sheet, setSheet] = useState<Sheet>(null);
@@ -341,7 +341,7 @@ function DeleteFolderDialog({
   const remove = useMutation({
     mutationFn: () => deleteFolder(folder._id),
     onSuccess: async () => {
-      queryClient.removeQueries({ queryKey: ['folders', 'detail', folder._id] });
+      queryClient.removeQueries({ queryKey: ['folders', 'detail', folder.urlKey] });
       await Promise.all(
         FOLDER_RELATED_QUERY_KEYS.map((queryKey) =>
           queryClient.invalidateQueries({ queryKey: [...queryKey] })

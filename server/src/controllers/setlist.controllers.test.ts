@@ -62,6 +62,7 @@ const mockStored = (setlist: SetlistAccess | null) =>
 
 const folder = (id: string, createdBy?: string): GroupAccess => ({
   _id: id,
+  urlKey: 'p8w2nz',
   createdAt: CREATED_AT,
   groupName: 'Team',
   ...(createdBy ? { createdBy } : {}),
@@ -290,7 +291,7 @@ describe('setlist controllers', () => {
       assert.equal(create.mock.callCount(), 0);
     });
 
-    it('creates from allowed fields with server-set _id, createdBy and publicLink', async () => {
+    it('creates from allowed fields with server-set _id, urlKey, createdBy and publicLink', async () => {
       const created = { name: 'Sunday' };
       mockOwnership(null);
       mockFolders(folder(GROUP_ID, USER.id));
@@ -314,14 +315,15 @@ describe('setlist controllers', () => {
       });
       const arg = create.mock.calls[0]?.arguments[0];
       assert.ok(arg);
-      const { _id, ...rest } = arg;
+      const { _id, urlKey, ...rest } = arg;
       assert.match(_id, /^[0-9a-f]{24}$/);
+      assert.match(urlKey, /^[0-9a-z]{6}$/);
       assert.deepEqual(rest, {
         createdBy: USER.id,
         date: '2026-10-04',
         groupIds: [GROUP_ID],
         name: 'Sunday',
-        publicLink: `https://worship.example/setlist/view/${_id}`,
+        publicLink: `https://worship.example/setlist/view/${urlKey}`,
         songKeys: [{ key: 'D', songId: SONG_A }],
         songNotes: [{ note: 'Acapella last chorus', songId: SONG_A }],
         songs: [SONG_A, SONG_B],
@@ -392,7 +394,7 @@ describe('setlist controllers', () => {
         process.env.BASE_URL = 'https://worship.example';
       }
       const arg = create.mock.calls[0]?.arguments[0];
-      assert.equal(arg?.publicLink, `http://localhost:8080/setlist/view/${arg?._id}`);
+      assert.equal(arg?.publicLink, `http://localhost:8080/setlist/view/${arg?.urlKey}`);
     });
   });
 
@@ -414,7 +416,7 @@ describe('setlist controllers', () => {
       assert.equal(duplicate.mock.callCount(), 0);
     });
 
-    it('copies for the caller with a server-set _id, createdBy and publicLink', async () => {
+    it('copies for the caller with a server-set _id, urlKey, createdBy and publicLink', async () => {
       const copy = { _id: OTHER_SETLIST_ID };
       const duplicate = mock.method(setlistRepository, 'duplicateLive', async () => copy);
       const res = await call(duplicateSetlist, {
@@ -430,12 +432,13 @@ describe('setlist controllers', () => {
       const [sourceId, arg] = duplicate.mock.calls[0]?.arguments ?? [];
       assert.equal(sourceId, SETLIST_ID);
       assert.ok(arg);
-      const { _id, ...rest } = arg;
+      const { _id, urlKey, ...rest } = arg;
       assert.match(_id, /^[0-9a-f]{24}$/);
+      assert.match(urlKey, /^[0-9a-z]{6}$/);
       assert.deepEqual(rest, {
         createdBy: USER.id,
         name: 'Sunday copy',
-        publicLink: `https://worship.example/setlist/view/${_id}`,
+        publicLink: `https://worship.example/setlist/view/${urlKey}`,
       });
       assert.equal(res.statusCode, 200);
       assert.equal(res.body, copy);
@@ -450,6 +453,38 @@ describe('setlist controllers', () => {
   });
 
   describe('getSetlist', () => {
+    it('reads a setlist by its url key with the view that fits the caller', async () => {
+      const setlist = { _id: SETLIST_ID };
+      const findLiveByUrlKey = mock.method(
+        setlistRepository,
+        'findLiveByUrlKey',
+        async () => setlist
+      );
+      const res = await call(getSetlist, { query: { key: 'a7m4qd' } });
+      await call(getSetlist, { query: { key: 'a7m4qd' }, user: USER });
+      assert.deepEqual(
+        findLiveByUrlKey.mock.calls.map((callArgs) => callArgs.arguments),
+        [
+          ['a7m4qd', 'public'],
+          ['a7m4qd', 'full'],
+        ]
+      );
+      assert.equal(res.statusCode, 200);
+      assert.equal(res.body, setlist);
+    });
+
+    it('rejects an invalid url key and 404s a missing one', async () => {
+      const findLiveByUrlKey = mock.method(setlistRepository, 'findLiveByUrlKey', async () => null);
+      for (const key of ['bad', ['a7m4qd'], SETLIST_ID]) {
+        const res = await call(getSetlist, { query: { key } });
+        assert.equal(res.statusCode, 400);
+        assert.equal(res.body, 'Invalid setlist key');
+      }
+      assert.equal(findLiveByUrlKey.mock.callCount(), 0);
+      const res = await call(getSetlist, { query: { key: 'a7m4qd' } });
+      assert.equal(res.statusCode, 404);
+    });
+
     it('rejects an id list containing an invalid id', async () => {
       const findLiveByIds = mock.method(setlistRepository, 'findLiveByIds', async () => []);
       const res = await call(getSetlist, { query: { id: [SETLIST_ID, 'bad'] } });

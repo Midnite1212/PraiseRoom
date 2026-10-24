@@ -85,6 +85,27 @@ describe('song controllers', () => {
   });
 
   describe('getSong', () => {
+    it('reads a song by its url key', async () => {
+      const song = { _id: SONG_ID };
+      const findLiveByUrlKey = mock.method(songRepository, 'findLiveByUrlKey', async () => song);
+      const res = await call(getSong, { query: { key: 'k3x9p2' } });
+      assert.deepEqual(findLiveByUrlKey.mock.calls[0]?.arguments, ['k3x9p2']);
+      assert.equal(res.statusCode, 200);
+      assert.equal(res.body, song);
+    });
+
+    it('rejects an invalid url key and 404s a missing one', async () => {
+      const findLiveByUrlKey = mock.method(songRepository, 'findLiveByUrlKey', async () => null);
+      for (const key of ['K3X9P2', 'k3x9p', 'k3x9p2x', ['k3x9p2'], { $gt: '' }]) {
+        const res = await call(getSong, { query: { key } });
+        assert.equal(res.statusCode, 400);
+        assert.equal(res.body, 'Invalid song key');
+      }
+      assert.equal(findLiveByUrlKey.mock.callCount(), 0);
+      const res = await call(getSong, { query: { key: 'k3x9p2' } });
+      assert.equal(res.statusCode, 404);
+    });
+
     it('rejects an invalid id before querying', async () => {
       const findLiveById = mock.method(songRepository, 'findLiveById', async () => null);
       for (const id of ['bad', '', [SONG_ID], { $gt: '' }]) {

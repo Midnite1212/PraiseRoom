@@ -25,6 +25,7 @@ const session = (overrides: Partial<Session> = {}): Session => ({
 
 const setlist = (overrides: Partial<SetlistSummary> = {}): SetlistSummary => ({
   _id: 's1',
+  urlKey: 'k3x9p2',
   name: 'Sunday set',
   date: null,
   createdBy: 'user-1',

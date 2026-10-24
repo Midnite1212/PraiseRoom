@@ -141,6 +141,7 @@ describe('hasName and isSameDraft', () => {
 describe('editing songs', () => {
   const summary = {
     _id: 'n',
+    urlKey: 'k3x9p2',
     title: 'N',
     artist: 'X',
     originalKey: 'E',

@@ -45,7 +45,12 @@ export const SETLIST_FIELDS = [
 
 export type SetlistField = (typeof SETLIST_FIELDS)[number];
 export type SetlistFields = Partial<Record<SetlistField, unknown>>;
-export type SetlistCreate = SetlistFields & { _id: string; createdBy: string; publicLink: string };
+export type SetlistCreate = SetlistFields & {
+  _id: string;
+  urlKey: string;
+  createdBy: string;
+  publicLink: string;
+};
 export type SetlistView = 'full' | 'public';
 export type SetlistReach = { setlistIds: string[]; groupIds: string[]; createdBy?: string };
 export type FindGroupAccess = (ids: string[]) => Promise<GroupAccess[]>;
@@ -205,6 +210,7 @@ const loadSongs = async <Song>(
 
 const toSetlistRecord = (row: SetlistRow, links: SetlistLinks | undefined): SetlistRecord => ({
   _id: row.id,
+  urlKey: row.urlKey,
   name: row.name,
   date: row.date,
   ...presentFields({ createdBy: row.createdBy }),
@@ -247,6 +253,7 @@ const populatePublic = async (rows: SetlistRow[]): Promise<PublicSetlistRecord[]
   ]);
   return records.map((record) => ({
     _id: record._id,
+    urlKey: record.urlKey,
     name: record.name,
     date: record.date,
     songs: songsBySetlist.get(record._id) ?? [],
@@ -371,7 +378,13 @@ const reachCondition = (reach: SetlistReach): SQL | undefined => {
 };
 
 export const setlistRepository = {
-  async create({ _id, createdBy, publicLink, ...fields }: SetlistCreate): Promise<SetlistRecord> {
+  async create({
+    _id,
+    urlKey,
+    createdBy,
+    publicLink,
+    ...fields
+  }: SetlistCreate): Promise<SetlistRecord> {
     const values = toSetlistValues(fields);
     if (values.name === undefined) throw new InvalidInputError('name');
     const { name } = values;
@@ -382,6 +395,7 @@ export const setlistRepository = {
         .insert(setlists)
         .values({
           id,
+          urlKey,
           name,
           date: values.date ?? null,
           createdBy,
@@ -398,7 +412,7 @@ export const setlistRepository = {
 
   async duplicateLive(
     sourceId: string,
-    { _id, createdBy, publicLink, name }: SetlistCreate
+    { _id, urlKey, createdBy, publicLink, name }: SetlistCreate
   ): Promise<SetlistRecord | null> {
     const copyName = name === undefined ? undefined : castRequiredString('name', name);
     return getDb().transaction(async (tx) => {
@@ -411,6 +425,7 @@ export const setlistRepository = {
         .insert(setlists)
         .values({
           id,
+          urlKey,
           name: copyName ?? source.name,
           date: null,
           createdBy,
@@ -431,6 +446,15 @@ export const setlistRepository = {
 
   async findLiveById(id: string, view: SetlistView) {
     const rows = await getDb().select().from(setlists).where(isLiveSetlist(id));
+    const [record] = await populate(rows, view);
+    return record ?? null;
+  },
+
+  async findLiveByUrlKey(urlKey: string, view: SetlistView) {
+    const rows = await getDb()
+      .select()
+      .from(setlists)
+      .where(and(eq(setlists.urlKey, urlKey), eq(setlists.isDeleted, false)));
     const [record] = await populate(rows, view);
     return record ?? null;
   },

@@ -10,7 +10,7 @@ import { KeyChip } from '@/components/primitives/key-chip';
 import { TempoMeter } from '@/components/primitives/tempo-meter';
 import { cn } from '@/lib/utils';
 
-import type { SongSort, SongSummary, SortDirection } from './api';
+import { type SongSort, songSlug, type SongSummary, type SortDirection } from './api';
 
 const features = tableFeatures({});
 
@@ -87,7 +87,10 @@ export function SongsTable({
   if (songs.length === 0)
     return <EmptyState title={t('songs.empty')}>{t('songs.emptyHint')}</EmptyState>;
 
-  const open = (songId: string) => void navigate({ to: '/songs/$songId', params: { songId } });
+  const open = (songId: string) => {
+    const song = songs.find(({ _id }) => _id === songId);
+    if (song) void navigate({ to: '/songs/$songSlug', params: { songSlug: songSlug(song) } });
+  };
 
   const onRowKeyDown = (event: KeyboardEvent<HTMLTableRowElement>, songId: string) => {
     if (event.target !== event.currentTarget || isEditable(event.target)) return;

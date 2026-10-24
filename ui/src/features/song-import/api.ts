@@ -105,7 +105,7 @@ export type NewSongInput = {
   themes: string[];
 };
 
-const createdSongSchema = z.object({ _id: z.string() });
+const createdSongSchema = z.object({ _id: z.string(), urlKey: z.string(), title: z.string() });
 
 export const createSong = (input: NewSongInput): Promise<z.infer<typeof createdSongSchema>> =>
   apiRequest('/api/songs/create', createdSongSchema, { method: 'POST', body: input });

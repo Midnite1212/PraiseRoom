@@ -17,7 +17,13 @@ beforeEach(() => {
     if (url.startsWith('/api/auth/get-session')) return sessionResponse();
     if (url.startsWith('/api/songs/create')) {
       created.push(typeof init?.body === 'string' ? JSON.parse(init.body) : null);
-      return new Response(JSON.stringify({ _id: '507f1f77bcf86cd799439031' }));
+      return new Response(
+        JSON.stringify({
+          _id: '507f1f77bcf86cd799439031',
+          urlKey: 'k3x9p2',
+          title: 'Invented Song',
+        })
+      );
     }
     throw new Error(`unexpected fetch to ${url}`);
   });

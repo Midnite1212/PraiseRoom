@@ -134,6 +134,7 @@ describe(
           'timeSignature',
           'title',
           'updatedAt',
+          'urlKey',
           'year',
         ]);
         assert.equal(created.title, '123');
@@ -309,7 +310,9 @@ describe(
         });
         assert.deepEqual(created.songs, [b._id, a._id, b._id]);
         assert.deepEqual(created.songKeys, [{ key: 'Bb', songId: b._id }]);
-        assert.equal(created.publicLink, `https://worship.example/setlist/view/${created._id}`);
+        assert.match(created.urlKey, /^[0-9a-z]{6}$/);
+        assert.equal(created.publicLink, `https://worship.example/setlist/view/${created.urlKey}`);
+        assert.equal((await ok(getSetlist, { query: { key: created.urlKey } }))._id, created._id);
         assert.equal(created.createdBy, MEMBER.id);
         assert.equal(created.date, '2026-10-04T00:00:00.000Z');
         assert.deepEqual(created.groupIds, []);
@@ -334,6 +337,7 @@ describe(
           'songNotes',
           'songs',
           'updatedAt',
+          'urlKey',
         ]);
         assert.equal(anonymous.songs.length, 3);
 

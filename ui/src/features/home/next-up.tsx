@@ -8,7 +8,12 @@ import { whenLabel } from '@/components/primitives/set-status';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Session } from '@/features/auth/session';
-import { keyForSong, type SetlistSummary, setlistQueryOptions } from '@/features/setlists/api';
+import {
+  keyForSong,
+  type SetlistSummary,
+  setlistQueryOptions,
+  setlistSlug,
+} from '@/features/setlists/api';
 import { useSetlistActions } from '@/features/setlists/use-setlist-actions';
 import { dateLocale } from '@/lib/date-locale';
 
@@ -24,7 +29,7 @@ export function NextUp({
   now: number;
 }) {
   const { t, i18n } = useTranslation();
-  const { data: detail, isPending } = useQuery(setlistQueryOptions(setlist._id));
+  const { data: detail, isPending } = useQuery(setlistQueryOptions(setlist.urlKey));
   const actions = useSetlistActions(session, setlist);
   const meta = [
     setlist.date
@@ -46,8 +51,8 @@ export function NextUp({
         <div className="min-w-0">
           <h2 id="next-up" className="text-card-title m-0 font-bold tracking-[-0.02em]">
             <Link
-              to="/setlists/$setlistId"
-              params={{ setlistId: setlist._id }}
+              to="/setlists/$setlistSlug"
+              params={{ setlistSlug: setlistSlug(setlist) }}
               className="block truncate outline-none after:absolute after:inset-0 after:z-[1] after:rounded-[28px]"
             >
               {setlist.name}

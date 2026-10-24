@@ -19,6 +19,7 @@ import { keyLabel } from '@/features/chords/theory';
 import { createSong } from '@/features/song-import/api';
 import { cn } from '@/lib/utils';
 
+import { songSlug } from './api';
 import { initialKey } from './key-options';
 import { UNKNOWN_ARTIST } from './song-draft';
 
@@ -74,8 +75,8 @@ export function AddSongDialog({ open, onOpenChange, onFindOnWeb }: AddSongDialog
         formApi.reset();
         onOpenChange(false);
         await navigate({
-          to: '/songs/$songId/edit',
-          params: { songId: song._id },
+          to: '/songs/$songSlug/edit',
+          params: { songSlug: songSlug(song) },
           search: meta.start === 'paste' ? { mode: 'text' } : {},
         });
       } catch {

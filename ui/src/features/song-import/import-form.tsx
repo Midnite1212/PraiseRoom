@@ -27,7 +27,12 @@ import { keyLabel, type MusicKey, parseKey, transposeChordLyrics } from '@/featu
 import { ReaderPreferenceControls } from '@/features/reader/reader-controls';
 import type { ReaderSong } from '@/features/reader/song';
 import { SongReader } from '@/features/reader/song-reader';
-import { songSearchQueryOptions, TEMPO_LABEL_KEYS, TEMPO_OPTIONS } from '@/features/songs/api';
+import {
+  songSearchQueryOptions,
+  songSlug,
+  TEMPO_LABEL_KEYS,
+  TEMPO_OPTIONS,
+} from '@/features/songs/api';
 import {
   initialKey,
   KEY_OPTIONS,
@@ -119,7 +124,7 @@ export function ImportForm({ chart, onDirtyChange, onSaved }: ImportFormProps) {
       toast.success(t('songImport.form.saved'));
       onSaved();
       await queryClient.invalidateQueries({ queryKey: ['songs'] });
-      await navigate({ to: '/songs/$songId', params: { songId: saved._id } });
+      await navigate({ to: '/songs/$songSlug', params: { songSlug: songSlug(saved) } });
     },
   });
 
@@ -488,7 +493,7 @@ function DuplicateWarning({ title }: { title: string }) {
       <AlertDescription className="flex flex-wrap items-center gap-1.5">
         <span>{t('songImport.form.duplicateWarning', { title: duplicate.title })}</span>
         <Button asChild variant="link" size="sm" className="h-auto p-0">
-          <Link to="/songs/$songId" params={{ songId: duplicate._id }}>
+          <Link to="/songs/$songSlug" params={{ songSlug: songSlug(duplicate) }}>
             {t('songImport.form.duplicateLink')}
           </Link>
         </Button>

@@ -10,9 +10,17 @@ import { Tag } from '@/components/primitives/tag';
 import { TempoMeter } from '@/components/primitives/tempo-meter';
 import { Button } from '@/components/ui/button';
 import type { Session } from '@/features/auth/session';
+import { folderSlug } from '@/features/folders/api';
 import { dateLocale } from '@/lib/date-locale';
 
-import { keyForSong, noteForSong, setlistQueryOptions, type SetlistSummary } from './api';
+import {
+  foldersQueryOptions,
+  keyForSong,
+  noteForSong,
+  setlistQueryOptions,
+  setlistSlug,
+  type SetlistSummary,
+} from './api';
 import type { SetlistNames } from './setlist-row';
 import { useSetlistActions } from './use-setlist-actions';
 
@@ -37,11 +45,13 @@ export function SetlistPreview({
 }: SetlistPreviewProps) {
   const { t, i18n } = useTranslation();
   const actions = useSetlistActions(session, setlist);
-  const { data: detail } = useQuery(setlistQueryOptions(setlist._id));
+  const { data: detail } = useQuery(setlistQueryOptions(setlist.urlKey));
   const status = setStatus(setlist, nextId, now);
+  const { data: allFolders } = useQuery(foldersQueryOptions());
   const folders = setlist.groupIds.flatMap((id) => {
     const name = names.folders.get(id);
-    return name ? [{ id, name }] : [];
+    const folder = allFolders?.find(({ _id }) => _id === id);
+    return name && folder ? [{ id, name, slug: folderSlug(folder) }] : [];
   });
   const maker =
     setlist.createdBy && setlist.createdBy !== session.id
@@ -97,11 +107,11 @@ export function SetlistPreview({
           <>
             <span aria-hidden>·</span>
             {t('setlists.preview.inFolders')}
-            {folders.map(({ id, name }) => (
+            {folders.map(({ id, name, slug }) => (
               <Link
                 key={id}
-                to="/folders/$folderId"
-                params={{ folderId: id }}
+                to="/folders/$folderSlug"
+                params={{ folderSlug: slug }}
                 className="rounded-full"
               >
                 <Tag className="hover:bg-fill-press hover:text-ink">
@@ -116,8 +126,8 @@ export function SetlistPreview({
       <div className="mt-4 mb-6 flex flex-wrap gap-2">
         <Button asChild>
           <Link
-            to="/setlists/$setlistId"
-            params={{ setlistId: setlist._id }}
+            to="/setlists/$setlistSlug"
+            params={{ setlistSlug: setlistSlug(setlist) }}
             aria-label={t('setlists.preview.openNamed', { name: setlist.name })}
           >
             <Play />
@@ -126,7 +136,7 @@ export function SetlistPreview({
         </Button>
         {actions.canEdit ? (
           <Button asChild variant="secondary">
-            <Link to="/setlists/$setlistId/edit" params={{ setlistId: setlist._id }}>
+            <Link to="/setlists/$setlistSlug/edit" params={{ setlistSlug: setlistSlug(setlist) }}>
               <PenSquare />
               {t('editor.edit')}
             </Link>

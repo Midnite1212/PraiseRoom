@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 import { readerSongSchema } from '@/features/reader/song';
 import { apiRequest } from '@/lib/api-client';
+import { withUrlKey } from '@/lib/slug';
 
 import { keyFilterSpellings } from './key-options';
 
@@ -45,6 +46,7 @@ export const THEME_OPTIONS = [
 
 export const songSummarySchema = z.object({
   _id: z.string(),
+  urlKey: z.string(),
   title: z.string(),
   artist: z.string(),
   originalKey: z.string(),
@@ -149,16 +151,22 @@ export const songLibraryQueryOptions = () =>
     },
   });
 
-export const songSchema = readerSongSchema.extend({ recommendedKeys: z.array(z.string()) });
+export const songSchema = readerSongSchema.extend({
+  urlKey: z.string(),
+  recommendedKeys: z.array(z.string()),
+});
 
 export type Song = z.infer<typeof songSchema>;
 
-export const songQueryOptions = (songId: string) =>
+export const songQueryOptions = (urlKey: string) =>
   queryOptions({
-    queryKey: ['songs', 'detail', songId],
+    queryKey: ['songs', 'detail', urlKey],
     queryFn: ({ signal }) =>
-      apiRequest('/api/songs/get', songSchema, { query: { id: songId }, signal }),
+      apiRequest('/api/songs/get', songSchema, { query: { key: urlKey }, signal }),
   });
+
+export const songSlug = (song: { title: string; urlKey: string }): string =>
+  withUrlKey(song.title, song.urlKey);
 
 export const songSearchInfiniteQueryOptions = (keyword: string) =>
   infiniteQueryOptions({

@@ -21,20 +21,22 @@ import { ReadingSettings } from '@/features/reader/reading-settings';
 import { useSongCapo } from '@/features/reader/song-capo';
 import { SongReader } from '@/features/reader/song-reader';
 import { AddToSetlist } from '@/features/setlists/add-to-setlist';
-import { type Song, songQueryOptions } from '@/features/songs/api';
-import { ensureOrNotFound } from '@/lib/ensure-or-not-found';
+import { type Song, songQueryOptions, songSlug } from '@/features/songs/api';
+import { ensureFromSlug } from '@/lib/ensure-or-not-found';
 
-export const Route = createFileRoute('/_app/songs/$songId')({
+export const Route = createFileRoute('/_app/songs/$songSlug')({
   staticData: { chrome: 'reader' },
-  loader: ({ context, params }) =>
-    ensureOrNotFound(context.queryClient, songQueryOptions(params.songId)),
+  loader: async ({ context, params }) => {
+    const { urlKey } = await ensureFromSlug(context.queryClient, params.songSlug, songQueryOptions);
+    return { urlKey };
+  },
   pendingComponent: () => <Skeleton className="mx-auto mt-24 h-[70svh] max-w-3xl" />,
   component: SongPage,
 });
 
 function SongPage() {
-  const { songId } = Route.useParams();
-  const { data: song } = useSuspenseQuery(songQueryOptions(songId));
+  const { urlKey } = Route.useLoaderData();
+  const { data: song } = useSuspenseQuery(songQueryOptions(urlKey));
   return <SongView key={song._id} song={song} />;
 }
 
@@ -87,8 +89,8 @@ function SongView({ song }: { song: Song }) {
           {canWriteSongs(session) ? (
             <Button asChild variant="glass" size="icon-lg" aria-label={t('songEditor.edit')}>
               <Link
-                to="/songs/$songId/edit"
-                params={{ songId: song._id }}
+                to="/songs/$songSlug/edit"
+                params={{ songSlug: songSlug(song) }}
                 title={t('songEditor.edit')}
               >
                 <PenSquare />

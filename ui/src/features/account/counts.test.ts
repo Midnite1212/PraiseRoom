@@ -21,6 +21,7 @@ const session: Session = {
 
 const folder = (id: string, createdBy: string) => ({
   _id: id,
+  urlKey: 'k3x9p2',
   groupName: id,
   setlistIds: [],
   createdBy,

@@ -17,7 +17,7 @@ import { useUndoHistory } from '@/hooks/use-undo-history';
 import { useIsWide } from '@/hooks/use-wide';
 import { cn } from '@/lib/utils';
 
-import { type Song, type SongInput, songQueryOptions, updateSong } from './api';
+import { type Song, type SongInput, songQueryOptions, songSlug, updateSong } from './api';
 import {
   type DraftSection,
   draftProblem,
@@ -65,7 +65,7 @@ export function SongEditor({ song, initialMode = 'song' }: { song: Song; initial
   const save = useMutation({
     mutationFn: (input: SongInput) => updateSong(song._id, input),
     onSuccess: async (_saved, input) => {
-      queryClient.setQueryData(songQueryOptions(song._id).queryKey, (current) =>
+      queryClient.setQueryData(songQueryOptions(song.urlKey).queryKey, (current) =>
         current ? { ...current, ...input } : current
       );
       await queryClient.invalidateQueries({ queryKey: ['songs', 'search'] });
@@ -117,7 +117,7 @@ export function SongEditor({ song, initialMode = 'song' }: { song: Song; initial
       return;
     }
     if (await autosave.flush()) {
-      await navigate({ to: '/songs/$songId', params: { songId: song._id } });
+      await navigate({ to: '/songs/$songSlug', params: { songSlug: songSlug(song) } });
     }
   };
 

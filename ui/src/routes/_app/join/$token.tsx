@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { EmptyState } from '@/components/page/empty-state';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { FOLDER_RELATED_QUERY_KEYS, joinFolder } from '@/features/folders/api';
+import { FOLDER_RELATED_QUERY_KEYS, folderSlug, joinFolder } from '@/features/folders/api';
 import { ApiError } from '@/lib/api-client';
 
 type JoinFailure = 'invalid' | 'failed';
@@ -18,9 +18,9 @@ const toJoinFailure = (error: unknown): JoinFailure =>
 // link shows nothing about the folder until the visitor is signed in and has joined.
 export const Route = createFileRoute('/_app/join/$token')({
   beforeLoad: async ({ context, params }) => {
-    let groupId: string;
+    let joined: Awaited<ReturnType<typeof joinFolder>>;
     try {
-      ({ groupId } = await joinFolder(params.token));
+      joined = await joinFolder(params.token);
     } catch (error: unknown) {
       return { joinFailure: toJoinFailure(error) };
     }
@@ -29,7 +29,7 @@ export const Route = createFileRoute('/_app/join/$token')({
         context.queryClient.invalidateQueries({ queryKey: [...queryKey] })
       )
     );
-    throw redirect({ to: '/folders/$folderId', params: { folderId: groupId } });
+    throw redirect({ to: '/folders/$folderSlug', params: { folderSlug: folderSlug(joined) } });
   },
   pendingComponent: () => <Skeleton className="h-48 w-full" />,
   component: JoinPage,

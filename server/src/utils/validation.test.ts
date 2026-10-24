@@ -1,7 +1,16 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { isInviteToken, isObjectIdString, toObjectIdList } from './validation';
+import { isInviteToken, isObjectIdString, isUrlKeyString, toObjectIdList } from './validation';
+
+describe('isUrlKeyString', () => {
+  it('accepts six lowercase letters or digits only', () => {
+    assert.equal(isUrlKeyString('k3x9p2'), true);
+    for (const value of ['K3X9P2', 'k3x9p', 'k3x9p2x', 'k3-9p2', '', undefined, ['k3x9p2']]) {
+      assert.equal(isUrlKeyString(value), false, String(value));
+    }
+  });
+});
 
 describe('isObjectIdString', () => {
   it('accepts 24-character hex strings in either case', () => {

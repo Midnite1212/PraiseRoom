@@ -143,7 +143,7 @@ function FoldersPage() {
             <Suspense fallback={<Skeleton className="h-96 w-full" />}>
               <FolderDetail
                 key={chosen._id}
-                folderId={chosen._id}
+                urlKey={chosen.urlKey}
                 session={session}
                 now={now}
                 inPane

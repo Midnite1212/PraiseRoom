@@ -230,7 +230,7 @@ export function MusicianView({
       }}
     />
   );
-  const share = <ShareButton link={setlist.publicLink ? publicSetlistUrl(setlist._id) : null} />;
+  const share = <ShareButton link={setlist.publicLink ? publicSetlistUrl(setlist) : null} />;
 
   if (!song) {
     return (

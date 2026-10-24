@@ -5,7 +5,7 @@ import { SONG_FIELDS, SongSortField, songRepository } from '../db/repositories/s
 import { MUSIC_KEYS } from '../db/schema';
 import { pick } from '../utils/pick';
 import { sendError, sendResponse } from '../utils/response';
-import { isObjectIdString } from '../utils/validation';
+import { isObjectIdString, isUrlKeyString } from '../utils/validation';
 
 const MAX_SEARCH_LENGTH = 100;
 const DEFAULT_PAGE = 1;
@@ -57,9 +57,23 @@ const createSong: RequestHandler = async (req: Request, res: Response): Promise<
 };
 
 const getSong: RequestHandler = async (req: Request, res: Response): Promise<void> => {
-  const { id } = req.query;
+  const { id, key } = req.query;
 
   try {
+    if (key !== undefined) {
+      if (!isUrlKeyString(key)) {
+        sendResponse(res, 400, 'Invalid song key');
+        return;
+      }
+      const song = await songRepository.findLiveByUrlKey(key);
+      if (song) {
+        sendResponse(res, 200, song);
+      } else {
+        sendResponse(res, 404, 'Song not found');
+      }
+      return;
+    }
+
     if (id !== undefined) {
       if (!isObjectIdString(id)) {
         sendResponse(res, 400, 'Invalid song id');
