@@ -50,7 +50,7 @@ export function EditorChip({
           <ChevronDown className="text-ink-3 size-3.5" aria-hidden />
         </button>
       </PopoverTrigger>
-      <PopoverContent align="start" className={contentClassName}>
+      <PopoverContent align="start" collisionPadding={12} className={contentClassName}>
         {children}
       </PopoverContent>
     </Popover>
