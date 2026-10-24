@@ -142,11 +142,18 @@
     "add": {
       "button": "Add song",
       "title": "Add a song",
-      "description": "Every song gets lyrics, chords and its original key.",
-      "paste": "Paste a chord chart",
+      "description": "Name it, then choose how to start.",
+      "paste": "Paste a chart",
       "pasteHint": "Chords above lyrics, or ChordPro",
-      "web": "Find it on the web",
-      "webHint": "Search chord sites, then check before saving"
+      "web": "Find on the web",
+      "webHint": "Search chord sites first",
+      "titleLabel": "Song title",
+      "artistLabel": "Artist or writer",
+      "artistPlaceholder": "Artist or writer (optional)",
+      "titleRequired": "Enter a song title.",
+      "write": "Write it",
+      "writeHint": "Type lyrics, place chords",
+      "createFailed": "Could not create the song. Please try again."
     }
   },
   "errors": {

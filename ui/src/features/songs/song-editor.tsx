@@ -49,7 +49,10 @@ export function SongEditor({ song }: { song: Song }) {
   const [lyricsSize] = useLyricsSize();
   const history = useUndoHistory(toDraft(song));
   const draft = history.value;
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(() => {
+    const [only] = draft.sections;
+    return draft.sections.length === 1 && only?.lines.length === 0 ? only.id : null;
+  });
 
   const save = useMutation({
     mutationFn: (input: SongInput) => updateSong(song._id, input),
