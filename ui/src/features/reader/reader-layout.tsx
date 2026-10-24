@@ -12,6 +12,8 @@ type ReaderLayoutProps = {
   title?: ReactNode;
   // Lyrics | Chords, then (wide, chords on) the notation toggle.
   modes: ReactNode;
+  // Auto-scroll's play button, after the modes.
+  auto?: ReactNode;
   // The song's title, shown in the top row once its big title has scrolled away.
   compactTitle?: string;
   // End of the top row: Aa, edit, share…
@@ -31,6 +33,7 @@ export function ReaderLayout({
   back,
   title,
   modes,
+  auto,
   compactTitle,
   actions,
   sidebar,
@@ -68,6 +71,7 @@ export function ReaderLayout({
           </div>
         ) : null}
         {modes}
+        {auto}
         <span className="wide:text-left wide:px-1 pointer-events-none! min-w-0 flex-1 truncate px-0 text-center text-[0.9375rem] font-semibold opacity-0 transition-opacity duration-200 in-[.scrolled]:opacity-100">
           {compactTitle}
         </span>

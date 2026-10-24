@@ -7,6 +7,8 @@ import { Panel } from '@/components/primitives/panel';
 import { Button } from '@/components/ui/button';
 import { conventionalKey } from '@/features/chords/key-spelling';
 import { keyLabel, type MusicKey, parseKey } from '@/features/chords/theory';
+import { useAutoScroll } from '@/features/reader/auto-scroll';
+import { AutoScrollButton } from '@/features/reader/auto-scroll-controls';
 import { useReaderMode } from '@/features/reader/chord-display';
 import { KeyPicker } from '@/features/reader/key-picker';
 import { ReadingPanel, ShareButton, WideReadingControls } from '@/features/reader/reader-controls';
@@ -86,6 +88,7 @@ export function MusicianView({
   const song = entries[currentIndex];
   const [capo, changeCapo] = useSongCapo(song?._id ?? '', song?.capo);
   const nextSong = entries[currentIndex + 1];
+  const auto = useAutoScroll(song?._id ?? '');
 
   const goToSong = (number: number) => {
     if (number >= 1 && number <= songCount) onSongChange(number);
@@ -204,10 +207,11 @@ export function MusicianView({
         </>
       }
       modes={<ReaderModes />}
+      auto={<AutoScrollButton auto={auto} placement="top" className="wide:inline-flex hidden" />}
       compactTitle={song.title}
       actions={
         <>
-          <WideReadingControls />
+          <WideReadingControls auto={auto} />
           {readingSettings}
           {actions}
           {share}
@@ -287,6 +291,7 @@ export function MusicianView({
       dock={
         <>
           <ReadingPanel
+            auto={auto}
             trigger={
               <Button
                 variant="glass"
@@ -297,6 +302,7 @@ export function MusicianView({
               </Button>
             }
           />
+          <AutoScrollButton auto={auto} placement="dock" />
           <div className="glass glass-over flex h-14 min-w-0 flex-1 items-center px-1">
             <Button
               variant="ghost"

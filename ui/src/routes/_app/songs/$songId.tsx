@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { canWriteSongs } from '@/features/auth/session';
 import { type MusicKey, parseKey } from '@/features/chords/theory';
+import { useAutoScroll } from '@/features/reader/auto-scroll';
+import { AutoScrollButton } from '@/features/reader/auto-scroll-controls';
 import { useReaderMode } from '@/features/reader/chord-display';
 import { KeyPicker } from '@/features/reader/key-picker';
 import { ReaderBack } from '@/features/reader/reader-back';
@@ -43,6 +45,7 @@ function SongView({ song }: { song: Song }) {
   const originalKey = parseKey(song.originalKey);
   const [playKey, setPlayKey] = useState<MusicKey | null>(originalKey);
   const [capo, setCapo] = useSongCapo(song._id, song.capo);
+  const auto = useAutoScroll(song._id);
   const readingTrigger = (
     <Button
       variant="glass"
@@ -57,10 +60,11 @@ function SongView({ song }: { song: Song }) {
     <ReaderLayout
       back={<ReaderBack to="/songs" label={t('songs.title')} />}
       modes={<ReaderModes />}
+      auto={<AutoScrollButton auto={auto} placement="top" className="wide:inline-flex hidden" />}
       compactTitle={song.title}
       actions={
         <>
-          <WideReadingControls />
+          <WideReadingControls auto={auto} />
           <ReadingSettings />
           <AddToSetlist
             song={song}
@@ -86,7 +90,8 @@ function SongView({ song }: { song: Song }) {
       }
       dock={
         <>
-          <ReadingPanel trigger={readingTrigger} />
+          <ReadingPanel trigger={readingTrigger} auto={auto} />
+          <AutoScrollButton auto={auto} placement="dock" />
           <span className="flex-1" />
           {mode === 'chords' && originalKey && playKey ? (
             <KeyPicker
