@@ -142,11 +142,18 @@
     "add": {
       "button": "新增歌曲",
       "title": "新增歌曲",
-      "description": "每首歌曲都有歌詞、和弦及原調。",
+      "description": "先為歌曲命名，再選擇開始方式。",
       "paste": "貼上和弦譜",
       "pasteHint": "歌詞上方的和弦，或 ChordPro",
       "web": "在網上搜尋",
-      "webHint": "搜尋和弦網站，儲存前先檢查"
+      "webHint": "先搜尋和弦網站",
+      "titleLabel": "歌曲名稱",
+      "artistLabel": "歌手或作者",
+      "artistPlaceholder": "歌手或作者（選填）",
+      "titleRequired": "請輸入歌曲名稱。",
+      "write": "親手編寫",
+      "writeHint": "輸入歌詞，加上和弦",
+      "createFailed": "未能建立歌曲，請再試一次。"
     }
   },
   "errors": {

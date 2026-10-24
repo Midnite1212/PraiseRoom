@@ -320,10 +320,9 @@ function SongsPage() {
           <AddSongDialog
             open={isAddOpen}
             onOpenChange={setIsAddOpen}
-            onPaste={songImport.openPaste}
-            onFindOnWeb={() => {
+            onFindOnWeb={(query) => {
+              setText(query);
               setSearch({ web: true });
-              searchInput.current?.focus();
             }}
           />
           {songImport.element}
