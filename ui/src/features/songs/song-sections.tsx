@@ -1,11 +1,13 @@
 import { Close, PenSquare, Plus, Trash } from 'pixelarticons/react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { type MusicKey, parseChord } from '@/features/chords/theory';
 
+import { foldPastedChart } from './chart-fold';
 import {
   chordsOnWord,
   type DraftSection,
@@ -99,6 +101,11 @@ export function SectionBlock({
           aria-label={t('songEditor.lyricsFor', { name })}
           placeholder={t('songEditor.lyricsPlaceholder')}
           onChange={(event) => onLinesChange(event.target.value.split('\n'))}
+          onPaste={(event) => {
+            if (foldPastedChart(event, (value) => onLinesChange(value.split('\n')))) {
+              toast(t('songEditor.text.chartFolded'));
+            }
+          }}
           onBlur={onFieldBlur}
           className="border-hairline wide:ml-10 wide:w-[calc(100%-2.5rem)] focus-visible:border-chord/50 ml-3 block w-[calc(100%-0.75rem)] resize-y rounded-2xl border bg-transparent px-3.5 py-3 font-mono text-[0.9375rem] leading-[1.6] outline-none"
         />
@@ -143,7 +150,7 @@ type TapLineProps = {
   onChord: (wordStart: number, chord: string | null) => void;
 };
 
-function TapLine({ raw, musicKey, picking, onPickingChange, onChord }: TapLineProps) {
+export function TapLine({ raw, musicKey, picking, onPickingChange, onChord }: TapLineProps) {
   const line = parseLine(raw);
   const words = wordsOf(line.text);
   if (line.text.trim() === '') {

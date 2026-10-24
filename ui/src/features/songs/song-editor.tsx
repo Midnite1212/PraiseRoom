@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
+import { Article, Music } from 'pixelarticons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -7,6 +8,7 @@ import { toast } from 'sonner';
 import { EditorFrame } from '@/components/editor/editor-frame';
 import { ReorderList } from '@/components/editor/reorder-list';
 import { PAGE_TITLE_CLASSES } from '@/components/page/page-header';
+import { Segmented } from '@/components/primitives/segmented';
 import { keyLabel, type MusicKey } from '@/features/chords/theory';
 import { useLyricsSize } from '@/features/reader/lyrics-size';
 import { useAutosave } from '@/hooks/use-autosave';
@@ -35,13 +37,16 @@ import {
   TimeSettingChip,
 } from './song-editor-chips';
 import { AddSections, SectionBlock } from './song-sections';
+import { SongTextMode } from './song-text-mode';
+
+export type EditMode = 'song' | 'text';
 
 const titleField =
   'w-full min-w-0 bg-transparent p-0 outline-none caret-chord placeholder:text-ink-3';
 
 // Edits one song for editors and admins; the server's SONG_WRITERS rule is the real gate. Every change
 // saves as it goes through the song update endpoint, which replaces the song.
-export function SongEditor({ song }: { song: Song }) {
+export function SongEditor({ song, initialMode = 'song' }: { song: Song; initialMode?: EditMode }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -53,6 +58,7 @@ export function SongEditor({ song }: { song: Song }) {
     const [only] = draft.sections;
     return draft.sections.length === 1 && only?.lines.length === 0 ? only.id : null;
   });
+  const [mode, setMode] = useState<EditMode>(initialMode);
 
   const save = useMutation({
     mutationFn: (input: SongInput) => updateSong(song._id, input),
@@ -145,6 +151,35 @@ export function SongEditor({ song }: { song: Song }) {
           />
         </div>
       }
+      actions={
+        <Segmented
+          value={mode}
+          onChange={setMode}
+          label={t('songEditor.mode.label')}
+          size="sm"
+          glass
+          options={[
+            {
+              value: 'song',
+              label: (
+                <>
+                  <Music />
+                  {t('songEditor.mode.song')}
+                </>
+              ),
+            },
+            {
+              value: 'text',
+              label: (
+                <>
+                  <Article />
+                  {t('songEditor.mode.text')}
+                </>
+              ),
+            },
+          ]}
+        />
+      }
       status={autosave.status}
       onRetry={autosave.retry}
       canUndo={history.canUndo}
@@ -170,41 +205,53 @@ export function SongEditor({ song }: { song: Song }) {
         </>
       }
     >
-      <div data-lyrics-size={lyricsSize} className="max-w-[760px]">
-        {hint}
-        <ReorderList
-          items={draft.sections}
-          getKey={(section) => section.id}
-          getLabel={(section) => section.label || t('songEditor.unnamedSection')}
-          onReorder={(sections) => update({ ...draft, sections })}
-          className="gap-4"
-          renderItem={(section, _index, handle) => (
-            <SectionBlock
-              section={section}
-              handle={handle}
-              editing={editingId === section.id}
-              musicKey={draft.key}
-              onToggleEdit={() => setEditingId(editingId === section.id ? null : section.id)}
-              onLabelChange={(label) =>
-                updateSection(section.id, (s) => ({ ...s, label }), `label:${section.id}`)
-              }
-              onLinesChange={(lines) =>
-                updateSection(section.id, (s) => ({ ...s, lines }), `lines:${section.id}`)
-              }
-              onChordChange={(line, wordStart, chord) =>
-                updateSection(section.id, (s) => ({
-                  ...s,
-                  lines: s.lines.map((raw, index) =>
-                    index === line ? placeChord(raw, wordStart, chord) : raw
-                  ),
-                }))
-              }
-              onRemove={() => removeSection(section)}
-              onFieldBlur={history.endCoalesce}
+      <div data-lyrics-size={lyricsSize}>
+        {mode === 'text' ? (
+          <SongTextMode
+            sections={draft.sections}
+            musicKey={draft.key}
+            focusOnMount={initialMode === 'text'}
+            onSectionsChange={(sections, key) => update({ ...draft, sections }, key)}
+            onBlur={history.endCoalesce}
+          />
+        ) : (
+          <div className="max-w-[760px]">
+            {hint}
+            <ReorderList
+              items={draft.sections}
+              getKey={(section) => section.id}
+              getLabel={(section) => section.label || t('songEditor.unnamedSection')}
+              onReorder={(sections) => update({ ...draft, sections })}
+              className="gap-4"
+              renderItem={(section, _index, handle) => (
+                <SectionBlock
+                  section={section}
+                  handle={handle}
+                  editing={editingId === section.id}
+                  musicKey={draft.key}
+                  onToggleEdit={() => setEditingId(editingId === section.id ? null : section.id)}
+                  onLabelChange={(label) =>
+                    updateSection(section.id, (s) => ({ ...s, label }), `label:${section.id}`)
+                  }
+                  onLinesChange={(lines) =>
+                    updateSection(section.id, (s) => ({ ...s, lines }), `lines:${section.id}`)
+                  }
+                  onChordChange={(line, wordStart, chord) =>
+                    updateSection(section.id, (s) => ({
+                      ...s,
+                      lines: s.lines.map((raw, index) =>
+                        index === line ? placeChord(raw, wordStart, chord) : raw
+                      ),
+                    }))
+                  }
+                  onRemove={() => removeSection(section)}
+                  onFieldBlur={history.endCoalesce}
+                />
+              )}
             />
-          )}
-        />
-        <AddSections onAdd={addSection} />
+            <AddSections onAdd={addSection} />
+          </div>
+        )}
       </div>
     </EditorFrame>
   );
