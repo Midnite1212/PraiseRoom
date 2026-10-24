@@ -415,9 +415,12 @@
     "setlistsAdded_other": "Added {{count}} setlists.",
     "setlistRemoved": "Removed {{name}}.",
     "removeFromFolder": "Remove from folder",
-    "noSetlistsHint": "Add one, and everyone here can open and edit it.",
-    "dangerDelete": "Deleting removes the folder for everyone; its setlists stay with the people who made them.",
-    "dangerLeave": "Leaving takes this folder off your list."
+    "exits": "Leave or delete this folder",
+    "leaveHint": "It comes off your list. Setlists you made stay yours.",
+    "deleteHint_one": "Gone for all {{count}} member. Each setlist stays with whoever made it.",
+    "deleteHint_other": "Gone for all {{count}} members. Each setlist stays with whoever made it.",
+    "deleteAction": "Delete",
+    "noSetlistsHint": "Add one, and everyone here can open and edit it."
   },
   "songImport": {
     "web": {

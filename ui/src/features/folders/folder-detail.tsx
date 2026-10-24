@@ -5,21 +5,17 @@ import {
   ChevronLeft,
   ChevronRight,
   Logout,
-  MoreHorizontal,
   PenSquare,
   Plus,
   Trash,
-  Users,
+  UserPlus,
 } from 'pixelarticons/react';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
 import { AppBarSlot } from '@/components/layout/app-bar-slots';
-import { BACK_LINK_CLASSES, BackLabel } from '@/components/page/back-link';
-import { PAGE_TITLE_CLASSES } from '@/components/page/page-header';
-import { ActionMenu, MenuRow, MenuSeparator } from '@/components/primitives/action-menu';
 import { AvatarStack } from '@/components/primitives/avatar';
 import {
   AlertDialog,
@@ -42,17 +38,19 @@ import {
 } from '@/features/folders/api';
 import {
   AddPeopleDialog,
-  MembersIsland,
   MembersSheet,
   RemoveMemberDialog,
   useFolderMembers,
 } from '@/features/folders/folder-members';
 import { AddSetlistsDialog, FolderSetlists } from '@/features/folders/folder-setlists';
 import { FolderSleeve } from '@/features/folders/folder-sleeve';
+import { goneToast } from '@/features/folders/gone-toast';
 import { canDeleteFolder, canEditFolder } from '@/features/folders/permissions';
 import { useFolderCover } from '@/features/folders/use-folder-cover';
 import type { Folder } from '@/features/setlists/api';
 import { cn } from '@/lib/utils';
+
+const FOLDER_NAME_CLASSES = 'm-0 leading-[1.08] font-bold tracking-[-0.03em] text-balance';
 
 type Sheet = 'members' | 'add-people' | 'add-setlists' | 'delete' | null;
 
@@ -98,74 +96,28 @@ export function FolderDetail({ folderId, session, now, inPane = false }: FolderD
           </Button>
         </AppBarSlot>
       )}
-      {inPane ? null : (
-        <AppBarSlot side="right">
-          <ActionMenu
-            title={folder.groupName}
-            trigger={
-              <Button variant="glass" size="icon-lg" aria-label={t('folders.actions')}>
-                <MoreHorizontal />
-              </Button>
-            }
-          >
-            {canEdit ? (
-              <>
-                <MenuRow onSelect={() => setIsRenaming(true)}>
-                  <PenSquare />
-                  {t('folders.rename')}
-                </MenuRow>
-                <MenuRow onSelect={() => setSheet('add-setlists')}>
-                  <Plus />
-                  {t('folders.addSetlists')}
-                </MenuRow>
-              </>
-            ) : null}
-            <MenuRow onSelect={() => setSheet('members')}>
-              <Users />
-              {t('folders.membersTitle')}
-            </MenuRow>
-            {isMember || canDelete ? <MenuSeparator /> : null}
-            {isMember ? (
-              <MenuRow tone="danger" onSelect={leave}>
-                <Logout />
-                {t('folders.leaveFolder')}
-              </MenuRow>
-            ) : null}
-            {canDelete ? (
-              <MenuRow tone="danger" onSelect={() => setSheet('delete')}>
-                <Trash />
-                {t('folders.delete')}
-              </MenuRow>
-            ) : null}
-          </ActionMenu>
-        </AppBarSlot>
-      )}
 
-      {inPane ? null : (
-        <Link to="/folders" className={BACK_LINK_CLASSES}>
-          <BackLabel>{t('folders.title')}</BackLabel>
-        </Link>
-      )}
       <div className="mb-2 flex items-end gap-[22px]">
-        <FolderSleeve cells={cells} size="hero" />
+        <FolderSleeve cells={cells} size={inPane ? 'pane' : 'hero'} />
         <div className="min-w-0 flex-1">
           {isRenaming ? (
-            <RenameFolderForm folder={folder} onDone={() => setIsRenaming(false)} />
+            <div className={cn(inPane && 'pr-10')}>
+              <RenameFolderForm folder={folder} onDone={() => setIsRenaming(false)} />
+            </div>
           ) : (
-            <div className="flex items-center gap-1">
+            <div className={cn(inPane && 'pr-10')}>
               {inPane ? (
-                <h2 className="m-0 text-[1.75rem] leading-[1.08] font-bold tracking-[-0.03em] text-balance">
-                  {folder.groupName}
-                </h2>
+                <h2 className={cn(FOLDER_NAME_CLASSES, 'inline text-2xl')}>{folder.groupName}</h2>
               ) : (
-                <h1 data-page-title className={PAGE_TITLE_CLASSES}>
+                <h1 data-page-title className={cn(FOLDER_NAME_CLASSES, 'inline text-[1.75rem]')}>
                   {folder.groupName}
                 </h1>
               )}
               {canEdit ? (
                 <Button
                   variant="ghost"
-                  size="icon"
+                  size="icon-sm"
+                  className="text-ink-3 hover:text-ink ml-1 align-middle"
                   aria-label={t('folders.rename')}
                   title={t('folders.rename')}
                   onClick={() => setIsRenaming(true)}
@@ -187,7 +139,7 @@ export function FolderDetail({ folderId, session, now, inPane = false }: FolderD
           <button
             type="button"
             onClick={() => setSheet('members')}
-            className="bg-fill-hover hover:bg-fill-press wide:hidden [&>svg]:size-icon mt-3 inline-flex items-center gap-2.5 rounded-full py-1 pr-3 pl-1 text-[0.8125rem] font-semibold whitespace-nowrap"
+            className="bg-fill-hover hover:bg-fill-press [&>svg]:size-icon mt-3 inline-flex items-center gap-2.5 rounded-full py-1 pr-3 pl-1 text-[0.8125rem] font-semibold whitespace-nowrap"
           >
             <AvatarStack
               people={members.map(({ userId, fullName }) => ({ id: userId, name: fullName }))}
@@ -200,52 +152,56 @@ export function FolderDetail({ folderId, session, now, inPane = false }: FolderD
         </div>
       </div>
 
-      <div
-        className={cn(
-          'grid gap-x-10 gap-y-2',
-          !inPane && 'wide:grid-cols-[minmax(0,1fr)_280px] wide:items-start'
-        )}
-      >
-        <div className="min-w-0">
-          <FolderSetlists
-            session={session}
-            folder={folder}
-            canEdit={canEdit}
-            now={now}
-            onAddSetlists={() => setSheet('add-setlists')}
-          />
-          {isMember || canDelete ? (
-            <div className="border-hairline mt-9 flex flex-wrap gap-2 border-t pt-4">
-              <p className="text-ink-3 mb-1 ml-0.5 basis-full text-[0.8125rem]">
-                {canDelete ? t('folders.dangerDelete') : t('folders.dangerLeave')}
-              </p>
-              <div className="glass glass-danger inline-flex gap-0.5 p-1">
-                {isMember ? (
-                  <Button
-                    variant="ghost"
-                    className="text-destructive hover:bg-destructive/20"
-                    onClick={leave}
-                  >
-                    <Logout />
-                    {t('folders.leaveFolder')}
-                  </Button>
-                ) : null}
-                {canDelete ? (
-                  <Button
-                    variant="ghost"
-                    className="text-destructive hover:bg-destructive/20"
-                    onClick={() => setSheet('delete')}
-                  >
-                    <Trash />
-                    {t('folders.delete')}
-                  </Button>
-                ) : null}
-              </div>
-            </div>
-          ) : null}
+      {canEdit ? (
+        <div className="mt-5 mb-6 flex flex-wrap gap-2">
+          <Button onClick={() => setSheet('add-setlists')}>
+            <Plus />
+            {t('folders.addSetlists')}
+          </Button>
+          <Button variant="secondary" onClick={() => setSheet('add-people')}>
+            <UserPlus />
+            {t('folders.addPeople')}
+          </Button>
         </div>
-        <MembersIsland {...memberProps} />
-      </div>
+      ) : null}
+
+      <FolderSetlists session={session} folder={folder} canEdit={canEdit} now={now} />
+
+      {isMember || canDelete ? (
+        <section
+          aria-label={t('folders.exits')}
+          className="border-hairline [&>div+div]:border-hairline mt-10 border-t [&>div+div]:border-t"
+        >
+          {isMember ? (
+            <ExitRow
+              title={t('folders.leaveFolder')}
+              description={t('folders.leaveHint')}
+              action={
+                <Button variant="exit" className="h-9 pr-4 pl-3 text-[0.9375rem]" onClick={leave}>
+                  <Logout />
+                  {t('folders.leave')}
+                </Button>
+              }
+            />
+          ) : null}
+          {canDelete ? (
+            <ExitRow
+              title={t('folders.delete')}
+              description={t('folders.deleteHint', { count: members.length })}
+              action={
+                <Button
+                  variant="exit"
+                  className="h-9 pr-4 pl-3 text-[0.9375rem]"
+                  onClick={() => setSheet('delete')}
+                >
+                  <Trash />
+                  {t('folders.deleteAction')}
+                </Button>
+              }
+            />
+          ) : null}
+        </section>
+      ) : null}
 
       <MembersSheet
         {...memberProps}
@@ -276,6 +232,26 @@ export function FolderDetail({ folderId, session, now, inPane = false }: FolderD
         onOpenChange={(open) => setSheet(open ? 'delete' : null)}
       />
     </>
+  );
+}
+
+function ExitRow({
+  title,
+  description,
+  action,
+}: {
+  title: string;
+  description: string;
+  action: ReactNode;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-4 px-1 py-4">
+      <div className="min-w-0">
+        <h3 className="m-0 text-[0.9375rem] font-semibold">{title}</h3>
+        <p className="text-ink-2 mt-0.5 text-[0.8125rem]">{description}</p>
+      </div>
+      {action}
+    </div>
   );
 }
 
@@ -337,7 +313,7 @@ function RenameFolderForm({ folder, onDone }: { folder: Folder; onDone: () => vo
             onKeyDown={(event) => {
               if (event.key === 'Escape') onDone();
             }}
-            className="border-hairline bg-fill-hover aria-invalid:border-destructive -ml-[9px] w-full min-w-0 rounded-xl border px-2 py-0.5 text-[clamp(1.75rem,1.2rem+2.2vw,2.5rem)] font-bold tracking-[-0.03em] outline-none"
+            className="border-hairline bg-fill-hover aria-invalid:border-destructive -ml-[9px] w-full min-w-0 rounded-xl border px-2 py-0.5 text-[1.75rem] font-bold tracking-[-0.03em] outline-none"
           />
         )}
       </form.Field>
@@ -373,7 +349,7 @@ function DeleteFolderDialog({
           queryClient.invalidateQueries({ queryKey: [...queryKey] })
         )
       );
-      toast.success(t('folders.deleted'));
+      goneToast(t('folders.deleted'));
       await navigate({ to: '/folders' });
     },
     onError: () => {
