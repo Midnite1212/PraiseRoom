@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Bulletlist, Close, Search } from 'pixelarticons/react';
+import { Bulletlist, Search } from 'pixelarticons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -10,6 +10,7 @@ import { LIST_CLASSES } from '@/components/page/list-row';
 import { DateBlock } from '@/components/primitives/date-block';
 import { goneToast } from '@/components/primitives/gone-toast';
 import { PickRow } from '@/components/primitives/pick-row';
+import { RemoveIcon } from '@/components/primitives/pixel-icons';
 import { nextSetlistId, setStatus } from '@/components/primitives/set-status';
 import { Button } from '@/components/ui/button';
 import {
@@ -107,7 +108,7 @@ export function FolderSetlists({ session, folder, canEdit, now }: FolderSetlists
                         )
                       }
                     >
-                      <Close />
+                      <RemoveIcon />
                     </Button>
                   ) : null
                 }

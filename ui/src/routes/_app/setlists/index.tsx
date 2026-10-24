@@ -24,7 +24,7 @@ import { SetlistListContext } from '@/features/setlists/setlist-list-context';
 import { SetlistPreview } from '@/features/setlists/setlist-preview';
 import { ManagedSetlistRow } from '@/features/setlists/setlist-row';
 import { useSetlistNames } from '@/features/setlists/use-setlist-names';
-import { useIsWide } from '@/hooks/use-wide';
+import { useIsRoomy, useIsWide } from '@/hooks/use-wide';
 import { dateLocale } from '@/lib/date-locale';
 
 const setlistsSearchSchema = z.object({
@@ -59,6 +59,7 @@ function SetlistsPage() {
   const { data: setlists } = useSuspenseQuery(setlistsQueryOptions());
   const names = useSetlistNames(session);
   const isWide = useIsWide();
+  const isRoomy = useIsRoomy();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isPlayedOpen, setIsPlayedOpen] = useState(false);
   const [litDay, setLitDay] = useState<string | null>(null);
@@ -90,7 +91,7 @@ function SetlistsPage() {
   const orderedIds = sections.flatMap(({ key, items }) =>
     key === 'past' && !showPlayed ? [] : items.map((setlist) => setlist._id)
   );
-  const selected = isWide ? setlists.find((setlist) => setlist._id === search.set) : undefined;
+  const selected = isRoomy ? setlists.find((setlist) => setlist._id === search.set) : undefined;
   const selectedId = selected?._id;
   const pick = (setlistId: string | undefined) => setSearch({ set: setlistId });
 
@@ -169,7 +170,7 @@ function SetlistsPage() {
         litDay,
         onLightDay: setLitDay,
         selectedId,
-        onSelect: isWide ? pick : undefined,
+        onSelect: isRoomy ? pick : undefined,
       }}
     >
       <PageHeader
@@ -183,7 +184,7 @@ function SetlistsPage() {
           </Button>
         }
       />
-      <div className="wide:grid-cols-[minmax(0,1fr)_400px] wide:items-start grid gap-x-10 gap-y-2">
+      <div className="roomy:grid-cols-[minmax(0,1fr)_400px] roomy:items-start grid gap-x-10 gap-y-2">
         <div className="min-w-0">
           <Finder
             value={search.q}
@@ -245,7 +246,7 @@ function SetlistsPage() {
             ))
           )}
         </div>
-        <div className="wide:grid border-hairline sticky top-3.5 hidden max-h-[calc(100vh-28px)] [scrollbar-width:thin] gap-6 overflow-y-auto border-l pr-0.5 pb-0.5 pl-8">
+        <div className="wide:grid border-hairline roomy:sticky roomy:top-3.5 roomy:max-h-[calc(100vh-28px)] roomy:border-l roomy:pl-8 roomy:mt-0 mt-8 hidden [scrollbar-width:thin] gap-6 overflow-y-auto pr-0.5 pb-0.5">
           {selected ? (
             <SetlistPreview
               key={selected._id}

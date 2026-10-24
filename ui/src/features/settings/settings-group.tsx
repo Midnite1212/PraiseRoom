@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
 
+import { GroupTitle } from '@/components/page/group-title';
 import { cn } from '@/lib/utils';
 
-// A group of rows under a plain heading, with an optional count beside it and a one-line description.
+// A group of rows under the shared group title, with an optional count and a one-line description.
 export function SettingsGroup({
   id,
   title,
@@ -18,15 +19,8 @@ export function SettingsGroup({
 }) {
   return (
     <section aria-labelledby={id}>
-      <header className="mb-1">
-        <h2 id={id} className="m-0 text-lg font-bold tracking-[-0.01em]">
-          {title}
-          {count === undefined ? null : (
-            <small className="text-ink-3 ml-1.5 font-mono text-xs font-semibold">{count}</small>
-          )}
-        </h2>
-        {description ? <p className="text-ink-3 mt-1 text-[0.8125rem]">{description}</p> : null}
-      </header>
+      <GroupTitle id={id} title={title} count={count} className="mt-0 mb-0.5 px-0" />
+      {description ? <p className="text-ink-3 mb-1 text-[0.8125rem]">{description}</p> : null}
       {children}
     </section>
   );

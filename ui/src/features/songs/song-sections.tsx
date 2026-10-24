@@ -1,8 +1,9 @@
-import { Close, PenSquare, Plus, Trash } from 'pixelarticons/react';
+import { PenSquare, Plus, Trash } from 'pixelarticons/react';
 import { type ReactNode, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
+import { RemoveIcon } from '@/components/primitives/pixel-icons';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { type MusicKey, parseChord } from '@/features/chords/theory';
@@ -88,7 +89,7 @@ export function SectionBlock({
           title={t('songEditor.removeSectionTitle')}
           onClick={onRemove}
         >
-          <Close />
+          <RemoveIcon />
         </Button>
       </div>
 

@@ -175,7 +175,7 @@ export function ImportForm({ chart, onDirtyChange, onSaved }: ImportFormProps) {
     >
       <SourceLink chart={chart} />
 
-      <div className="grid gap-4 lg:grid-cols-[22rem_minmax(0,1fr)]">
+      <div className="wide:grid-cols-[22rem_minmax(0,1fr)] grid gap-4">
         <section className="flex flex-col gap-4">
           <FieldGroup className="grid gap-4">
             <form.Field name="title">
@@ -289,7 +289,7 @@ export function ImportForm({ chart, onDirtyChange, onSaved }: ImportFormProps) {
               </p>
             ) : null}
 
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="wide:grid-cols-2 grid gap-4">
               <form.Field name="tempo">
                 {(field) => (
                   <Field>

@@ -20,7 +20,7 @@ function PreferenceRow({ label, children }: { label: string; children: ReactNode
   );
 }
 
-// Your profile: who you are, appearance and language for this device, Settings, and Sign out.
+// Your profile: who you are, theme and language for this device, Settings, and Sign out.
 export function ProfileMenu({ session, trigger }: { session: Session; trigger: ReactElement }) {
   const { t } = useTranslation();
   const signOut = useSignOut();
@@ -49,7 +49,7 @@ export function ProfileMenu({ session, trigger }: { session: Session; trigger: R
         </MenuRow>
       }
     >
-      <PreferenceRow label={t('user.appearance')}>
+      <PreferenceRow label={t('user.theme')}>
         <ThemeChoice compact />
       </PreferenceRow>
       <PreferenceRow label={t('language.label')}>

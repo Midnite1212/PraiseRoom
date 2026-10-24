@@ -36,7 +36,7 @@ import { SongRows } from '@/features/songs/song-rows';
 import { MAX_KEYWORD_LENGTH, toSearchKeyword } from '@/features/songs/song-search';
 import { SongsTable } from '@/features/songs/songs-table';
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
-import { useIsWide } from '@/hooks/use-wide';
+import { useIsRoomy, useIsWide } from '@/hooks/use-wide';
 import { cn } from '@/lib/utils';
 
 const songsSearchSchema = z.object({
@@ -91,6 +91,7 @@ function SongsPage() {
   const { q, page, tempo, themes, keys, web, sort, dir, song: selectedId } = search;
   const navigate = Route.useNavigate();
   const isWide = useIsWide();
+  const isRoomy = useIsRoomy();
   const searchInput = useRef<HTMLInputElement>(null);
   const [text, setText] = useState(q);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -152,9 +153,9 @@ function SongsPage() {
   ];
 
   const songs = data?.data ?? [];
-  const selectedSong = isWide ? songs.find((song) => song._id === selectedId) : undefined;
+  const selectedSong = isRoomy ? songs.find((song) => song._id === selectedId) : undefined;
   const hasStaleSelection =
-    isWide && selectedId !== undefined && !selectedSong && !isFetching && data !== undefined;
+    isRoomy && selectedId !== undefined && !selectedSong && !isFetching && data !== undefined;
   useEffect(() => {
     if (hasStaleSelection)
       void navigate({ search: (previous) => ({ ...previous, song: undefined }), replace: true });
@@ -246,7 +247,11 @@ function SongsPage() {
                   sort={sort}
                   dir={dir}
                   onSort={sortBy}
-                  onSelect={(songId) => setSearch({ song: songId })}
+                  onSelect={(songId) =>
+                    isRoomy
+                      ? setSearch({ song: songId })
+                      : void navigate({ to: '/songs/$songId', params: { songId } })
+                  }
                 />
               ) : (
                 <SongRows

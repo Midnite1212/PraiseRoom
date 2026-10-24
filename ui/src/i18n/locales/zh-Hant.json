@@ -27,7 +27,7 @@
   },
   "user": {
     "menu": "帳戶",
-    "appearance": "外觀",
+    "theme": "主題",
     "settingsHint": "閱讀、和弦及外觀",
     "settings": "設定",
     "signOut": "登出",
@@ -49,7 +49,7 @@
     "nothingNextHint": "為歌單設定日期，就會在這裡顯示。",
     "allSetlists": "所有歌單",
     "yourFolders": "你的資料夾",
-    "all": "全部",
+    "allFolders": "所有資料夾",
     "then": "接著",
     "open": "開啟",
     "recentlyAdded": "最近新增",
@@ -355,6 +355,7 @@
   },
   "editor": {
     "newTitle": "新增歌單",
+    "heading": "編輯歌單",
     "edit": "編輯",
     "name": "名稱",
     "namePlaceholder": "主日崇拜",
@@ -583,6 +584,7 @@
     }
   },
   "songEditor": {
+    "heading": "編輯歌曲",
     "edit": "編輯",
     "titleLabel": "歌曲名稱",
     "titlePlaceholder": "歌曲名稱",

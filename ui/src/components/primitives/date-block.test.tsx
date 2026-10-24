@@ -9,6 +9,7 @@ describe('DateBlock', () => {
   it('lights up only for the next set', () => {
     const next = render(<DateBlock date={date} status="next" />);
     expect(next.container.firstElementChild).toHaveClass('bg-fill-on');
+    expect(next.container.firstElementChild).not.toHaveClass('bg-fill-hover');
     const up = render(<DateBlock date={date} status="up" />);
     expect(up.container.firstElementChild).not.toHaveClass('bg-fill-on');
   });

@@ -41,7 +41,7 @@ export function NextSetCard({
       className="glass focus-within:outline-chord relative mt-2 p-[18px] [--glass-r:28px] focus-within:outline-2 focus-within:outline-offset-[3px]"
     >
       <div className="grid grid-cols-[52px_minmax(0,1fr)_auto] items-center gap-3.5">
-        <DateBlock date={setlist.date} status="up" />
+        <DateBlock date={setlist.date} status="next" />
         <div className="min-w-0">
           <h2 id="next-set" className="text-card-title m-0 font-bold tracking-[-0.02em]">
             <Link

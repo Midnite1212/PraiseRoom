@@ -32,7 +32,7 @@ const buttonVariants = cva(
         xs: 'h-7 gap-1 px-2.5 text-xs',
         sm: 'h-9 gap-1.5 px-3 text-sm',
         lg: 'h-12 gap-2 px-5 text-base',
-        icon: 'size-10',
+        icon: 'wide:size-10 size-11',
         'icon-xs': 'size-7',
         'icon-sm': 'size-9',
         'icon-lg': 'size-12',
@@ -40,6 +40,10 @@ const buttonVariants = cva(
         'dock-step': 'h-11 w-10',
       },
     },
+    compoundVariants: [
+      { variant: 'glass', size: 'icon', className: 'size-10' },
+      { variant: 'link', size: 'sm', className: 'wide:my-0 wide:h-9 -my-1 h-11' },
+    ],
     defaultVariants: {
       variant: 'default',
       size: 'default',

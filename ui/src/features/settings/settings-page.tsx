@@ -27,10 +27,11 @@ import {
 import { useKeepAwake, wakeLockSupported } from '@/features/reader/keep-awake';
 import { LYRICS_SIZES, type LyricsSize, useLyricsSize } from '@/features/reader/lyrics-size';
 import { ColourDots } from '@/features/reader/reading-settings';
-import { useIsWide } from '@/hooks/use-wide';
+import { useIsRoomy } from '@/hooks/use-wide';
 import { ACCENTS, useAccent } from '@/lib/accent';
 import { canRefract, GLASS_STYLES, useGlassStyle } from '@/lib/liquid-glass';
 import { TYPEFACES, useTypeface } from '@/lib/typeface';
+import { cn } from '@/lib/utils';
 
 import { SettingsGroup, SettingsRow } from './settings-group';
 import { SettingsPreview } from './settings-preview';
@@ -322,16 +323,21 @@ function LookGroup() {
 // What you set once, saved on this device, with a live preview of how songs will read.
 export function SettingsPage({ session }: { session: Session }) {
   const { t } = useTranslation();
-  const isWide = useIsWide();
+  const isRoomy = useIsRoomy();
   const signOut = useSignOut();
 
   return (
     <>
       <PageHeader title={t('settings.title')} />
       <AccountLine session={session} />
-      <div className="wide:grid-cols-[minmax(0,640px)_minmax(320px,400px)] grid items-start gap-12">
+      <div
+        className={cn(
+          'grid items-start gap-12',
+          isRoomy && 'grid-cols-[minmax(0,640px)_minmax(320px,400px)]'
+        )}
+      >
         <div className="grid min-w-0 gap-9">
-          {isWide ? null : <SettingsPreview compact />}
+          {isRoomy ? null : <SettingsPreview compact />}
           <SongsGroup />
           <PlayingGroup />
           <LookGroup />
@@ -345,7 +351,7 @@ export function SettingsPage({ session }: { session: Session }) {
             </Button>
           </footer>
         </div>
-        {isWide ? (
+        {isRoomy ? (
           <div className="sticky top-6">
             <p className="text-ink-3 mb-2.5 text-xs font-semibold">{t('settings.preview.label')}</p>
             <SettingsPreview />

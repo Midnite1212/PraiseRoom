@@ -1,11 +1,12 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { Plus } from 'pixelarticons/react';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
 import { EditorFrame } from '@/components/editor/editor-frame';
+import { BACK_LINK_CLASSES, BackLabel } from '@/components/page/back-link';
 import { EmptyState } from '@/components/page/empty-state';
 import { GroupTitle } from '@/components/page/group-title';
 import { goneToast } from '@/components/primitives/gone-toast';
@@ -100,6 +101,12 @@ export function SetlistEditor({ session, setlistId, initialDraft, now }: Setlist
 
   return (
     <EditorFrame
+      heading={t('editor.heading')}
+      back={
+        <Link to="/setlists" className={BACK_LINK_CLASSES}>
+          <BackLabel>{t('setlists.title')}</BackLabel>
+        </Link>
+      }
       names={
         <>
           <input
