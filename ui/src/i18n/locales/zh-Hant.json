@@ -641,5 +641,14 @@
     "failedHint": "發生了一點問題，請再試一次。",
     "retry": "再試一次",
     "toFolders": "前往資料夾"
+  },
+  "addToSetlist": {
+    "title": "加入歌單",
+    "added": "已加入 {{name}}",
+    "failed": "無法加入詩歌，請再試一次。",
+    "loadFailed": "無法載入你的歌單。",
+    "empty": "沒有你可以編輯的未來或未定日期歌單。",
+    "alreadyIn": "已在這個歌單",
+    "close": "關閉"
   }
 }

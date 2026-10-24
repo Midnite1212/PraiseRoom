@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from '@tanstack/react-router';
-import { Close, PenSquare, Play } from 'pixelarticons/react';
+import { Close, PenSquare, Play, Plus } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 
 import { KeyChip } from '@/components/primitives/key-chip';
@@ -8,6 +8,8 @@ import { Tag } from '@/components/primitives/tag';
 import { TempoMeter, tempoLevel } from '@/components/primitives/tempo-meter';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import type { Session } from '@/features/auth/session';
+import { AddToSetlist } from '@/features/setlists/add-to-setlist';
 
 import { songQueryOptions, type SongSummary, TEMPO_LABEL_KEYS } from './api';
 import { lyricsPeek } from './lyrics-peek';
@@ -57,10 +59,12 @@ function LyricsPeek({ songId }: { songId: string }) {
 // Desktop: the selected song's facts, themes and opening lines beside the table.
 export function SongPreview({
   song,
+  session,
   canEdit,
   onClose,
 }: {
   song: SongSummary;
+  session: Session;
   canEdit: boolean;
   onClose: () => void;
 }) {
@@ -91,6 +95,16 @@ export function SongPreview({
             {t('songs.preview.open')}
           </Link>
         </Button>
+        <AddToSetlist
+          song={song}
+          session={session}
+          trigger={
+            <Button variant="ghost">
+              <Plus />
+              {t('addToSetlist.title')}
+            </Button>
+          }
+        />
         {canEdit ? (
           <Button asChild variant="ghost">
             <Link to="/songs/$songId/edit" params={{ songId: song._id }}>

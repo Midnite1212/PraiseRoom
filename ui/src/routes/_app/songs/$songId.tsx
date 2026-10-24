@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { PenSquare } from 'pixelarticons/react';
+import { PenSquare, Plus } from 'pixelarticons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -16,6 +16,7 @@ import { ReaderLayout } from '@/features/reader/reader-layout';
 import { ReaderModes } from '@/features/reader/reader-modes';
 import { useSongCapo } from '@/features/reader/song-capo';
 import { SongReader } from '@/features/reader/song-reader';
+import { AddToSetlist } from '@/features/setlists/add-to-setlist';
 import { type Song, songQueryOptions } from '@/features/songs/api';
 import { ensureOrNotFound } from '@/lib/ensure-or-not-found';
 
@@ -59,6 +60,15 @@ function SongView({ song }: { song: Song }) {
       actions={
         <>
           <WideReadingControls />
+          <AddToSetlist
+            song={song}
+            session={session}
+            trigger={
+              <Button variant="glass" size="icon-lg" aria-label={t('addToSetlist.title')}>
+                <Plus />
+              </Button>
+            }
+          />
           {canWriteSongs(session) ? (
             <Button asChild variant="glass" size="icon-lg" aria-label={t('songEditor.edit')}>
               <Link

@@ -641,5 +641,14 @@
     "failedHint": "Something went wrong on our side. Please try again.",
     "retry": "Try again",
     "toFolders": "Go to Folders"
+  },
+  "addToSetlist": {
+    "title": "Add to setlist",
+    "added": "Added to {{name}}",
+    "failed": "Couldn't add the song. Try again.",
+    "loadFailed": "Couldn't load your setlists.",
+    "empty": "No upcoming or undated setlists you can edit.",
+    "alreadyIn": "Already in this set",
+    "close": "Close"
   }
 }

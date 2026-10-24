@@ -45,14 +45,25 @@ type TrayProps = {
   children: ReactNode;
   align?: 'start' | 'center' | 'end';
   className?: string;
+  // Controlled open state, for a tray that closes itself (after a pick); uncontrolled when omitted.
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
-function PhoneTray({ trigger, title, children, className }: TrayProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const dragHandlers = useDragToClose(() => setIsOpen(false));
+type OpenState = { open: boolean; onOpenChange: (open: boolean) => void };
+
+function PhoneTray({
+  trigger,
+  title,
+  children,
+  className,
+  open,
+  onOpenChange,
+}: TrayProps & OpenState) {
+  const dragHandlers = useDragToClose(() => onOpenChange(false));
 
   return (
-    <Dialog modal={false} open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog modal={false} open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogPortal>
         <DialogPrimitive.Content
@@ -80,11 +91,14 @@ function PhoneTray({ trigger, title, children, className }: TrayProps) {
 // outside, or a drag closes them, and focus is not trapped so the song stays usable behind.
 export function Tray(props: TrayProps) {
   const isWide = useIsWide();
-  if (!isWide) return <PhoneTray {...props} />;
+  const [isOpen, setIsOpen] = useState(false);
+  const open = props.open ?? isOpen;
+  const onOpenChange = props.onOpenChange ?? setIsOpen;
+  if (!isWide) return <PhoneTray {...props} open={open} onOpenChange={onOpenChange} />;
 
   const { trigger, title, children, align = 'end', className } = props;
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>{trigger}</PopoverTrigger>
       <PopoverContent
         aria-label={title}
