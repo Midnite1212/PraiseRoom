@@ -3,11 +3,9 @@ import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
-import { LanguageChoice, ThemeChoice } from '@/components/layout/preference-choices';
 import { Panel } from '@/components/primitives/panel';
 import { Segmented } from '@/components/primitives/segmented';
-import { SetRow } from '@/components/primitives/set-row';
-import { Stepper } from '@/components/primitives/stepper';
+import { Tray } from '@/components/primitives/tray';
 import { Button } from '@/components/ui/button';
 import {
   CHORD_NOTATIONS,
@@ -16,13 +14,12 @@ import {
   type ReaderMode,
   useReaderMode,
 } from '@/features/reader/chord-display';
-import {
-  LYRICS_COLUMNS,
-  type LyricsColumns,
-  useLyricsColumns,
-} from '@/features/reader/lyrics-columns';
+import { LYRICS_COLUMNS, type LyricsColumns } from '@/features/reader/lyrics-columns';
 import { LYRICS_SIZES, stepLyricsSize, useLyricsSize } from '@/features/reader/lyrics-size';
+import { useIsWide } from '@/hooks/use-wide';
+import { cn } from '@/lib/utils';
 
+import { ChordSettingsPanel } from './chord-settings';
 import type { ReaderSong } from './song';
 
 const NOTATION_LABELS = { numbers: '1 4 5', letters: 'A B C' } as const;
@@ -54,18 +51,15 @@ export function ReaderModeToggle({
 export function ChordNotationToggle({
   notation,
   onChange,
-  glass = false,
 }: {
   notation: ChordNotation;
   onChange: (notation: ChordNotation) => void;
-  glass?: boolean;
 }) {
   const { t } = useTranslation();
   return (
     <Segmented
-      glass={glass}
       mono
-      size={glass ? 'lg' : 'sm'}
+      size="sm"
       value={notation}
       onChange={onChange}
       label={t('reader.notation')}
@@ -111,43 +105,93 @@ export function LyricsColumnsControl({
   );
 }
 
-// Aa: how lyrics read on this device (size, columns), plus theme and language.
+function SizeStep({
+  label,
+  large,
+  disabled,
+  onClick,
+}: {
+  label: string;
+  large?: boolean;
+  disabled: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      disabled={disabled}
+      onClick={onClick}
+      className={cn(
+        'bg-fill-hover hover:bg-fill-press grid h-[52px] place-items-center rounded-2xl font-bold transition-colors duration-200 ease-out disabled:opacity-35',
+        large ? 'text-[1.375rem]' : 'text-sm'
+      )}
+    >
+      A
+    </button>
+  );
+}
+
+// Aa: a live tray for the lyric size, with a tick per size.
 export function ReadingPanel({ trigger }: { trigger: ReactElement }) {
   const { t } = useTranslation();
   const [size, setSize] = useLyricsSize();
-  const [columns, setColumns] = useLyricsColumns();
   const index = LYRICS_SIZES.indexOf(size);
 
   return (
-    <Panel
-      trigger={trigger}
-      title={t('reader.reading')}
-      align="end"
-      sheetClassName="bottom-[calc(var(--bottom)+var(--dock-h)+10px)]"
-    >
-      <div className="flex flex-col gap-1.5">
-        <SetRow label={t('reader.textSize')}>
-          <Stepper
-            value={t(`settings.textSize.options.${size}`)}
-            onDecrease={() => setSize(stepLyricsSize(size, -1))}
-            onIncrease={() => setSize(stepLyricsSize(size, 1))}
-            decreaseLabel={t('reader.smaller')}
-            increaseLabel={t('reader.larger')}
-            canDecrease={index > 0}
-            canIncrease={index < LYRICS_SIZES.length - 1}
-          />
-        </SetRow>
-        <SetRow label={t('reader.lyricColumns')}>
-          <LyricsColumnsControl columns={columns} onChange={setColumns} />
-        </SetRow>
-        <SetRow label={t('theme.label')}>
-          <ThemeChoice />
-        </SetRow>
-        <SetRow label={t('language.label')}>
-          <LanguageChoice />
-        </SetRow>
+    <Tray trigger={trigger} title={t('reader.reading')}>
+      <div className="grid grid-cols-[52px_minmax(0,1fr)_52px] items-center gap-2">
+        <SizeStep
+          label={t('reader.smaller')}
+          disabled={index <= 0}
+          onClick={() => setSize(stepLyricsSize(size, -1))}
+        />
+        <div className="grid justify-items-center gap-1.5">
+          <span aria-hidden className="flex gap-1">
+            {LYRICS_SIZES.map((step, tick) => (
+              <i
+                key={step}
+                className={cn('h-1 w-3.5', tick <= index ? 'bg-pixel-on' : 'bg-pixel-off')}
+              />
+            ))}
+          </span>
+          <output className="text-ink-2 font-mono text-xs font-semibold">
+            {t(`settings.textSize.options.${size}`)}
+          </output>
+        </div>
+        <SizeStep
+          large
+          label={t('reader.larger')}
+          disabled={index >= LYRICS_SIZES.length - 1}
+          onClick={() => setSize(stepLyricsSize(size, 1))}
+        />
       </div>
-    </Panel>
+    </Tray>
+  );
+}
+
+// Wide screens: Aa and the chord-settings gear (chords mode) in the top row.
+export function WideReadingControls() {
+  const { t } = useTranslation();
+  const isWide = useIsWide();
+  const [mode] = useReaderMode();
+  if (!isWide) return null;
+  return (
+    <>
+      <ReadingPanel
+        trigger={
+          <Button
+            variant="glass"
+            size="icon-lg"
+            className="text-[0.9375rem]"
+            aria-label={t('reader.reading')}
+          >
+            Aa
+          </Button>
+        }
+      />
+      {mode === 'chords' ? <ChordSettingsPanel glass /> : null}
+    </>
   );
 }
 

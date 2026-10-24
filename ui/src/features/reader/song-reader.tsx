@@ -5,12 +5,10 @@ import { type MusicKey, parseKey } from '@/features/chords/theory';
 import { useIsWide } from '@/hooks/use-wide';
 
 import {
-  activeCapo,
   useAccidentals,
   useChordNotation,
   useChordStyle,
   useColourChords,
-  useGuitarCapo,
   useReaderMode,
 } from './chord-display';
 import { ChordSettingsPanel } from './chord-settings';
@@ -18,7 +16,7 @@ import { KeyPicker } from './key-picker';
 import { useLyricsColumns } from './lyrics-columns';
 import { LyricsSheet } from './lyrics-sheet';
 import { useLyricsSize } from './lyrics-size';
-import { ChordNotationToggle, LyricsColumnsControl, SongInfo } from './reader-controls';
+import { LyricsColumnsControl, SongInfo } from './reader-controls';
 import type { ReaderSong } from './song';
 
 type SongReaderProps = {
@@ -32,7 +30,7 @@ type SongReaderProps = {
 
 // The reading sheet shared by the song view, the setlist view, and the public setlist view: the title
 // with ⓘ, the artist with the song's key and lyric columns, then the lyrics. On phones the key lives in
-// the dock and the notation toggle and the chord-settings gear take its place here.
+// the dock and the chord-settings gear takes its place here.
 export function SongReader({
   song,
   playKey,
@@ -44,11 +42,10 @@ export function SongReader({
   const { t } = useTranslation();
   const isWide = useIsWide();
   const [mode] = useReaderMode();
-  const [notation, setNotation] = useChordNotation();
+  const [notation] = useChordNotation();
   const [accidentals] = useAccidentals();
   const [chordStyle] = useChordStyle();
   const [colourChords] = useColourChords();
-  const [guitarCapo] = useGuitarCapo();
   const [lyricsSize] = useLyricsSize();
   const [lyricsColumns, setLyricsColumns] = useLyricsColumns();
   const originalKey = parseKey(song.originalKey);
@@ -80,10 +77,7 @@ export function SongReader({
                   onCapoChange={onCapoChange}
                 />
               ) : (
-                <>
-                  <ChordNotationToggle notation={notation} onChange={setNotation} />
-                  <ChordSettingsPanel />
-                </>
+                <ChordSettingsPanel />
               )
             ) : null}
             <LyricsColumnsControl columns={lyricsColumns} onChange={setLyricsColumns} />
@@ -103,7 +97,7 @@ export function SongReader({
           colourChords={colourChords === 'on'}
           originalKey={originalKey}
           playKey={playKey}
-          capo={activeCapo(guitarCapo, capo)}
+          capo={capo}
           columns={lyricsColumns}
         />
       )}

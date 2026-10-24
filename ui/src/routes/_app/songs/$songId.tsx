@@ -11,13 +11,12 @@ import { type MusicKey, parseKey } from '@/features/chords/theory';
 import { useReaderMode } from '@/features/reader/chord-display';
 import { KeyPicker } from '@/features/reader/key-picker';
 import { ReaderBack } from '@/features/reader/reader-back';
-import { ReadingPanel } from '@/features/reader/reader-controls';
+import { ReadingPanel, WideReadingControls } from '@/features/reader/reader-controls';
 import { ReaderLayout } from '@/features/reader/reader-layout';
 import { ReaderModes } from '@/features/reader/reader-modes';
 import { useSongCapo } from '@/features/reader/song-capo';
 import { SongReader } from '@/features/reader/song-reader';
 import { type Song, songQueryOptions } from '@/features/songs/api';
-import { useIsWide } from '@/hooks/use-wide';
 import { ensureOrNotFound } from '@/lib/ensure-or-not-found';
 
 export const Route = createFileRoute('/_app/songs/$songId')({
@@ -38,13 +37,16 @@ function SongPage() {
 function SongView({ song }: { song: Song }) {
   const { t } = useTranslation();
   const { session } = Route.useRouteContext();
-  const isWide = useIsWide();
   const [mode] = useReaderMode();
   const originalKey = parseKey(song.originalKey);
   const [playKey, setPlayKey] = useState<MusicKey | null>(originalKey);
   const [capo, setCapo] = useSongCapo(song._id, song.capo);
-  const readingTrigger = (className: string) => (
-    <Button variant="glass" className={className} aria-label={t('reader.reading')}>
+  const readingTrigger = (
+    <Button
+      variant="glass"
+      className="h-14 w-[52px] px-0 text-[0.9375rem]"
+      aria-label={t('reader.reading')}
+    >
       Aa
     </Button>
   );
@@ -56,9 +58,7 @@ function SongView({ song }: { song: Song }) {
       compactTitle={song.title}
       actions={
         <>
-          {isWide ? (
-            <ReadingPanel trigger={readingTrigger('size-12 px-0 text-[0.9375rem]')} />
-          ) : null}
+          <WideReadingControls />
           {canWriteSongs(session) ? (
             <Button asChild variant="glass" size="icon-lg" aria-label={t('songEditor.edit')}>
               <Link
@@ -74,7 +74,7 @@ function SongView({ song }: { song: Song }) {
       }
       dock={
         <>
-          <ReadingPanel trigger={readingTrigger('h-14 w-[52px] px-0 text-[0.9375rem]')} />
+          <ReadingPanel trigger={readingTrigger} />
           <span className="flex-1" />
           {mode === 'chords' && originalKey && playKey ? (
             <KeyPicker
