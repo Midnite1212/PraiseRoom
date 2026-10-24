@@ -252,6 +252,7 @@ export function SongInfo({ song }: { song: ReaderSong }) {
   const notes = [
     { label: t('reader.info.artist'), value: song.artist },
     { label: t('reader.info.themes'), value: song.themes.join(', ') },
+    { label: t('reader.info.credits'), value: song.credits?.trim() },
   ].filter(({ value }) => Boolean(value));
 
   return (
@@ -285,7 +286,7 @@ export function SongInfo({ song }: { song: ReaderSong }) {
         {notes.map(({ label, value }) => (
           <div key={label}>
             <dt className="text-ink-3 text-xs">{label}</dt>
-            <dd className="text-ink-2">{value}</dd>
+            <dd className="text-ink-2 whitespace-pre-line">{value}</dd>
           </div>
         ))}
       </dl>

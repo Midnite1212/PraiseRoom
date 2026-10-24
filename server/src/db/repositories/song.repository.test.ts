@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
 import { InvalidInputError } from '../cast';
+import { SONG_CREDITS_MAX_LENGTH } from '../schema';
 import { containsPattern, toSongValues } from './song.repository';
 
 describe('containsPattern', () => {
@@ -27,5 +28,28 @@ describe('toSongValues capo', () => {
       year: '2020',
       tempo: ['Fast'],
     });
+  });
+});
+
+describe('toSongValues credits', () => {
+  it('trims credits, stores empty as null, and leaves credits out when not sent', () => {
+    assert.equal(
+      toSongValues({ credits: '  Words 1779, music 1829.  ' }).credits,
+      'Words 1779, music 1829.'
+    );
+    assert.equal(toSongValues({ credits: '   ' }).credits, null);
+    assert.equal(toSongValues({ credits: null }).credits, null);
+    assert.equal('credits' in toSongValues({ title: 'Song' }), false);
+  });
+
+  it('accepts the length limit and rejects more or a NUL character', () => {
+    const atLimit = '你'.repeat(SONG_CREDITS_MAX_LENGTH);
+    assert.equal(toSongValues({ credits: atLimit }).credits, atLimit);
+    assert.throws(
+      () => toSongValues({ credits: 'a'.repeat(SONG_CREDITS_MAX_LENGTH + 1) }),
+      InvalidInputError
+    );
+    assert.throws(() => toSongValues({ credits: 'a\u0000b' }), InvalidInputError);
+    assert.throws(() => toSongValues({ credits: ['a'] }), InvalidInputError);
   });
 });

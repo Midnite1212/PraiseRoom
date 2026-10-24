@@ -128,6 +128,22 @@ describe('SongEditor', () => {
     expect(lastUpdate()).toMatchObject({ originalKey: 'F#m' });
   });
 
+  it('saves credits typed in the Credits chip, and clearing them sends null', async () => {
+    const user = userEvent.setup();
+    renderWithQueryAndRouter(<SongEditor song={song} />);
+
+    await user.click(await screen.findByRole('button', { name: /Credits/ }));
+    const field = await screen.findByRole('textbox', { name: 'Credits' });
+    await user.type(field, 'Words 1779.');
+    await waitFor(() => expect(lastUpdate()).toMatchObject({ credits: 'Words 1779.' }), {
+      timeout: 3000,
+    });
+    expect(screen.getByRole('button', { name: /Credits.*Added/ })).toBeInTheDocument();
+
+    await user.clear(field);
+    await waitFor(() => expect(lastUpdate()).toMatchObject({ credits: null }), { timeout: 3000 });
+  });
+
   it('sends themes and the code', async () => {
     const user = userEvent.setup();
     renderWithQueryAndRouter(<SongEditor song={song} />);

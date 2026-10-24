@@ -7,13 +7,14 @@ import { FilterToggle } from '@/components/page/filter-sheet';
 import { TempoMeter } from '@/components/primitives/tempo-meter';
 import { Button } from '@/components/ui/button';
 import { PopoverClose } from '@/components/ui/popover';
+import { Textarea } from '@/components/ui/textarea';
 import { keyLabel, type MusicKey } from '@/features/chords/theory';
 import { TIME_SIGNATURE_OPTIONS } from '@/features/song-import/api';
 import { cn } from '@/lib/utils';
 
 import { TEMPO_LABEL_KEYS, TEMPO_OPTIONS, THEME_OPTIONS } from './api';
 import { KEY_OPTIONS, keyOptionValue } from './key-options';
-import { sameKey } from './song-draft';
+import { CREDITS_MAX_LENGTH, sameKey } from './song-draft';
 
 function ChipHead({ title, hint }: { title: string; hint?: string }) {
   return (
@@ -190,5 +191,34 @@ export function CodeSettingChip({ value, onChange, onBlur }: CodeChipProps) {
         className="w-[6ch] bg-transparent p-0 font-mono text-sm font-semibold outline-none"
       />
     </label>
+  );
+}
+
+type CreditsChipProps = { value: string; onChange: (credits: string) => void; onBlur: () => void };
+
+export function CreditsSettingChip({ value, onChange, onBlur }: CreditsChipProps) {
+  const { t } = useTranslation();
+  return (
+    <EditorChip
+      label={t('songEditor.chips.credits')}
+      contentClassName="w-96 max-w-[calc(100vw-24px)]"
+      value={<span>{value.trim() === '' ? t('songEditor.add') : t('songEditor.added')}</span>}
+    >
+      <ChipHead title={t('songEditor.chips.credits')} hint={t('songEditor.creditsHint')} />
+      <Textarea
+        value={value}
+        rows={4}
+        maxLength={CREDITS_MAX_LENGTH}
+        aria-label={t('songEditor.chips.credits')}
+        placeholder={t('songEditor.creditsPlaceholder')}
+        onChange={(event) => onChange(event.target.value)}
+        onBlur={onBlur}
+      />
+      <div className="flex justify-end">
+        <PopoverClose asChild>
+          <Button type="button">{t('editor.frame.done')}</Button>
+        </PopoverClose>
+      </div>
+    </EditorChip>
   );
 }

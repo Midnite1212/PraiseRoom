@@ -36,6 +36,8 @@ const MAJOR_KEYS = [
 
 export const SETLIST_SONG_NOTE_MAX_LENGTH = 80;
 
+export const SONG_CREDITS_MAX_LENGTH = 500;
+
 export const MUSIC_KEYS = [...MAJOR_KEYS, ...MAJOR_KEYS.map((key) => `${key}m` as const)];
 
 const isObjectIdHex = (column: AnyPgColumn): SQL => sql`${column} ~ '^[0-9a-f]{24}$'`;
@@ -66,6 +68,7 @@ export const songs = pgTable(
     artist: text('artist').notNull(),
     year: text('year'),
     capo: smallint('capo'),
+    credits: text('credits'),
     code: text('code'),
     createdBy: text('created_by'),
     lastUpdatedBy: text('last_updated_by'),
@@ -79,7 +82,13 @@ export const songs = pgTable(
     isDeleted: boolean('is_deleted').notNull().default(false),
     ...timestamps,
   },
-  (table) => [check('songs_id_object_id', isObjectIdHex(table.id))]
+  (table) => [
+    check('songs_id_object_id', isObjectIdHex(table.id)),
+    check(
+      'songs_credits_length',
+      sql`char_length(${table.credits}) <= ${sql.raw(String(SONG_CREDITS_MAX_LENGTH))}`
+    ),
+  ]
 );
 
 export const setlists = pgTable(
