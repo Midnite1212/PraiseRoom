@@ -357,6 +357,10 @@
     "addPeople": "加入成員",
     "addPeopleDescription": "他們會看到 {{name}} 內的所有歌單。",
     "searchPeople": "按名稱搜尋",
+    "inviteLink": "邀請連結",
+    "copy": "複製",
+    "inviteCopied": "已複製邀請連結。",
+    "inviteCopyFailed": "未能複製連結，請手動選取複製。",
     "typeToSearch": "輸入名稱以搜尋。",
     "noPeople": "找不到相符的人。",
     "you": "你",
@@ -544,5 +548,13 @@
     "clearSearch": "清除搜尋",
     "reset": "重設",
     "clear": "清除"
+  },
+  "join": {
+    "invalidTitle": "此邀請連結無效",
+    "invalidHint": "連結可能已被重設，或資料夾已不存在。請向對方索取新連結。",
+    "failedTitle": "未能加入資料夾",
+    "failedHint": "發生了一點問題，請再試一次。",
+    "retry": "再試一次",
+    "toFolders": "前往資料夾"
   }
 }

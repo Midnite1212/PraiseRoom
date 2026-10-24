@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppFoldersIndexRouteImport } from './routes/_app/folders/index'
 import { Route as AppFoldersFolderIdRouteImport } from './routes/_app/folders/$folderId'
+import { Route as AppJoinTokenRouteImport } from './routes/_app/join/$token'
 import { Route as AppSetlistsIndexRouteImport } from './routes/_app/setlists/index'
 import { Route as AppSetlistsSetlistIdRouteImport } from './routes/_app/setlists/$setlistId'
 import { Route as AppSetlistsNewRouteImport } from './routes/_app/setlists/new'
@@ -46,6 +47,11 @@ const AppFoldersIndexRoute = AppFoldersIndexRouteImport.update({
 const AppFoldersFolderIdRoute = AppFoldersFolderIdRouteImport.update({
   id: '/folders/$folderId',
   path: '/folders/$folderId',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppJoinTokenRoute = AppJoinTokenRouteImport.update({
+  id: '/join/$token',
+  path: '/join/$token',
   getParentRoute: () => AppRoute,
 } as any)
 const AppSetlistsIndexRoute = AppSetlistsIndexRouteImport.update({
@@ -99,6 +105,7 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/login': typeof LoginRoute
   '/folders/$folderId': typeof AppFoldersFolderIdRoute
+  '/join/$token': typeof AppJoinTokenRoute
   '/setlists/$setlistId': typeof AppSetlistsSetlistIdRoute
   '/setlists/new': typeof AppSetlistsNewRoute
   '/songs/$songId': typeof AppSongsSongIdRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/': typeof AppIndexRoute
   '/folders/$folderId': typeof AppFoldersFolderIdRoute
+  '/join/$token': typeof AppJoinTokenRoute
   '/setlists/$setlistId': typeof AppSetlistsSetlistIdRoute
   '/setlists/new': typeof AppSetlistsNewRoute
   '/songs/$songId': typeof AppSongsSongIdRoute
@@ -131,6 +139,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/_app/': typeof AppIndexRoute
   '/_app/folders/$folderId': typeof AppFoldersFolderIdRoute
+  '/_app/join/$token': typeof AppJoinTokenRoute
   '/_app/setlists/$setlistId': typeof AppSetlistsSetlistIdRoute
   '/_app/setlists/new': typeof AppSetlistsNewRoute
   '/_app/songs/$songId': typeof AppSongsSongIdRoute
@@ -148,6 +157,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/folders/$folderId'
+    | '/join/$token'
     | '/setlists/$setlistId'
     | '/setlists/new'
     | '/songs/$songId'
@@ -163,6 +173,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/'
     | '/folders/$folderId'
+    | '/join/$token'
     | '/setlists/$setlistId'
     | '/setlists/new'
     | '/songs/$songId'
@@ -179,6 +190,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/_app/'
     | '/_app/folders/$folderId'
+    | '/_app/join/$token'
     | '/_app/setlists/$setlistId'
     | '/_app/setlists/new'
     | '/_app/songs/$songId'
@@ -232,6 +244,13 @@ declare module '@tanstack/react-router' {
       path: '/folders/$folderId'
       fullPath: '/folders/$folderId'
       preLoaderRoute: typeof AppFoldersFolderIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/join/$token': {
+      id: '/_app/join/$token'
+      path: '/join/$token'
+      fullPath: '/join/$token'
+      preLoaderRoute: typeof AppJoinTokenRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/setlists/': {
@@ -303,6 +322,7 @@ declare module '@tanstack/react-router' {
 interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppFoldersFolderIdRoute: typeof AppFoldersFolderIdRoute
+  AppJoinTokenRoute: typeof AppJoinTokenRoute
   AppSetlistsSetlistIdRoute: typeof AppSetlistsSetlistIdRoute
   AppSetlistsNewRoute: typeof AppSetlistsNewRoute
   AppSongsSongIdRoute: typeof AppSongsSongIdRoute
@@ -317,6 +337,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppFoldersFolderIdRoute: AppFoldersFolderIdRoute,
+  AppJoinTokenRoute: AppJoinTokenRoute,
   AppSetlistsSetlistIdRoute: AppSetlistsSetlistIdRoute,
   AppSetlistsNewRoute: AppSetlistsNewRoute,
   AppSongsSongIdRoute: AppSongsSongIdRoute,

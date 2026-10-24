@@ -60,6 +60,30 @@ export const changeFolderMembers = (
     body: { groupId: folderId, add: change.add ?? [], remove: change.remove ?? [] },
   });
 
+const inviteSchema = z.object({ token: z.string() });
+
+// Get-or-create: the server returns the folder's existing token or makes one, so it is safe to refetch.
+export const inviteQueryOptions = (folderId: string) =>
+  queryOptions({
+    queryKey: ['invites', folderId],
+    queryFn: ({ signal }) =>
+      apiRequest('/api/groups/invite', inviteSchema, {
+        method: 'PUT',
+        body: { groupId: folderId },
+        signal,
+      }),
+    staleTime: Infinity,
+  });
+
+export const inviteUrl = (token: string, origin = window.location.origin): string =>
+  `${origin}/join/${encodeURIComponent(token)}`;
+
+export const joinFolder = (token: string) =>
+  apiRequest('/api/groups/join', z.object({ groupId: z.string() }), {
+    method: 'PUT',
+    body: { token },
+  });
+
 // Folder writes change who can see which setlists, and the caller's own membership lives in the session.
 export const FOLDER_RELATED_QUERY_KEYS = [
   ['folders'],

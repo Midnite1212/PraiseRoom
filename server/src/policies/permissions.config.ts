@@ -53,6 +53,14 @@ export const ROUTE_PERMISSIONS: Record<string, PermissionConfig> = {
     requiresAuth: true,
     description: 'Add or remove group members',
   },
+  'PUT /api/groups/invite': {
+    requiresAuth: true,
+    description: 'Get or reset a group invite link token',
+  },
+  'PUT /api/groups/join': {
+    requiresAuth: true,
+    description: 'Join a group with an invite token',
+  },
   'PUT /api/groups/delete': {
     requiresAuth: true,
     description: 'Delete group',

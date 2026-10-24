@@ -357,6 +357,10 @@
     "addPeople": "Add people",
     "addPeopleDescription": "They'll see every setlist in {{name}}.",
     "searchPeople": "Search by name",
+    "inviteLink": "Invite link",
+    "copy": "Copy",
+    "inviteCopied": "Invite link copied.",
+    "inviteCopyFailed": "Could not copy the link. Select it and copy by hand.",
     "typeToSearch": "Type a name to search.",
     "noPeople": "No one matches.",
     "you": "you",
@@ -544,5 +548,13 @@
     "clearSearch": "Clear search",
     "reset": "Reset",
     "clear": "Clear"
+  },
+  "join": {
+    "invalidTitle": "This invite link does not work",
+    "invalidHint": "It may have been reset, or the folder is gone. Ask for a new link.",
+    "failedTitle": "Could not join the folder",
+    "failedHint": "Something went wrong on our side. Please try again.",
+    "retry": "Try again",
+    "toFolders": "Go to Folders"
   }
 }

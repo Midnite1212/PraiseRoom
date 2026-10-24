@@ -82,6 +82,8 @@ describe('permissionMiddleware', () => {
         'POST /api/songs/import/convert': 2,
         'POST /api/songs/import/fetch': 2,
         'PUT /api/groups/delete': 1,
+        'PUT /api/groups/invite': 1,
+        'PUT /api/groups/join': 1,
         'PUT /api/groups/members': 1,
         'PUT /api/groups/update': 1,
         'PUT /api/ownerships/delete': 1,

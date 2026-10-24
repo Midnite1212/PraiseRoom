@@ -13,10 +13,13 @@ import {
   createGroup,
   deleteGroup,
   getGroup,
+  getInviteToken,
+  joinGroup,
   updateGroup,
   updateGroupMembers,
 } from './group.controllers';
 
+const TOKEN = 'AbCdEfGhIjKlMnOpQrStUvWx';
 const GROUP_ID = '507f1f77bcf86cd799439011';
 const OTHER_ID = '507f1f77bcf86cd799439012';
 const USER: TokenUser = { accessType: 'ministry', id: '507f1f77bcf86cd799439021' };
@@ -406,6 +409,168 @@ describe('group controllers', () => {
         assert.deepEqual(res.body, { added: 0, groupId: GROUP_ID, removed: 1 });
         mock.restoreAll();
       }
+    });
+  });
+
+  describe('getInviteToken', () => {
+    it('rejects a request without req.user', async () => {
+      const res = await call(getInviteToken, { body: { groupId: GROUP_ID } });
+      assert.equal(res.statusCode, 401);
+    });
+
+    it('rejects an invalid group id or a non-boolean reset', async () => {
+      const ensure = mock.method(groupRepository, 'ensureInviteToken', async () => TOKEN);
+      for (const body of [
+        undefined,
+        {},
+        { groupId: 'nope' },
+        { groupId: GROUP_ID, reset: 'yes' },
+      ]) {
+        const res = await call(getInviteToken, { body, user: USER });
+        assert.equal(res.statusCode, 400);
+      }
+      assert.equal(ensure.mock.callCount(), 0);
+    });
+
+    it('returns 404 when no live group matches', async () => {
+      mockGroup(null);
+      const ensure = mock.method(groupRepository, 'ensureInviteToken', async () => TOKEN);
+      const res = await call(getInviteToken, { body: { groupId: GROUP_ID }, user: USER });
+      assert.equal(res.statusCode, 404);
+      assert.equal(ensure.mock.callCount(), 0);
+    });
+
+    it('returns 404 when the group is deleted between the check and the write', async () => {
+      mockGroup(storedGroup({ createdBy: USER.id }));
+      mockOwnership(null);
+      mock.method(groupRepository, 'ensureInviteToken', async () => null);
+      const res = await call(getInviteToken, { body: { groupId: GROUP_ID }, user: USER });
+      assert.equal(res.statusCode, 404);
+    });
+
+    it('forbids a caller who is neither the creator, a member, nor an admin', async () => {
+      mockGroup(storedGroup({ createdBy: OTHER_USER_ID }));
+      mockOwnership(null);
+      const ensure = mock.method(groupRepository, 'ensureInviteToken', async () => TOKEN);
+      const res = await call(getInviteToken, { body: { groupId: GROUP_ID }, user: USER });
+      assert.equal(res.statusCode, 403);
+      assert.deepEqual(res.body, FORBIDDEN);
+      assert.equal(ensure.mock.callCount(), 0);
+    });
+
+    it('gets the token for a member, the creator, and an admin without resetting it', async () => {
+      for (const [user, stored, ownership] of [
+        [USER, storedGroup({ createdBy: OTHER_USER_ID }), membership(GROUP_ID)],
+        [USER, storedGroup({ createdBy: USER.id }), null],
+        [ADMIN, storedGroup({ createdBy: OTHER_USER_ID }), null],
+      ] as const) {
+        mockGroup(stored);
+        mockOwnership(ownership);
+        const ensure = mock.method(groupRepository, 'ensureInviteToken', async () => TOKEN);
+        const res = await call(getInviteToken, { body: { groupId: GROUP_ID }, user });
+        assert.deepEqual(ensure.mock.calls[0]?.arguments, [GROUP_ID, false]);
+        assert.equal(res.statusCode, 200);
+        assert.deepEqual(res.body, { token: TOKEN });
+        mock.restoreAll();
+      }
+    });
+
+    it('resets the token when asked', async () => {
+      mockGroup(storedGroup({ createdBy: USER.id }));
+      mockOwnership(null);
+      const ensure = mock.method(groupRepository, 'ensureInviteToken', async () => TOKEN);
+      await call(getInviteToken, { body: { groupId: GROUP_ID, reset: true }, user: USER });
+      assert.deepEqual(ensure.mock.calls[0]?.arguments, [GROUP_ID, true]);
+    });
+  });
+
+  describe('joinGroup', () => {
+    it('rejects a request without req.user', async () => {
+      const res = await call(joinGroup, { body: { token: TOKEN } });
+      assert.equal(res.statusCode, 401);
+    });
+
+    it('rejects a missing or malformed token before querying', async () => {
+      const find = mock.method(groupRepository, 'findLiveAccessByInviteToken', async () => null);
+      for (const body of [
+        undefined,
+        {},
+        { token: 'short' },
+        { token: { $ne: 1 } },
+        { token: `${TOKEN}!` },
+      ]) {
+        const res = await call(joinGroup, { body, user: USER });
+        assert.equal(res.statusCode, 400);
+      }
+      assert.equal(find.mock.callCount(), 0);
+    });
+
+    it('returns 404 for an unknown, reset, or deleted-group token', async () => {
+      mock.method(groupRepository, 'findLiveAccessByInviteToken', async () => null);
+      const change = mock.method(ownershipRepository, 'changeGroupMembership', async () => ({
+        added: 1,
+        removed: 0,
+      }));
+      const res = await call(joinGroup, { body: { token: TOKEN }, user: USER });
+      assert.equal(res.statusCode, 404);
+      assert.equal(change.mock.callCount(), 0);
+    });
+
+    it('forbids a caller with no ownership record', async () => {
+      mock.method(groupRepository, 'findLiveAccessByInviteToken', async () => storedGroup());
+      mockOwnership(null);
+      const change = mock.method(ownershipRepository, 'changeGroupMembership', async () => ({
+        added: 0,
+        removed: 0,
+      }));
+      const res = await call(joinGroup, { body: { token: TOKEN }, user: USER });
+      assert.equal(res.statusCode, 403);
+      assert.equal(change.mock.callCount(), 0);
+    });
+
+    it('adds only the caller and returns the group id', async () => {
+      const find = mock.method(groupRepository, 'findLiveAccessByInviteToken', async () =>
+        storedGroup()
+      );
+      mockOwnership(membership());
+      const change = mock.method(ownershipRepository, 'changeGroupMembership', async () => ({
+        added: 1,
+        removed: 0,
+      }));
+      const res = await call(joinGroup, {
+        body: { add: [MEMBER_A], groupId: OTHER_ID, token: TOKEN },
+        user: USER,
+      });
+      assert.deepEqual(find.mock.calls[0]?.arguments, [TOKEN]);
+      assert.deepEqual(change.mock.calls[0]?.arguments, [
+        {
+          add: [USER.id],
+          entry: { createdAt: CREATED_AT.toISOString(), id: GROUP_ID, name: 'Team' },
+          remove: [],
+        },
+      ]);
+      assert.equal(res.statusCode, 200);
+      assert.deepEqual(res.body, { groupId: GROUP_ID });
+    });
+
+    it('succeeds when the caller is already a member', async () => {
+      mock.method(groupRepository, 'findLiveAccessByInviteToken', async () => storedGroup());
+      mockOwnership(membership(GROUP_ID));
+      mock.method(ownershipRepository, 'changeGroupMembership', async () => ({
+        added: 0,
+        removed: 0,
+      }));
+      const res = await call(joinGroup, { body: { token: TOKEN }, user: USER });
+      assert.equal(res.statusCode, 200);
+      assert.deepEqual(res.body, { groupId: GROUP_ID });
+    });
+
+    it('maps an unexpected error to a generic 500', async () => {
+      mock.method(groupRepository, 'findLiveAccessByInviteToken', async () => {
+        throw new Error('db down');
+      });
+      const res = await call(joinGroup, { body: { token: TOKEN }, user: USER });
+      assert.equal(res.statusCode, 500);
     });
   });
 

@@ -1,4 +1,6 @@
-import { SQL, and, asc, eq, inArray } from 'drizzle-orm';
+import { randomBytes } from 'node:crypto';
+
+import { SQL, and, asc, eq, inArray, sql } from 'drizzle-orm';
 
 import { GroupAccess, GroupRecord } from '../../types/group.types';
 import { InvalidInputError, castObjectIdArray, castRequiredString, has } from '../cast';
@@ -6,6 +8,8 @@ import { getDb } from '../connect';
 import { generateObjectId, toObjectId } from '../objectId';
 import { groupSetlists, groups, ownershipGroups, ownerships, setlists } from '../schema';
 import { Executor, Transaction, groupBy, presentFields, unique } from './shared';
+
+export const INVITE_TOKEN_BYTES = 18;
 
 export const GROUP_FIELDS = ['groupName', 'setlistIds'] as const;
 
@@ -89,6 +93,8 @@ const replaceSetlists = async (tx: Transaction, groupId: string, setlistIds: str
     .onConflictDoNothing();
 };
 
+const generateInviteToken = (): string => randomBytes(INVITE_TOKEN_BYTES).toString('base64url');
+
 export const groupRepository = {
   async create({ createdBy, ...fields }: GroupCreate): Promise<GroupRecord> {
     const { groupName, setlistIds } = toGroupValues(fields);
@@ -140,6 +146,27 @@ export const groupRepository = {
       .from(groups)
       .where(and(inArray(groups.id, unique(ids.map(toObjectId))), eq(groups.isDeleted, false)));
     return rows.map(toGroupAccess);
+  },
+
+  async findLiveAccessByInviteToken(token: string): Promise<GroupAccess | null> {
+    const [row] = await getDb()
+      .select()
+      .from(groups)
+      .where(and(eq(groups.inviteToken, token), eq(groups.isDeleted, false)));
+    return row ? toGroupAccess(row) : null;
+  },
+
+  async ensureInviteToken(id: string, reset: boolean): Promise<string | null> {
+    const fresh = generateInviteToken();
+    const [row] = await getDb()
+      .update(groups)
+      .set({
+        inviteToken: reset ? fresh : sql`coalesce(${groups.inviteToken}, ${fresh})`,
+        updatedAt: new Date(),
+      })
+      .where(isLiveGroup(id))
+      .returning({ inviteToken: groups.inviteToken });
+    return row?.inviteToken ?? null;
   },
 
   async updateLive(id: string, fields: GroupFields): Promise<GroupRecord | null> {

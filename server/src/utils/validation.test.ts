@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
-import { isObjectIdString, toObjectIdList } from './validation';
+import { isInviteToken, isObjectIdString, toObjectIdList } from './validation';
 
 describe('isObjectIdString', () => {
   it('accepts 24-character hex strings in either case', () => {
@@ -65,6 +65,26 @@ describe('toObjectIdList', () => {
   it('rejects a list with any value that is not a 24-hex id', () => {
     for (const value of [['507f1f77bcf86cd799439011', 'bad'], [1], 'bad', { id: 'x' }]) {
       assert.equal(toObjectIdList(value), null, JSON.stringify(value));
+    }
+  });
+});
+
+describe('isInviteToken', () => {
+  it('accepts a 24 character base64url string', () => {
+    assert.equal(isInviteToken('AbCdEfGhIjKlMnOpQr_-0123'), true);
+  });
+
+  it('rejects other lengths, characters, and types', () => {
+    for (const value of [
+      '',
+      'short',
+      'AbCdEfGhIjKlMnOpQr_-01234',
+      'AbCdEfGhIjKlMnOpQr+/0123',
+      7,
+      null,
+      {},
+    ]) {
+      assert.equal(isInviteToken(value), false);
     }
   });
 });
