@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import type { Session } from '@/features/auth/session';
 import { dateLocale } from '@/lib/date-locale';
 
-import { keyForSong, setlistQueryOptions, type SetlistSummary } from './api';
+import { keyForSong, noteForSong, setlistQueryOptions, type SetlistSummary } from './api';
 import type { SetlistNames } from './setlist-row';
 import { useSetlistActions } from './use-setlist-actions';
 
@@ -26,7 +26,7 @@ type SetlistPreviewProps = {
 };
 
 // Wide Setlists: the picked setlist in full beside the list. The list already has its songs'
-// titles; the detail request adds each song's tempo and the key it is played in.
+// titles; the detail request adds each song's tempo, the key it is played in, and its note.
 export function SetlistPreview({
   session,
   setlist,
@@ -68,6 +68,7 @@ export function SetlistPreview({
       title: song.title,
       tempo: full?.tempo ?? [],
       musicKey: detail && full ? keyForSong(detail, full) : null,
+      note: detail ? noteForSong(detail, song._id) : '',
     };
   });
 
@@ -150,6 +151,9 @@ export function SetlistPreview({
               </span>
               <span className="min-w-0">
                 <span className="block truncate">{song.title}</span>
+                {song.note === '' ? null : (
+                  <small className="text-ink-3 block truncate text-xs">{song.note}</small>
+                )}
               </span>
               <TempoMeter tempo={song.tempo} />
               <span className="text-ink-2 text-right font-mono text-[0.8125rem] font-semibold">

@@ -12,9 +12,11 @@ import {
   moveSong,
   removeSong,
   type SetlistDraft,
+  setSongNote,
   stepSongKey,
   toggleFolder,
   toSongKeys,
+  toSongNotes,
 } from './setlist-draft';
 
 const song = (id: string, originalKey: string, key = originalKey): DraftSong => ({
@@ -24,6 +26,7 @@ const song = (id: string, originalKey: string, key = originalKey): DraftSong => 
   originalKey,
   tempo: ['Medium'],
   key,
+  note: '',
 });
 
 const draft = (songs: DraftSong[] = []): SetlistDraft => ({
@@ -62,11 +65,36 @@ describe('draftFromSetlist', () => {
         },
       ],
       songKeys: [{ songId: 'a', key: 'A' }],
+      songNotes: [{ songId: 'b', note: 'Acapella last chorus' }],
     });
     expect(result.songs.map(({ key }) => key)).toEqual(['A', 'C']);
+    expect(result.songs.map(({ note }) => note)).toEqual(['', 'Acapella last chorus']);
     expect(result.songs[0]?.tempo).toEqual(['Fast']);
     expect(result.date).toBe('');
     expect(result.groupIds).toEqual(['f1']);
+  });
+});
+
+describe('song notes', () => {
+  it('sets the note on one song and leaves the others', () => {
+    const next = setSongNote(draft([song('a', 'G'), song('b', 'D')]), 'b', 'Key change');
+    expect(next.songs.map(({ note }) => note)).toEqual(['', 'Key change']);
+  });
+
+  it('sends trimmed notes for the songs that have one', () => {
+    const noted = [
+      { ...song('a', 'G'), note: '  Slow  ' },
+      { ...song('b', 'D'), note: '   ' },
+      song('c', 'C'),
+    ];
+    expect(toSongNotes(noted)).toEqual([{ songId: 'a', note: 'Slow' }]);
+    expect(draftToInput(draft(noted)).songNotes).toEqual([{ songId: 'a', note: 'Slow' }]);
+  });
+
+  it('treats a trailing space in a note as no change', () => {
+    const base = draft([song('a', 'G')]);
+    expect(isSameDraft(setSongNote(base, 'a', 'Slow'), setSongNote(base, 'a', 'Slow '))).toBe(true);
+    expect(isSameDraft(base, setSongNote(base, 'a', 'Slow'))).toBe(false);
   });
 });
 

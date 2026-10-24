@@ -34,6 +34,8 @@ const MAJOR_KEYS = [
   'Ab',
 ] as const;
 
+export const SETLIST_SONG_NOTE_MAX_LENGTH = 80;
+
 export const MUSIC_KEYS = [...MAJOR_KEYS, ...MAJOR_KEYS.map((key) => `${key}m` as const)];
 
 const isObjectIdHex = (column: AnyPgColumn): SQL => sql`${column} ~ '^[0-9a-f]{24}$'`;
@@ -108,10 +110,15 @@ export const setlistSongs = pgTable(
     songId: text('song_id')
       .notNull()
       .references(() => songs.id),
+    note: text('note'),
   },
   (table) => [
     primaryKey({ columns: [table.setlistId, table.position] }),
     index('setlist_songs_song_id_idx').on(table.songId),
+    check(
+      'setlist_songs_note_length',
+      sql`char_length(${table.note}) <= ${sql.raw(String(SETLIST_SONG_NOTE_MAX_LENGTH))}`
+    ),
   ]
 );
 

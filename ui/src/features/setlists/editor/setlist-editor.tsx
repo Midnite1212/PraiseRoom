@@ -30,6 +30,7 @@ import {
   removeSong,
   reorderSongs,
   type SetlistDraft,
+  setSongNote,
   stepSongKey,
   toggleFolder,
 } from './setlist-draft';
@@ -169,6 +170,10 @@ export function SetlistEditor({ session, setlistId, initialDraft, now }: Setlist
               songs={draft.songs}
               onReorder={(songs) => change(reorderSongs(draft, songs))}
               onStepKey={(songId, step) => change(stepSongKey(draft, songId, step))}
+              onNoteChange={(songId, note) =>
+                history.set(setSongNote(draft, songId, note), { coalesceKey: `note:${songId}` })
+              }
+              onNoteCommit={history.endCoalesce}
               onRemove={remove}
             />
           )}

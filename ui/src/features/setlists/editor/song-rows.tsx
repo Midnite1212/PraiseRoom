@@ -6,20 +6,30 @@ import { TempoMeter } from '@/components/primitives/tempo-meter';
 import { Button } from '@/components/ui/button';
 
 import { type DraftSong, keyJump, keyOffset } from './setlist-draft';
+import { SongNote } from './song-note';
 
 type SongRowsProps = {
   songs: DraftSong[];
   onReorder: (songs: DraftSong[]) => void;
   onStepKey: (songId: string, step: 1 | -1) => void;
+  onNoteChange: (songId: string, note: string) => void;
+  onNoteCommit: () => void;
   onRemove: (song: DraftSong) => void;
 };
 
 const KEY_BUTTON_CLASSES =
   'text-ink-2 hover:text-ink hover:bg-fill-press grid size-7 wide:size-8 place-items-center rounded-full transition-colors [&_svg]:size-icon';
 
-// The set's songs as draggable rows: a handle, the number, title and artist, the tempo (wide screens), the key change
-// from the song before, the key for this set with how far it sits from the original, and remove.
-export function SongRows({ songs, onReorder, onStepKey, onRemove }: SongRowsProps) {
+// The set's songs as draggable rows: a handle, the number, title and artist with the set's note, the tempo (wide
+// screens), the key change from the song before, the key for this set with how far it sits from the original, and remove.
+export function SongRows({
+  songs,
+  onReorder,
+  onStepKey,
+  onNoteChange,
+  onNoteCommit,
+  onRemove,
+}: SongRowsProps) {
   const { t } = useTranslation();
   return (
     <ReorderList
@@ -42,6 +52,12 @@ export function SongRows({ songs, onReorder, onStepKey, onRemove }: SongRowsProp
               <span className="text-ink-2 mt-0.5 block truncate text-[0.8125rem]">
                 {song.artist}
               </span>
+              <SongNote
+                title={song.title}
+                note={song.note}
+                onChange={(note) => onNoteChange(song._id, note)}
+                onCommit={onNoteCommit}
+              />
             </span>
             <TempoMeter tempo={song.tempo} className="wide:inline-flex hidden" />
             <span
