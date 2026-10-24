@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
-import { GroupTitle } from '@/components/page/group-title';
 import { LIST_CLASSES, listRowClasses, RowText } from '@/components/page/list-row';
 import { InitialAvatar } from '@/components/primitives/avatar';
 import {
@@ -41,6 +40,7 @@ import {
   type Person,
   peopleQueryOptions,
 } from './api';
+import { goneToast } from './gone-toast';
 
 export const useFolderMembers = (folder: Folder) => {
   const { t } = useTranslation();
@@ -119,35 +119,7 @@ function MemberRows({ session, folder, canEdit, onRemove }: Omit<MembersProps, '
   );
 }
 
-// Wide screens: members are secondary, a quiet glass island beside the setlists.
-export function MembersIsland({ onAddPeople, ...props }: MembersProps) {
-  const { t } = useTranslation();
-  const { members } = useFolderMembers(props.folder);
-  return (
-    <aside
-      aria-labelledby="folder-members"
-      className="glass wide:block hidden px-2 pt-3.5 pb-2 [--glass-r:24px]"
-    >
-      <GroupTitle
-        id="folder-members"
-        title={t('folders.membersTitle')}
-        count={members.length}
-        className="mt-0 mb-1 px-2"
-        action={
-          props.canEdit ? (
-            <Button variant="link" size="sm" onClick={onAddPeople}>
-              <UserPlus />
-              {t('editor.add')}
-            </Button>
-          ) : null
-        }
-      />
-      <MemberRows {...props} />
-    </aside>
-  );
-}
-
-// Phones: the same list in a sheet, opened from the people strip or the folder menu.
+// The member list in a dialog, opened from the people strip.
 export function MembersSheet({
   open,
   onOpenChange,
@@ -335,7 +307,7 @@ export function RemoveMemberDialog({
     await change.mutateAsync({ remove: [person.userId] });
     onClose();
     if (isYou) {
-      toast.success(t('folders.left', { name: folder.groupName }));
+      goneToast(t('folders.left', { name: folder.groupName }));
       await navigate({ to: '/folders' });
     } else {
       toast.success(t('folders.memberRemoved', { name: person.fullName }));

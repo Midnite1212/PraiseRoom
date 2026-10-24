@@ -6,6 +6,7 @@ import { CELL_CLASSES, type Cell } from './folder-cover';
 const SLEEVE_SIZES = {
   row: 'w-12 mr-2 [&_[data-cover]]:rounded-lg',
   hero: 'w-24 mr-4 wide:w-[152px] wide:mr-[26px]',
+  pane: 'w-24 mr-4 wide:w-[120px] wide:mr-5',
   card: 'w-auto mr-[14%]',
 } as const;
 

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Bulletlist, Close, Plus, Search } from 'pixelarticons/react';
+import { Bulletlist, Close, Search } from 'pixelarticons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -28,6 +28,7 @@ import { SetlistRow } from '@/features/setlists/setlist-row';
 import { useSetlistNames } from '@/features/setlists/use-setlist-names';
 
 import { FOLDER_RELATED_QUERY_KEYS, setFolderSetlists } from './api';
+import { orderFolderSetlists } from './order-setlists';
 
 const useFolderSetlistsUpdate = (folder: Folder) => {
   const { t } = useTranslation();
@@ -51,23 +52,19 @@ type FolderSetlistsProps = {
   folder: Folder;
   canEdit: boolean;
   now: number;
-  onAddSetlists: () => void;
 };
 
-export function FolderSetlists({
-  session,
-  folder,
-  canEdit,
-  now,
-  onAddSetlists,
-}: FolderSetlistsProps) {
+export function FolderSetlists({ session, folder, canEdit, now }: FolderSetlistsProps) {
   const { t } = useTranslation();
   const { data: setlists, isPending } = useQuery(setlistsQueryOptions());
   const names = useSetlistNames(session);
   const update = useFolderSetlistsUpdate(folder);
   const nextId = nextSetlistId(setlists ?? [], now);
   const inFolder = new Set(folder.setlistIds);
-  const folderSetlists = (setlists ?? []).filter(({ _id }) => inFolder.has(_id));
+  const folderSetlists = orderFolderSetlists(
+    (setlists ?? []).filter(({ _id }) => inFolder.has(_id)),
+    now
+  );
 
   return (
     <section aria-labelledby="folder-setlists">
@@ -75,14 +72,7 @@ export function FolderSetlists({
         id="folder-setlists"
         title={t('setlists.title')}
         count={folder.setlistIds.length}
-        action={
-          canEdit ? (
-            <Button variant="link" size="sm" onClick={onAddSetlists}>
-              <Plus />
-              {t('folders.addSetlists')}
-            </Button>
-          ) : null
-        }
+        className={canEdit ? 'mt-0' : 'mt-6'}
       />
       {isPending ? (
         <Skeleton className="h-24 w-full" />

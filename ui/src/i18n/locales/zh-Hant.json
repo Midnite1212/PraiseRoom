@@ -415,9 +415,12 @@
     "setlistsAdded_other": "已加入 {{count}} 個歌單。",
     "setlistRemoved": "已移除 {{name}}。",
     "removeFromFolder": "從資料夾移除",
-    "noSetlistsHint": "加入歌單後，這裡每個人都可以開啟及編輯。",
-    "dangerDelete": "刪除會為所有人移除此資料夾；歌單會保留給建立它們的人。",
-    "dangerLeave": "離開後，此資料夾不會再出現在你的清單。"
+    "exits": "離開或刪除此資料夾",
+    "leaveHint": "它會從你的清單移除，你建立的歌單仍屬於你。",
+    "deleteHint_one": "所有 {{count}} 位成員都會失去此資料夾，每份歌單仍屬於建立它的人。",
+    "deleteHint_other": "所有 {{count}} 位成員都會失去此資料夾，每份歌單仍屬於建立它的人。",
+    "deleteAction": "刪除",
+    "noSetlistsHint": "加入歌單後，這裡每個人都可以開啟及編輯。"
   },
   "songImport": {
     "web": {
