@@ -66,7 +66,7 @@ export function FolderDetail({ urlKey, session, now, inPane = false }: FolderDet
   const { t } = useTranslation();
   const { data: folder } = useSuspenseQuery(folderQueryOptions(urlKey));
   const { people, members } = useFolderMembers(folder);
-  const { cells } = useFolderCover(folder, now);
+  const { cover } = useFolderCover(folder, now);
   const [sheet, setSheet] = useState<Sheet>(null);
   const [isRenaming, setIsRenaming] = useState(false);
   const [removing, setRemoving] = useState<Pick<Person, 'userId' | 'fullName'> | null>(null);
@@ -98,7 +98,7 @@ export function FolderDetail({ urlKey, session, now, inPane = false }: FolderDet
       )}
 
       <div className="mb-2 flex items-end gap-[22px]">
-        <FolderSleeve cells={cells} size={inPane ? 'pane' : 'hero'} />
+        <FolderSleeve cover={cover} size={inPane ? 'pane' : 'hero'} />
         <div className="min-w-0 flex-1">
           {isRenaming ? (
             <div className={cn(inPane && 'pr-10')}>

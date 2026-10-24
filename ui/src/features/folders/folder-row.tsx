@@ -44,7 +44,7 @@ function FolderMeta({ count, nextDate }: { count: number; nextDate: string | nul
 
 // A folder as a row with a small sleeve. In the Folders pane an open pane drops the members to make room.
 export function FolderRow({ session, folder, people, now, pane }: FolderRowProps) {
-  const { cells, nextDate } = useFolderCover(folder, now);
+  const { cover, nextDate } = useFolderCover(folder, now);
   const members = avatarPeople(people, folder._id);
   const className = listRowClasses(
     cn(
@@ -55,7 +55,7 @@ export function FolderRow({ session, folder, people, now, pane }: FolderRowProps
   );
   const content = (
     <>
-      <FolderSleeve cells={cells} size="row" />
+      <FolderSleeve cover={cover} size="row" />
       <RowText
         title={folder.groupName}
         meta={<FolderMeta count={folder.setlistIds.length} nextDate={nextDate} />}
