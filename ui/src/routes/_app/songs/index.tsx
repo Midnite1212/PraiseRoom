@@ -20,10 +20,14 @@ import { WebResults } from '@/features/song-import/web-results';
 import { AddSongDialog } from '@/features/songs/add-song-dialog';
 import {
   SONG_SORTS,
+  SORT_DIRECTIONS,
+  songKeysQueryOptions,
   songSearchQueryOptions,
+  type SongSort,
   TEMPO_LABEL_KEYS,
   TEMPO_OPTIONS,
 } from '@/features/songs/api';
+import { KEY_FILTER_OPTIONS, tonicOf } from '@/features/songs/key-options';
 import { nextSetSongIds } from '@/features/songs/next-set';
 import { type SongFilterValues, SongFilterSheet } from '@/features/songs/song-filter-sheet';
 import { SongPreview } from '@/features/songs/song-preview';
@@ -39,14 +43,24 @@ const songsSearchSchema = z.object({
   page: z.number().int().min(1).default(1).catch(1),
   tempo: z.array(z.string()).default([]).catch([]),
   themes: z.array(z.string()).default([]).catch([]),
+  keys: z.array(z.enum(KEY_FILTER_OPTIONS)).default([]).catch([]),
   web: z.boolean().default(false).catch(false),
   sort: z.enum(SONG_SORTS).default('title').catch('title'),
+  dir: z.enum(SORT_DIRECTIONS).default('asc').catch('asc'),
   song: z.string().optional().catch(undefined),
 });
 
 export const Route = createFileRoute('/_app/songs/')({
   validateSearch: songsSearchSchema,
-  loaderDeps: ({ search: { q, page, tempo, themes, sort } }) => ({ q, page, tempo, themes, sort }),
+  loaderDeps: ({ search: { q, page, tempo, themes, keys, sort, dir } }) => ({
+    q,
+    page,
+    tempo,
+    themes,
+    keys,
+    sort,
+    dir,
+  }),
   loader: async ({ context, deps }) => {
     await context.queryClient.ensureQueryData(
       songSearchQueryOptions({
@@ -54,7 +68,9 @@ export const Route = createFileRoute('/_app/songs/')({
         page: deps.page,
         tempo: deps.tempo,
         themes: deps.themes,
+        keys: deps.keys,
         sort: deps.sort,
+        dir: deps.dir,
       })
     );
     return { now: Date.now() };
@@ -71,7 +87,7 @@ function SongsPage() {
   const { session } = Route.useRouteContext();
   const { now } = Route.useLoaderData();
   const search = Route.useSearch();
-  const { q, page, tempo, themes, web, sort, song: selectedId } = search;
+  const { q, page, tempo, themes, keys, web, sort, dir, song: selectedId } = search;
   const navigate = Route.useNavigate();
   const isWide = useIsWide();
   const searchInput = useRef<HTMLInputElement>(null);
@@ -80,11 +96,15 @@ function SongsPage() {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const songImport = useSongImport();
   const { data, isError, isFetching } = useQuery({
-    ...songSearchQueryOptions({ keyword: q, page, tempo, themes, sort }),
+    ...songSearchQueryOptions({ keyword: q, page, tempo, themes, keys, sort, dir }),
     placeholderData: keepPreviousData,
   });
 
   const { data: library } = useQuery(songSearchQueryOptions({ keyword: '', page: 1 }));
+  const { data: libraryKeys } = useQuery(songKeysQueryOptions());
+  const availableKeys = libraryKeys
+    ? new Set(libraryKeys.flatMap((key) => tonicOf(key) ?? []))
+    : undefined;
   const { data: setlists } = useQuery(setlistsQueryOptions());
   const nextSetSongs = nextSetSongIds(setlists ?? [], now);
 
@@ -114,6 +134,11 @@ function SongsPage() {
       label: value,
       onRemove: () => changeFilters({ themes: themes.filter((item) => item !== value) }),
     })),
+    ...keys.map((value) => ({
+      key: `key-${value}`,
+      label: t('songs.filters.keyChip', { key: value }),
+      onRemove: () => changeFilters({ keys: keys.filter((item) => item !== value) }),
+    })),
     ...(web && canAdd
       ? [
           {
@@ -133,6 +158,9 @@ function SongsPage() {
     if (hasStaleSelection)
       void navigate({ search: (previous) => ({ ...previous, song: undefined }), replace: true });
   }, [hasStaleSelection, navigate]);
+
+  const sortBy = (next: SongSort) =>
+    setSearch({ sort: next, dir: next === sort && dir === 'asc' ? 'desc' : 'asc', page: 1 });
 
   const closePreview = () => {
     if (selectedId) document.getElementById(`song-row-${selectedId}`)?.focus();
@@ -206,6 +234,9 @@ function SongsPage() {
                 <SongsTable
                   songs={songs}
                   selectedId={selectedSong?._id}
+                  sort={sort}
+                  dir={dir}
+                  onSort={sortBy}
                   onSelect={(songId) => setSearch({ song: songId })}
                 />
               ) : (
@@ -272,8 +303,10 @@ function SongsPage() {
         onOpenChange={setIsFilterOpen}
         tempo={tempo}
         themes={themes}
+        keys={keys}
         web={web}
         sort={sort}
+        availableKeys={availableKeys}
         matchCount={data?.totalCount}
         canSearchWeb={canAdd}
         onChange={changeFilters}

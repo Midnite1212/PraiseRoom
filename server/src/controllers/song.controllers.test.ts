@@ -9,6 +9,7 @@ import {
   deleteSong,
   getSong,
   getSongView,
+  listSongKeys,
   searchSongs,
   updateSong,
 } from './song.controllers';
@@ -175,6 +176,8 @@ describe('song controllers', () => {
         keyword: '',
         limit: 20,
         offset: 0,
+        descending: false,
+        keys: [],
         sortBy: 'title',
         tempo: [],
         themes: [],
@@ -193,20 +196,63 @@ describe('song controllers', () => {
         keyword: 'a.b*%_',
         limit: 20,
         offset: 0,
+        descending: false,
+        keys: [],
         sortBy: 'title',
         tempo: ['Fast'],
         themes: ['Joy', 'Hope'],
       });
     });
 
-    it('sorts by code only when sortBy is code', async () => {
+    it('sorts by code, key, or tempo and falls back to title for other values', async () => {
       const search = stubSearch();
-      await call(searchSongs, { query: { sortBy: 'code' } });
-      await call(searchSongs, { query: { sortBy: 'artist' } });
+      for (const sortBy of ['code', 'key', 'tempo', 'artist']) {
+        await call(searchSongs, { query: { sortBy } });
+      }
       assert.deepEqual(
         search.mock.calls.map((c) => c.arguments[0]?.sortBy),
-        ['code', 'title']
+        ['code', 'key', 'tempo', 'title']
       );
+    });
+
+    it('sorts descending only when order is desc', async () => {
+      const search = stubSearch();
+      await call(searchSongs, { query: { sortBy: 'key', order: 'desc' } });
+      await call(searchSongs, { query: { sortBy: 'key', order: 'asc' } });
+      await call(searchSongs, { query: { sortBy: 'key' } });
+      assert.deepEqual(
+        search.mock.calls.map((c) => c.arguments[0]?.descending),
+        [true, false, false]
+      );
+    });
+
+    it('rejects an unknown sort order', async () => {
+      const search = stubSearch();
+      for (const order of ['up', ['desc'], { $ne: '' }]) {
+        const res = await call(searchSongs, { query: { order } });
+        assert.equal(res.statusCode, 400, JSON.stringify(order));
+      }
+      assert.equal(search.mock.callCount(), 0);
+    });
+
+    it('passes the original keys filter to the search', async () => {
+      const search = stubSearch();
+      await call(searchSongs, { query: { keys: 'G' } });
+      await call(searchSongs, { query: { keys: ['D', 'Bbm', 'F#'] } });
+      await call(searchSongs, { query: { keys: '' } });
+      assert.deepEqual(
+        search.mock.calls.map((c) => c.arguments[0]?.keys),
+        [['G'], ['D', 'Bbm', 'F#'], []]
+      );
+    });
+
+    it('rejects keys that are not music keys', async () => {
+      const search = stubSearch();
+      for (const keys of ['H', ['D', 'x'], 'g', 'D\u0000', { $ne: '' }, [1]]) {
+        const res = await call(searchSongs, { query: { keys } });
+        assert.equal(res.statusCode, 400, JSON.stringify(keys));
+      }
+      assert.equal(search.mock.callCount(), 0);
     });
 
     it('parses page and limit into positive integers, defaulting invalid values', async () => {
@@ -246,6 +292,24 @@ describe('song controllers', () => {
       const res = await call(searchSongs, {});
       assert.equal(res.statusCode, 500);
       assert.equal(res.body, 'Something went wrong');
+    });
+  });
+
+  describe('listSongKeys', () => {
+    it('lists the original keys in use', async () => {
+      mock.method(songRepository, 'listOriginalKeys', async () => ['D', 'Em']);
+      const res = await call(listSongKeys, {});
+      assert.equal(res.statusCode, 200);
+      assert.deepEqual(res.body, ['D', 'Em']);
+    });
+
+    it('answers 500 when the lookup fails', async () => {
+      mock.method(console, 'error', () => undefined);
+      mock.method(songRepository, 'listOriginalKeys', async () => {
+        throw new Error('db down');
+      });
+      const res = await call(listSongKeys, {});
+      assert.equal(res.statusCode, 500);
     });
   });
 

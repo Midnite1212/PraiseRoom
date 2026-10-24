@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { readerSongSchema } from '@/features/reader/song';
 import { apiRequest } from '@/lib/api-client';
 
+import { keyFilterSpellings } from './key-options';
+
 export const SONGS_PAGE_SIZE = 20;
 
 export const TEMPO_OPTIONS = ['Fast', 'Medium', 'Slow', 'Medium Slow'] as const;
@@ -61,14 +63,20 @@ const songSearchResponseSchema = z.object({
   totalPages: z.number(),
 });
 
-export const SONG_SORTS = ['title', 'code'] as const;
+export const SONG_SORTS = ['title', 'key', 'tempo', 'code'] as const;
+
+export const SORT_DIRECTIONS = ['asc', 'desc'] as const;
 
 export type SongSort = (typeof SONG_SORTS)[number];
+
+export type SortDirection = (typeof SORT_DIRECTIONS)[number];
 
 export type SongSearch = {
   keyword: string;
   page: number;
   sort?: SongSort;
+  dir?: SortDirection;
+  keys?: readonly string[];
   tempo?: readonly string[];
   themes?: readonly string[];
 };
@@ -79,9 +87,11 @@ export const songSearchQueryOptions = ({
   tempo = [],
   themes = [],
   sort = 'title',
+  dir = 'asc',
+  keys = [],
 }: SongSearch) =>
   queryOptions({
-    queryKey: ['songs', 'search', { keyword, page, tempo, themes, sort }],
+    queryKey: ['songs', 'search', { keyword, page, tempo, themes, sort, dir, keys }],
     queryFn: ({ signal }) =>
       apiRequest('/api/songs/search', songSearchResponseSchema, {
         query: {
@@ -90,10 +100,18 @@ export const songSearchQueryOptions = ({
           limit: SONGS_PAGE_SIZE,
           tempo,
           themes,
-          sortBy: sort === 'code' ? 'code' : undefined,
+          keys: keyFilterSpellings(keys),
+          sortBy: sort === 'title' ? undefined : sort,
+          order: dir === 'desc' ? 'desc' : undefined,
         },
         signal,
       }),
+  });
+
+export const songKeysQueryOptions = () =>
+  queryOptions({
+    queryKey: ['songs', 'keys'],
+    queryFn: ({ signal }) => apiRequest('/api/songs/keys', z.array(z.string()), { signal }),
   });
 
 export const RECENT_SONGS_COUNT = 3;

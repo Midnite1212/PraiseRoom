@@ -93,6 +93,8 @@
       "show_one": "顯示 {{count}} 首詩歌",
       "show_other": "顯示 {{count}} 首詩歌",
       "more": "更多",
+      "originalKey": "原調",
+      "keyChip": "{{key}} 調",
       "sortBy": "排序"
     },
     "tempo": {
@@ -105,8 +107,14 @@
     "tempoLabel": "節奏：{{tempo}}",
     "searchWeb": "包括網上結果",
     "searchTooLong": "搜尋內容請少於 100 個字元。",
+    "groups": {
+      "key": "{{key}} 調",
+      "noTempo": "未設定速度"
+    },
     "sortHint": {
       "title": "按名稱",
+      "key": "按調",
+      "tempo": "按速度",
       "code": "按編號"
     },
     "previewHint": "按一下預覽 · 連按兩下或按 Enter 開啟",

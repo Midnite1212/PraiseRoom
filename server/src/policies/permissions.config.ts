@@ -113,6 +113,10 @@ export const ROUTE_PERMISSIONS: Record<string, PermissionConfig> = {
     requiresAuth: false,
     description: 'Search songs',
   },
+  'GET /api/songs/keys': {
+    requiresAuth: false,
+    description: 'List the original keys used in the song library',
+  },
   'GET /api/songs/import/search': {
     requiresAuth: true,
     allowedAccessTypes: SONG_WRITERS,
