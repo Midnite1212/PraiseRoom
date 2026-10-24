@@ -10,6 +10,7 @@ const song = (
   fields: Partial<SongSummary> = {}
 ): SongSummary => ({
   _id: title,
+  urlKey: 'k3x9p2',
   title,
   artist: 'Artist',
   originalKey: 'G',

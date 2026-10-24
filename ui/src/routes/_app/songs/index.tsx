@@ -24,6 +24,7 @@ import {
   SORT_DIRECTIONS,
   songKeysQueryOptions,
   songSearchQueryOptions,
+  songSlug,
   type SongSort,
   TEMPO_LABEL_KEYS,
   TEMPO_OPTIONS,
@@ -247,11 +248,16 @@ function SongsPage() {
                   sort={sort}
                   dir={dir}
                   onSort={sortBy}
-                  onSelect={(songId) =>
-                    isRoomy
-                      ? setSearch({ song: songId })
-                      : void navigate({ to: '/songs/$songId', params: { songId } })
-                  }
+                  onSelect={(songId) => {
+                    const song = songs.find(({ _id }) => _id === songId);
+                    if (isRoomy) setSearch({ song: songId });
+                    else if (song) {
+                      void navigate({
+                        to: '/songs/$songSlug',
+                        params: { songSlug: songSlug(song) },
+                      });
+                    }
+                  }}
                 />
               ) : (
                 <SongRows

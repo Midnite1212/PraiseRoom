@@ -19,7 +19,7 @@ import {
 import { Field, FieldError, FieldLabel } from '@/components/ui/field';
 import type { Session } from '@/features/auth/session';
 
-import { changeFolderMembers, createFolder, FOLDER_RELATED_QUERY_KEYS } from './api';
+import { changeFolderMembers, createFolder, FOLDER_RELATED_QUERY_KEYS, folderSlug } from './api';
 
 type CreateFolderDialogProps = {
   session: Session;
@@ -56,7 +56,7 @@ export function CreateFolderDialog({ session, open, onOpenChange }: CreateFolder
         formApi.reset();
         onOpenChange(false);
         toast.success(t('folders.created'));
-        await navigate({ to: '/folders/$folderId', params: { folderId: folder._id } });
+        await navigate({ to: '/folders/$folderSlug', params: { folderSlug: folderSlug(folder) } });
       } catch {
         toast.error(t('folders.saveFailed'));
       }

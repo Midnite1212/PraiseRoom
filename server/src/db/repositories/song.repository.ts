@@ -69,6 +69,7 @@ const MAX_CAPO = 11;
 
 const toSongViewRecord = (row: SongRow): SongViewRecord => ({
   _id: row.id,
+  urlKey: row.urlKey,
   title: row.title,
   tempo: row.tempo,
   originalKey: row.originalKey,
@@ -220,6 +221,14 @@ export const songRepository = {
 
   async findLiveById(id: string): Promise<SongRecord | null> {
     const [row] = await getDb().select().from(songs).where(isLiveSong(id));
+    return row ? toSongRecord(row) : null;
+  },
+
+  async findLiveByUrlKey(urlKey: string): Promise<SongRecord | null> {
+    const [row] = await getDb()
+      .select()
+      .from(songs)
+      .where(and(eq(songs.urlKey, urlKey), eq(songs.isDeleted, false)));
     return row ? toSongRecord(row) : null;
   },
 

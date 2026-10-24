@@ -15,7 +15,7 @@ import type { Session } from '@/features/auth/session';
 import { dateLocale } from '@/lib/date-locale';
 import { cn } from '@/lib/utils';
 
-import type { SetlistSummary } from './api';
+import { type SetlistSummary, setlistSlug } from './api';
 import { formatSetlistDate, toDateInputValue } from './format-date';
 import { SetlistActionMenu } from './setlist-action-menu';
 import { dayLinkHandlers, useSetlistList } from './setlist-list-context';
@@ -35,7 +35,7 @@ const useRowPick = (setlist: SetlistSummary) => {
   const isSelected = list.selectedId === setlist._id;
   const isLit = day !== '' && list.litDay === day;
   const open = () =>
-    void navigate({ to: '/setlists/$setlistId', params: { setlistId: setlist._id } });
+    void navigate({ to: '/setlists/$setlistSlug', params: { setlistSlug: setlistSlug(setlist) } });
 
   return {
     rowClassName: cn((isSelected || isLit) && 'liquid-on hover:liquid-on'),
@@ -110,8 +110,8 @@ export function SetlistRow({
       <DateBlock date={setlist.date} status={status} />
       <span className="min-w-0">
         <Link
-          to="/setlists/$setlistId"
-          params={{ setlistId: setlist._id }}
+          to="/setlists/$setlistSlug"
+          params={{ setlistSlug: setlistSlug(setlist) }}
           {...linkProps}
           aria-label={
             setlist.date
@@ -163,8 +163,8 @@ export function PlayedSetlistRow({ setlist, actions }: SetlistRowProps) {
     >
       <span className="text-ink-3 font-mono text-[0.8125rem]">{dateLabel}</span>
       <Link
-        to="/setlists/$setlistId"
-        params={{ setlistId: setlist._id }}
+        to="/setlists/$setlistSlug"
+        params={{ setlistSlug: setlistSlug(setlist) }}
         {...linkProps}
         aria-label={fullDate ? `${setlist.name}, ${fullDate}` : setlist.name}
         className="text-ink-2 truncate font-medium outline-none after:absolute after:inset-0 after:rounded-2xl focus-visible:after:shadow-[inset_2px_0_0_var(--chord)]"
@@ -194,7 +194,10 @@ export function ManagedSetlistRow({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const actions = useSetlistActions(props.session, setlist);
   const edit = () =>
-    void navigate({ to: '/setlists/$setlistId/edit', params: { setlistId: setlist._id } });
+    void navigate({
+      to: '/setlists/$setlistSlug/edit',
+      params: { setlistSlug: setlistSlug(setlist) },
+    });
 
   const swipeActions: SwipeAction[] = [
     ...(actions.canEdit

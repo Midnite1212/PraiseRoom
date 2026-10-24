@@ -10,6 +10,7 @@ import {
   type SetlistSummary,
   setlistQueryOptions,
   setlistsQueryOptions,
+  setlistSlug,
 } from '@/features/setlists/api';
 import { useCachedQueryData } from '@/hooks/use-cached-query-data';
 import { dateLocale } from '@/lib/date-locale';
@@ -29,10 +30,10 @@ function NextUpCard({ setlist, now }: { setlist: SetlistSummary; now: number }) 
   const { t, i18n } = useTranslation();
   const queryClient = useQueryClient();
   const [rail] = useRail();
-  const detail = useCachedQueryData(setlistQueryOptions(setlist._id).queryKey);
+  const detail = useCachedQueryData(setlistQueryOptions(setlist.urlKey).queryKey);
   useEffect(() => {
-    void queryClient.prefetchQuery(setlistQueryOptions(setlist._id));
-  }, [queryClient, setlist._id]);
+    void queryClient.prefetchQuery(setlistQueryOptions(setlist.urlKey));
+  }, [queryClient, setlist.urlKey]);
   const when = setlist.date ? whenLabel(setlist.date, now, i18n.language) : '';
   const day = setlist.date
     ? new Intl.DateTimeFormat(dateLocale(i18n.language), {
@@ -44,8 +45,8 @@ function NextUpCard({ setlist, now }: { setlist: SetlistSummary; now: number }) 
 
   return (
     <Link
-      to="/setlists/$setlistId"
-      params={{ setlistId: setlist._id }}
+      to="/setlists/$setlistSlug"
+      params={{ setlistSlug: setlistSlug(setlist) }}
       aria-label={t('nav.nextUpLabel', { name: setlist.name, day })}
       title={rail === 'folded' ? setlist.name : undefined}
       className="glass grid gap-1 p-3 text-left [--glass-r:24px] group-data-[rail=folded]/rail:justify-items-center group-data-[rail=folded]/rail:p-2"

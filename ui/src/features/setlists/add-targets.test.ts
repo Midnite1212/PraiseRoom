@@ -21,6 +21,7 @@ const session: Session = {
 };
 
 const setlist = (overrides: Partial<SetlistSummary> & { _id: string }): SetlistSummary => ({
+  urlKey: 'k3x9p2',
   name: overrides._id,
   date: null,
   createdBy: 'user-1',

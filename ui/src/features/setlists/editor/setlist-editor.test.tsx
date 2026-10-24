@@ -54,6 +54,7 @@ const updates: unknown[] = [];
 
 const LIBRARY_SONG = {
   _id: 'c',
+  urlKey: 'k3x9p2',
   title: 'Song c',
   artist: 'Y',
   originalKey: 'A',
@@ -72,7 +73,7 @@ const stubApi = (updateStatus = 200, library: unknown[] = []) =>
         updates.push(typeof init?.body === 'string' ? JSON.parse(init.body) : null);
         return Promise.resolve(
           updateStatus === 200
-            ? Response.json({ _id: 's1' })
+            ? Response.json({ _id: 's1', urlKey: 'a7m4qd', name: 'Sunday set' })
             : new Response('', { status: updateStatus })
         );
       }

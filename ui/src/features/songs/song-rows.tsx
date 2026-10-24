@@ -7,7 +7,7 @@ import { KeyTile } from '@/components/primitives/key-chip';
 import { TempoMeter } from '@/components/primitives/tempo-meter';
 import { cn } from '@/lib/utils';
 
-import type { SongSort, SongSummary } from './api';
+import { type SongSort, songSlug, type SongSummary } from './api';
 import { LetterScrubber } from './letter-scrubber';
 import { groupSongs } from './song-groups';
 
@@ -16,8 +16,8 @@ function SongRow({ song, inNextSet }: { song: SongSummary; inNextSet: boolean })
   return (
     <li>
       <Link
-        to="/songs/$songId"
-        params={{ songId: song._id }}
+        to="/songs/$songSlug"
+        params={{ songSlug: songSlug(song) }}
         className={listRowClasses('min-h-14 grid-cols-[2.75rem_minmax(0,1fr)_auto]')}
       >
         <KeyTile

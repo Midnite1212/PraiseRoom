@@ -7,29 +7,34 @@ import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { sessionQueryOptions } from '@/features/auth/session';
-import { setlistQueryOptions } from '@/features/setlists/api';
+import { setlistQueryOptions, setlistSlug } from '@/features/setlists/api';
 import { MusicianView } from '@/features/setlists/musician-view/musician-view';
-import { ensureOrNotFound } from '@/lib/ensure-or-not-found';
+import { ensureFromSlug } from '@/lib/ensure-or-not-found';
 
 const publicSearchSchema = z.object({
   song: z.number().int().min(1).default(1).catch(1),
 });
 
-// The path matches the `publicLink` the server stores on every setlist, so shared links keep working.
-export const Route = createFileRoute('/setlist/view/$setlistId')({
+export const Route = createFileRoute('/setlist/view/$setlistSlug')({
   validateSearch: publicSearchSchema,
-  loader: ({ context, params }) =>
-    ensureOrNotFound(context.queryClient, setlistQueryOptions(params.setlistId)),
+  loader: async ({ context, params }) => {
+    const { urlKey } = await ensureFromSlug(
+      context.queryClient,
+      params.setlistSlug,
+      setlistQueryOptions
+    );
+    return { urlKey };
+  },
   pendingComponent: () => <Skeleton className="mx-auto mt-24 h-[70svh] max-w-6xl" />,
   component: PublicSetlistPage,
 });
 
 function PublicSetlistPage() {
   const { t } = useTranslation();
-  const { setlistId } = Route.useParams();
+  const { urlKey } = Route.useLoaderData();
   const { song } = Route.useSearch();
   const navigate = Route.useNavigate();
-  const { data: setlist } = useSuspenseQuery(setlistQueryOptions(setlistId));
+  const { data: setlist } = useSuspenseQuery(setlistQueryOptions(urlKey));
   const { data: session } = useQuery(sessionQueryOptions);
 
   return (
@@ -43,8 +48,8 @@ function PublicSetlistPage() {
         <Button asChild variant="glass" size="icon-lg" className="wide:w-auto wide:px-4 text-sm">
           {session ? (
             <Link
-              to="/setlists/$setlistId"
-              params={{ setlistId }}
+              to="/setlists/$setlistSlug"
+              params={{ setlistSlug: setlistSlug(setlist) }}
               search={{ song }}
               aria-label={t('reader.openInApp')}
             >
@@ -54,7 +59,7 @@ function PublicSetlistPage() {
           ) : (
             <Link
               to="/login"
-              search={{ redirect: `/setlist/view/${setlistId}` }}
+              search={{ redirect: `/setlist/view/${encodeURIComponent(setlistSlug(setlist))}` }}
               aria-label={t('auth.signIn.submit')}
             >
               <Login className="wide:hidden" />

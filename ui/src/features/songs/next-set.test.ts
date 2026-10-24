@@ -6,6 +6,7 @@ import { nextSetSongIds } from './next-set';
 
 const setlist = (id: string, date: string | null, songIds: string[]): SetlistSummary => ({
   _id: id,
+  urlKey: 'k3x9p2',
   name: id,
   date,
   groupIds: [],

@@ -47,10 +47,18 @@ const timestamps = {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 };
 
+// generate_url_key() is created in migration 0007_url_keys.sql.
+const urlKey = (table: string) =>
+  text('url_key')
+    .notNull()
+    .default(sql`generate_url_key()`)
+    .unique(`${table}_url_key_unique`);
+
 export const songs = pgTable(
   'songs',
   {
     id: text('id').primaryKey(),
+    urlKey: urlKey('songs'),
     title: text('title').notNull(),
     tempo: text('tempo')
       .array()
@@ -95,6 +103,7 @@ export const setlists = pgTable(
   'setlists',
   {
     id: text('id').primaryKey(),
+    urlKey: urlKey('setlists'),
     name: text('name').notNull(),
     date: timestamp('date', { withTimezone: true }),
     createdBy: text('created_by'),
@@ -160,6 +169,7 @@ export const groups = pgTable(
   'groups',
   {
     id: text('id').primaryKey(),
+    urlKey: urlKey('groups'),
     groupName: text('group_name').notNull(),
     createdBy: text('created_by'),
     lastUpdatedBy: text('last_updated_by'),

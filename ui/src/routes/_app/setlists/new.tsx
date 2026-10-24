@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 
 import { Skeleton } from '@/components/ui/skeleton';
-import { createSetlist } from '@/features/setlists/api';
+import { createSetlist, setlistSlug } from '@/features/setlists/api';
 import { NEW_SETLIST_INPUT } from '@/features/setlists/editor/setlist-draft';
 import i18n from '@/i18n';
 
@@ -12,8 +12,8 @@ export const Route = createFileRoute('/_app/setlists/new')({
     const saved = await createSetlist({ ...NEW_SETLIST_INPUT, name: i18n.t('editor.newTitle') });
     await context.queryClient.invalidateQueries({ queryKey: ['setlists'], refetchType: 'none' });
     throw redirect({
-      to: '/setlists/$setlistId/edit',
-      params: { setlistId: saved._id },
+      to: '/setlists/$setlistSlug/edit',
+      params: { setlistSlug: setlistSlug(saved) },
       replace: true,
     });
   },

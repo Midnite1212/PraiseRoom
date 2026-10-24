@@ -8,6 +8,7 @@ import { SongRows } from './song-rows';
 
 const song = (id: string, title: string): SongSummary => ({
   _id: id,
+  urlKey: 'k3x9p2',
   title,
   artist: 'Test Artist',
   originalKey: 'G',

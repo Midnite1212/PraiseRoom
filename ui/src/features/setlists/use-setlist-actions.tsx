@@ -44,7 +44,7 @@ export const useSetlistActions = (session: Session, setlist: SetlistSummary) => 
 
   const copyLink = async () => {
     try {
-      await navigator.clipboard.writeText(publicSetlistUrl(setlist._id));
+      await navigator.clipboard.writeText(publicSetlistUrl(setlist));
       toast.success(t('reader.linkCopied'));
     } catch {
       toast.error(t('reader.linkCopyFailed'));
@@ -63,7 +63,7 @@ export const useSetlistActions = (session: Session, setlist: SetlistSummary) => 
           <AlertDialogAction
             variant="destructive-solid"
             disabled={remove.isPending}
-            onClick={() => remove.mutate(setlist._id)}
+            onClick={() => remove.mutate(setlist)}
           >
             {t('editor.delete')}
           </AlertDialogAction>

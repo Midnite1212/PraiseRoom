@@ -4,16 +4,16 @@ import { toast } from 'sonner';
 
 import { goneToast } from '@/components/primitives/gone-toast';
 
-import { deleteSetlist } from './api';
+import { deleteSetlist, type SetlistSummary } from './api';
 
 // Deletes, drops the cached setlist, refreshes lists, and toasts both outcomes.
 export const useDeleteSetlist = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: deleteSetlist,
-    onSuccess: async (_, setlistId) => {
-      queryClient.removeQueries({ queryKey: ['setlists', 'detail', setlistId] });
+    mutationFn: (setlist: Pick<SetlistSummary, '_id' | 'urlKey'>) => deleteSetlist(setlist._id),
+    onSuccess: async (_, { urlKey }) => {
+      queryClient.removeQueries({ queryKey: ['setlists', 'detail', urlKey] });
       await queryClient.invalidateQueries({ queryKey: ['setlists'] });
       goneToast(t('editor.deleted'));
     },

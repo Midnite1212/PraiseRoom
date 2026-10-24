@@ -10,6 +10,7 @@ import {
   setlistRepository,
 } from '../db/repositories/setlist.repository';
 import { MUSIC_KEYS } from '../db/schema';
+import { generateUrlKey } from '../db/urlKey';
 import { AuthenticatedRequest } from '../policies/permissionMiddleware';
 import {
   CallerOwnership,
@@ -22,7 +23,7 @@ import {
 } from '../utils/authorization';
 import { pick } from '../utils/pick';
 import { sendError, sendResponse } from '../utils/response';
-import { isObjectIdString, toObjectIdList } from '../utils/validation';
+import { isObjectIdString, isUrlKeyString, toObjectIdList } from '../utils/validation';
 import { TokenUser } from '../utils/verify-jwt';
 
 type SongKeyInput = {
@@ -121,6 +122,7 @@ const createSetlist: RequestHandler = async (
   }
 
   const _id = generateObjectId();
+  const urlKey = generateUrlKey();
   const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
 
   try {
@@ -142,8 +144,9 @@ const createSetlist: RequestHandler = async (
     const setlist = await setlistRepository.create({
       ...toCreate,
       _id,
+      urlKey,
       createdBy: req.user.id,
-      publicLink: `${baseUrl}/setlist/view/${_id}`,
+      publicLink: `${baseUrl}/setlist/view/${urlKey}`,
     });
     sendResponse(res, 200, setlist);
   } catch (error: unknown) {
@@ -167,14 +170,16 @@ const duplicateSetlist: RequestHandler = async (
   }
 
   const _id = generateObjectId();
+  const urlKey = generateUrlKey();
   const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
 
   try {
     const setlist = await setlistRepository.duplicateLive(id, {
       ...pick(req.body, ['name']),
       _id,
+      urlKey,
       createdBy: req.user.id,
-      publicLink: `${baseUrl}/setlist/view/${_id}`,
+      publicLink: `${baseUrl}/setlist/view/${urlKey}`,
     });
     if (setlist) {
       sendResponse(res, 200, setlist);
@@ -190,10 +195,24 @@ const getSetlist: RequestHandler = async (
   req: AuthenticatedRequest,
   res: Response
 ): Promise<void> => {
-  const { id } = req.query;
+  const { id, key } = req.query;
   const view = req.user ? 'full' : 'public';
 
   try {
+    if (key !== undefined) {
+      if (!isUrlKeyString(key)) {
+        sendResponse(res, 400, 'Invalid setlist key');
+        return;
+      }
+      const setlist = await setlistRepository.findLiveByUrlKey(key, view);
+      if (setlist) {
+        sendResponse(res, 200, setlist);
+      } else {
+        sendResponse(res, 404, 'Setlist not found');
+      }
+      return;
+    }
+
     if (Array.isArray(id)) {
       if (!id.every(isObjectIdString)) {
         sendResponse(res, 400, 'Invalid setlist id');

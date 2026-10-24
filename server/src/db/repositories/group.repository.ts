@@ -35,6 +35,7 @@ const isLiveGroup = (id: string): SQL | undefined =>
 
 const toGroupAccess = (row: GroupRow): GroupAccess => ({
   _id: row.id,
+  urlKey: row.urlKey,
   ...presentFields({ createdBy: row.createdBy }),
   groupName: row.groupName,
   createdAt: row.createdAt,
@@ -61,6 +62,7 @@ const assembleRecords = async (executor: Executor, rows: GroupRow[]): Promise<Gr
   );
   return rows.map((row) => ({
     _id: row.id,
+    urlKey: row.urlKey,
     groupName: row.groupName,
     setlistIds: setlistIdsByGroup.get(row.id) ?? [],
     ...presentFields({ createdBy: row.createdBy, lastUpdatedBy: row.lastUpdatedBy }),
@@ -120,6 +122,16 @@ export const groupRepository = {
   async findLiveById(id: string): Promise<GroupRecord | null> {
     const db = getDb();
     const rows = await db.select().from(groups).where(isLiveGroup(id));
+    const [record] = await assembleRecords(db, rows);
+    return record ?? null;
+  },
+
+  async findLiveByUrlKey(urlKey: string): Promise<GroupRecord | null> {
+    const db = getDb();
+    const rows = await db
+      .select()
+      .from(groups)
+      .where(and(eq(groups.urlKey, urlKey), eq(groups.isDeleted, false)));
     const [record] = await assembleRecords(db, rows);
     return record ?? null;
   },

@@ -5,6 +5,7 @@ import { filterSetlists, groupSetlists } from './list';
 
 const setlist = (name: string, date: string | null, createdBy = 'me'): SetlistSummary => ({
   _id: name,
+  urlKey: 'k3x9p2',
   name,
   date,
   publicLink: null,

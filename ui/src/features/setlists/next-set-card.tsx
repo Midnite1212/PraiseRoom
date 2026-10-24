@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import type { Session } from '@/features/auth/session';
 import { dateLocale } from '@/lib/date-locale';
 
-import type { SetlistSummary } from './api';
+import { type SetlistSummary, setlistSlug } from './api';
 import { useSetlistActions } from './use-setlist-actions';
 
 // The next setlist, as a short glass card that leads the phone list: the whole card opens it and
@@ -45,8 +45,8 @@ export function NextSetCard({
         <div className="min-w-0">
           <h2 id="next-set" className="text-card-title m-0 font-bold tracking-[-0.02em]">
             <Link
-              to="/setlists/$setlistId"
-              params={{ setlistId: setlist._id }}
+              to="/setlists/$setlistSlug"
+              params={{ setlistSlug: setlistSlug(setlist) }}
               className="block truncate outline-none after:absolute after:inset-0 after:z-[1] after:rounded-[28px]"
             >
               {setlist.name}

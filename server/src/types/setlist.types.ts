@@ -12,6 +12,7 @@ type SetlistSongNote = {
 };
 
 type SetlistRecord = RecordFields & {
+  urlKey: string;
   name: string;
   date: Date | null;
   createdBy?: string;

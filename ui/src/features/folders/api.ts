@@ -1,8 +1,9 @@
 import { queryOptions } from '@tanstack/react-query';
 import { z } from 'zod';
 
-import { folderSchema } from '@/features/setlists/api';
+import { type Folder, folderSchema } from '@/features/setlists/api';
 import { apiRequest } from '@/lib/api-client';
+import { withUrlKey } from '@/lib/slug';
 
 const personSchema = z.object({
   _id: z.string(),
@@ -13,12 +14,15 @@ const personSchema = z.object({
 
 export type Person = z.infer<typeof personSchema>;
 
-export const folderQueryOptions = (folderId: string) =>
+export const folderQueryOptions = (urlKey: string) =>
   queryOptions({
-    queryKey: ['folders', 'detail', folderId],
+    queryKey: ['folders', 'detail', urlKey],
     queryFn: ({ signal }) =>
-      apiRequest('/api/groups/get', folderSchema, { query: { id: folderId }, signal }),
+      apiRequest('/api/groups/get', folderSchema, { query: { key: urlKey }, signal }),
   });
+
+export const folderSlug = (folder: Pick<Folder, 'groupName' | 'urlKey'>): string =>
+  withUrlKey(folder.groupName, folder.urlKey);
 
 // Everyone with an ownership record; members of a folder are the people whose `groupIds` list it.
 export const peopleQueryOptions = () =>
@@ -31,7 +35,7 @@ export const peopleQueryOptions = () =>
 export const membersOf = (people: readonly Person[], folderId: string): Person[] =>
   people.filter((person) => person.groupIds.some(({ id }) => id === folderId));
 
-const savedFolderSchema = z.object({ _id: z.string() });
+const savedFolderSchema = z.object({ _id: z.string(), urlKey: z.string(), groupName: z.string() });
 
 export const createFolder = (groupName: string) =>
   apiRequest('/api/groups/create', savedFolderSchema, { method: 'POST', body: { groupName } });
@@ -79,10 +83,14 @@ export const inviteUrl = (token: string, origin = window.location.origin): strin
   `${origin}/join/${encodeURIComponent(token)}`;
 
 export const joinFolder = (token: string) =>
-  apiRequest('/api/groups/join', z.object({ groupId: z.string() }), {
-    method: 'PUT',
-    body: { token },
-  });
+  apiRequest(
+    '/api/groups/join',
+    z.object({ groupId: z.string(), urlKey: z.string(), groupName: z.string() }),
+    {
+      method: 'PUT',
+      body: { token },
+    }
+  );
 
 // Folder writes change who can see which setlists, and the caller's own membership lives in the session.
 export const FOLDER_RELATED_QUERY_KEYS = [

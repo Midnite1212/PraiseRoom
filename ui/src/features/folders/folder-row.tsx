@@ -8,7 +8,7 @@ import type { Folder } from '@/features/setlists/api';
 import { dateLocale } from '@/lib/date-locale';
 import { cn } from '@/lib/utils';
 
-import { membersOf, type Person } from './api';
+import { folderSlug, membersOf, type Person } from './api';
 import { FolderSleeve } from './folder-sleeve';
 import { useFolderCover } from './use-folder-cover';
 
@@ -74,7 +74,11 @@ export function FolderRow({ session, folder, people, now, pane }: FolderRowProps
       {content}
     </Link>
   ) : (
-    <Link to="/folders/$folderId" params={{ folderId: folder._id }} className={className}>
+    <Link
+      to="/folders/$folderSlug"
+      params={{ folderSlug: folderSlug(folder) }}
+      className={className}
+    >
       {content}
     </Link>
   );

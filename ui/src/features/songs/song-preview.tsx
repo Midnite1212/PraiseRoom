@@ -11,7 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import type { Session } from '@/features/auth/session';
 import { AddToSetlist } from '@/features/setlists/add-to-setlist';
 
-import { songQueryOptions, type SongSummary, TEMPO_LABEL_KEYS } from './api';
+import { songQueryOptions, songSlug, type SongSummary, TEMPO_LABEL_KEYS } from './api';
 import { lyricsPeek } from './lyrics-peek';
 
 const TEMPO_KEY_BY_LEVEL = [
@@ -30,8 +30,8 @@ function Fact({ label, children }: { label: string; children: React.ReactNode })
   );
 }
 
-function LyricsPeek({ songId }: { songId: string }) {
-  const { data, isPending } = useQuery(songQueryOptions(songId));
+function LyricsPeek({ urlKey }: { urlKey: string }) {
+  const { data, isPending } = useQuery(songQueryOptions(urlKey));
   if (isPending) return <Skeleton className="mt-6 h-28 w-full rounded-2xl" />;
   const peek = data ? lyricsPeek(data.chordLyrics) : null;
   if (!peek) return null;
@@ -90,7 +90,7 @@ export function SongPreview({
       <p className="text-ink-2 mt-1">{song.artist}</p>
       <div className="mt-4 mb-6 flex flex-wrap gap-2">
         <Button asChild>
-          <Link to="/songs/$songId" params={{ songId: song._id }}>
+          <Link to="/songs/$songSlug" params={{ songSlug: songSlug(song) }}>
             <Play />
             {t('songs.preview.open')}
           </Link>
@@ -107,7 +107,7 @@ export function SongPreview({
         />
         {canEdit ? (
           <Button asChild variant="ghost">
-            <Link to="/songs/$songId/edit" params={{ songId: song._id }}>
+            <Link to="/songs/$songSlug/edit" params={{ songSlug: songSlug(song) }}>
               <PenSquare />
               {t('songs.preview.edit')}
             </Link>
@@ -140,7 +140,7 @@ export function SongPreview({
           ))}
         </div>
       ) : null}
-      <LyricsPeek key={song._id} songId={song._id} />
+      <LyricsPeek key={song._id} urlKey={song.urlKey} />
     </aside>
   );
 }

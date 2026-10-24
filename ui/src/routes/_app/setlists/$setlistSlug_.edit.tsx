@@ -6,29 +6,29 @@ import { setlistQueryOptions } from '@/features/setlists/api';
 import { draftFromSetlist } from '@/features/setlists/editor/setlist-draft';
 import { SetlistEditor } from '@/features/setlists/editor/setlist-editor';
 import { canEditSetlist } from '@/features/setlists/permissions';
-import { ensureOrNotFound } from '@/lib/ensure-or-not-found';
+import { ensureFromSlug } from '@/lib/ensure-or-not-found';
 
-export const Route = createFileRoute('/_app/setlists/$setlistId_/edit')({
+export const Route = createFileRoute('/_app/setlists/$setlistSlug_/edit')({
   loader: async ({ context, params }) => {
-    const setlist = await ensureOrNotFound(
+    const { urlKey, record: setlist } = await ensureFromSlug(
       context.queryClient,
-      setlistQueryOptions(params.setlistId),
+      params.setlistSlug,
+      setlistQueryOptions,
       { fresh: true }
     );
     if (!canEditSetlist(context.session, setlist)) {
-      throw redirect({ to: '/setlists/$setlistId', params: { setlistId: params.setlistId } });
+      throw redirect({ to: '/setlists/$setlistSlug', params: { setlistSlug: params.setlistSlug } });
     }
-    return { now: Date.now() };
+    return { urlKey, now: Date.now() };
   },
   pendingComponent: () => <Skeleton className="mx-auto h-[70svh] max-w-6xl" />,
   component: EditSetlistPage,
 });
 
 function EditSetlistPage() {
-  const { setlistId } = Route.useParams();
   const { session } = Route.useRouteContext();
-  const { now } = Route.useLoaderData();
-  const { data: setlist } = useSuspenseQuery(setlistQueryOptions(setlistId));
+  const { urlKey, now } = Route.useLoaderData();
+  const { data: setlist } = useSuspenseQuery(setlistQueryOptions(urlKey));
 
   return (
     <SetlistEditor

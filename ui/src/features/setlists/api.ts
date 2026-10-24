@@ -3,6 +3,9 @@ import { z } from 'zod';
 
 import { readerSongSchema } from '@/features/reader/song';
 import { apiRequest } from '@/lib/api-client';
+import { withUrlKey } from '@/lib/slug';
+
+import { toDateInputValue } from './format-date';
 
 const setlistSongSchema = readerSongSchema;
 
@@ -16,6 +19,7 @@ export const SONG_NOTE_MAX_LENGTH = 80;
 
 export const setlistSchema = z.object({
   _id: z.string(),
+  urlKey: z.string(),
   name: z.string(),
   date: z.string().nullish(),
   publicLink: z.string().nullish(),
@@ -30,6 +34,7 @@ export type Setlist = z.infer<typeof setlistSchema>;
 
 const setlistSummarySchema = z.object({
   _id: z.string(),
+  urlKey: z.string(),
   name: z.string(),
   date: z.string().nullish(),
   publicLink: z.string().nullish(),
@@ -47,12 +52,15 @@ export const setlistsQueryOptions = () =>
       apiRequest('/api/setlists/get', z.array(setlistSummarySchema), { signal }),
   });
 
-export const setlistQueryOptions = (setlistId: string) =>
+export const setlistQueryOptions = (urlKey: string) =>
   queryOptions({
-    queryKey: ['setlists', 'detail', setlistId],
+    queryKey: ['setlists', 'detail', urlKey],
     queryFn: ({ signal }) =>
-      apiRequest('/api/setlists/get', setlistSchema, { query: { id: setlistId }, signal }),
+      apiRequest('/api/setlists/get', setlistSchema, { query: { key: urlKey }, signal }),
   });
+
+export const setlistSlug = (setlist: Pick<Setlist, 'name' | 'date' | 'urlKey'>): string =>
+  withUrlKey(`${setlist.name} ${toDateInputValue(setlist.date)}`, setlist.urlKey);
 
 export const keyForSong = (setlist: Setlist, song: SetlistSong): string =>
   setlist.songKeys.find(({ songId }) => songId === song._id)?.key ?? song.originalKey;
@@ -61,11 +69,14 @@ export const noteForSong = (setlist: Pick<Setlist, 'songNotes'>, songId: string)
   setlist.songNotes.find((entry) => entry.songId === songId)?.note ?? '';
 
 // Built from the current origin rather than the stored publicLink, which keeps the domain it was created on.
-export const publicSetlistUrl = (setlistId: string, origin = window.location.origin): string =>
-  new URL(`/setlist/view/${setlistId}`, origin).href;
+export const publicSetlistUrl = (
+  setlist: Pick<Setlist, 'name' | 'date' | 'urlKey'>,
+  origin = window.location.origin
+): string => new URL(`/setlist/view/${setlistSlug(setlist)}`, origin).href;
 
 export const folderSchema = z.object({
   _id: z.string(),
+  urlKey: z.string(),
   groupName: z.string(),
   setlistIds: z.array(z.string()),
   createdBy: z.string().nullish(),
@@ -90,7 +101,12 @@ export type SetlistInput = {
   groupIds: string[];
 };
 
-const savedSetlistSchema = z.object({ _id: z.string() });
+const savedSetlistSchema = z.object({
+  _id: z.string(),
+  urlKey: z.string(),
+  name: z.string(),
+  date: z.string().nullish(),
+});
 
 export const createSetlist = (input: SetlistInput) =>
   apiRequest('/api/setlists/create', savedSetlistSchema, { method: 'POST', body: input });
