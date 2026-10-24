@@ -24,7 +24,7 @@ function SettingsSection({
   return (
     <section aria-labelledby={id} className="flex flex-col gap-2.5">
       <div className="px-1">
-        <h2 id={id} className="text-[0.9375rem] font-semibold">
+        <h2 id={id} className="text-ui font-semibold">
           {title}
         </h2>
         <p className="text-ink-2 text-[0.8125rem]">{description}</p>

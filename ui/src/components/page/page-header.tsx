@@ -2,8 +2,7 @@ import type { ReactNode } from 'react';
 
 import { cn } from '@/lib/utils';
 
-export const PAGE_TITLE_CLASSES =
-  'm-0 text-[clamp(1.75rem,1.2rem+2.2vw,2.5rem)] leading-[1.08] font-bold tracking-[-0.03em] text-balance';
+export const PAGE_TITLE_CLASSES = 'm-0 text-page-title font-bold tracking-[-0.03em] text-balance';
 
 // The big page title (it scrolls away under the phone top bar), an optional line under it (Home's
 // date), and the page's labelled actions on wide screens; phones get the floating action button instead.

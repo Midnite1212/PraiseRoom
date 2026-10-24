@@ -82,9 +82,7 @@ export function SongPreview({
       >
         <Close />
       </Button>
-      <h2 className="m-0 pr-10 text-2xl leading-[1.15] font-bold tracking-[-0.02em]">
-        {song.title}
-      </h2>
+      <h2 className="text-card-title m-0 pr-10 font-bold tracking-[-0.02em]">{song.title}</h2>
       <p className="text-ink-2 mt-1">{song.artist}</p>
       <div className="mt-4 mb-6 flex flex-wrap gap-2">
         <Button asChild>

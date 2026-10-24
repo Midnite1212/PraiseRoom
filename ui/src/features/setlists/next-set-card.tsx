@@ -43,7 +43,7 @@ export function NextSetCard({
       <div className="grid grid-cols-[52px_minmax(0,1fr)_auto] items-center gap-3.5">
         <DateBlock date={setlist.date} status="up" />
         <div className="min-w-0">
-          <h2 id="next-set" className="m-0 text-[1.375rem] font-bold tracking-[-0.02em]">
+          <h2 id="next-set" className="text-card-title m-0 font-bold tracking-[-0.02em]">
             <Link
               to="/setlists/$setlistId"
               params={{ setlistId: setlist._id }}

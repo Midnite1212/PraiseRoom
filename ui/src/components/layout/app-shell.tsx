@@ -113,7 +113,7 @@ function PageChrome({
                 activeOptions={{ exact: to === '/' }}
                 aria-label={t(labelKey)}
                 title={folded ? t(labelKey) : undefined}
-                className="text-ink-2 hover:bg-fill-hover hover:text-ink data-[status=active]:bg-fill-on data-[status=active]:text-ink [&_svg]:size-icon flex h-11 items-center gap-3 rounded-2xl px-3 font-semibold transition-colors group-data-[rail=folded]/rail:justify-center group-data-[rail=folded]/rail:gap-0 group-data-[rail=folded]/rail:p-0 [&_svg]:flex-none"
+                className="text-ink-2 hover:bg-fill-hover hover:text-ink data-[status=active]:bg-fill-on data-[status=active]:text-ink [&_svg]:size-icon text-ui flex h-11 items-center gap-3 rounded-2xl px-3 font-semibold transition-colors group-data-[rail=folded]/rail:justify-center group-data-[rail=folded]/rail:gap-0 group-data-[rail=folded]/rail:p-0 [&_svg]:flex-none"
               >
                 <Icon />
                 <span className="group-data-[rail=folded]/rail:hidden">{t(labelKey)}</span>

@@ -107,9 +107,11 @@ export function FolderDetail({ folderId, session, now, inPane = false }: FolderD
           ) : (
             <div className={cn(inPane && 'pr-10')}>
               {inPane ? (
-                <h2 className={cn(FOLDER_NAME_CLASSES, 'inline text-2xl')}>{folder.groupName}</h2>
+                <h2 className={cn(FOLDER_NAME_CLASSES, 'text-pane-title inline')}>
+                  {folder.groupName}
+                </h2>
               ) : (
-                <h1 data-page-title className={cn(FOLDER_NAME_CLASSES, 'inline text-[1.75rem]')}>
+                <h1 data-page-title className={cn(FOLDER_NAME_CLASSES, 'text-page-title inline')}>
                   {folder.groupName}
                 </h1>
               )}
@@ -177,7 +179,7 @@ export function FolderDetail({ folderId, session, now, inPane = false }: FolderD
               title={t('folders.leaveFolder')}
               description={t('folders.leaveHint')}
               action={
-                <Button variant="exit" className="h-9 pr-4 pl-3 text-[0.9375rem]" onClick={leave}>
+                <Button variant="exit" size="compact" onClick={leave}>
                   <Logout />
                   {t('folders.leave')}
                 </Button>
@@ -189,11 +191,7 @@ export function FolderDetail({ folderId, session, now, inPane = false }: FolderD
               title={t('folders.delete')}
               description={t('folders.deleteHint', { count: members.length })}
               action={
-                <Button
-                  variant="exit"
-                  className="h-9 pr-4 pl-3 text-[0.9375rem]"
-                  onClick={() => setSheet('delete')}
-                >
+                <Button variant="exit" size="compact" onClick={() => setSheet('delete')}>
                   <Trash />
                   {t('folders.deleteAction')}
                 </Button>
@@ -247,7 +245,7 @@ function ExitRow({
   return (
     <div className="flex items-center justify-between gap-4 px-1 py-4">
       <div className="min-w-0">
-        <h3 className="m-0 text-[0.9375rem] font-semibold">{title}</h3>
+        <h3 className="text-ui m-0 font-semibold">{title}</h3>
         <p className="text-ink-2 mt-0.5 text-[0.8125rem]">{description}</p>
       </div>
       {action}
@@ -313,7 +311,7 @@ function RenameFolderForm({ folder, onDone }: { folder: Folder; onDone: () => vo
             onKeyDown={(event) => {
               if (event.key === 'Escape') onDone();
             }}
-            className="border-hairline bg-fill-hover aria-invalid:border-destructive -ml-[9px] w-full min-w-0 rounded-xl border px-2 py-0.5 text-[1.75rem] font-bold tracking-[-0.03em] outline-none"
+            className="border-hairline bg-fill-hover aria-invalid:border-destructive text-page-title -ml-[9px] w-full min-w-0 rounded-xl border px-2 py-0.5 font-bold tracking-[-0.03em] outline-none"
           />
         )}
       </form.Field>
