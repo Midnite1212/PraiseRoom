@@ -342,6 +342,17 @@
       "noteIdle": "Start it with the play button in the {{where}}.",
       "noteOn": "Scrolling. Pause it from the {{where}}.",
       "end": "End of the song"
+    },
+    "present": {
+      "row": "Present to TV",
+      "hint": "Full screen, one section at a time",
+      "title": "Presentation",
+      "showChords": "Show chords",
+      "exit": "Exit",
+      "songOf": "Song {{index}} of {{count}}",
+      "nextLine": "Next line",
+      "nextSong": "Next song",
+      "endOfSong": "End of the song"
     }
   },
   "editor": {

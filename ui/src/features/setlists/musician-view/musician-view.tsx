@@ -12,11 +12,12 @@ import { useAutoScroll } from '@/features/reader/auto-scroll';
 import { AutoScrollButton } from '@/features/reader/auto-scroll-controls';
 import { useReaderMode } from '@/features/reader/chord-display';
 import { KeyPicker } from '@/features/reader/key-picker';
+import { toPresentSong } from '@/features/reader/present-slides';
 import { ReadingPanel, ShareButton, WideReadingControls } from '@/features/reader/reader-controls';
 import { ReaderLayout } from '@/features/reader/reader-layout';
 import { ReaderModes } from '@/features/reader/reader-modes';
 import { ReadingSettings } from '@/features/reader/reading-settings';
-import { useSongCapo } from '@/features/reader/song-capo';
+import { readSongCapo, useSongCapo } from '@/features/reader/song-capo';
 import { SongReader } from '@/features/reader/song-reader';
 import { ViewOneIcon, ViewSplitIcon } from '@/features/reader/view-icons';
 import { useIsWide } from '@/hooks/use-wide';
@@ -206,7 +207,26 @@ export function MusicianView({
   const meta = [date ?? t('setlists.noDate'), t('reader.songCount', { count: songCount })].join(
     ' · '
   );
-  const readingSettings = <ReadingSettings showSettingsLink={!isPublic} />;
+  const readingSettings = (
+    <ReadingSettings
+      showSettingsLink={!isPublic}
+      present={{
+        songs: entries.map((entry, index) =>
+          toPresentSong(
+            entry,
+            playKeyFor(index),
+            parseKey(entry.originalKey),
+            index === currentIndex ? capo : (readSongCapo(entry._id) ?? entry.capo ?? 0)
+          )
+        ),
+        startIndex: currentIndex,
+        onStart: () => (auto.running ? auto.toggle() : undefined),
+        onExit: (songIndex) => {
+          if (songIndex !== currentIndex) goToSong(songIndex + 1);
+        },
+      }}
+    />
+  );
   const share = <ShareButton link={setlist.publicLink ? publicSetlistUrl(setlist._id) : null} />;
 
   if (!song) {
