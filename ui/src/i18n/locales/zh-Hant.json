@@ -308,6 +308,9 @@
     "yourOrder": "你的次序 · 只影響這部裝置",
     "orderNote": "調整次序只影響這部裝置",
     "chordStyle": "和弦樣式",
+    "keepAwake": "保持螢幕亮着",
+    "awakeOn": "開啟此頁時生效",
+    "awakeOff": "此瀏覽器不支援",
     "readingSettings": "閱讀設定",
     "savedHere": "儲存在此裝置",
     "moreSettings": "更多設定"

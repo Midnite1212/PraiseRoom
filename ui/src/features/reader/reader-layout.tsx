@@ -3,6 +3,8 @@ import type { ReactNode } from 'react';
 import { useScrolledClass } from '@/hooks/use-scrolled-class';
 import { cn } from '@/lib/utils';
 
+import { useKeepAwake, useWakeLock } from './keep-awake';
+
 type ReaderLayoutProps = {
   // Start of the top row: the back button.
   back?: ReactNode;
@@ -38,6 +40,8 @@ export function ReaderLayout({
   children,
 }: ReaderLayoutProps) {
   useScrolledClass();
+  const [keepAwake] = useKeepAwake();
+  useWakeLock(keepAwake === 'on');
   const offsetClass = sidebar
     ? 'wide:[--side-w:296px]'
     : songbar
