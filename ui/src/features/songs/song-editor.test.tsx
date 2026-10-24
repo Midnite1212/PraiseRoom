@@ -62,7 +62,7 @@ afterEach(() => {
 const lastUpdate = () => updates.at(-1);
 
 const openText = async (user: ReturnType<typeof userEvent.setup>) => {
-  await user.click(await screen.findByRole('radio', { name: 'Text' }));
+  await user.click(await screen.findByRole('radio', { name: 'Type as text' }));
   return screen.findByRole('textbox', { name: 'Lyrics and chords' });
 };
 
@@ -204,7 +204,7 @@ describe('SongEditor', () => {
 
       const text = await screen.findByRole('textbox', { name: 'Lyrics and chords' });
       expect(text).toHaveFocus();
-      expect(screen.getByRole('radio', { name: 'Text' })).toBeChecked();
+      expect(screen.getByRole('radio', { name: 'Type as text' })).toBeChecked();
     });
 
     it('shows the song as ChordPro and saves what is typed', async () => {
@@ -254,7 +254,7 @@ describe('SongEditor', () => {
       await user.clear(text);
       await user.click(text);
       await user.paste('{Chorus}\n[G]Hi there');
-      await user.click(screen.getByRole('radio', { name: 'Song' }));
+      await user.click(screen.getByRole('radio', { name: 'Tap chords' }));
 
       expect(await screen.findByRole('button', { name: 'Chord G on Hi' })).toBeInTheDocument();
     });

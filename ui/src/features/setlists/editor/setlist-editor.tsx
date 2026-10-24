@@ -115,7 +115,7 @@ export function SetlistEditor({ session, setlistId, initialDraft, now }: Setlist
             maxLength={NAME_MAX_LENGTH}
             placeholder={t('editor.namePlaceholder')}
             aria-label={t('editor.name')}
-            className="placeholder:text-ink-3 caret-chord w-full border-0 bg-transparent p-0 text-[1.75rem] leading-[1.08] font-bold tracking-[-0.03em] outline-none"
+            className="placeholder:text-ink-3 caret-chord text-page-title w-full border-0 bg-transparent p-0 leading-[1.08] font-bold tracking-[-0.03em] outline-none"
             onChange={(event) =>
               history.set({ ...draft, name: event.target.value }, { coalesceKey: 'name' })
             }

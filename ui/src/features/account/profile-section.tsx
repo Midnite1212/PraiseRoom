@@ -3,7 +3,6 @@ import { useRouter } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { SaveStatus } from '@/components/editor/save-status';
 import { Button } from '@/components/ui/button';
 import { accountNameSchema, NAME_MAX_LENGTH } from '@/features/auth/schemas';
 import { type Session, sessionQueryOptions } from '@/features/auth/session';
@@ -14,14 +13,13 @@ import { clearAuthToken } from '@/lib/api-client';
 import { renameAccount } from './api';
 import { ChangeEmailDialog } from './change-email-dialog';
 
-// The name saves as you type; the email changes through a confirmation link.
-export function ProfileSection({ session }: { session: Session }) {
+// The name field's draft and its autosave, held by the page so the Saved chip can sit in the page header.
+export function useProfileName(session: Session) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const router = useRouter();
   const [draft, setDraft] = useState(session.fullName);
   const [touched, setTouched] = useState(false);
-  const [emailOpen, setEmailOpen] = useState(false);
   const isValid = accountNameSchema((key) => t(key)).safeParse(draft).success;
 
   const rename = useMutation({
@@ -38,6 +36,16 @@ export function ProfileSection({ session }: { session: Session }) {
     enabled: isValid,
   });
 
+  return { draft, setDraft, touched, setTouched, isValid, status, retry };
+}
+
+export type ProfileName = ReturnType<typeof useProfileName>;
+
+// The name saves as you type; the email changes through a confirmation link.
+export function ProfileSection({ session, name }: { session: Session; name: ProfileName }) {
+  const { t } = useTranslation();
+  const { draft, setDraft, touched, setTouched, isValid } = name;
+  const [emailOpen, setEmailOpen] = useState(false);
   const showError = touched && !isValid;
 
   return (
@@ -60,7 +68,6 @@ export function ProfileSection({ session }: { session: Session }) {
             }}
             className="bg-fill-hover wide:max-w-[300px] wide:flex-none wide:w-[300px] h-12 min-w-0 flex-1 rounded-[14px] px-3.5 text-base shadow-[inset_0_0_0_1px_var(--hairline)] outline-none focus-visible:shadow-[inset_0_0_0_2px_var(--ring)] aria-invalid:shadow-[inset_0_0_0_2px_var(--destructive)]"
           />
-          {touched && isValid ? <SaveStatus status={status} onRetry={retry} /> : null}
         </span>
         {showError ? (
           <small id="account-name-error" role="alert" className="text-destructive mt-1.5 block">

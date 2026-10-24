@@ -52,7 +52,7 @@ export function LetterScrubber({ groups }: { groups: readonly SongGroup[] }) {
             if (event.detail === 0) jump(group.id);
           }}
           className={cn(
-            'h-5 w-4 font-mono text-[0.6875rem] font-bold',
+            'relative h-5 w-4 font-mono text-[0.6875rem] font-bold after:absolute after:inset-y-0 after:-inset-x-3.5',
             group.id === currentId ? 'text-chord' : 'text-ink-3'
           )}
         >

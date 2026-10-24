@@ -18,7 +18,7 @@ function SongRow({ song, inNextSet }: { song: SongSummary; inNextSet: boolean })
       <Link
         to="/songs/$songSlug"
         params={{ songSlug: songSlug(song) }}
-        className={listRowClasses('min-h-14 grid-cols-[2.75rem_minmax(0,1fr)_auto]')}
+        className={listRowClasses('min-h-14 grid-cols-[3.25rem_minmax(0,1fr)_auto]')}
       >
         <KeyTile
           musicKey={song.originalKey}
@@ -55,15 +55,27 @@ export function SongRows({
   sort,
   grouped = false,
   nextSetSongIds,
+  onClearSearch,
+  onClearFilters,
 }: {
   songs: readonly SongSummary[];
   sort: SongSort;
   grouped?: boolean;
   nextSetSongIds: ReadonlySet<string>;
+  onClearSearch?: () => void;
+  onClearFilters?: () => void;
 }) {
   const { t } = useTranslation();
   if (songs.length === 0)
-    return <EmptyState title={t('songs.empty')}>{t('songs.emptyHint')}</EmptyState>;
+    return (
+      <EmptyState
+        title={t('songs.empty')}
+        onClearSearch={onClearSearch}
+        onClearFilters={onClearFilters}
+      >
+        {t('songs.emptyHint')}
+      </EmptyState>
+    );
 
   const groups = grouped ? groupSongs(songs, sort, t) : null;
   if (!groups)

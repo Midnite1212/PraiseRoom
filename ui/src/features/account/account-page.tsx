@@ -3,6 +3,7 @@ import { Link } from '@tanstack/react-router';
 import { ChevronLeft } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 
+import { SaveStatus } from '@/components/editor/save-status';
 import { AppBarSlot } from '@/components/layout/app-bar-slots';
 import { BACK_LINK_CLASSES, BackLabel } from '@/components/page/back-link';
 import { PAGE_TITLE_CLASSES } from '@/components/page/page-header';
@@ -15,7 +16,7 @@ import { SettingsGroup } from '@/features/settings/settings-group';
 
 import { accountCounts } from './counts';
 import { DeleteAccount } from './delete-account';
-import { ProfileSection } from './profile-section';
+import { ProfileSection, useProfileName } from './profile-section';
 import { SessionsSection } from './sessions-section';
 import { SignInMethods } from './sign-in-methods';
 
@@ -43,6 +44,7 @@ export function AccountPage({ session }: { session: Session }) {
   const { t } = useTranslation();
   const setlists = useQuery(setlistsQueryOptions());
   const folders = useQuery(foldersQueryOptions());
+  const name = useProfileName(session);
   const counts =
     setlists.data && folders.data ? accountCounts(session, setlists.data, folders.data) : undefined;
 
@@ -68,8 +70,15 @@ export function AccountPage({ session }: { session: Session }) {
                 : null}
             </p>
           </div>
+          {name.touched && name.isValid ? (
+            <SaveStatus
+              status={name.status}
+              onRetry={name.retry}
+              className="ml-auto flex-none self-center"
+            />
+          ) : null}
         </header>
-        <ProfileSection session={session} />
+        <ProfileSection session={session} name={name} />
         <SignInMethods session={session} />
         <SessionsSection />
         <SettingsGroup id="account-access" title={t('account.access.title')}>

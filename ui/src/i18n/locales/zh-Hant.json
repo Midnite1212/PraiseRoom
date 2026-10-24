@@ -134,6 +134,7 @@
     "webResults": "網上結果",
     "loadingMore": "正在載入更多歌曲…",
     "searching": "正在搜尋歌曲…",
+    "searchingFor": "正在搜尋 {{total}} 首歌曲：“{{q}}”…",
     "add": {
       "button": "新增歌曲",
       "title": "新增歌曲",
@@ -389,6 +390,7 @@
       "undone": "已復原",
       "done": "完成",
       "savesAsYouGo": "所有更改都會自動儲存",
+      "dragToReorder": "拖動以重新排序",
       "moveHandle": "移動「{{title}}」：拖曳，或使用上下方向鍵",
       "moved": "「{{title}}」已移至第 {{position}} 位，共 {{count}} 項"
     },
@@ -643,8 +645,8 @@
     "needsLyrics": "離開前，歌曲需要有一些歌詞。",
     "mode": {
       "label": "編輯方式",
-      "song": "歌曲",
-      "text": "文字"
+      "song": "點選和弦",
+      "text": "以文字輸入"
     },
     "text": {
       "label": "歌詞與和弦",
@@ -750,6 +752,7 @@
     "buttonWithCount": "篩選（已選 {{count}} 項）",
     "remove": "移除 {{name}}",
     "clearSearch": "清除搜尋",
+    "clearAll": "清除篩選",
     "reset": "重設",
     "clear": "清除"
   },

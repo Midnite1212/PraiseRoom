@@ -28,7 +28,7 @@ type EditorFrameProps = {
   actions?: ReactNode;
   // Phone save bar content between Undo and Done; falls back to `actions`.
   barActions?: ReactNode;
-  // `EditorChip`s; the Saved chip follows them.
+  // `EditorChip`s.
   chips?: ReactNode;
   children: ReactNode;
 };
@@ -37,8 +37,8 @@ const isTextField = (target: EventTarget | null) =>
   target instanceof HTMLElement &&
   target.closest('input, textarea, [contenteditable="true"]') !== null;
 
-// The frame both editors share: title, Undo and Done, the chips row with the Saving / Saved chip, and on phones a glass
-// save bar. Opening it hides the tab dock. There is no Save button; the editor saves with `useAutosave`.
+// The frame both editors share: title with the Saving / Saved chip at the end of the header, Undo and Done, the chips row,
+// and on phones a glass save bar. Opening it hides the tab dock. There is no Save button; the editor saves with `useAutosave`.
 export function EditorFrame({
   heading,
   back,
@@ -109,10 +109,8 @@ export function EditorFrame({
       {back}
       <h1 className="sr-only">{heading}</h1>
       <div className="wide:mt-2.5 flex items-start gap-4">
-        <div className="min-w-0 flex-1">
-          {names}
-          {wide ? null : <div className="mt-1.5">{saveStatus}</div>}
-        </div>
+        <div className="min-w-0 flex-1">{names}</div>
+        <div className="wide:mt-0 wide:self-center mt-2 flex-none">{saveStatus}</div>
         {wide ? (
           <div className="mt-2.5 flex flex-none items-center gap-2">
             {undoButton('icon')}
@@ -124,10 +122,7 @@ export function EditorFrame({
         ) : null}
       </div>
 
-      <ChipsRow>
-        {chips}
-        {wide ? <span className="ml-auto flex-none pl-2">{saveStatus}</span> : null}
-      </ChipsRow>
+      <ChipsRow>{chips}</ChipsRow>
 
       {children}
 

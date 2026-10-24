@@ -8,6 +8,7 @@ import {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { IconTooltip } from '@/components/primitives/icon-tooltip';
 import { moveItem } from '@/lib/move-item';
 import { cn } from '@/lib/utils';
 
@@ -123,19 +124,21 @@ export function ReorderList<T>({
         {shown.map((item, index) => {
           const key = getKey(item);
           const handle = (
-            <button
-              type="button"
-              data-reorder-handle={key}
-              aria-label={t('editor.frame.moveHandle', { title: getLabel(item) })}
-              onPointerDown={(event) => startDrag(event, key, index)}
-              onKeyDown={(event) => moveWithKeys(event, item, index)}
-              className="text-ink-3 hover:text-ink hover:bg-fill-hover wide:w-9 grid h-11 w-7 flex-none cursor-grab touch-none place-items-center rounded-xl transition-colors active:cursor-grabbing"
-            >
-              <svg viewBox="0 0 18 18" className="size-icon fill-current" aria-hidden>
-                <rect x="3" y="6" width="12" height="2" />
-                <rect x="3" y="10" width="12" height="2" />
-              </svg>
-            </button>
+            <IconTooltip label={t('editor.frame.dragToReorder')}>
+              <button
+                type="button"
+                data-reorder-handle={key}
+                aria-label={t('editor.frame.moveHandle', { title: getLabel(item) })}
+                onPointerDown={(event) => startDrag(event, key, index)}
+                onKeyDown={(event) => moveWithKeys(event, item, index)}
+                className="text-ink-3 hover:text-ink hover:bg-fill-hover wide:w-9 grid h-11 w-7 flex-none cursor-grab touch-none place-items-center rounded-xl transition-colors active:cursor-grabbing"
+              >
+                <svg viewBox="0 0 18 18" className="size-icon fill-current" aria-hidden>
+                  <rect x="3" y="6" width="12" height="2" />
+                  <rect x="3" y="10" width="12" height="2" />
+                </svg>
+              </button>
+            </IconTooltip>
           );
           return (
             <li

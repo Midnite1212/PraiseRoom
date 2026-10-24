@@ -134,6 +134,7 @@
     "webResults": "Web results",
     "loadingMore": "Loading more songs…",
     "searching": "Searching songs…",
+    "searchingFor": "Searching {{total}} songs for “{{q}}”…",
     "add": {
       "button": "Add song",
       "title": "Add a song",
@@ -389,6 +390,7 @@
       "undone": "Undone",
       "done": "Done",
       "savesAsYouGo": "Everything saves as you go",
+      "dragToReorder": "Drag to reorder",
       "moveHandle": "Move {{title}}: drag, or use the up and down arrows",
       "moved": "{{title}} moved to position {{position}} of {{count}}"
     },
@@ -646,8 +648,8 @@
     "needsLyrics": "A song needs some lyrics before you leave.",
     "mode": {
       "label": "Edit as",
-      "song": "Song",
-      "text": "Text"
+      "song": "Tap chords",
+      "text": "Type as text"
     },
     "text": {
       "label": "Lyrics and chords",
@@ -753,6 +755,7 @@
     "buttonWithCount": "Filter ({{count}} on)",
     "remove": "Remove {{name}}",
     "clearSearch": "Clear search",
+    "clearAll": "Clear filters",
     "reset": "Reset",
     "clear": "Clear"
   },

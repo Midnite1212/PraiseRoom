@@ -109,7 +109,10 @@ function FoldersPage() {
             sticky={!isWide}
           />
           {mine.length === 0 ? (
-            <EmptyState title={query ? t('folders.noMatches') : t('folders.emptyTitle')}>
+            <EmptyState
+              title={query ? t('folders.noMatches') : t('folders.emptyTitle')}
+              onClearSearch={query ? () => setSearch('') : undefined}
+            >
               {query ? t('folders.noMatchesHint') : t('folders.empty')}
             </EmptyState>
           ) : (

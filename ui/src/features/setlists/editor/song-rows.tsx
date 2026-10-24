@@ -2,6 +2,7 @@ import { ArrowDown, ArrowUp, Minus, Plus } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 
 import { ReorderList } from '@/components/editor/reorder-list';
+import { IconTooltip } from '@/components/primitives/icon-tooltip';
 import { RemoveIcon } from '@/components/primitives/pixel-icons';
 import { TempoMeter } from '@/components/primitives/tempo-meter';
 import { Button } from '@/components/ui/button';
@@ -83,14 +84,16 @@ export function SongRows({
             </span>
             <fieldset className="bg-fill-hover m-0 inline-flex h-9 min-w-0 items-center rounded-full border-0 p-0.5">
               <legend className="sr-only">{t('editor.keyFor', { title: song.title })}</legend>
-              <button
-                type="button"
-                className={KEY_BUTTON_CLASSES}
-                aria-label={t('editor.keyDown')}
-                onClick={() => onStepKey(song._id, -1)}
-              >
-                <Minus />
-              </button>
+              <IconTooltip label={t('editor.keyDown')}>
+                <button
+                  type="button"
+                  className={KEY_BUTTON_CLASSES}
+                  aria-label={t('editor.keyDown')}
+                  onClick={() => onStepKey(song._id, -1)}
+                >
+                  <Minus />
+                </button>
+              </IconTooltip>
               <b className="inline-flex min-w-7.5 items-center justify-center gap-1 font-mono text-sm font-bold">
                 {song.key}
                 {offset === 0 ? null : (
@@ -100,14 +103,16 @@ export function SongRows({
                   </small>
                 )}
               </b>
-              <button
-                type="button"
-                className={KEY_BUTTON_CLASSES}
-                aria-label={t('editor.keyUp')}
-                onClick={() => onStepKey(song._id, 1)}
-              >
-                <Plus />
-              </button>
+              <IconTooltip label={t('editor.keyUp')}>
+                <button
+                  type="button"
+                  className={KEY_BUTTON_CLASSES}
+                  aria-label={t('editor.keyUp')}
+                  onClick={() => onStepKey(song._id, 1)}
+                >
+                  <Plus />
+                </button>
+              </IconTooltip>
             </fieldset>
             <Button
               type="button"

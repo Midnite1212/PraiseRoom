@@ -67,6 +67,8 @@ export function SongsTable({
   dir,
   onSort,
   onSelect,
+  onClearSearch,
+  onClearFilters,
 }: {
   songs: SongSummary[];
   selectedId?: string;
@@ -74,6 +76,8 @@ export function SongsTable({
   dir: SortDirection;
   onSort: (sort: SongSort) => void;
   onSelect: (songId: string) => void;
+  onClearSearch?: () => void;
+  onClearFilters?: () => void;
 }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -85,7 +89,15 @@ export function SongsTable({
   });
 
   if (songs.length === 0)
-    return <EmptyState title={t('songs.empty')}>{t('songs.emptyHint')}</EmptyState>;
+    return (
+      <EmptyState
+        title={t('songs.empty')}
+        onClearSearch={onClearSearch}
+        onClearFilters={onClearFilters}
+      >
+        {t('songs.emptyHint')}
+      </EmptyState>
+    );
 
   const open = (songId: string) => {
     const song = songs.find(({ _id }) => _id === songId);
@@ -163,13 +175,13 @@ export function SongsTable({
               onClick={() => onSelect(row.id)}
               onDoubleClick={() => open(row.id)}
               onKeyDown={(event) => onRowKeyDown(event, row.id)}
-              className="group/row cursor-pointer outline-none"
+              className="group/row hover:liquid-hover aria-selected:liquid-on focus-visible:liquid-hover cursor-pointer transition-colors duration-150 outline-none [clip-path:inset(0_round_16px)]"
             >
               {row.getAllCells().map((cell) => (
                 <td
                   key={cell.id}
                   className={cn(
-                    'text-ink-2 group-hover/row:bg-fill-hover group-aria-selected/row:bg-fill-on group-focus-visible/row:bg-fill-hover h-[58px] px-3 align-middle text-sm transition-colors duration-150 first:rounded-l-2xl last:rounded-r-2xl group-focus-visible/row:first:shadow-[inset_2px_0_0_var(--chord)]',
+                    'text-ink-2 h-[58px] px-3 align-middle text-sm group-focus-visible/row:first:shadow-[inset_2px_0_0_var(--chord)]',
                     columnMeta(cell.column.columnDef.meta).cellClassName
                   )}
                 >
