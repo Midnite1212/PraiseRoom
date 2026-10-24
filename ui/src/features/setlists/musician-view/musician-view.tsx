@@ -288,13 +288,13 @@ export function MusicianView({
           ) : null}
         </>
       }
+      layout={canSplit ? <LayoutToggle layout={layout} onChange={setLayout} /> : null}
       modes={<ReaderModes />}
       isSplit={isSplit}
       auto={<AutoScrollButton auto={auto} placement="top" className="wide:inline-flex hidden" />}
       compactTitle={song.title}
       actions={
         <>
-          {canSplit ? <LayoutToggle layout={layout} onChange={setLayout} /> : null}
           <WideReadingControls auto={auto} />
           {readingSettings}
           {actions}

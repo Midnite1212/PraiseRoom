@@ -11,6 +11,21 @@ describe('lyricsPeek', () => {
     expect(peek?.lines[0]?.segments.map(({ chord }) => chord)).toEqual(['G', 'C']);
   });
 
+  it('prefers Verse 1 over an earlier section', () => {
+    const peek = lyricsPeek('{Intro}\n[G]Intro line\n\n{Verse 1}\n[C]First verse');
+
+    expect(peek?.label).toBe('Verse 1');
+    expect(peek?.lines[0]?.segments.map(({ chord }) => chord)).toEqual(['C']);
+  });
+
+  it('matches a bare Verse label and ignores case', () => {
+    expect(lyricsPeek('{Chorus}\nA\n\n{verse}\nB')?.label).toBe('verse');
+  });
+
+  it('does not treat Verse 2 as Verse 1', () => {
+    expect(lyricsPeek('{Intro}\nA\n\n{Verse 2}\nB')?.label).toBe('Intro');
+  });
+
   it('keeps at most four lines', () => {
     expect(lyricsPeek('a\nb\nc\nd\ne\nf')?.lines).toHaveLength(4);
   });

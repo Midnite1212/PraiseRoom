@@ -62,7 +62,7 @@ export function NextUp({
         </div>
         <span
           aria-hidden
-          className="text-ink-2 wide:inline-flex hidden h-9 -translate-x-1.5 items-center gap-1 self-start text-[0.8125rem] font-semibold opacity-0 transition-[opacity,transform] duration-300 ease-out group-has-[a:focus-visible]/next:translate-x-0 group-has-[a:focus-visible]/next:opacity-100 group-has-[a:hover]/next:translate-x-0 group-has-[a:hover]/next:opacity-100"
+          className="text-ink-2 wide:inline-flex -mt-1 hidden h-10 -translate-x-1.5 items-center gap-1 self-start text-[0.8125rem] font-semibold opacity-0 transition-[opacity,transform] duration-300 ease-out group-has-[a:focus-visible]/next:translate-x-0 group-has-[a:focus-visible]/next:opacity-100 group-has-[a:hover]/next:translate-x-0 group-has-[a:hover]/next:opacity-100"
         >
           {t('home.open')}
           <ArrowRight />

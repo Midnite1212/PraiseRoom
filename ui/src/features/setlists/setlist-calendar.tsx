@@ -78,7 +78,7 @@ export function SetlistCalendar({ setlists, now, day, onDayChange }: SetlistCale
     );
 
   const cellClasses =
-    'relative grid h-[34px] place-items-center rounded-[10px] font-mono text-[0.8125rem] font-semibold';
+    'relative grid aspect-square w-[min(100%,40px)] place-items-center justify-self-center rounded-[10px] font-mono text-[0.8125rem] font-semibold';
 
   return (
     <section

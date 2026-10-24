@@ -11,6 +11,8 @@ type ReaderLayoutProps = {
   back?: ReactNode;
   // Wide screens: what is open (a setlist's name and date) beside the back button.
   title?: ReactNode;
+  // Wide screens, setlists: One | Split, first in the right-hand group.
+  layout?: ReactNode;
   // Lyrics | Chords, then (wide, chords on) the notation toggle.
   modes: ReactNode;
   // Auto-scroll's play button, after the modes.
@@ -35,6 +37,7 @@ type ReaderLayoutProps = {
 export function ReaderLayout({
   back,
   title,
+  layout,
   modes,
   auto,
   compactTitle,
@@ -78,12 +81,17 @@ export function ReaderLayout({
             {title}
           </div>
         ) : null}
-        {modes}
-        {auto}
-        <span className="wide:text-left wide:px-1 pointer-events-none! min-w-0 flex-1 truncate px-0 text-center text-[0.9375rem] font-semibold opacity-0 transition-opacity duration-200 in-[.scrolled]:opacity-100">
+        <div className="wide:order-2 wide:gap-2 flex items-center gap-1.5 *:pointer-events-auto">
+          {layout}
+          {modes}
+          {auto}
+        </div>
+        <span className="wide:order-1 wide:text-left wide:px-1 pointer-events-none! min-w-0 flex-1 truncate px-0 text-center text-[0.9375rem] font-semibold opacity-0 transition-opacity duration-200 in-[.scrolled]:opacity-100">
           {compactTitle}
         </span>
-        {actions}
+        <div className="wide:order-3 wide:gap-2 flex items-center gap-1.5 *:pointer-events-auto">
+          {actions}
+        </div>
       </header>
 
       {sidebar ? (

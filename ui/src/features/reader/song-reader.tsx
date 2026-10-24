@@ -61,20 +61,20 @@ export function SongReader({
   return (
     <article data-lyrics-size={lyricsSize} aria-labelledby={titleId} className="min-w-0">
       <header className="mb-[18px]">
-        <div className="flex items-start gap-0.5">
-          <h1
-            id={titleId}
-            data-page-title
-            className={cn(
-              'text-[clamp(1.75rem,1.2rem+2.2vw,2.5rem)] leading-[1.08] font-bold tracking-[-0.03em] text-balance',
-              pane
-                ? 'wide:text-[clamp(1.75rem,0.9rem+1.6vw,2.625rem)]'
-                : 'wide:text-[clamp(2rem,1rem+1.8vw,3rem)]'
-            )}
-          >
+        <div
+          className={cn(
+            'flex items-start gap-0.5 text-[clamp(1.75rem,1.2rem+2.2vw,2.5rem)] leading-[1.08] font-bold tracking-[-0.03em]',
+            pane
+              ? 'wide:text-[clamp(1.75rem,0.9rem+1.6vw,2.625rem)]'
+              : 'wide:text-[clamp(2rem,1rem+1.8vw,3rem)]'
+          )}
+        >
+          <h1 id={titleId} data-page-title className="text-balance">
             {song.title}
           </h1>
-          <SongInfo song={song} />
+          <span className="flex h-[1lh] flex-none items-center">
+            <SongInfo song={song} />
+          </span>
         </div>
         <div className="mt-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
           <span className="text-ink-2 min-w-0">{song.artist}</span>
