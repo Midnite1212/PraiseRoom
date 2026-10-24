@@ -69,7 +69,7 @@ function HomePage() {
           month: 'long',
         }).format(new Date(now))}
       />
-      <div className="wide:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] wide:items-start grid gap-x-10 gap-y-2">
+      <div className="roomy:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] roomy:items-start grid gap-x-10 gap-y-2">
         <div className="min-w-0">
           {next ? (
             <NextUp session={session} setlist={next} now={now} />
@@ -97,9 +97,9 @@ function HomePage() {
           <GroupTitle
             title={t('home.yourFolders')}
             count={myFolders.length}
-            action={<AllLink to="/folders" label={t('home.all')} />}
+            action={<AllLink to="/folders" label={t('home.allFolders')} />}
             first
-            className="wide:mt-0"
+            className="roomy:mt-0"
           />
           {myFolders.length === 0 ? (
             <EmptyState title={t('folders.emptyTitle')}>{t('folders.empty')}</EmptyState>

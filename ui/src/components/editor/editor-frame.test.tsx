@@ -10,6 +10,8 @@ const renderFrame = (props: Partial<Parameters<typeof EditorFrame>[0]> = {}) => 
   const onDone = vi.fn<() => void>();
   const view = render(
     <EditorFrame
+      heading="Edit thing"
+      back={<a href="/songs">Songs</a>}
       names={<input aria-label="Title" defaultValue="Draft" />}
       status="saved"
       canUndo
@@ -39,6 +41,8 @@ describe('EditorFrame', () => {
 
     rerender(
       <EditorFrame
+        heading="Edit thing"
+        back={<a href="/songs">Songs</a>}
         names={<input aria-label="Title" />}
         status="saved"
         canUndo={false}

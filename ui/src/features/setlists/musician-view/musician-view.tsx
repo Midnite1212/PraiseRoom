@@ -20,7 +20,7 @@ import { ReadingSettings } from '@/features/reader/reading-settings';
 import { readSongCapo, useSongCapo } from '@/features/reader/song-capo';
 import { SongReader } from '@/features/reader/song-reader';
 import { ViewOneIcon, ViewSplitIcon } from '@/features/reader/view-icons';
-import { useIsWide } from '@/hooks/use-wide';
+import { useIsRoomy, useIsWide } from '@/hooks/use-wide';
 import { createStoredChoice } from '@/lib/stored-choice';
 
 import { keyForSong, noteForSong, publicSetlistUrl, type Setlist } from '../api';
@@ -115,8 +115,9 @@ export function MusicianView({
   const [songList, setSongList] = useSongListVisibility();
   const [isReordering, setIsReordering] = useState(false);
   const [isBarOrderOpen, setIsBarOrderOpen] = useState(false);
-  const isSidebarShown = songList === 'shown';
   const isWide = useIsWide();
+  const isRoomy = useIsRoomy();
+  const isSidebarShown = songList === 'shown' && isRoomy;
   const [layout, setLayout] = useReaderLayout();
   const [pinnedId, setPinnedId] = useState<string | null>(null);
   const [leftPane, setLeftPane] = useState<HTMLElement | null>(null);
@@ -136,7 +137,9 @@ export function MusicianView({
   const song = entries[currentIndex];
   const [capo, changeCapo] = useSongCapo(song?._id ?? '', song?.capo);
   const nextSong = entries[currentIndex + 1];
-  const isSplit = isWide && layout === 'split' && songCount > 1;
+  const pillSong = nextSong ?? entries[currentIndex - 1];
+  const canSplit = isWide && isRoomy && songCount > 1;
+  const isSplit = canSplit && layout === 'split';
   const auto = useAutoScroll(song?._id ?? '', isSplit ? leftPane : null);
   const songIds = entries.map((entry) => entry._id);
   const right = isSplit ? rightPane(songIds, currentIndex, pinnedId) : null;
@@ -263,19 +266,21 @@ export function MusicianView({
       back={back}
       title={
         <>
-          <Button
-            variant="glass"
-            size="icon-lg"
-            aria-pressed={isSidebarShown}
-            aria-label={sidebarLabel}
-            title={sidebarLabel}
-            onClick={() => {
-              setIsReordering(false);
-              setSongList(isSidebarShown ? 'hidden' : 'shown');
-            }}
-          >
-            <Bulletlist />
-          </Button>
+          {isRoomy ? (
+            <Button
+              variant="glass"
+              size="icon-lg"
+              aria-pressed={isSidebarShown}
+              aria-label={sidebarLabel}
+              title={sidebarLabel}
+              onClick={() => {
+                setIsReordering(false);
+                setSongList(isSidebarShown ? 'hidden' : 'shown');
+              }}
+            >
+              <Bulletlist />
+            </Button>
+          ) : null}
           <BrandMark />
           <strong className="truncate text-[0.9375rem] font-semibold">{setlist.name}</strong>
           {date ? (
@@ -289,7 +294,7 @@ export function MusicianView({
       compactTitle={song.title}
       actions={
         <>
-          {isWide && songCount > 1 ? <LayoutToggle layout={layout} onChange={setLayout} /> : null}
+          {canSplit ? <LayoutToggle layout={layout} onChange={setLayout} /> : null}
           <WideReadingControls auto={auto} />
           {readingSettings}
           {actions}
@@ -412,11 +417,13 @@ export function MusicianView({
                   aria-label={`${t('reader.setlist')}: ${currentIndex + 1}/${songCount}`}
                   className="hover:bg-fill-hover flex h-11 min-w-0 flex-1 flex-col items-center justify-center rounded-full leading-tight"
                 >
-                  {nextSong ? (
-                    <small className="text-ink-3 text-xs">{t('reader.upNext')}</small>
+                  {pillSong ? (
+                    <small className="text-ink-3 text-xs">
+                      {nextSong ? t('reader.upNext') : t('reader.previous')}
+                    </small>
                   ) : null}
                   <span className="max-w-full truncate px-1 text-sm font-semibold">
-                    {nextSong ? nextSong.title : t('reader.endOfSet')}
+                    {pillSong ? pillSong.title : t('reader.endOfSet')}
                   </span>
                 </button>
               }

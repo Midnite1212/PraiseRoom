@@ -18,7 +18,7 @@ import { FolderDetail } from '@/features/folders/folder-detail';
 import { FolderRow } from '@/features/folders/folder-row';
 import { foldersQueryOptions, setlistsQueryOptions } from '@/features/setlists/api';
 import { ownFolders } from '@/features/setlists/permissions';
-import { useIsWide } from '@/hooks/use-wide';
+import { useIsRoomy, useIsWide } from '@/hooks/use-wide';
 import { cn } from '@/lib/utils';
 
 export const Route = createFileRoute('/_app/folders/')({
@@ -47,6 +47,7 @@ function FoldersPage() {
   const { folder: chosenId } = Route.useSearch();
   const navigate = Route.useNavigate();
   const isWide = useIsWide();
+  const isRoomy = useIsRoomy();
   const { data: folders } = useSuspenseQuery(foldersQueryOptions());
   const { data: people } = useQuery(peopleQueryOptions());
   const [search, setSearch] = useState('');
@@ -57,7 +58,7 @@ function FoldersPage() {
   const mine = own
     .filter((folder) => !query || folder.groupName.toLocaleLowerCase().includes(query))
     .toSorted((a, b) => a.groupName.localeCompare(b.groupName));
-  const chosen = isWide ? own.find((folder) => folder._id === chosenId) : undefined;
+  const chosen = isRoomy ? own.find((folder) => folder._id === chosenId) : undefined;
   const paneId = chosen?._id;
   const newLabel = t('folders.new');
 
@@ -91,11 +92,11 @@ function FoldersPage() {
       />
       <div
         className={cn(
-          'wide:grid wide:items-start wide:gap-10',
-          chosen ? 'wide:grid-cols-2' : 'wide:grid-cols-1'
+          'roomy:grid roomy:items-start roomy:gap-10',
+          chosen ? 'roomy:grid-cols-2' : 'roomy:grid-cols-1'
         )}
       >
-        <div className={cn(chosen && 'wide:sticky wide:top-3.5')}>
+        <div className={cn(chosen && 'roomy:sticky roomy:top-3.5')}>
           <Finder
             value={search}
             onChange={setSearch}
@@ -117,7 +118,7 @@ function FoldersPage() {
                     people={people}
                     now={now}
                     pane={
-                      isWide
+                      isRoomy
                         ? { selected: folder._id === chosen?._id, isOpen: !!chosen }
                         : undefined
                     }

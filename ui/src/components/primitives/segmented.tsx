@@ -11,7 +11,7 @@ export type SegmentedOption<T extends string> = {
 };
 
 const OPTION_SIZES = {
-  sm: 'h-[30px] px-2.5 text-[0.8125rem]',
+  sm: 'h-9 px-2.5 text-[0.8125rem]',
   md: 'h-9 px-4 text-sm',
   lg: 'h-[42px] px-4 text-sm',
   xl: 'h-12 px-[18px] text-sm',

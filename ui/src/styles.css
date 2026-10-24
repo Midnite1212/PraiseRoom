@@ -4,9 +4,17 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Wide screens get the floating rail and anchored menus; everything narrower gets the phone layout. */
+/* Wide screens get the floating rail and anchored menus; everything else gets the phone layout. The query
+   must stay identical to WIDE_QUERY in src/hooks/use-wide.ts. */
 @custom-variant wide {
-  @media (min-width: 900px) and (orientation: landscape) {
+  @media (min-width: 768px) and (min-height: 600px) {
+    @slot;
+  }
+}
+
+/* Room for a second column beside the page. The query must stay identical to ROOMY_QUERY. */
+@custom-variant roomy {
+  @media (min-width: 1100px) and (min-height: 600px) {
     @slot;
   }
 }

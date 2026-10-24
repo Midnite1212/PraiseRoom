@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from '@tanstack/react-router';
+import { Link, useNavigate } from '@tanstack/react-router';
 import { Article, Music } from 'pixelarticons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 
 import { EditorFrame } from '@/components/editor/editor-frame';
 import { ReorderList } from '@/components/editor/reorder-list';
+import { BACK_LINK_CLASSES, BackLabel } from '@/components/page/back-link';
 import { PAGE_TITLE_CLASSES } from '@/components/page/page-header';
 import { Segmented } from '@/components/primitives/segmented';
 import { keyLabel, type MusicKey } from '@/features/chords/theory';
@@ -130,6 +131,12 @@ export function SongEditor({ song, initialMode = 'song' }: { song: Song; initial
 
   return (
     <EditorFrame
+      heading={t('songEditor.heading')}
+      back={
+        <Link to="/songs" className={BACK_LINK_CLASSES}>
+          <BackLabel>{t('songs.title')}</BackLabel>
+        </Link>
+      }
       names={
         <div className="grid gap-0.5">
           <input

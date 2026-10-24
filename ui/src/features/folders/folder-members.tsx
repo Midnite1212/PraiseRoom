@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { LIST_CLASSES, listRowClasses, RowText } from '@/components/page/list-row';
 import { InitialAvatar } from '@/components/primitives/avatar';
 import { goneToast } from '@/components/primitives/gone-toast';
+import { RemoveIcon } from '@/components/primitives/pixel-icons';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -109,7 +110,7 @@ function MemberRows({ session, folder, canEdit, onRemove }: Omit<MembersProps, '
                 title={t('folders.remove')}
                 onClick={() => onRemove(person)}
               >
-                <Close />
+                <RemoveIcon />
               </Button>
             ) : null}
           </li>

@@ -151,7 +151,7 @@ export function LyricsSheet({
     // Not merged with cn(): tailwind-merge reads text-lyrics (size) and text-sheet-foreground (colour)
     // as one conflicting text-* group and drops the size.
     <div
-      className={`font-lyrics text-lyrics text-sheet-foreground gap-8 leading-[1.45] md:gap-14 ${LYRICS_COLUMN_CLASSES[columns]}`}
+      className={`font-lyrics text-lyrics text-sheet-foreground wide:gap-14 gap-8 leading-[1.45] ${LYRICS_COLUMN_CLASSES[columns]}`}
     >
       {sections.map((section) => (
         <section

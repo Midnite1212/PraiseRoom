@@ -27,7 +27,7 @@
   },
   "user": {
     "menu": "Account",
-    "appearance": "Appearance",
+    "theme": "Theme",
     "settingsHint": "Reading, chords and appearance",
     "settings": "Settings",
     "signOut": "Sign out",
@@ -49,7 +49,7 @@
     "nothingNextHint": "Give a setlist a date and it shows here.",
     "allSetlists": "All setlists",
     "yourFolders": "Your folders",
-    "all": "All",
+    "allFolders": "All folders",
     "then": "Then",
     "open": "Open",
     "recentlyAdded": "Recently added",
@@ -355,6 +355,7 @@
   },
   "editor": {
     "newTitle": "New setlist",
+    "heading": "Edit setlist",
     "edit": "Edit",
     "name": "Name",
     "namePlaceholder": "Sunday service",
@@ -583,6 +584,7 @@
     }
   },
   "songEditor": {
+    "heading": "Edit song",
     "edit": "Edit",
     "titleLabel": "Song title",
     "titlePlaceholder": "Song title",

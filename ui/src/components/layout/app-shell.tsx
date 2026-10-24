@@ -7,8 +7,14 @@ import { BrandMark } from '@/components/primitives/brand-mark';
 import { Vinyl } from '@/components/primitives/vinyl';
 import type { Session } from '@/features/auth/session';
 import { useScrolledClass } from '@/hooks/use-scrolled-class';
-import { useIsWide } from '@/hooks/use-wide';
-import { isRailShortcut, railShortcutLabel, toggledRail, useRail } from '@/lib/rail';
+import { useIsWide, useMediaQuery } from '@/hooks/use-wide';
+import {
+  isRailShortcut,
+  RAIL_FOLD_QUERY,
+  railShortcutLabel,
+  toggledRail,
+  useRail,
+} from '@/lib/rail';
 
 import { AppBarSlotsContext } from './app-bar-slots';
 import { NAV_ITEMS, useNavCounts } from './nav';
@@ -47,14 +53,16 @@ function PageChrome({
   const [left, setLeft] = useState<HTMLElement | null>(null);
   const [right, setRight] = useState<HTMLElement | null>(null);
   const initial = toInitials(session.fullName);
-  const [rail, setRail] = useRail();
+  const [chosenRail, setRail] = useRail();
   const isWide = useIsWide();
+  const isNarrow = useMediaQuery(RAIL_FOLD_QUERY, false);
+  const rail = isNarrow ? 'folded' : chosenRail;
   const folded = rail === 'folded';
   const toggleLabel = t(folded ? 'nav.expandSidebar' : 'nav.collapseSidebar');
   const shortcut = railShortcutLabel(navigator.platform);
 
   useEffect(() => {
-    if (!isWide) return undefined;
+    if (!isWide || isNarrow) return undefined;
     const onKeyDown = (event: KeyboardEvent) => {
       if (!isRailShortcut(event)) return;
       event.preventDefault();
@@ -62,7 +70,7 @@ function PageChrome({
     };
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
-  }, [isWide, rail, setRail]);
+  }, [isWide, isNarrow, rail, setRail]);
 
   return (
     <AppBarSlotsContext value={{ left, right }}>
@@ -90,16 +98,18 @@ function PageChrome({
               <BrandMark className="-ml-2.5 transition-opacity duration-150 ease-out group-data-[rail=folded]/rail:ml-[-6px] group-data-[rail=folded]/rail:group-focus-within/brand:opacity-0 group-data-[rail=folded]/rail:group-hover/brand:opacity-0" />
               <span className="group-data-[rail=folded]/rail:hidden">{t('app.name')}</span>
             </Link>
-            <button
-              type="button"
-              aria-label={toggleLabel}
-              aria-expanded={!folded}
-              title={`${toggleLabel} (${shortcut})`}
-              onClick={() => setRail(toggledRail(rail))}
-              className="text-ink-3 hover:text-ink focus-visible:ring-ring [&_svg]:size-icon ml-auto grid size-9 flex-none place-items-center rounded-full transition-[color,opacity] duration-150 ease-out outline-none group-data-[rail=folded]/rail:absolute group-data-[rail=folded]/rail:inset-0 group-data-[rail=folded]/rail:m-auto group-data-[rail=folded]/rail:opacity-0 group-data-[rail=folded]/rail:group-hover/brand:opacity-100 focus-visible:opacity-100 focus-visible:ring-2"
-            >
-              <SidebarIcon />
-            </button>
+            {isNarrow ? null : (
+              <button
+                type="button"
+                aria-label={toggleLabel}
+                aria-expanded={!folded}
+                title={`${toggleLabel} (${shortcut})`}
+                onClick={() => setRail(toggledRail(rail))}
+                className="text-ink-3 hover:text-ink focus-visible:ring-ring [&_svg]:size-icon ml-auto grid size-9 flex-none place-items-center rounded-full transition-[color,opacity] duration-150 ease-out outline-none group-data-[rail=folded]/rail:absolute group-data-[rail=folded]/rail:inset-0 group-data-[rail=folded]/rail:m-auto group-data-[rail=folded]/rail:opacity-0 group-data-[rail=folded]/rail:group-hover/brand:opacity-100 focus-visible:opacity-100 focus-visible:ring-2"
+              >
+                <SidebarIcon />
+              </button>
+            )}
           </div>
 
           <nav

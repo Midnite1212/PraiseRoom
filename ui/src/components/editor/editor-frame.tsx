@@ -12,6 +12,10 @@ import { ChipsRow } from './editor-chips';
 import { SaveStatus } from './save-status';
 
 type EditorFrameProps = {
+  // The page's name for screen readers; the visible title is the input in `names`.
+  heading: string;
+  // The "‹ Songs" link above the title on wide screens.
+  back: ReactNode;
   // The borderless title input and the line under it.
   names: ReactNode;
   status: Status;
@@ -36,6 +40,8 @@ const isTextField = (target: EventTarget | null) =>
 // The frame both editors share: title, Undo and Done, the chips row with the Saving / Saved chip, and on phones a glass
 // save bar. Opening it hides the tab dock. There is no Save button; the editor saves with `useAutosave`.
 export function EditorFrame({
+  heading,
+  back,
   names,
   status,
   onRetry,
@@ -100,6 +106,8 @@ export function EditorFrame({
 
   return (
     <div>
+      {back}
+      <h1 className="sr-only">{heading}</h1>
       <div className="wide:mt-2.5 flex items-start gap-4">
         <div className="min-w-0 flex-1">
           {names}

@@ -1,7 +1,8 @@
-import { ArrowDown, ArrowUp, Close, Minus, Plus } from 'pixelarticons/react';
+import { ArrowDown, ArrowUp, Minus, Plus } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 
 import { ReorderList } from '@/components/editor/reorder-list';
+import { RemoveIcon } from '@/components/primitives/pixel-icons';
 import { TempoMeter } from '@/components/primitives/tempo-meter';
 import { Button } from '@/components/ui/button';
 
@@ -117,7 +118,7 @@ export function SongRows({
               title={t('editor.remove')}
               onClick={() => onRemove(song)}
             >
-              <Close />
+              <RemoveIcon />
             </Button>
           </div>
         );
