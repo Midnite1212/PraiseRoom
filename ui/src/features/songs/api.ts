@@ -157,6 +157,8 @@ export type SongInput = {
   chordLyrics: string;
   tempo: string[];
   timeSignature: string[];
+  themes: string[];
+  code: string | null;
   year: string | null;
   capo: number | null;
 };

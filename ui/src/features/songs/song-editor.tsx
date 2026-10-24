@@ -1,344 +1,208 @@
-import { useForm } from '@tanstack/react-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { Link, useBlocker, useNavigate } from '@tanstack/react-router';
+import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
-import { z } from 'zod';
 
+import { EditorFrame } from '@/components/editor/editor-frame';
+import { ReorderList } from '@/components/editor/reorder-list';
 import { PAGE_TITLE_CLASSES } from '@/components/page/page-header';
-import { Button } from '@/components/ui/button';
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { keyLabel, type MusicKey } from '@/features/chords/theory';
+import { useLyricsSize } from '@/features/reader/lyrics-size';
+import { useAutosave } from '@/hooks/use-autosave';
+import { useUndoHistory } from '@/hooks/use-undo-history';
+import { useIsWide } from '@/hooks/use-wide';
+import { cn } from '@/lib/utils';
+
+import { type Song, type SongInput, songQueryOptions, updateSong } from './api';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
-import { Textarea } from '@/components/ui/textarea';
-import { keyLabel, type MusicKey, transposeChordLyrics } from '@/features/chords/theory';
-import { ReaderPreferenceControls } from '@/features/reader/reader-controls';
-import type { ReaderSong } from '@/features/reader/song';
-import { SongReader } from '@/features/reader/song-reader';
-import { TIME_SIGNATURE_OPTIONS } from '@/features/song-import/api';
+  type DraftSection,
+  draftProblem,
+  nextSectionLabel,
+  placeChord,
+  type SectionType,
+  type SongDraft,
+  sameInput,
+  toDraft,
+  toSongInput,
+  withAutoKey,
+} from './song-draft';
+import {
+  CodeSettingChip,
+  KeySettingChip,
+  TempoSettingChip,
+  ThemesSettingChip,
+  TimeSettingChip,
+} from './song-editor-chips';
+import { AddSections, SectionBlock } from './song-sections';
 
-import { type Song, type SongInput, TEMPO_LABEL_KEYS, TEMPO_OPTIONS, updateSong } from './api';
-import { initialKey, KEY_OPTIONS, keyOptionValue, semitonesToKey } from './key-options';
+const titleField =
+  'w-full min-w-0 bg-transparent p-0 outline-none caret-chord placeholder:text-ink-3';
 
-const NO_CAPO = '0';
-const CAPO_OPTIONS = Array.from({ length: 12 }, (_, fret) => String(fret));
-
-type FormValues = {
-  title: string;
-  artist: string;
-  key: MusicKey;
-  tempo: string;
-  timeSignature: string;
-  year: string;
-  capo: string;
-  chordLyrics: string;
-};
-
-const toFormValues = (song: Song): FormValues => ({
-  title: song.title,
-  artist: song.artist,
-  key: initialKey(song.originalKey),
-  tempo: song.tempo[0] ?? '',
-  timeSignature: song.timeSignature[0] ?? '',
-  year: song.year ?? '',
-  capo: song.capo ? String(song.capo) : NO_CAPO,
-  chordLyrics: song.chordLyrics,
-});
-
-// Edits one song for editors and admins; the server's SONG_WRITERS rule is the real gate.
+// Edits one song for editors and admins; the server's SONG_WRITERS rule is the real gate. Every change
+// saves as it goes through the song update endpoint, which replaces the song.
 export function SongEditor({ song }: { song: Song }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [moveChords, setMoveChords] = useState(true);
-  const save = useMutation({ mutationFn: (input: SongInput) => updateSong(song._id, input) });
+  const wide = useIsWide();
+  const [lyricsSize] = useLyricsSize();
+  const history = useUndoHistory(toDraft(song));
+  const draft = history.value;
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  const schema = z.object({
-    title: z.string().trim().min(1, t('songImport.form.titleRequired')),
-    artist: z.string().trim().min(1, t('songImport.form.artistRequired')),
-    key: z.custom<MusicKey>(),
-    tempo: z.string(),
-    timeSignature: z.string(),
-    year: z
-      .string()
-      .refine((value) => value === '' || /^\d{3,4}$/.test(value), t('songImport.form.yearInvalid')),
-    capo: z.string(),
-    chordLyrics: z.string(),
-  });
-
-  const form = useForm({
-    defaultValues: toFormValues(song),
-    validators: { onSubmit: schema },
-    onSubmit: async ({ value, formApi }) => {
-      try {
-        await save.mutateAsync({
-          title: value.title.trim(),
-          artist: value.artist.trim(),
-          originalKey: keyLabel(value.key),
-          chordLyrics: value.chordLyrics,
-          tempo: value.tempo ? [value.tempo] : [],
-          timeSignature: value.timeSignature ? [value.timeSignature] : [],
-          year: value.year || null,
-          capo: Number(value.capo) || null,
-        });
-      } catch {
-        toast.error(t('songEditor.saveFailed'));
-        return;
-      }
-      formApi.reset(value);
-      await queryClient.invalidateQueries({ queryKey: ['songs'] });
-      toast.success(t('songEditor.saved'));
-      await navigate({ to: '/songs/$songId', params: { songId: song._id } });
+  const save = useMutation({
+    mutationFn: (input: SongInput) => updateSong(song._id, input),
+    onSuccess: async (_saved, input) => {
+      queryClient.setQueryData(songQueryOptions(song._id).queryKey, (current) =>
+        current ? { ...current, ...input } : current
+      );
+      await queryClient.invalidateQueries({ queryKey: ['songs', 'search'] });
     },
   });
-
-  useBlocker({
-    shouldBlockFn: () =>
-      form.state.isDirty && !form.state.isSubmitting && !window.confirm(t('editor.leaveConfirm')),
+  const problem = draftProblem(draft);
+  const autosave = useAutosave({
+    value: draft,
+    save: (value) => save.mutateAsync(toSongInput(value)),
+    enabled: problem === null,
+    isEqual: sameInput,
   });
 
-  const applyKey = (newKey: MusicKey) => {
-    const current = form.getFieldValue('key');
-    const semitones = moveChords ? semitonesToKey(current, newKey) : 0;
-    form.setFieldValue('chordLyrics', (text) =>
-      transposeChordLyrics(text, semitones, newKey.prefersFlats)
-    );
-    form.setFieldValue('key', newKey);
+  const update = (next: SongDraft, coalesceKey?: string) =>
+    history.set(withAutoKey(next), coalesceKey === undefined ? undefined : { coalesceKey });
+
+  const updateSection = (
+    id: string,
+    change: (section: DraftSection) => DraftSection,
+    key?: string
+  ) =>
+    update({ ...draft, sections: draft.sections.map((s) => (s.id === id ? change(s) : s)) }, key);
+
+  const addSection = (type: SectionType) => {
+    const id = crypto.randomUUID();
+    update({
+      ...draft,
+      sections: [
+        ...draft.sections,
+        { id, label: nextSectionLabel(draft.sections, type), lines: [] },
+      ],
+    });
+    setEditingId(id);
   };
+
+  const removeSection = (section: DraftSection) => {
+    update({ ...draft, sections: draft.sections.filter((s) => s.id !== section.id) });
+    if (editingId === section.id) setEditingId(null);
+    toast(t('songEditor.removed', { name: section.label || t('songEditor.unnamedSection') }), {
+      action: { label: t('editor.frame.undo'), onClick: history.undo },
+    });
+  };
+
+  const setKey = (key: MusicKey) => update({ ...draft, key, keyAuto: false });
+
+  const done = async () => {
+    if (problem !== null) {
+      toast.error(t(problem === 'title' ? 'songEditor.needsTitle' : 'songEditor.needsLyrics'));
+      return;
+    }
+    if (await autosave.flush()) {
+      await navigate({ to: '/songs/$songId', params: { songId: song._id } });
+    }
+  };
+
+  const hint = (
+    <p className="text-ink-3 mb-4 text-[0.8125rem]">
+      {draft.sections.length === 0
+        ? t('songEditor.hintEmpty')
+        : t(wide ? 'songEditor.hintClick' : 'songEditor.hintTap', { key: keyLabel(draft.key) })}
+    </p>
+  );
 
   return (
-    <form
-      noValidate
-      className="flex flex-col gap-4"
-      onSubmit={(event) => {
-        event.preventDefault();
-        void form.handleSubmit();
-      }}
-    >
-      <div className="mb-1 flex flex-wrap items-end justify-between gap-3">
-        <h1 data-page-title className={PAGE_TITLE_CLASSES}>
-          {t('songEditor.heading')}
-        </h1>
-        <div className="flex items-center gap-2">
-          <Button asChild variant="secondary">
-            <Link to="/songs/$songId" params={{ songId: song._id }}>
-              {t('songEditor.cancel')}
-            </Link>
-          </Button>
-          <form.Subscribe selector={(state) => state.isSubmitting}>
-            {(isSubmitting) => (
-              <Button type="submit" disabled={isSubmitting}>
-                {t('songEditor.save')}
-              </Button>
-            )}
-          </form.Subscribe>
+    <EditorFrame
+      names={
+        <div className="grid gap-0.5">
+          <input
+            value={draft.title}
+            maxLength={80}
+            placeholder={t('songEditor.titlePlaceholder')}
+            aria-label={t('songEditor.titleLabel')}
+            onChange={(event) => update({ ...draft, title: event.target.value }, 'title')}
+            onBlur={history.endCoalesce}
+            className={cn(PAGE_TITLE_CLASSES, titleField, 'text-balance')}
+          />
+          <input
+            value={draft.artist}
+            maxLength={80}
+            placeholder={t('songEditor.artistPlaceholder')}
+            aria-label={t('songEditor.artistLabel')}
+            onChange={(event) => update({ ...draft, artist: event.target.value }, 'artist')}
+            onBlur={history.endCoalesce}
+            className={cn(titleField, 'text-ink-2 py-1 text-base')}
+          />
         </div>
+      }
+      status={autosave.status}
+      onRetry={autosave.retry}
+      canUndo={history.canUndo}
+      onUndo={history.undo}
+      onDone={done}
+      chips={
+        <>
+          <KeySettingChip value={draft.key} auto={draft.keyAuto} onChange={setKey} />
+          <TempoSettingChip value={draft.tempo} onChange={(tempo) => update({ ...draft, tempo })} />
+          <TimeSettingChip
+            value={draft.timeSignature}
+            onChange={(timeSignature) => update({ ...draft, timeSignature })}
+          />
+          <ThemesSettingChip
+            value={draft.themes}
+            onChange={(themes) => update({ ...draft, themes })}
+          />
+          <CodeSettingChip
+            value={draft.code}
+            onChange={(code) => update({ ...draft, code }, 'code')}
+            onBlur={history.endCoalesce}
+          />
+        </>
+      }
+    >
+      <div data-lyrics-size={lyricsSize} className="max-w-[760px]">
+        {hint}
+        <ReorderList
+          items={draft.sections}
+          getKey={(section) => section.id}
+          getLabel={(section) => section.label || t('songEditor.unnamedSection')}
+          onReorder={(sections) => update({ ...draft, sections })}
+          className="gap-4"
+          renderItem={(section, _index, handle) => (
+            <SectionBlock
+              section={section}
+              handle={handle}
+              editing={editingId === section.id}
+              musicKey={draft.key}
+              onToggleEdit={() => setEditingId(editingId === section.id ? null : section.id)}
+              onLabelChange={(label) =>
+                updateSection(section.id, (s) => ({ ...s, label }), `label:${section.id}`)
+              }
+              onLinesChange={(lines) =>
+                updateSection(section.id, (s) => ({ ...s, lines }), `lines:${section.id}`)
+              }
+              onChordChange={(line, wordStart, chord) =>
+                updateSection(section.id, (s) => ({
+                  ...s,
+                  lines: s.lines.map((raw, index) =>
+                    index === line ? placeChord(raw, wordStart, chord) : raw
+                  ),
+                }))
+              }
+              onRemove={() => removeSection(section)}
+              onFieldBlur={history.endCoalesce}
+            />
+          )}
+        />
+        <AddSections onAdd={addSection} />
       </div>
-
-      <div className="grid gap-4 lg:grid-cols-[24rem_minmax(0,1fr)]">
-        <FieldGroup className="grid content-start gap-4">
-          {(['title', 'artist'] as const).map((name) => (
-            <form.Field key={name} name={name}>
-              {(field) => {
-                const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
-                return (
-                  <Field data-invalid={isInvalid}>
-                    <FieldLabel htmlFor={field.name}>{t(`songImport.form.${name}`)}</FieldLabel>
-                    <Input
-                      id={field.name}
-                      name={field.name}
-                      value={field.state.value}
-                      aria-invalid={isInvalid}
-                      onBlur={field.handleBlur}
-                      onChange={(event) => field.handleChange(event.target.value)}
-                    />
-                    {isInvalid ? <FieldError errors={field.state.meta.errors} /> : null}
-                  </Field>
-                );
-              }}
-            </form.Field>
-          ))}
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <form.Field name="key">
-              {(field) => (
-                <Field>
-                  <FieldLabel htmlFor={field.name}>{t('songImport.form.key')}</FieldLabel>
-                  <Select
-                    value={keyOptionValue(field.state.value)}
-                    onValueChange={(value) => {
-                      const option = KEY_OPTIONS.find((key) => keyOptionValue(key) === value);
-                      if (option) applyKey(option);
-                    }}
-                  >
-                    <SelectTrigger id={field.name} className="w-full font-mono">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {KEY_OPTIONS.map((option) => (
-                        <SelectItem
-                          key={keyOptionValue(option)}
-                          value={keyOptionValue(option)}
-                          className="font-mono"
-                        >
-                          {keyLabel(option)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </Field>
-              )}
-            </form.Field>
-
-            <form.Field name="capo">
-              {(field) => (
-                <Field>
-                  <FieldLabel htmlFor={field.name}>{t('songEditor.capo')}</FieldLabel>
-                  <Select value={field.state.value} onValueChange={field.handleChange}>
-                    <SelectTrigger id={field.name} className="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {CAPO_OPTIONS.map((fret) => (
-                        <SelectItem key={fret} value={fret}>
-                          {fret === NO_CAPO ? t('songEditor.noCapo') : fret}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </Field>
-              )}
-            </form.Field>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Switch id="move-chords" checked={moveChords} onCheckedChange={setMoveChords} />
-            <Label htmlFor="move-chords" className="text-muted-foreground font-normal">
-              {t('songImport.form.moveChords')}
-            </Label>
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            <form.Field name="tempo">
-              {(field) => (
-                <Field>
-                  <FieldLabel htmlFor={field.name}>{t('songImport.form.tempo')}</FieldLabel>
-                  <Select value={field.state.value || undefined} onValueChange={field.handleChange}>
-                    <SelectTrigger id={field.name} className="w-full">
-                      <SelectValue placeholder={t('songImport.form.tempoPlaceholder')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {TEMPO_OPTIONS.map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {t(TEMPO_LABEL_KEYS[option])}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </Field>
-              )}
-            </form.Field>
-
-            <form.Field name="timeSignature">
-              {(field) => (
-                <Field>
-                  <FieldLabel htmlFor={field.name}>{t('songImport.form.timeSignature')}</FieldLabel>
-                  <Select value={field.state.value || undefined} onValueChange={field.handleChange}>
-                    <SelectTrigger id={field.name} className="w-full">
-                      <SelectValue placeholder={t('songImport.form.timeSignaturePlaceholder')} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {TIME_SIGNATURE_OPTIONS.map((option) => (
-                        <SelectItem key={option} value={option}>
-                          {option}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </Field>
-              )}
-            </form.Field>
-          </div>
-
-          <form.Field name="year">
-            {(field) => {
-              const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
-              return (
-                <Field data-invalid={isInvalid} className="max-w-32">
-                  <FieldLabel htmlFor={field.name}>{t('songImport.form.year')}</FieldLabel>
-                  <Input
-                    id={field.name}
-                    name={field.name}
-                    inputMode="numeric"
-                    value={field.state.value}
-                    aria-invalid={isInvalid}
-                    onBlur={field.handleBlur}
-                    onChange={(event) => field.handleChange(event.target.value)}
-                  />
-                  {isInvalid ? <FieldError errors={field.state.meta.errors} /> : null}
-                </Field>
-              );
-            }}
-          </form.Field>
-
-          <form.Field name="chordLyrics">
-            {(field) => (
-              <Field>
-                <FieldLabel htmlFor={field.name}>{t('songEditor.chordLyrics')}</FieldLabel>
-                <Textarea
-                  id={field.name}
-                  rows={18}
-                  value={field.state.value}
-                  onChange={(event) => field.handleChange(event.target.value)}
-                  className="font-mono text-xs"
-                />
-                <FieldDescription>{t('songEditor.chordLyricsHint')}</FieldDescription>
-              </Field>
-            )}
-          </form.Field>
-        </FieldGroup>
-
-        <section className="flex min-w-0 flex-col gap-2">
-          <div className="flex justify-end gap-1.5">
-            <ReaderPreferenceControls />
-          </div>
-          <form.Subscribe selector={(state) => state.values}>
-            {(values) => <EditorPreview song={song} values={values} onKeyChange={applyKey} />}
-          </form.Subscribe>
-        </section>
-      </div>
-    </form>
+    </EditorFrame>
   );
-}
-
-function EditorPreview({
-  song,
-  values,
-  onKeyChange,
-}: {
-  song: Song;
-  values: FormValues;
-  onKeyChange: (key: MusicKey) => void;
-}) {
-  const preview: ReaderSong = {
-    ...song,
-    title: values.title,
-    artist: values.artist,
-    originalKey: keyLabel(values.key),
-    chordLyrics: values.chordLyrics,
-    tempo: values.tempo ? [values.tempo] : [],
-    timeSignature: values.timeSignature ? [values.timeSignature] : [],
-    year: values.year || null,
-    capo: Number(values.capo) || null,
-  };
-  return <SongReader song={preview} playKey={values.key} onPlayKeyChange={onKeyChange} />;
 }
