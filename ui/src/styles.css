@@ -689,6 +689,7 @@
     --seg-n: 1;
     --seg-i: 0;
     position: relative;
+    isolation: isolate;
     display: inline-grid;
     grid-auto-columns: 1fr;
     grid-auto-flow: column;
