@@ -1,15 +1,15 @@
 import { Minus, Plus } from 'pixelarticons/react';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Panel } from '@/components/primitives/panel';
 import { Stepper } from '@/components/primitives/stepper';
+import { Tray } from '@/components/primitives/tray';
 import { Button } from '@/components/ui/button';
 import { conventionalKey, shapeKey, signedSemitones } from '@/features/chords/key-spelling';
 import { keyLabel, type MusicKey } from '@/features/chords/theory';
 import { cn } from '@/lib/utils';
 
-import { activeCapo, MAX_CAPO, useGuitarCapo } from './chord-display';
+import { MAX_CAPO, useChordNotation } from './chord-display';
+import { ChordNotationToggle } from './reader-controls';
 
 type KeyPickerProps = {
   originalKey: MusicKey;
@@ -34,10 +34,8 @@ export function KeyPicker({
   placement = 'head',
 }: KeyPickerProps) {
   const { t } = useTranslation();
-  const [isOpen, setIsOpen] = useState(false);
-  const [guitarCapo] = useGuitarCapo();
-  const fret = activeCapo(guitarCapo, capo);
-  const hasCapoRow = guitarCapo === 'on' && onCapoChange !== undefined;
+  const [notation, setNotation] = useChordNotation();
+  const fret = capo;
   const offset = signedSemitones(originalKey, playKey);
   const options = Array.from({ length: 12 }, (_, root) =>
     conventionalKey(root, originalKey.isMinor)
@@ -46,12 +44,8 @@ export function KeyPicker({
     onChange(conventionalKey(playKey.root + semitones, originalKey.isMinor));
 
   return (
-    <Panel
-      open={isOpen}
-      onOpenChange={setIsOpen}
+    <Tray
       title={t('reader.keyTitle')}
-      align="end"
-      sheetClassName="bottom-[calc(var(--bottom)+var(--dock-h)+10px)]"
       trigger={
         <button
           type="button"
@@ -93,8 +87,16 @@ export function KeyPicker({
         >
           <Minus />
         </Button>
-        <div className="text-center font-mono text-4xl leading-none font-bold">
-          {keyLabel(playKey)}
+        <div className="grid justify-items-center">
+          <div className="font-mono text-4xl leading-none font-bold">{keyLabel(playKey)}</div>
+          <p className="text-ink-2 mt-1 text-xs">
+            {offset === 0
+              ? t('reader.originalKey', { key: keyLabel(originalKey) })
+              : t('reader.fromOriginal', {
+                  offset: formatOffset(offset),
+                  key: keyLabel(originalKey),
+                })}
+          </p>
         </div>
         <Button
           variant="secondary"
@@ -105,12 +107,7 @@ export function KeyPicker({
           <Plus />
         </Button>
       </div>
-      <p className="text-ink-2 text-center text-[0.8125rem]">
-        {offset === 0
-          ? t('reader.originalKey', { key: keyLabel(originalKey) })
-          : t('reader.fromOriginal', { offset: formatOffset(offset), key: keyLabel(originalKey) })}
-      </p>
-      <fieldset className="m-0 grid min-w-0 grid-cols-4 gap-1.5 border-0 p-0">
+      <fieldset className="m-0 mt-3 grid min-w-0 grid-cols-4 gap-1 border-0 p-0">
         <legend className="sr-only">{t('reader.key')}</legend>
         {options.map((option) => {
           const isOriginal = option.root === originalKey.root;
@@ -124,7 +121,7 @@ export function KeyPicker({
               }
               onClick={() => onChange(option)}
               className={cn(
-                'bg-fill-hover hover:bg-fill-press aria-pressed:bg-chord aria-pressed:text-ground relative h-11 rounded-xl font-mono font-semibold transition-colors',
+                'bg-fill-hover hover:bg-fill-press aria-pressed:bg-chord aria-pressed:text-ground relative h-10 rounded-xl font-mono font-semibold transition-colors',
                 isOriginal &&
                   'after:absolute after:bottom-[5px] after:left-1/2 after:size-1 after:-translate-x-1/2 after:bg-current after:opacity-75'
               )}
@@ -134,8 +131,14 @@ export function KeyPicker({
           );
         })}
       </fieldset>
-      {hasCapoRow ? (
-        <div className="flex items-center justify-between gap-2.5">
+      <div className="mt-3 flex items-center justify-between gap-2.5">
+        <span className="text-ink-2 text-[0.8125rem] font-semibold">
+          {t('reader.showChordsAs')}
+        </span>
+        <ChordNotationToggle notation={notation} onChange={setNotation} />
+      </div>
+      {onCapoChange ? (
+        <div className="mt-3 flex items-center justify-between gap-2.5">
           <span className="text-ink-2 text-[0.8125rem] font-semibold">
             <b className="block font-semibold">{t('reader.capo')}</b>
             <small className="text-chord block text-xs font-semibold">
@@ -155,19 +158,20 @@ export function KeyPicker({
           />
         </div>
       ) : null}
-      <div className="grid grid-cols-2 gap-2">
+      {offset === 0 && fret === 0 ? null : (
         <Button
-          variant="secondary"
-          disabled={offset === 0 && fret === 0}
-          onClick={() => {
+          variant="link"
+          className="mt-2.5 min-h-10 w-full rounded-xl text-sm"
+          onClick={(event) => {
+            const tray = event.currentTarget.closest('[role="dialog"]');
             onChange(originalKey);
             onCapoChange?.(null);
+            if (tray instanceof HTMLElement) tray.focus();
           }}
         >
           {t('reader.resetTo', { key: keyLabel(originalKey) })}
         </Button>
-        <Button onClick={() => setIsOpen(false)}>{t('reader.done')}</Button>
-      </div>
-    </Panel>
+      )}
+    </Tray>
   );
 }

@@ -9,12 +9,11 @@ import { conventionalKey } from '@/features/chords/key-spelling';
 import { keyLabel, type MusicKey, parseKey } from '@/features/chords/theory';
 import { useReaderMode } from '@/features/reader/chord-display';
 import { KeyPicker } from '@/features/reader/key-picker';
-import { ReadingPanel, ShareButton } from '@/features/reader/reader-controls';
+import { ReadingPanel, ShareButton, WideReadingControls } from '@/features/reader/reader-controls';
 import { ReaderLayout } from '@/features/reader/reader-layout';
 import { ReaderModes } from '@/features/reader/reader-modes';
 import { useSongCapo } from '@/features/reader/song-capo';
 import { SongReader } from '@/features/reader/song-reader';
-import { useIsWide } from '@/hooks/use-wide';
 import { createStoredChoice } from '@/lib/stored-choice';
 
 import { keyForSong, publicSetlistUrl, type Setlist } from '../api';
@@ -60,7 +59,6 @@ export function MusicianView({
   actions,
 }: MusicianViewProps) {
   const { t, i18n } = useTranslation();
-  const isWide = useIsWide();
   const [mode] = useReaderMode();
   const [chosenKeys, setChosenKeys] = useState<Record<string, number>>({});
   const [isListOpen, setIsListOpen] = useState(false);
@@ -203,20 +201,7 @@ export function MusicianView({
       compactTitle={song.title}
       actions={
         <>
-          {isWide ? (
-            <ReadingPanel
-              trigger={
-                <Button
-                  variant="glass"
-                  size="icon-lg"
-                  className="text-[0.9375rem]"
-                  aria-label={t('reader.reading')}
-                >
-                  Aa
-                </Button>
-              }
-            />
-          ) : null}
+          <WideReadingControls />
           {actions}
           {share}
         </>

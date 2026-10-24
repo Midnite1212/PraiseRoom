@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import type { LyricsColumns } from './lyrics-columns';
-import { LyricsColumnsControl, SongInfo } from './reader-controls';
+import { LyricsColumnsControl, ReadingPanel, SongInfo } from './reader-controls';
 import type { ReaderSong } from './song';
 
 describe('LyricsColumnsControl', () => {
@@ -40,5 +40,22 @@ describe('SongInfo', () => {
 
     rerender(<SongInfo song={{ ...song, capo: null }} />);
     expect(screen.queryByText('Capo')).not.toBeInTheDocument();
+  });
+});
+
+describe('ReadingPanel', () => {
+  afterEach(() => localStorage.clear());
+
+  it('steps the lyric size and stops at the ends', async () => {
+    const user = userEvent.setup();
+    localStorage.setItem('lyrics-size', 'sm');
+    render(<ReadingPanel trigger={<button type="button">Aa</button>} />);
+    await user.click(screen.getByRole('button', { name: 'Aa' }));
+
+    expect(screen.getByRole('dialog', { name: 'Reading' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Smaller lyrics' })).toBeDisabled();
+    await user.click(screen.getByRole('button', { name: 'Larger lyrics' }));
+    expect(localStorage.getItem('lyrics-size')).toBe('md');
+    expect(screen.getByRole('button', { name: 'Smaller lyrics' })).toBeEnabled();
   });
 });
