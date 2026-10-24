@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { clearAuthToken } from '@/lib/api-client';
 import { requestUrl, sessionResponse } from '@/test/mock-fetch';
 
-import { duplicateSetlist, publicSetlistUrl, setSetlistFolders } from './api';
+import { duplicateSetlist, publicSetlistUrl, setSetlistFolders, setSetlistSongs } from './api';
 
 describe('publicSetlistUrl', () => {
   it('builds the public view link on the given origin', () => {
@@ -50,5 +50,13 @@ describe('setlist requests', () => {
     expect(url).toBe('/api/setlists/update');
     expect(init?.method).toBe('PUT');
     expect(init?.body).toBe(JSON.stringify({ id: 'abc', groupIds: ['f1', 'f2'] }));
+  });
+
+  it('sets the songs with a PUT of only the song ids', async () => {
+    await setSetlistSongs('abc', ['s1', 's2']);
+    const { url, init } = lastApiCall();
+    expect(url).toBe('/api/setlists/update');
+    expect(init?.method).toBe('PUT');
+    expect(init?.body).toBe(JSON.stringify({ id: 'abc', songs: ['s1', 's2'] }));
   });
 });

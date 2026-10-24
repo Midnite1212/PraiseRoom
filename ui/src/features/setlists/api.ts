@@ -101,6 +101,12 @@ export const duplicateSetlist = (setlistId: string, name: string) =>
     body: { id: setlistId, name },
   });
 
+export const setSetlistSongs = (setlistId: string, songs: string[]) =>
+  apiRequest('/api/setlists/update', savedSetlistSchema, {
+    method: 'PUT',
+    body: { id: setlistId, songs },
+  });
+
 export const setSetlistFolders = (setlistId: string, groupIds: string[]) =>
   apiRequest('/api/setlists/update', savedSetlistSchema, {
     method: 'PUT',

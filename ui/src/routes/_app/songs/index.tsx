@@ -292,6 +292,7 @@ function SongsPage() {
           <SongPreview
             key={selectedSong._id}
             song={selectedSong}
+            session={session}
             canEdit={canAdd}
             onClose={closePreview}
           />
