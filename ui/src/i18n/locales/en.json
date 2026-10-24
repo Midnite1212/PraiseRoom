@@ -340,6 +340,19 @@
     "deleteDescription": "It disappears for everyone, including its folders and its public link.",
     "deleted": "Setlist deleted.",
     "deleteFailed": "Could not delete the setlist. Please try again.",
+    "frame": {
+      "saving": "Saving…",
+      "saved": "Saved",
+      "saveFailed": "Could not save",
+      "retry": "Try again",
+      "paused": "Not saved yet",
+      "undo": "Undo",
+      "undone": "Undone",
+      "done": "Done",
+      "savesAsYouGo": "Everything saves as you go",
+      "moveHandle": "Move {{title}}: drag, or use the up and down arrows",
+      "moved": "{{title}} moved to position {{position}} of {{count}}"
+    },
     "songs": "Songs",
     "songsHint": "Drag to reorder · keys are for this set",
     "noSongsWide": "Add some from the right.",
@@ -358,20 +371,7 @@
     "addDate": "Add a date",
     "noDate": "No date",
     "noFolder": "No folder",
-    "foldersHint": "Everyone in these folders can open and edit this setlist.",
-    "frame": {
-      "saving": "Saving…",
-      "saved": "Saved",
-      "saveFailed": "Could not save",
-      "retry": "Try again",
-      "paused": "Not saved yet",
-      "undo": "Undo",
-      "undone": "Undone",
-      "done": "Done",
-      "savesAsYouGo": "Everything saves as you go",
-      "moveHandle": "Move {{title}}: drag, or use the up and down arrows",
-      "moved": "{{title}} moved to position {{position}} of {{count}}"
-    }
+    "foldersHint": "Everyone in these folders can open and edit this setlist."
   },
   "folders": {
     "title": "Folders",

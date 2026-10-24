@@ -37,6 +37,6 @@ export const weekdayLabels = (language: string): { key: number; label: string }[
     const date = new Date(2024, 0, 1 + index);
     return {
       key: date.getDay(),
-      label: new Intl.DateTimeFormat(language, { weekday: 'narrow' }).format(date),
+      label: new Intl.DateTimeFormat(dateLocale(language), { weekday: 'narrow' }).format(date),
     };
   });
