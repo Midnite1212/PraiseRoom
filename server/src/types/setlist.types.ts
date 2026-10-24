@@ -6,12 +6,18 @@ type SetlistSongKey = {
   key: string;
 };
 
+type SetlistSongNote = {
+  songId: string;
+  note: string;
+};
+
 type SetlistRecord = RecordFields & {
   name: string;
   date: Date | null;
   createdBy?: string;
   songs: string[];
   songKeys: SetlistSongKey[];
+  songNotes: SetlistSongNote[];
   lastUpdatedBy?: string;
   publicLink: string | null;
   groupIds: string[];
@@ -38,4 +44,5 @@ export {
   SetlistAccess,
   SetlistRecord,
   SetlistSongKey,
+  SetlistSongNote,
 };

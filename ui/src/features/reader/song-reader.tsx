@@ -1,3 +1,4 @@
+import { FileText } from 'pixelarticons/react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -24,6 +25,8 @@ type SongReaderProps = {
   onPlayKeyChange: (key: MusicKey) => void;
   capo?: number;
   onCapoChange?: (capo: number | null) => void;
+  // The setlist's note on this song; shown under the artist in Chords mode only.
+  note?: string;
   children?: ReactNode;
 };
 
@@ -35,6 +38,7 @@ export function SongReader({
   onPlayKeyChange,
   capo = 0,
   onCapoChange,
+  note = '',
   children,
 }: SongReaderProps) {
   const { t } = useTranslation();
@@ -77,6 +81,12 @@ export function SongReader({
             <LyricsColumnsControl columns={lyricsColumns} onChange={setLyricsColumns} />
           </div>
         </div>
+        {mode === 'chords' && note !== '' ? (
+          <p className="bg-fill-hover text-ink-2 mt-3 inline-flex items-center gap-2 rounded-xl py-1.5 pr-3 pl-2.5 text-[0.8125rem] font-semibold">
+            <FileText className="text-chord size-icon flex-none" />
+            {note}
+          </p>
+        ) : null}
       </header>
 
       {song.chordLyrics.trim() === '' ? (

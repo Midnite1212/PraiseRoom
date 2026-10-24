@@ -38,6 +38,12 @@ export const castOptionalInteger = (
   return number;
 };
 
+export const castBoundedText = (path: string, value: unknown, maxLength: number): string | null => {
+  const text = castOptionalString(path, value)?.trim() ?? '';
+  if (Array.from(text).length > maxLength) throw new InvalidInputError(path);
+  return text === '' ? null : text;
+};
+
 export const castRequiredString = (path: string, value: unknown): string => {
   const cast = castOptionalString(path, value);
   if (cast === null || cast === '') throw new InvalidInputError(path);

@@ -363,7 +363,12 @@
       "moved": "{{title}} moved to position {{position}} of {{count}}"
     },
     "songs": "Songs",
-    "songsHint": "Drag to reorder · keys are for this set",
+    "songsHint": "Drag to reorder · keys and notes are for this set",
+    "note": "Note",
+    "notePlaceholder": "A note for the team, e.g. acapella last chorus",
+    "noteFor": "Note for {{title}}",
+    "addNoteFor": "Add a note to {{title}}",
+    "editNoteFor": "Edit the note on {{title}}",
     "noSongsWide": "Add some from the right.",
     "noSongsPhone": "Tap Add songs below.",
     "removed": "Removed {{title}}. Undo brings it back.",

@@ -10,6 +10,10 @@ export type SetlistSong = z.infer<typeof setlistSongSchema>;
 
 const songKeySchema = z.object({ songId: z.string(), key: z.string() });
 
+const songNoteSchema = z.object({ songId: z.string(), note: z.string() });
+
+export const SONG_NOTE_MAX_LENGTH = 80;
+
 export const setlistSchema = z.object({
   _id: z.string(),
   name: z.string(),
@@ -19,6 +23,7 @@ export const setlistSchema = z.object({
   groupIds: z.array(z.string()).default([]),
   songs: z.array(setlistSongSchema),
   songKeys: z.array(songKeySchema),
+  songNotes: z.array(songNoteSchema).default([]),
 });
 
 export type Setlist = z.infer<typeof setlistSchema>;
@@ -52,6 +57,9 @@ export const setlistQueryOptions = (setlistId: string) =>
 export const keyForSong = (setlist: Setlist, song: SetlistSong): string =>
   setlist.songKeys.find(({ songId }) => songId === song._id)?.key ?? song.originalKey;
 
+export const noteForSong = (setlist: Pick<Setlist, 'songNotes'>, songId: string): string =>
+  setlist.songNotes.find((entry) => entry.songId === songId)?.note ?? '';
+
 // Built from the current origin rather than the stored publicLink, which keeps the domain it was created on.
 export const publicSetlistUrl = (setlistId: string, origin = window.location.origin): string =>
   new URL(`/setlist/view/${setlistId}`, origin).href;
@@ -78,6 +86,7 @@ export type SetlistInput = {
   date: string | null;
   songs: string[];
   songKeys: { songId: string; key: string }[];
+  songNotes: { songId: string; note: string }[];
   groupIds: string[];
 };
 

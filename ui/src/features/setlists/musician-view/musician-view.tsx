@@ -17,7 +17,7 @@ import { useSongCapo } from '@/features/reader/song-capo';
 import { SongReader } from '@/features/reader/song-reader';
 import { createStoredChoice } from '@/lib/stored-choice';
 
-import { keyForSong, publicSetlistUrl, type Setlist } from '../api';
+import { keyForSong, noteForSong, publicSetlistUrl, type Setlist } from '../api';
 import { formatSetlistDate } from '../format-date';
 import { useLocalOrder } from './local-order';
 import {
@@ -367,6 +367,7 @@ export function MusicianView({
         onPlayKeyChange={changeKey}
         capo={capo}
         onCapoChange={changeCapo}
+        note={noteForSong(setlist, song._id)}
       >
         {currentIndex === songCount - 1 ? (
           <div className="border-hairline text-ink-2 mt-10 flex items-center gap-3.5 border-t py-5">

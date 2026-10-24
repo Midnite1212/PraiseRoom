@@ -12,18 +12,28 @@ const song = (id: string, originalKey: string, key: string, tempo = 'Medium'): D
   originalKey,
   tempo: [tempo],
   key,
+  note: '',
 });
 
 const SONGS = [song('a', 'G', 'G'), song('b', 'D', 'E'), song('c', 'C', 'A')];
 
-const renderRows = () => {
+const renderRows = (songs: DraftSong[] = SONGS) => {
   const onReorder = vi.fn<(songs: DraftSong[]) => void>();
   const onStepKey = vi.fn<(songId: string, step: 1 | -1) => void>();
   const onRemove = vi.fn<(song: DraftSong) => void>();
+  const onNoteChange = vi.fn<(songId: string, note: string) => void>();
+  const onNoteCommit = vi.fn<() => void>();
   render(
-    <SongRows songs={SONGS} onReorder={onReorder} onStepKey={onStepKey} onRemove={onRemove} />
+    <SongRows
+      songs={songs}
+      onReorder={onReorder}
+      onStepKey={onStepKey}
+      onNoteChange={onNoteChange}
+      onNoteCommit={onNoteCommit}
+      onRemove={onRemove}
+    />
   );
-  return { onReorder, onStepKey, onRemove };
+  return { onReorder, onStepKey, onRemove, onNoteChange, onNoteCommit };
 };
 
 const rowOf = (title: string) => {
@@ -61,6 +71,25 @@ describe('SongRows', () => {
 
     await user.click(screen.getByRole('button', { name: 'Remove Song c' }));
     expect(onRemove).toHaveBeenCalledWith(SONGS[2]);
+  });
+
+  it('shows a quiet add button for no note and the note text once there is one', () => {
+    renderRows([{ ...song('a', 'G', 'G'), note: 'Acapella last chorus' }, song('b', 'D', 'D')]);
+    expect(rowOf('Song a').getByText('Acapella last chorus')).toBeInTheDocument();
+    expect(rowOf('Song b').getByRole('button', { name: 'Add a note to Song b' })).toBeVisible();
+  });
+
+  it('reports typing in the note field and commits when it is left', async () => {
+    const user = userEvent.setup();
+    const { onNoteChange, onNoteCommit } = renderRows();
+    await user.click(screen.getByRole('button', { name: 'Add a note to Song b' }));
+    const field = screen.getByRole('textbox', { name: 'Note for Song b' });
+    expect(field).toHaveAttribute('maxlength', '80');
+    await user.type(field, 'Hi');
+    expect(onNoteChange).toHaveBeenLastCalledWith('b', 'i');
+    await user.tab();
+    expect(onNoteCommit).toHaveBeenCalled();
+    expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
   });
 
   it('moves a song with the arrow keys on its handle', async () => {

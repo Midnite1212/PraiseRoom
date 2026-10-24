@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { after, afterEach, before, beforeEach, describe, it, mock } from 'node:test';
 
+import { InvalidInputError } from '../db/cast';
 import { groupRepository } from '../db/repositories/group.repository';
 import { CallerAccess, ownershipRepository } from '../db/repositories/ownership.repository';
 import {
@@ -306,6 +307,7 @@ describe('setlist controllers', () => {
             { key: 'D', songId: SONG_A },
             { key: 'E', songId: SONG_C },
           ],
+          songNotes: [{ note: 'Acapella last chorus', songId: SONG_A }],
           songs: [SONG_A, SONG_B],
         },
         user: USER,
@@ -321,6 +323,7 @@ describe('setlist controllers', () => {
         name: 'Sunday',
         publicLink: `https://worship.example/setlist/view/${_id}`,
         songKeys: [{ key: 'D', songId: SONG_A }],
+        songNotes: [{ note: 'Acapella last chorus', songId: SONG_A }],
         songs: [SONG_A, SONG_B],
       });
       assert.equal(res.statusCode, 200);
@@ -683,6 +686,35 @@ describe('setlist controllers', () => {
       ]);
       assert.equal(res.statusCode, 200);
       assert.equal(res.body, setlist);
+    });
+
+    it('passes song notes to the repository after the edit-permission check', async () => {
+      mockStored(storedSetlist({ createdBy: OTHER_USER_ID }));
+      mockOwnership(null);
+      const update = mock.method(setlistRepository, 'updateLive', async () => ({}));
+      const body = { id: SETLIST_ID, songNotes: [{ note: 'Key change', songId: SONG_A }] };
+      const forbidden = await call(updateSetlist, { body, user: USER });
+      assert.equal(forbidden.statusCode, 403);
+      assert.equal(update.mock.callCount(), 0);
+
+      const res = await call(updateSetlist, { body, user: ADMIN });
+      assert.equal(res.statusCode, 200);
+      assert.deepEqual(update.mock.calls[0]?.arguments[1], {
+        songNotes: [{ note: 'Key change', songId: SONG_A }],
+      });
+    });
+
+    it('answers 400 when the repository rejects a song note', async () => {
+      mockStored(storedSetlist({ createdBy: USER.id }));
+      mockOwnership(null);
+      mock.method(setlistRepository, 'updateLive', async () => {
+        throw new InvalidInputError('songNotes.note');
+      });
+      const res = await call(updateSetlist, {
+        body: { id: SETLIST_ID, songNotes: [{ note: 'x'.repeat(500), songId: SONG_A }] },
+        user: USER,
+      });
+      assert.equal(res.statusCode, 400);
     });
 
     it('filters songKeys against the stored songs when songs is not sent', async () => {

@@ -7,12 +7,14 @@ import {
   SetlistAccess,
   SetlistRecord,
   SetlistSongKey,
+  SetlistSongNote,
 } from '../../types/setlist.types';
 import { PublicSongRecord, SongRecord } from '../../types/song.types';
 import {
   InvalidInputError,
   castDate,
   castObjectId,
+  castBoundedText,
   castObjectIdArray,
   castRequiredString,
   has,
@@ -21,6 +23,7 @@ import { getDb } from '../connect';
 import { toObjectId } from '../objectId';
 import {
   MUSIC_KEYS,
+  SETLIST_SONG_NOTE_MAX_LENGTH,
   groupSetlists,
   setlistSongKeys,
   setlistSongs,
@@ -31,7 +34,14 @@ import { groupRepository } from './group.repository';
 import { Executor, Transaction, groupBy, presentFields, unique } from './shared';
 import { toPublicSongRecord, toSongRecord } from './song.repository';
 
-export const SETLIST_FIELDS = ['name', 'date', 'songs', 'songKeys', 'groupIds'] as const;
+export const SETLIST_FIELDS = [
+  'name',
+  'date',
+  'songs',
+  'songKeys',
+  'songNotes',
+  'groupIds',
+] as const;
 
 export type SetlistField = (typeof SETLIST_FIELDS)[number];
 export type SetlistFields = Partial<Record<SetlistField, unknown>>;
@@ -50,13 +60,19 @@ export type GroupLinkResolver = (
 export class GroupLinkForbiddenError extends Error {}
 
 type SetlistRow = typeof setlists.$inferSelect;
-type SetlistLinks = { songIds: string[]; songKeys: SetlistSongKey[]; groupIds: string[] };
+type SetlistLinks = {
+  songIds: string[];
+  songKeys: SetlistSongKey[];
+  songNotes: SetlistSongNote[];
+  groupIds: string[];
+};
 
 type SetlistValues = {
   name?: string;
   date?: Date | null;
   songs?: string[];
   songKeys?: SetlistSongKey[];
+  songNotes?: SetlistSongNote[];
   groupIds?: string[];
 };
 
@@ -77,12 +93,30 @@ const castSongKeys = (value: unknown): SetlistSongKey[] => {
   return Array.from(keyBySongId, ([songId, key]) => ({ songId, key }));
 };
 
+export const castSongNotes = (value: unknown): SetlistSongNote[] => {
+  if (!Array.isArray(value)) throw new InvalidInputError('songNotes');
+  const noteBySongId = new Map<string, string>();
+  for (const entry of value) {
+    if (typeof entry !== 'object' || entry === null) throw new InvalidInputError('songNotes');
+    const songId = castObjectId('songNotes.songId', Reflect.get(entry, 'songId'));
+    const note = castBoundedText(
+      'songNotes.note',
+      Reflect.get(entry, 'note'),
+      SETLIST_SONG_NOTE_MAX_LENGTH
+    );
+    noteBySongId.delete(songId);
+    if (note !== null) noteBySongId.set(songId, note);
+  }
+  return Array.from(noteBySongId, ([songId, note]) => ({ songId, note }));
+};
+
 const toSetlistValues = (fields: SetlistFields): SetlistValues => {
   const values: SetlistValues = {};
   if (has(fields, 'name')) values.name = castRequiredString('name', fields.name);
   if (has(fields, 'date')) values.date = castDate('date', fields.date);
   if (has(fields, 'songs')) values.songs = castObjectIdArray('songs', fields.songs);
   if (has(fields, 'songKeys')) values.songKeys = castSongKeys(fields.songKeys);
+  if (has(fields, 'songNotes')) values.songNotes = castSongNotes(fields.songNotes);
   if (has(fields, 'groupIds'))
     values.groupIds = unique(castObjectIdArray('groupIds', fields.groupIds));
   return values;
@@ -91,11 +125,18 @@ const toSetlistValues = (fields: SetlistFields): SetlistValues => {
 const isLiveSetlist = (id: string): SQL | undefined =>
   and(eq(setlists.id, toObjectId(id)), eq(setlists.isDeleted, false));
 
+const uniqueBySongId = (notes: SetlistSongNote[]): SetlistSongNote[] =>
+  Array.from(new Map(notes.map((entry) => [entry.songId, entry])).values());
+
 const loadLinks = async (executor: Executor, ids: string[]): Promise<Map<string, SetlistLinks>> => {
   if (ids.length === 0) return new Map();
   // Sequential: the executor may be a transaction, and one pg client cannot run queries concurrently.
   const songRows = await executor
-    .select({ setlistId: setlistSongs.setlistId, songId: setlistSongs.songId })
+    .select({
+      setlistId: setlistSongs.setlistId,
+      songId: setlistSongs.songId,
+      note: setlistSongs.note,
+    })
     .from(setlistSongs)
     .where(inArray(setlistSongs.setlistId, ids))
     .orderBy(asc(setlistSongs.setlistId), asc(setlistSongs.position));
@@ -118,6 +159,11 @@ const loadLinks = async (executor: Executor, ids: string[]): Promise<Map<string,
     (row) => row.setlistId,
     (row) => row.songId
   );
+  const notesBySetlist = groupBy(
+    songRows.filter((row) => row.note !== null),
+    (row) => row.setlistId,
+    (row) => ({ songId: row.songId, note: row.note ?? '' })
+  );
   const keysBySetlist = groupBy(
     keyRows,
     (row) => row.setlistId,
@@ -134,6 +180,7 @@ const loadLinks = async (executor: Executor, ids: string[]): Promise<Map<string,
       {
         songIds: songIdsBySetlist.get(id) ?? [],
         songKeys: keysBySetlist.get(id) ?? [],
+        songNotes: uniqueBySongId(notesBySetlist.get(id) ?? []),
         groupIds: groupIdsBySetlist.get(id) ?? [],
       },
     ])
@@ -165,6 +212,7 @@ const toSetlistRecord = (row: SetlistRow, links: SetlistLinks | undefined): Setl
   ...presentFields({ createdBy: row.createdBy }),
   songs: links?.songIds ?? [],
   songKeys: links?.songKeys ?? [],
+  songNotes: links?.songNotes ?? [],
   ...presentFields({ lastUpdatedBy: row.lastUpdatedBy }),
   publicLink: row.publicLink,
   groupIds: links?.groupIds ?? [],
@@ -205,6 +253,7 @@ const populatePublic = async (rows: SetlistRow[]): Promise<PublicSetlistRecord[]
     date: record.date,
     songs: songsBySetlist.get(record._id) ?? [],
     songKeys: record.songKeys,
+    songNotes: record.songNotes,
     publicLink: record.publicLink,
     isDeleted: record.isDeleted,
     createdAt: record.createdAt,
@@ -218,12 +267,49 @@ const populate = (
 ): Promise<PopulatedSetlistRecord[] | PublicSetlistRecord[]> =>
   view === 'public' ? populatePublic(rows) : populateFull(rows);
 
-const replaceSongs = async (tx: Transaction, setlistId: string, songIds: string[]) => {
+const loadStoredNotes = async (tx: Transaction, setlistId: string) => {
+  const rows = await tx
+    .select({ songId: setlistSongs.songId, note: setlistSongs.note })
+    .from(setlistSongs)
+    .where(eq(setlistSongs.setlistId, setlistId))
+    .orderBy(asc(setlistSongs.position));
+  return rows.flatMap(({ songId, note }): SetlistSongNote[] =>
+    note === null ? [] : [{ songId, note }]
+  );
+};
+
+const replaceSongs = async (
+  tx: Transaction,
+  setlistId: string,
+  songIds: string[],
+  songNotes: SetlistSongNote[] | undefined
+) => {
+  const notes = songNotes ?? (await loadStoredNotes(tx, setlistId));
+  const noteBySongId = new Map(notes.map(({ songId, note }) => [songId, note]));
   await tx.delete(setlistSongs).where(eq(setlistSongs.setlistId, setlistId));
   if (songIds.length === 0) return;
-  await tx
-    .insert(setlistSongs)
-    .values(songIds.map((songId, position) => ({ setlistId, position, songId })));
+  await tx.insert(setlistSongs).values(
+    songIds.map((songId, position) => ({
+      setlistId,
+      position,
+      songId,
+      note: noteBySongId.get(songId) ?? null,
+    }))
+  );
+};
+
+const replaceSongNotes = async (
+  tx: Transaction,
+  setlistId: string,
+  songNotes: SetlistSongNote[]
+) => {
+  await tx.update(setlistSongs).set({ note: null }).where(eq(setlistSongs.setlistId, setlistId));
+  for (const { songId, note } of songNotes) {
+    await tx
+      .update(setlistSongs)
+      .set({ note })
+      .where(and(eq(setlistSongs.setlistId, setlistId), eq(setlistSongs.songId, songId)));
+  }
 };
 
 const replaceSongKeys = async (tx: Transaction, setlistId: string, songKeys: SetlistSongKey[]) => {
@@ -259,7 +345,8 @@ const replaceGroups = async (tx: Transaction, setlistId: string, groupIds: strin
 };
 
 const writeLinks = async (tx: Transaction, setlistId: string, values: SetlistValues) => {
-  if (values.songs) await replaceSongs(tx, setlistId, values.songs);
+  if (values.songs) await replaceSongs(tx, setlistId, values.songs, values.songNotes);
+  else if (values.songNotes) await replaceSongNotes(tx, setlistId, values.songNotes);
   if (values.songKeys) await replaceSongKeys(tx, setlistId, values.songKeys);
   if (values.groupIds) await replaceGroups(tx, setlistId, values.groupIds);
 };
@@ -335,7 +422,11 @@ export const setlistRepository = {
           updatedAt: now,
         })
         .returning();
-      await writeLinks(tx, id, { songs: links?.songIds, songKeys: links?.songKeys });
+      await writeLinks(tx, id, {
+        songs: links?.songIds,
+        songKeys: links?.songKeys,
+        songNotes: links?.songNotes,
+      });
       const [record] = await assembleRecords(tx, [row]);
       return record;
     });
@@ -394,7 +485,7 @@ export const setlistRepository = {
     fields: SetlistFields,
     resolveGroupLinks?: GroupLinkResolver
   ): Promise<SetlistRecord | null> {
-    const { songs: songIds, songKeys, groupIds, ...scalars } = toSetlistValues(fields);
+    const { songs: songIds, songKeys, songNotes, groupIds, ...scalars } = toSetlistValues(fields);
     return getDb().transaction(async (tx) => {
       const [locked] = await tx
         .select({ id: setlists.id })
@@ -422,7 +513,12 @@ export const setlistRepository = {
         .set({ ...scalars, updatedAt: new Date() })
         .where(eq(setlists.id, locked.id))
         .returning();
-      await writeLinks(tx, row.id, { songs: songIds, songKeys, groupIds: linkedGroupIds });
+      await writeLinks(tx, row.id, {
+        songs: songIds,
+        songKeys,
+        songNotes,
+        groupIds: linkedGroupIds,
+      });
       const [record] = await assembleRecords(tx, [row]);
       return record;
     });

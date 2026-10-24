@@ -331,6 +331,7 @@ describe(
           'name',
           'publicLink',
           'songKeys',
+          'songNotes',
           'songs',
           'updatedAt',
         ]);
@@ -373,6 +374,44 @@ describe(
           user: MEMBER,
         });
         assert.deepEqual(minor.songKeys, [{ key: 'F#m', songId: b._id }]);
+      });
+
+      it('stores a note per song, keeps it when only songs change, and clears it with an empty note', async () => {
+        const a = await ok(createSong, { body: song('A'), user: ADMIN });
+        const b = await ok(createSong, { body: song('B'), user: ADMIN });
+        const created = await ok(createSetlist, {
+          body: {
+            name: 'Sunday',
+            songNotes: [
+              { note: '  Acapella last chorus  ', songId: a._id },
+              { note: '   ', songId: b._id },
+            ],
+            songs: [a._id, b._id],
+          },
+          user: MEMBER,
+        });
+        assert.deepEqual(created.songNotes, [{ note: 'Acapella last chorus', songId: a._id }]);
+
+        const reordered = await ok(updateSetlist, {
+          body: { id: created._id, songs: [b._id, a._id] },
+          user: MEMBER,
+        });
+        assert.deepEqual(reordered.songNotes, [{ note: 'Acapella last chorus', songId: a._id }]);
+
+        const renoted = await ok(updateSetlist, {
+          body: { id: created._id, songNotes: [{ note: 'Key change', songId: b._id }] },
+          user: MEMBER,
+        });
+        assert.deepEqual(renoted.songNotes, [{ note: 'Key change', songId: b._id }]);
+
+        const anonymous = await ok(getSetlist, { query: { id: created._id } });
+        assert.deepEqual(anonymous.songNotes, [{ note: 'Key change', songId: b._id }]);
+
+        const cleared = await ok(updateSetlist, {
+          body: { id: created._id, songNotes: [] },
+          user: MEMBER,
+        });
+        assert.deepEqual(cleared.songNotes, []);
       });
 
       it('rejects unknown song ids and bad dates with 400 and writes nothing', async () => {

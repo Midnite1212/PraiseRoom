@@ -29,8 +29,24 @@ const DRAFT: SetlistDraft = {
   date: '',
   groupIds: [],
   songs: [
-    { _id: 'a', title: 'Song a', artist: 'X', originalKey: 'G', tempo: ['Fast'], key: 'G' },
-    { _id: 'b', title: 'Song b', artist: 'X', originalKey: 'D', tempo: ['Slow'], key: 'D' },
+    {
+      _id: 'a',
+      title: 'Song a',
+      artist: 'X',
+      originalKey: 'G',
+      tempo: ['Fast'],
+      key: 'G',
+      note: '',
+    },
+    {
+      _id: 'b',
+      title: 'Song b',
+      artist: 'X',
+      originalKey: 'D',
+      tempo: ['Slow'],
+      key: 'D',
+      note: '',
+    },
   ],
 };
 
@@ -91,6 +107,31 @@ describe('SetlistEditor', () => {
       songKeys: [{ songId: 'a', key: 'Ab' }],
       groupIds: [],
     });
+  });
+
+  it('saves a typed note on its song and sends none for a cleared one', async () => {
+    stubApi();
+    const user = userEvent.setup();
+    renderEditor();
+    await user.click(await screen.findByRole('button', { name: 'Add a note to Song a' }));
+    await user.type(
+      screen.getByRole('textbox', { name: 'Note for Song a' }),
+      'Acapella last chorus'
+    );
+    await user.keyboard('{Enter}');
+    expect(screen.getByRole('button', { name: 'Edit the note on Song a' })).toHaveFocus();
+    await user.click(screen.getByRole('button', { name: 'Done' }));
+    await waitFor(() => expect(updates).toHaveLength(1));
+    expect(updates[0]).toMatchObject({
+      songNotes: [{ songId: 'a', note: 'Acapella last chorus' }],
+    });
+
+    await user.click(screen.getByRole('button', { name: 'Edit the note on Song a' }));
+    await user.clear(screen.getByRole('textbox', { name: 'Note for Song a' }));
+    await user.keyboard('{Escape}');
+    await user.click(screen.getByRole('button', { name: 'Done' }));
+    await waitFor(() => expect(updates).toHaveLength(2));
+    expect(updates[1]).toMatchObject({ songNotes: [] });
   });
 
   it('undoes the last change', async () => {

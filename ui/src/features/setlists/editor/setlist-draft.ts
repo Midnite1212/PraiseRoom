@@ -3,7 +3,7 @@ import { keyLabel, parseKey } from '@/features/chords/theory';
 import type { SongSummary } from '@/features/songs/api';
 import { moveItem } from '@/lib/move-item';
 
-import type { Setlist, SetlistInput } from '../api';
+import { noteForSong, type Setlist, type SetlistInput } from '../api';
 import { fromDateInputValue, toDateInputValue } from '../format-date';
 
 export type DraftSong = {
@@ -14,6 +14,8 @@ export type DraftSong = {
   tempo: string[];
   // The key this set plays the song in.
   key: string;
+  // A line for the team about this song in this set; '' for none.
+  note: string;
 };
 
 export type SetlistDraft = {
@@ -29,11 +31,12 @@ export const NEW_SETLIST_INPUT: SetlistInput = {
   date: null,
   songs: [],
   songKeys: [],
+  songNotes: [],
   groupIds: [],
 };
 
 export const draftFromSetlist = (
-  setlist: Pick<Setlist, 'name' | 'date' | 'groupIds' | 'songs' | 'songKeys'>
+  setlist: Pick<Setlist, 'name' | 'date' | 'groupIds' | 'songs' | 'songKeys' | 'songNotes'>
 ): SetlistDraft => ({
   name: setlist.name,
   date: toDateInputValue(setlist.date),
@@ -45,6 +48,7 @@ export const draftFromSetlist = (
     originalKey: song.originalKey,
     tempo: song.tempo,
     key: setlist.songKeys.find(({ songId }) => songId === song._id)?.key ?? song.originalKey,
+    note: noteForSong(setlist, song._id),
   })),
 });
 
@@ -56,11 +60,17 @@ export const toSongKeys = (songs: readonly DraftSong[]) =>
     return chosen && original && chosen.root !== original.root ? [{ songId: _id, key }] : [];
   });
 
+export const toSongNotes = (songs: readonly DraftSong[]) =>
+  songs.flatMap(({ _id, note }) =>
+    note.trim() === '' ? [] : [{ songId: _id, note: note.trim() }]
+  );
+
 export const draftToInput = (draft: SetlistDraft): SetlistInput => ({
   name: draft.name.trim(),
   date: fromDateInputValue(draft.date),
   songs: draft.songs.map(({ _id }) => _id),
   songKeys: toSongKeys(draft.songs),
+  songNotes: toSongNotes(draft.songs),
   groupIds: draft.groupIds,
 });
 
@@ -77,6 +87,7 @@ export const toDraftSong = (song: SongSummary): DraftSong => ({
   originalKey: song.originalKey,
   tempo: song.tempo,
   key: song.originalKey,
+  note: '',
 });
 
 export const addSong = (draft: SetlistDraft, song: SongSummary): SetlistDraft =>
@@ -107,6 +118,11 @@ export const stepSongKey = (draft: SetlistDraft, songId: string, step: 1 | -1): 
     if (song._id !== songId || !current) return song;
     return { ...song, key: keyLabel(conventionalKey(current.root + step, current.isMinor)) };
   }),
+});
+
+export const setSongNote = (draft: SetlistDraft, songId: string, note: string): SetlistDraft => ({
+  ...draft,
+  songs: draft.songs.map((song) => (song._id === songId ? { ...song, note } : song)),
 });
 
 export const toggleFolder = (draft: SetlistDraft, folderId: string): SetlistDraft => ({

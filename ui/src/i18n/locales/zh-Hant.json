@@ -363,7 +363,12 @@
       "moved": "「{{title}}」已移至第 {{position}} 位，共 {{count}} 項"
     },
     "songs": "詩歌",
-    "songsHint": "拖曳排序 · 調只適用於這份歌單",
+    "songsHint": "拖曳排序 · 調與備註只適用於這份歌單",
+    "note": "備註",
+    "notePlaceholder": "給團隊的備註，例如：最後一段副歌清唱",
+    "noteFor": "{{title}}的備註",
+    "addNoteFor": "為{{title}}加上備註",
+    "editNoteFor": "編輯{{title}}的備註",
     "noSongsWide": "從右邊加入詩歌。",
     "noSongsPhone": "按下方的「加入詩歌」。",
     "removed": "已移除{{title}}。按「復原」可以救回。",

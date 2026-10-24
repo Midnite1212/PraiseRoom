@@ -3,6 +3,7 @@ import { describe, it } from 'node:test';
 
 import {
   InvalidInputError,
+  castBoundedText,
   castDate,
   castObjectIdArray,
   castOptionalInteger,
@@ -32,6 +33,17 @@ describe('cast', () => {
     assert.equal(castOptionalString('year', undefined), null);
     for (const value of [{}, ['a'], { toString: () => 'x' }]) {
       assert.throws(() => castOptionalString('year', value), InvalidInputError);
+    }
+  });
+
+  it('casts bounded text trimmed, empty as null, and rejects text over the limit', () => {
+    assert.equal(castBoundedText('note', '  Hi  ', 5), 'Hi');
+    assert.equal(castBoundedText('note', '12345', 5), '12345');
+    for (const empty of [undefined, null, '', '   ']) {
+      assert.equal(castBoundedText('note', empty, 5), null);
+    }
+    for (const bad of ['123456', {}, ['a'], 'a\u0000b']) {
+      assert.throws(() => castBoundedText('note', bad, 5), InvalidInputError, JSON.stringify(bad));
     }
   });
 
