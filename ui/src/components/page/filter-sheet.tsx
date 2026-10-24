@@ -106,7 +106,7 @@ export function FilterToggle({
       aria-pressed={pressed}
       onClick={onToggle}
       className={cn(
-        'bg-fill-hover text-ink-2 aria-pressed:bg-fill-on aria-pressed:text-ink font-semibold transition-colors duration-150 [&_svg]:size-icon [&_svg]:flex-none',
+        'bg-fill-hover text-ink-2 aria-pressed:liquid-on aria-pressed:text-ink font-semibold transition-colors duration-150 [&_svg]:size-icon [&_svg]:flex-none',
         shape === 'chip'
           ? 'inline-flex h-9 items-center gap-2 rounded-full px-3 text-[0.8125rem]'
           : 'aria-pressed:[&_svg]:text-chord flex min-h-[78px] flex-col items-center justify-center gap-1.5 rounded-2xl px-1 py-2 text-center text-xs leading-tight'

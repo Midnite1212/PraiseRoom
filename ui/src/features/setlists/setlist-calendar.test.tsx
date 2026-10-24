@@ -58,6 +58,6 @@ describe('SetlistCalendar', () => {
     expect(onLightDay).toHaveBeenCalledWith('2030-06-20');
     fireEvent.pointerLeave(dayButton('Next set'));
     expect(onLightDay).toHaveBeenLastCalledWith(null);
-    expect(dayButton('Later').className).toContain('bg-fill-on');
+    expect(dayButton('Later')).toHaveClass('liquid-on');
   });
 });

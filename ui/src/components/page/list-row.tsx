@@ -10,7 +10,7 @@ export const LIST_COMPACT_CLASSES = 'm-0 flex list-none flex-col gap-0 p-0';
 
 export const listRowClasses = (className?: string) =>
   cn(
-    'hover:bg-fill-hover relative grid min-h-16 w-full items-center gap-3 rounded-2xl px-3 py-2 text-left transition-colors duration-150 ease-out',
+    'hover:liquid-hover relative grid min-h-16 w-full items-center gap-3 rounded-2xl px-3 py-2 text-left transition-colors duration-150 ease-out',
     className
   );
 

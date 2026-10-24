@@ -75,7 +75,7 @@ function ChoiceTiles<T extends string>({
           aria-label={tile.ariaLabel}
           {...tile.attributes}
           className={cn(
-            'bg-fill-hover hover:bg-fill-press data-[state=on]:bg-fill-on rounded-2xl text-left transition-colors data-[state=on]:shadow-[inset_0_0_0_1px_color-mix(in_oklch,var(--brand)_30%,transparent)]',
+            'bg-fill-hover hover:liquid-hover data-[state=on]:liquid-on data-[state=on]:hover:liquid-on rounded-2xl text-left transition-colors',
             tileClassName
           )}
         >
