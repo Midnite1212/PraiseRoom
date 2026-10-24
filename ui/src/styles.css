@@ -891,11 +891,71 @@
   }
 }
 
+/* Pixel motion: a `withPixelMotion` icon draws its frames side by side, 24 units apart, and a lit
+   control steps the strip through them while hovered or keyboard-focused. The negative delay skips
+   the rest frame so the motion starts on the first step; a one-shot strip ends back at rest. */
+.pixel-strip {
+  --pixel-frame: 110ms;
+  --pixel-play: pixel-strip calc(var(--frames) * var(--pixel-frame)) steps(var(--frames))
+    calc(var(--pixel-frame) * -1) var(--pixel-repeat, 1);
+}
+.pixel-strip[data-loop] {
+  --pixel-repeat: infinite;
+}
+.pixel-strip[data-frames='2'] {
+  --frames: 2;
+}
+.pixel-strip[data-frames='3'] {
+  --frames: 3;
+}
+.pixel-strip[data-frames='4'] {
+  --frames: 4;
+}
+.pixel-strip[data-frames='5'] {
+  --frames: 5;
+}
+.pixel-strip[data-frames='6'] {
+  --frames: 6;
+}
+.pixel-strip[data-frames='7'] {
+  --frames: 7;
+}
+.pixel-strip[data-frames='8'] {
+  --frames: 8;
+}
+
+@keyframes pixel-strip {
+  to {
+    transform: translateX(calc(var(--frames) * -24px));
+  }
+}
+
+:is(.lit-icon, .lit-icon-danger):focus-visible .pixel-strip {
+  animation: var(--pixel-play);
+}
+@media (hover: hover) {
+  .lit-icon:hover:not(
+      :disabled,
+      [aria-disabled='true'],
+      [aria-current='page'],
+      [aria-pressed='true'],
+      [data-status='active']
+    )
+    .pixel-strip,
+  .lit-icon-danger:hover:not(:disabled, [aria-disabled='true']) .pixel-strip {
+    animation: var(--pixel-play);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
     animation-duration: 1ms !important;
     transition-duration: 1ms !important;
+  }
+  /* The 1ms rule above would strobe a looping strip. */
+  .pixel-strip {
+    animation: none !important;
   }
 }
