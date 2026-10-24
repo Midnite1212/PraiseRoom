@@ -5,6 +5,7 @@ import { listRowClasses, RowText } from '@/components/page/list-row';
 import { AvatarStack } from '@/components/primitives/avatar';
 import type { Session } from '@/features/auth/session';
 import type { Folder } from '@/features/setlists/api';
+import { dateLocale } from '@/lib/date-locale';
 import { cn } from '@/lib/utils';
 
 import { membersOf, type Person } from './api';
@@ -29,7 +30,7 @@ const avatarPeople = (people: readonly Person[] | undefined, folderId: string) =
 function FolderMeta({ count, nextDate }: { count: number; nextDate: string | null }) {
   const { t, i18n } = useTranslation();
   const next = nextDate
-    ? new Intl.DateTimeFormat(i18n.language, { day: 'numeric', month: 'short' }).format(
+    ? new Intl.DateTimeFormat(dateLocale(i18n.language), { day: 'numeric', month: 'short' }).format(
         new Date(nextDate)
       )
     : null;

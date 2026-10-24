@@ -12,6 +12,7 @@ import {
   setlistsQueryOptions,
 } from '@/features/setlists/api';
 import { useCachedQueryData } from '@/hooks/use-cached-query-data';
+import { dateLocale } from '@/lib/date-locale';
 
 // The rail's glass card for the next set, on every page except Home and Setlists, which lead with it.
 export function NextUpIsland({ pathname }: { pathname: string }) {
@@ -32,7 +33,7 @@ function NextUpCard({ setlist, now }: { setlist: SetlistSummary; now: number }) 
   }, [queryClient, setlist._id]);
   const when = setlist.date ? whenLabel(setlist.date, now, i18n.language) : '';
   const day = setlist.date
-    ? new Intl.DateTimeFormat(i18n.language, {
+    ? new Intl.DateTimeFormat(dateLocale(i18n.language), {
         weekday: 'long',
         day: 'numeric',
         month: 'long',

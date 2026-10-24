@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { nextSetlistId, type SetStatus, setStatus } from '@/components/primitives/set-status';
 import { Button } from '@/components/ui/button';
+import { dateLocale } from '@/lib/date-locale';
 import { cn } from '@/lib/utils';
 
 import type { SetlistSummary } from './api';
@@ -38,7 +39,7 @@ const DOT_CLASSES: Partial<Record<SetStatus, string>> = {
 
 const LEGEND = [
   { status: 'next', labelKey: 'setlists.calendar.next' },
-  { status: 'up', labelKey: 'setlists.calendar.coming' },
+  { status: 'up', labelKey: 'setlists.calendar.later' },
   { status: 'past', labelKey: 'setlists.calendar.played' },
 ] as const;
 
@@ -75,11 +76,13 @@ export function SetlistCalendar({ setlists, now, day, onDayChange }: SetlistCale
     const date = new Date(2024, 0, 1 + index);
     return {
       key: date.getDay(),
-      label: new Intl.DateTimeFormat(i18n.language, { weekday: 'narrow' }).format(date),
+      label: new Intl.DateTimeFormat(dateLocale(i18n.language), { weekday: 'narrow' }).format(date),
     };
   });
   const dayLabel = (date: Date) =>
-    new Intl.DateTimeFormat(i18n.language, { day: 'numeric', month: 'long' }).format(date);
+    new Intl.DateTimeFormat(dateLocale(i18n.language), { day: 'numeric', month: 'long' }).format(
+      date
+    );
 
   const cellClasses =
     'relative grid h-[34px] place-items-center rounded-[10px] font-mono text-[0.8125rem] font-semibold';
@@ -91,7 +94,10 @@ export function SetlistCalendar({ setlists, now, day, onDayChange }: SetlistCale
     >
       <div className="mb-1 ml-1.5 flex items-center justify-between">
         <b className="font-semibold">
-          {new Intl.DateTimeFormat(i18n.language, { month: 'long', year: 'numeric' }).format(month)}
+          {new Intl.DateTimeFormat(dateLocale(i18n.language), {
+            month: 'long',
+            year: 'numeric',
+          }).format(month)}
         </b>
         <span className="flex">
           <Button
@@ -170,7 +176,7 @@ export function SetlistCalendar({ setlists, now, day, onDayChange }: SetlistCale
         {day ? (
           <>
             {t('setlists.calendar.showing', {
-              day: new Intl.DateTimeFormat(i18n.language, {
+              day: new Intl.DateTimeFormat(dateLocale(i18n.language), {
                 day: 'numeric',
                 month: 'short',
               }).format(new Date(`${day}T00:00:00`)),

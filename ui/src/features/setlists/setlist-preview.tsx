@@ -10,6 +10,7 @@ import { Tag } from '@/components/primitives/tag';
 import { TempoMeter } from '@/components/primitives/tempo-meter';
 import { Button } from '@/components/ui/button';
 import type { Session } from '@/features/auth/session';
+import { dateLocale } from '@/lib/date-locale';
 
 import { keyForSong, setlistQueryOptions, type SetlistSummary } from './api';
 import type { SetlistNames } from './setlist-row';
@@ -48,7 +49,7 @@ export function SetlistPreview({
       : null;
   const when = setlist.date
     ? [
-        new Intl.DateTimeFormat(i18n.language, {
+        new Intl.DateTimeFormat(dateLocale(i18n.language), {
           weekday: 'short',
           day: 'numeric',
           month: 'short',

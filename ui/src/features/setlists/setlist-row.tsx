@@ -20,6 +20,7 @@ import { type SwipeAction, SwipeRow } from '@/components/primitives/swipe-row';
 import { Tag } from '@/components/primitives/tag';
 import { Button } from '@/components/ui/button';
 import type { Session } from '@/features/auth/session';
+import { dateLocale } from '@/lib/date-locale';
 import { cn } from '@/lib/utils';
 
 import type { SetlistSummary } from './api';
@@ -93,7 +94,9 @@ export function SetlistRow({
   const { t, i18n } = useTranslation();
   const { rowClassName, rowProps, linkProps } = useRowPick(setlist);
   const weekday = setlist.date
-    ? new Intl.DateTimeFormat(i18n.language, { weekday: 'short' }).format(new Date(setlist.date))
+    ? new Intl.DateTimeFormat(dateLocale(i18n.language), { weekday: 'short' }).format(
+        new Date(setlist.date)
+      )
     : null;
   const sharedBy =
     setlist.createdBy && setlist.createdBy !== session.id
@@ -152,7 +155,9 @@ export function PlayedSetlistRow({ setlist, actions }: SetlistRowProps) {
   const { rowClassName, rowProps, linkProps } = useRowPick(setlist);
   const date = setlist.date ? new Date(setlist.date) : null;
   const dateLabel = date
-    ? new Intl.DateTimeFormat(i18n.language, { day: 'numeric', month: 'short' }).format(date)
+    ? new Intl.DateTimeFormat(dateLocale(i18n.language), { day: 'numeric', month: 'short' }).format(
+        date
+      )
     : null;
   const fullDate = formatSetlistDate(setlist.date, i18n.language);
 
@@ -230,7 +235,7 @@ export function ManagedSetlistRow({
       title={setlist.name}
       description={
         setlist.date
-          ? new Intl.DateTimeFormat(i18n.language, {
+          ? new Intl.DateTimeFormat(dateLocale(i18n.language), {
               weekday: 'long',
               day: 'numeric',
               month: 'long',
