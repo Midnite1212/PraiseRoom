@@ -1,0 +1,12 @@
+# Editors (autosave frame)
+
+Reference: `src/components/editor/editor-frame.tsx`, `src/hooks/use-autosave.ts`, `src/hooks/use-undo-history.ts`. Nothing renders them yet; the song editor and the setlist editor adopt them when they are rebuilt.
+
+- **No Save button.** Every change saves as it goes. The draft lives in `useUndoHistory` (client state for the form being edited, seeded from the item's query); the server copy stays in TanStack Query.
+- **`useUndoHistory(initial)`** keeps the last 60 snapshots. `set(next)` pushes a step, `undo()` steps back, `canUndo` drives the button. Pass `{ coalesceKey: 'title' }` while typing so one field counts as one step, and call `endCoalesce()` on blur.
+- **`useAutosave({ value, save })`** waits until `value` has been still for `delayMs` (800), then calls `save(value)` once at a time and returns `status` (`saving`, `saved`, `error`, `paused` while `enabled` is false), `flush()` and `retry()`. Wire `save` to a mutation's `mutateAsync` against the existing PUT update endpoint (`updateSong`, `updateSetlist`), and invalidate or set the item's query data in that mutation's `onSuccess`. The value on mount counts as saved, so opening an editor never saves. Send the whole draft each time; the update endpoints replace the item.
+- **`EditorFrame`** is the one frame: `names` (the borderless title input and its subtitle), Undo, `actions` (a mode switch), Done, `chips`, and on phones a glass save bar in place of the header buttons. It hides the phone tab dock through `useEditingMode()` (an `editing` class on `<html>` that `AppShell` reads) and handles Ctrl/Cmd+Z outside text fields and Ctrl/Cmd+S ("Everything saves as you go").
+- **Done** is `onDone`: `await flush()`, then navigate to the item (`/songs/$songId`, `/setlists/$setlistId`). Do not navigate when `flush()` resolves `false`.
+- **Chips** are `EditorChip` (`label`, `value`, popover content, width through `contentClassName`) inside the frame's `chips`. The Saving / Saved chip sits at the end of the row on wide screens and under the title on phones; the frame places it.
+- **Reordering** uses `ReorderList`: `renderItem(item, index, handle)` puts the grip where the row wants it. Dragging reorders live; arrow keys on the focused grip move the row and announce "X moved to position N of M". Give `getLabel` the item's visible name.
+- **Tests:** `useAutosave` tests use `vi.useFakeTimers()` because the debounce is the behaviour under test; everything else still avoids timers.

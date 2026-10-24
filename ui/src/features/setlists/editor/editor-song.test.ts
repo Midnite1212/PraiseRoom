@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { keyOptionsFor, moveItem, toSongKeys } from './editor-song';
+import { keyOptionsFor, toSongKeys } from './editor-song';
 
 const song = (id: string, originalKey: string, key: string) => ({
   _id: id,
@@ -21,13 +21,5 @@ describe('editor songs', () => {
     expect(toSongKeys([song('a', 'G', 'G'), song('b', 'G', 'A'), song('c', 'Bb', 'A#')])).toEqual([
       { songId: 'b', key: 'A' },
     ]);
-  });
-
-  it('moves items without mutating the input and ignores moves off the ends', () => {
-    const items = ['a', 'b', 'c'];
-    expect(moveItem(items, 0, 2)).toEqual(['b', 'c', 'a']);
-    expect(moveItem(items, 2, 1)).toEqual(['a', 'c', 'b']);
-    expect(moveItem(items, 0, -1)).toEqual(items);
-    expect(items).toEqual(['a', 'b', 'c']);
   });
 });
