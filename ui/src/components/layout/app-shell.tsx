@@ -1,5 +1,5 @@
 import { Link, useMatches, useRouterState } from '@tanstack/react-router';
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { toInitials } from '@/components/primitives/avatar';
@@ -7,11 +7,14 @@ import { BrandMark } from '@/components/primitives/brand-mark';
 import { Vinyl } from '@/components/primitives/vinyl';
 import type { Session } from '@/features/auth/session';
 import { useScrolledClass } from '@/hooks/use-scrolled-class';
+import { useIsWide } from '@/hooks/use-wide';
+import { isRailShortcut, railShortcutLabel, toggledRail, useRail } from '@/lib/rail';
 
 import { AppBarSlotsContext } from './app-bar-slots';
 import { NAV_ITEMS, useNavCounts } from './nav';
 import { NextUpIsland } from './next-up-island';
 import { ProfileMenu } from './profile-menu';
+import { SidebarIcon } from './sidebar-icon';
 
 // Wide: the brand on the ground, then floating islands down the left (pages, next up, you). Phones: a top bar with the brand and
 // your profile, and one glass tab island at the bottom. Reader routes bring their own chrome.
@@ -44,10 +47,26 @@ function PageChrome({
   const [left, setLeft] = useState<HTMLElement | null>(null);
   const [right, setRight] = useState<HTMLElement | null>(null);
   const initial = toInitials(session.fullName);
+  const [rail, setRail] = useRail();
+  const isWide = useIsWide();
+  const folded = rail === 'folded';
+  const toggleLabel = t(folded ? 'nav.expandSidebar' : 'nav.collapseSidebar');
+  const shortcut = railShortcutLabel(navigator.platform);
+
+  useEffect(() => {
+    if (!isWide) return undefined;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (!isRailShortcut(event)) return;
+      event.preventDefault();
+      setRail(toggledRail(rail));
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [isWide, rail, setRail]);
 
   return (
     <AppBarSlotsContext value={{ left, right }}>
-      <div>
+      <div data-rail={rail} className="group/rail data-[rail=folded]:[--rail-w:72px]">
         <div aria-hidden className="ground-wash pointer-events-none fixed inset-0 z-0" />
         <div
           aria-hidden
@@ -60,15 +79,28 @@ function PageChrome({
 
         <aside
           aria-label={t('app.name')}
-          className="wide:flex pointer-events-none fixed top-(--top) bottom-(--bottom) left-(--frame-l) z-30 hidden w-(--rail-w) flex-col gap-2.5 *:pointer-events-auto"
+          className="wide:flex ease-liquid pointer-events-none fixed top-(--top) bottom-(--bottom) left-(--frame-l) z-30 hidden w-(--rail-w) flex-col gap-2.5 transition-[width] duration-[360ms] *:pointer-events-auto"
         >
-          <Link
-            to="/"
-            className="flex h-(--head-h) flex-none items-center gap-3 self-start px-5 font-bold tracking-[-0.01em] whitespace-nowrap"
-          >
-            <BrandMark className="-ml-2.5" />
-            {t('app.name')}
-          </Link>
+          <div className="group/brand relative flex h-(--head-h) flex-none items-center self-stretch pr-2.5 pl-5 group-data-[rail=folded]/rail:justify-center group-data-[rail=folded]/rail:p-0">
+            <Link
+              to="/"
+              aria-label={t('app.name')}
+              className="flex items-center gap-3 font-bold tracking-[-0.01em] whitespace-nowrap"
+            >
+              <BrandMark className="-ml-2.5 transition-opacity duration-150 ease-out group-data-[rail=folded]/rail:ml-[-6px] group-data-[rail=folded]/rail:group-focus-within/brand:opacity-0 group-data-[rail=folded]/rail:group-hover/brand:opacity-0" />
+              <span className="group-data-[rail=folded]/rail:hidden">{t('app.name')}</span>
+            </Link>
+            <button
+              type="button"
+              aria-label={toggleLabel}
+              aria-expanded={!folded}
+              title={`${toggleLabel} (${shortcut})`}
+              onClick={() => setRail(toggledRail(rail))}
+              className="text-ink-3 hover:text-ink focus-visible:ring-ring [&_svg]:size-icon ml-auto grid size-9 flex-none place-items-center rounded-full transition-[color,opacity] duration-150 ease-out outline-none group-data-[rail=folded]/rail:absolute group-data-[rail=folded]/rail:inset-0 group-data-[rail=folded]/rail:m-auto group-data-[rail=folded]/rail:opacity-0 group-data-[rail=folded]/rail:group-hover/brand:opacity-100 focus-visible:opacity-100 focus-visible:ring-2"
+            >
+              <SidebarIcon />
+            </button>
+          </div>
 
           <nav
             aria-label={t('nav.pages')}
@@ -79,11 +111,13 @@ function PageChrome({
                 key={id}
                 to={to}
                 activeOptions={{ exact: to === '/' }}
-                className="text-ink-2 hover:bg-fill-hover hover:text-ink data-[status=active]:bg-fill-on data-[status=active]:text-ink [&_svg]:size-icon flex h-11 items-center gap-3 rounded-2xl px-3 font-semibold transition-colors [&_svg]:flex-none"
+                aria-label={t(labelKey)}
+                title={folded ? t(labelKey) : undefined}
+                className="text-ink-2 hover:bg-fill-hover hover:text-ink data-[status=active]:bg-fill-on data-[status=active]:text-ink [&_svg]:size-icon flex h-11 items-center gap-3 rounded-2xl px-3 font-semibold transition-colors group-data-[rail=folded]/rail:justify-center group-data-[rail=folded]/rail:gap-0 group-data-[rail=folded]/rail:p-0 [&_svg]:flex-none"
               >
                 <Icon />
-                {t(labelKey)}
-                <span className="text-ink-3 ml-auto font-mono text-xs font-semibold">
+                <span className="group-data-[rail=folded]/rail:hidden">{t(labelKey)}</span>
+                <span className="text-ink-3 ml-auto font-mono text-xs font-semibold group-data-[rail=folded]/rail:hidden">
                   {counts[id]}
                 </span>
               </Link>
@@ -97,10 +131,12 @@ function PageChrome({
             trigger={
               <button
                 type="button"
-                className="glass group/vinyl mt-auto flex items-center gap-3 py-1.5 pr-4 pl-1.5 text-left"
+                aria-label={folded ? session.fullName : undefined}
+                title={folded ? session.fullName : undefined}
+                className="glass group/vinyl mt-auto flex items-center gap-3 py-1.5 pr-4 pl-1.5 text-left group-data-[rail=folded]/rail:justify-center group-data-[rail=folded]/rail:p-1.5"
               >
                 <Vinyl initial={initial} />
-                <span className="min-w-0">
+                <span className="min-w-0 group-data-[rail=folded]/rail:hidden">
                   <b className="block truncate text-sm">{session.fullName}</b>
                   <small className="text-ink-3 block text-xs">
                     {t(`user.accessType.${session.accessType}`)} · {t('user.profile')}
@@ -138,7 +174,7 @@ function PageChrome({
           </div>
         </header>
 
-        <main className="wide:mr-0 wide:ml-[calc(var(--frame-l)+var(--rail-w))] wide:max-w-none wide:px-12 wide:pt-(--top) wide:pb-16 relative z-[1] mx-auto max-w-[760px] px-(--pg) pt-[calc(var(--top)+60px)] pb-[calc(var(--tab-h)+var(--bottom)+96px)]">
+        <main className="wide:mr-0 wide:ml-[calc(var(--frame-l)+var(--rail-w))] wide:transition-[margin-left] wide:duration-[360ms] wide:ease-liquid wide:max-w-none wide:px-12 wide:pt-(--top) wide:pb-16 relative z-[1] mx-auto max-w-[760px] px-(--pg) pt-[calc(var(--top)+60px)] pb-[calc(var(--tab-h)+var(--bottom)+96px)]">
           <div key={pathname} className="animate-view-in wide:max-w-[1040px]">
             {children}
           </div>

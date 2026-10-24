@@ -13,6 +13,7 @@ import {
 } from '@/features/setlists/api';
 import { useCachedQueryData } from '@/hooks/use-cached-query-data';
 import { dateLocale } from '@/lib/date-locale';
+import { useRail } from '@/lib/rail';
 
 // The rail's glass card for the next set, on every page except Home and Setlists, which lead with it.
 export function NextUpIsland({ pathname }: { pathname: string }) {
@@ -27,6 +28,7 @@ export function NextUpIsland({ pathname }: { pathname: string }) {
 function NextUpCard({ setlist, now }: { setlist: SetlistSummary; now: number }) {
   const { t, i18n } = useTranslation();
   const queryClient = useQueryClient();
+  const [rail] = useRail();
   const detail = useCachedQueryData(setlistQueryOptions(setlist._id).queryKey);
   useEffect(() => {
     void queryClient.prefetchQuery(setlistQueryOptions(setlist._id));
@@ -45,17 +47,22 @@ function NextUpCard({ setlist, now }: { setlist: SetlistSummary; now: number }) 
       to="/setlists/$setlistId"
       params={{ setlistId: setlist._id }}
       aria-label={t('nav.nextUpLabel', { name: setlist.name, day })}
-      className="glass grid gap-1 p-3 text-left [--glass-r:24px]"
+      title={rail === 'folded' ? setlist.name : undefined}
+      className="glass grid gap-1 p-3 text-left [--glass-r:24px] group-data-[rail=folded]/rail:justify-items-center group-data-[rail=folded]/rail:p-2"
     >
-      <span className="grid grid-cols-[44px_minmax(0,1fr)] items-center gap-3">
+      <span className="grid grid-cols-[44px_minmax(0,1fr)] items-center gap-3 group-data-[rail=folded]/rail:grid-cols-[44px]">
         <DateBlock date={setlist.date} status="next" size="sm" />
-        <span className="min-w-0">
+        <span className="min-w-0 group-data-[rail=folded]/rail:hidden">
           <b className="block truncate text-sm">{setlist.name}</b>
           <small className="text-ink-3 block text-xs">{t('nav.nextUpWhen', { when })}</small>
         </span>
       </span>
       {detail ? (
-        <SetStrip status="next" titles={detail.songs.map((song) => song.title)} className="pl-14" />
+        <SetStrip
+          status="next"
+          titles={detail.songs.map((song) => song.title)}
+          className="pl-14 group-data-[rail=folded]/rail:hidden"
+        />
       ) : null}
     </Link>
   );
