@@ -14,6 +14,7 @@ import { ReaderBack } from '@/features/reader/reader-back';
 import { ReadingPanel } from '@/features/reader/reader-controls';
 import { ReaderLayout } from '@/features/reader/reader-layout';
 import { ReaderModes } from '@/features/reader/reader-modes';
+import { useSongCapo } from '@/features/reader/song-capo';
 import { SongReader } from '@/features/reader/song-reader';
 import { type Song, songQueryOptions } from '@/features/songs/api';
 import { useIsWide } from '@/hooks/use-wide';
@@ -41,7 +42,7 @@ function SongView({ song }: { song: Song }) {
   const [mode] = useReaderMode();
   const originalKey = parseKey(song.originalKey);
   const [playKey, setPlayKey] = useState<MusicKey | null>(originalKey);
-  const [capo, setCapo] = useState(0);
+  const [capo, setCapo] = useSongCapo(song._id, song.capo);
   const readingTrigger = (className: string) => (
     <Button variant="glass" className={className} aria-label={t('reader.reading')}>
       Aa

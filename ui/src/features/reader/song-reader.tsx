@@ -26,7 +26,7 @@ type SongReaderProps = {
   playKey: MusicKey | null;
   onPlayKeyChange: (key: MusicKey) => void;
   capo?: number;
-  onCapoChange?: (capo: number) => void;
+  onCapoChange?: (capo: number | null) => void;
   children?: ReactNode;
 };
 

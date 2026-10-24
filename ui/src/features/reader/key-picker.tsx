@@ -16,7 +16,7 @@ type KeyPickerProps = {
   playKey: MusicKey;
   onChange: (key: MusicKey) => void;
   capo?: number;
-  onCapoChange?: (capo: number) => void;
+  onCapoChange?: (capo: number | null) => void;
   // `dock` is the taller pill in the phone's bottom row.
   placement?: 'head' | 'dock';
 };
@@ -161,7 +161,7 @@ export function KeyPicker({
           disabled={offset === 0 && fret === 0}
           onClick={() => {
             onChange(originalKey);
-            onCapoChange?.(0);
+            onCapoChange?.(null);
           }}
         >
           {t('reader.resetTo', { key: keyLabel(originalKey) })}

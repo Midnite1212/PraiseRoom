@@ -12,6 +12,7 @@ import { KeyPicker } from '@/features/reader/key-picker';
 import { ReadingPanel, ShareButton } from '@/features/reader/reader-controls';
 import { ReaderLayout } from '@/features/reader/reader-layout';
 import { ReaderModes } from '@/features/reader/reader-modes';
+import { useSongCapo } from '@/features/reader/song-capo';
 import { SongReader } from '@/features/reader/song-reader';
 import { useIsWide } from '@/hooks/use-wide';
 import { createStoredChoice } from '@/lib/stored-choice';
@@ -62,7 +63,6 @@ export function MusicianView({
   const isWide = useIsWide();
   const [mode] = useReaderMode();
   const [chosenKeys, setChosenKeys] = useState<Record<string, number>>({});
-  const [chosenCapos, setChosenCapos] = useState<Record<string, number>>({});
   const [isListOpen, setIsListOpen] = useState(false);
   const [songList, setSongList] = useSongListVisibility();
   const [isReordering, setIsReordering] = useState(false);
@@ -82,6 +82,7 @@ export function MusicianView({
   const songCount = entries.length;
   const currentIndex = Math.min(Math.max(songNumber, 1), Math.max(songCount, 1)) - 1;
   const song = entries[currentIndex];
+  const [capo, changeCapo] = useSongCapo(song?._id ?? '', song?.capo);
   const nextSong = entries[currentIndex + 1];
 
   const goToSong = (number: number) => {
@@ -168,8 +169,6 @@ export function MusicianView({
   const originalKey = parseKey(song.originalKey);
   const playKey = playKeyFor(currentIndex);
   const changeKey = (key: MusicKey) => setChosenKeys((keys) => ({ ...keys, [song._id]: key.root }));
-  const capo = chosenCapos[song._id] ?? 0;
-  const changeCapo = (fret: number) => setChosenCapos((capos) => ({ ...capos, [song._id]: fret }));
   const sidebarLabel = isSidebarShown ? t('reader.hideSongList') : t('reader.showSongList');
   const listProps = { songs, currentIndex, onSelect: select };
   const editableListProps = { ...listProps, isEditing: isReordering, onReorder: reorder };

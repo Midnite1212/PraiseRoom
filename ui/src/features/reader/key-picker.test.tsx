@@ -21,7 +21,7 @@ describe('KeyPicker capo', () => {
         playKey={PLAY}
         onChange={vi.fn<(key: MusicKey) => void>()}
         capo={2}
-        onCapoChange={vi.fn<(capo: number) => void>()}
+        onCapoChange={vi.fn<(capo: number | null) => void>()}
       />
     );
     await user.click(screen.getByRole('button', { name: /^Key/ }));
@@ -33,7 +33,7 @@ describe('KeyPicker capo', () => {
   it('steps the capo, names the shapes to play, and shows the capo on the pill', async () => {
     localStorage.setItem('guitar-capo', 'on');
     const user = userEvent.setup();
-    const onCapoChange = vi.fn<(capo: number) => void>();
+    const onCapoChange = vi.fn<(capo: number | null) => void>();
     render(
       <KeyPicker
         originalKey={ORIGINAL}
@@ -57,7 +57,7 @@ describe('KeyPicker capo', () => {
     localStorage.setItem('guitar-capo', 'on');
     const user = userEvent.setup();
     const onChange = vi.fn<(key: MusicKey) => void>();
-    const onCapoChange = vi.fn<(capo: number) => void>();
+    const onCapoChange = vi.fn<(capo: number | null) => void>();
     render(
       <KeyPicker
         originalKey={ORIGINAL}
@@ -71,6 +71,6 @@ describe('KeyPicker capo', () => {
     await user.click(screen.getByRole('button', { name: 'Reset to G' }));
 
     expect(onChange).toHaveBeenCalledWith(ORIGINAL);
-    expect(onCapoChange).toHaveBeenCalledWith(0);
+    expect(onCapoChange).toHaveBeenCalledWith(null);
   });
 });
