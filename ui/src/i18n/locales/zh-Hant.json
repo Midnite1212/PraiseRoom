@@ -278,7 +278,11 @@
     "resetTo": "還原為 {{key}}",
     "done": "完成",
     "upNext": "下一首",
-    "endOfSet": "歌單完結"
+    "endOfSet": "歌單完結",
+    "editOrder": "調整次序",
+    "reset": "還原",
+    "yourOrder": "你的次序 · 只影響這部裝置",
+    "orderNote": "調整次序只影響這部裝置"
   },
   "editor": {
     "newTitle": "新增歌單",
