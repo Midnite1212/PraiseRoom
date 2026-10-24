@@ -4,6 +4,7 @@ import { useScrolledClass } from '@/hooks/use-scrolled-class';
 import { cn } from '@/lib/utils';
 
 import { useKeepAwake, useWakeLock } from './keep-awake';
+import { useReaderWidth } from './reader-width';
 import { useScrollingClass } from './use-scrolling-class';
 
 type ReaderLayoutProps = {
@@ -11,6 +12,8 @@ type ReaderLayoutProps = {
   back?: ReactNode;
   // Wide screens: what is open (a setlist's name and date) beside the back button.
   title?: ReactNode;
+  // Wide screens, setlists: One | Split, first in the right-hand group.
+  layout?: ReactNode;
   // Lyrics | Chords, then (wide, chords on) the notation toggle.
   modes: ReactNode;
   // Auto-scroll's play button, after the modes.
@@ -35,6 +38,7 @@ type ReaderLayoutProps = {
 export function ReaderLayout({
   back,
   title,
+  layout,
   modes,
   auto,
   compactTitle,
@@ -49,6 +53,8 @@ export function ReaderLayout({
   useScrolledClass();
   useScrollingClass();
   const [keepAwake] = useKeepAwake();
+  const [width] = useReaderWidth();
+  const isFull = width === 'full';
   useWakeLock(keepAwake === 'on');
   const offsetClass = sidebar
     ? 'wide:[--side-w:296px]'
@@ -57,7 +63,14 @@ export function ReaderLayout({
       : undefined;
 
   return (
-    <div className={cn('relative min-h-svh [--bar-h:0px] [--side-w:0px]', offsetClass)}>
+    <div
+      className={cn(
+        'relative min-h-svh [--bar-h:0px] [--side-w:0px]',
+        isFull &&
+          'wide:[--frame-l:max(10px,env(safe-area-inset-left))] wide:[--frame-r:max(10px,env(safe-area-inset-right))]',
+        offsetClass
+      )}
+    >
       <div aria-hidden className="ground-wash pointer-events-none fixed inset-0 z-0" />
       <div
         aria-hidden
@@ -78,12 +91,17 @@ export function ReaderLayout({
             {title}
           </div>
         ) : null}
-        {modes}
-        {auto}
-        <span className="wide:text-left wide:px-1 pointer-events-none! min-w-0 flex-1 truncate px-0 text-center text-[0.9375rem] font-semibold opacity-0 transition-opacity duration-200 in-[.scrolled]:opacity-100">
+        <div className="wide:order-2 wide:gap-2 flex items-center gap-1.5 *:pointer-events-auto">
+          {layout}
+          {modes}
+          {auto}
+        </div>
+        <span className="wide:order-1 wide:text-left wide:px-1 pointer-events-none! min-w-0 flex-1 truncate px-0 text-center text-[0.9375rem] font-semibold opacity-0 transition-opacity duration-200 in-[.scrolled]:opacity-100">
           {compactTitle}
         </span>
-        {actions}
+        <div className="wide:order-3 wide:gap-2 flex items-center gap-1.5 *:pointer-events-auto">
+          {actions}
+        </div>
       </header>
 
       {sidebar ? (
@@ -106,7 +124,9 @@ export function ReaderLayout({
         className={cn(
           isSplit
             ? 'fixed top-[calc(var(--top)+var(--top-h)+var(--bar-h)+10px)] right-(--frame-r) bottom-0 left-[calc(var(--frame-l)+var(--side-w))] z-[1] grid grid-cols-2'
-            : 'wide:max-w-[calc(1240px+var(--side-w))] wide:pt-[calc(var(--top)+var(--top-h)+var(--bar-h)+40px)] wide:pb-20 wide:pl-[calc(var(--side-w)+34px)] relative z-[1] mx-auto max-w-[760px] px-[18px] pt-[calc(var(--top)+var(--top-h)+40px)] pb-[calc(var(--dock-h)+48px+env(safe-area-inset-bottom))]'
+            : 'wide:pt-[calc(var(--top)+var(--top-h)+var(--bar-h)+40px)] wide:pb-20 wide:pl-[calc(var(--side-w)+34px)] relative z-[1] mx-auto max-w-[760px] px-[18px] pt-[calc(var(--top)+var(--top-h)+40px)] pb-[calc(var(--dock-h)+48px+env(safe-area-inset-bottom))]',
+          !isSplit &&
+            (isFull ? 'wide:max-w-none wide:pr-8' : 'wide:max-w-[calc(1240px+var(--side-w))]')
         )}
       >
         {children}

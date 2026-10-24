@@ -7,16 +7,19 @@ import { RemoveIcon } from '@/components/primitives/pixel-icons';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { type MusicKey, parseChord } from '@/features/chords/theory';
+import { cn } from '@/lib/utils';
 
 import { foldPastedChart } from './chart-fold';
 import {
   chordsOnWord,
   type DraftSection,
   diatonicChords,
+  END_SLOT,
+  LEAD_SLOT,
   parseLine,
   SECTION_TYPES,
   type SectionType,
-  wordsOf,
+  slotsOf,
 } from './song-draft';
 
 type Picking = { line: number; start: number } | null;
@@ -153,36 +156,40 @@ type TapLineProps = {
 
 export function TapLine({ raw, musicKey, picking, onPickingChange, onChord }: TapLineProps) {
   const line = parseLine(raw);
-  const words = wordsOf(line.text);
   if (line.text.trim() === '') {
     if (line.chords.length === 0) return <p aria-hidden className="m-0 h-[0.6em]" />;
     return (
-      <p className="m-0 flex flex-wrap gap-x-[0.28em] [&+p]:mt-[0.35em]">
+      <p className="m-0 flex flex-wrap gap-x-[0.28em] pl-5 [&+p]:mt-[0.35em]">
         <span className="text-chord min-h-[1.3em] font-mono leading-[1.3] font-semibold whitespace-nowrap">
           {line.chords.map(({ name }) => name).join(' ')}
         </span>
       </p>
     );
   }
+  const slots = slotsOf(line.text).map((slot) => (
+    <WordButton
+      key={slot.start}
+      word={slot.text}
+      slot={slot.start === LEAD_SLOT ? 'lead' : slot.start === END_SLOT ? 'end' : null}
+      chords={chordsOnWord(line, slot)}
+      musicKey={musicKey}
+      open={picking === slot.start}
+      onOpenChange={(open) => onPickingChange(open ? slot.start : null)}
+      onChord={(chord) => onChord(slot.start, chord)}
+    />
+  ));
+  const tail = slots.splice(-2);
   return (
-    <p className="m-0 flex flex-wrap gap-x-[0.28em] [&+p]:mt-[0.35em]">
-      {words.map((word) => (
-        <WordButton
-          key={word.start}
-          word={word.text}
-          chords={chordsOnWord(line, word)}
-          musicKey={musicKey}
-          open={picking === word.start}
-          onOpenChange={(open) => onPickingChange(open ? word.start : null)}
-          onChord={(chord) => onChord(word.start, chord)}
-        />
-      ))}
+    <p className="relative m-0 flex flex-wrap gap-x-[0.28em] pl-5 [&+p]:mt-[0.35em]">
+      {slots}
+      <span className="inline-flex gap-x-[0.28em]">{tail}</span>
     </p>
   );
 }
 
 type WordButtonProps = {
   word: string;
+  slot: 'lead' | 'end' | null;
   chords: string[];
   musicKey: MusicKey;
   open: boolean;
@@ -190,23 +197,46 @@ type WordButtonProps = {
   onChord: (chord: string | null) => void;
 };
 
-function WordButton({ word, chords, musicKey, open, onOpenChange, onChord }: WordButtonProps) {
+function WordButton({
+  word,
+  slot,
+  chords,
+  musicKey,
+  open,
+  onOpenChange,
+  onChord,
+}: WordButtonProps) {
   const { t } = useTranslation();
   const on = chords.join(' ');
+  const where = slot === null ? null : t(`songEditor.slot.${slot}`);
+  const label = where
+    ? t(on ? 'songEditor.chordAt' : 'songEditor.addChordAt', { chord: on, where })
+    : on
+      ? t('songEditor.chordOn', { chord: on, word })
+      : t('songEditor.addChordTo', { word });
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
         <button
           type="button"
-          aria-label={
-            on ? t('songEditor.chordOn', { chord: on, word }) : t('songEditor.addChordTo', { word })
-          }
-          className="group/word hover:bg-fill-hover aria-expanded:bg-fill-on -mx-[3px] inline-flex flex-col items-start rounded-lg px-[3px] py-0.5 text-left transition-colors duration-100"
+          aria-label={label}
+          className={cn(
+            'group/word hover:bg-fill-hover aria-expanded:bg-fill-on -mx-[3px] inline-flex flex-col items-start rounded-lg px-[3px] py-0.5 text-left transition-colors duration-100',
+            slot !== null && 'min-w-[18px]',
+            slot === 'lead' && 'absolute top-0 right-[calc(100%-18px)] m-0 items-end'
+          )}
         >
-          <span className="text-chord group-hover/word:empty:after:text-ink-3 group-aria-expanded/word:empty:after:text-ink-3 min-h-[1.3em] font-mono leading-[1.3] font-semibold whitespace-nowrap group-hover/word:empty:after:content-['+'] group-aria-expanded/word:empty:after:content-['+']">
+          <span
+            className={cn(
+              'text-chord min-h-[1.3em] font-mono leading-[1.3] font-semibold whitespace-nowrap',
+              slot === null
+                ? "group-hover/word:empty:after:text-ink-3 group-aria-expanded/word:empty:after:text-ink-3 group-hover/word:empty:after:content-['+'] group-aria-expanded/word:empty:after:content-['+']"
+                : "empty:after:text-ink-3 empty:after:content-['+'] empty:after:opacity-50"
+            )}
+          >
             {on}
           </span>
-          <span className="whitespace-pre">{word}</span>
+          <span className={cn('whitespace-pre', slot !== null && 'min-h-[1.3em]')}>{word}</span>
         </button>
       </PopoverTrigger>
       <PopoverContent
@@ -214,7 +244,13 @@ function WordButton({ word, chords, musicKey, open, onOpenChange, onChord }: Wor
         collisionPadding={12}
         className="w-[300px] max-w-[calc(100vw-24px)] gap-0"
       >
-        <ChordPicker word={word} current={chords} musicKey={musicKey} onChord={onChord} />
+        <ChordPicker
+          word={word}
+          slot={slot}
+          current={chords}
+          musicKey={musicKey}
+          onChord={onChord}
+        />
       </PopoverContent>
     </Popover>
   );
@@ -222,13 +258,14 @@ function WordButton({ word, chords, musicKey, open, onOpenChange, onChord }: Wor
 
 type ChordPickerProps = {
   word: string;
+  slot: 'lead' | 'end' | null;
   current: string[];
   musicKey: MusicKey;
   onChord: (chord: string | null) => void;
 };
 
 // The key's six chords, then any other chord by name.
-function ChordPicker({ word, current, musicKey, onChord }: ChordPickerProps) {
+function ChordPicker({ word, slot, current, musicKey, onChord }: ChordPickerProps) {
   const { t } = useTranslation();
   const palette = diatonicChords(musicKey);
   const only = current.length === 1 ? current[0] : undefined;
@@ -240,11 +277,18 @@ function ChordPicker({ word, current, musicKey, onChord }: ChordPickerProps) {
   return (
     <div className="flex flex-col">
       <p className="text-ink-2 mx-1 mb-3 text-sm">
-        <Trans
-          i18nKey="songEditor.chordOver"
-          values={{ word }}
-          components={{ word: <b className="text-ink" /> }}
-        />
+        {slot === null ? (
+          <Trans
+            i18nKey="songEditor.chordOver"
+            values={{ word }}
+            components={{ word: <b className="text-ink" /> }}
+          />
+        ) : (
+          <Trans
+            i18nKey={`songEditor.chordSlot.${slot}`}
+            components={{ where: <b className="text-ink" /> }}
+          />
+        )}
       </p>
       <div className="grid grid-cols-3 gap-1.5">
         {palette.map(({ chord, numeral }) => (

@@ -83,31 +83,67 @@ export type SongSearch = {
   themes?: readonly string[];
 };
 
-export const songSearchQueryOptions = ({
-  keyword,
+export type SongListSearch = Omit<SongSearch, 'page'>;
+
+const songListQuery = (
+  { keyword, tempo = [], themes = [], sort = 'title', dir = 'asc', keys = [] }: SongListSearch,
+  page: number
+) => ({
+  keyword: keyword || undefined,
   page,
-  tempo = [],
-  themes = [],
-  sort = 'title',
-  dir = 'asc',
-  keys = [],
-}: SongSearch) =>
+  limit: SONGS_PAGE_SIZE,
+  tempo,
+  themes,
+  keys: keyFilterSpellings(keys),
+  sortBy: sort === 'title' ? undefined : sort,
+  order: dir === 'desc' ? 'desc' : undefined,
+});
+
+export const songSearchQueryOptions = ({ page, ...search }: SongSearch) =>
   queryOptions({
-    queryKey: ['songs', 'search', { keyword, page, tempo, themes, sort, dir, keys }],
+    queryKey: [
+      'songs',
+      'search',
+      {
+        keyword: search.keyword,
+        page,
+        tempo: search.tempo ?? [],
+        themes: search.themes ?? [],
+        sort: search.sort ?? 'title',
+        dir: search.dir ?? 'asc',
+        keys: search.keys ?? [],
+      },
+    ],
     queryFn: ({ signal }) =>
       apiRequest('/api/songs/search', songSearchResponseSchema, {
-        query: {
-          keyword: keyword || undefined,
-          page,
-          limit: SONGS_PAGE_SIZE,
-          tempo,
-          themes,
-          keys: keyFilterSpellings(keys),
-          sortBy: sort === 'title' ? undefined : sort,
-          order: dir === 'desc' ? 'desc' : undefined,
-        },
+        query: songListQuery(search, page),
         signal,
       }),
+  });
+
+export const songListInfiniteQueryOptions = (search: SongListSearch) =>
+  infiniteQueryOptions({
+    queryKey: [
+      'songs',
+      'search',
+      'list',
+      {
+        keyword: search.keyword,
+        tempo: search.tempo ?? [],
+        themes: search.themes ?? [],
+        sort: search.sort ?? 'title',
+        dir: search.dir ?? 'asc',
+        keys: search.keys ?? [],
+      },
+    ],
+    initialPageParam: 1,
+    queryFn: ({ pageParam, signal }) =>
+      apiRequest('/api/songs/search', songSearchResponseSchema, {
+        query: songListQuery(search, pageParam),
+        signal,
+      }),
+    getNextPageParam: (lastPage) =>
+      lastPage.currentPage < lastPage.totalPages ? lastPage.currentPage + 1 : undefined,
   });
 
 export const songKeysQueryOptions = () =>

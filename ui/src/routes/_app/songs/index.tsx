@@ -1,6 +1,6 @@
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { createFileRoute } from '@tanstack/react-router';
-import { ChevronLeft, ChevronRight, Plus } from 'pixelarticons/react';
+import { Plus } from 'pixelarticons/react';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
@@ -23,6 +23,7 @@ import {
   SONG_SORTS,
   SORT_DIRECTIONS,
   songKeysQueryOptions,
+  songListInfiniteQueryOptions,
   songSearchQueryOptions,
   songSlug,
   type SongSort,
@@ -37,12 +38,12 @@ import { SongRows } from '@/features/songs/song-rows';
 import { MAX_KEYWORD_LENGTH, toSearchKeyword } from '@/features/songs/song-search';
 import { SongsTable } from '@/features/songs/songs-table';
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
+import { useNearEnd } from '@/hooks/use-near-end';
 import { useIsRoomy, useIsWide } from '@/hooks/use-wide';
 import { cn } from '@/lib/utils';
 
 const songsSearchSchema = z.object({
   q: z.string().default('').catch(''),
-  page: z.number().int().min(1).default(1).catch(1),
   tempo: z.array(z.string()).default([]).catch([]),
   themes: z.array(z.string()).default([]).catch([]),
   keys: z.array(z.enum(KEY_FILTER_OPTIONS)).default([]).catch([]),
@@ -54,9 +55,8 @@ const songsSearchSchema = z.object({
 
 export const Route = createFileRoute('/_app/songs/')({
   validateSearch: songsSearchSchema,
-  loaderDeps: ({ search: { q, page, tempo, themes, keys, sort, dir } }) => ({
+  loaderDeps: ({ search: { q, tempo, themes, keys, sort, dir } }) => ({
     q,
-    page,
     tempo,
     themes,
     keys,
@@ -64,10 +64,9 @@ export const Route = createFileRoute('/_app/songs/')({
     dir,
   }),
   loader: async ({ context, deps }) => {
-    await context.queryClient.ensureQueryData(
-      songSearchQueryOptions({
+    await context.queryClient.ensureInfiniteQueryData(
+      songListInfiniteQueryOptions({
         keyword: deps.q,
-        page: deps.page,
         tempo: deps.tempo,
         themes: deps.themes,
         keys: deps.keys,
@@ -89,7 +88,7 @@ function SongsPage() {
   const { session } = Route.useRouteContext();
   const { now } = Route.useLoaderData();
   const search = Route.useSearch();
-  const { q, page, tempo, themes, keys, web, sort, dir, song: selectedId } = search;
+  const { q, tempo, themes, keys, web, sort, dir, song: selectedId } = search;
   const navigate = Route.useNavigate();
   const isWide = useIsWide();
   const isRoomy = useIsRoomy();
@@ -98,9 +97,15 @@ function SongsPage() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const songImport = useSongImport();
-  const { data, isError, isFetching } = useQuery({
-    ...songSearchQueryOptions({ keyword: q, page, tempo, themes, keys, sort, dir }),
-    placeholderData: keepPreviousData,
+  const { data, isError, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } =
+    useInfiniteQuery({
+      ...songListInfiniteQueryOptions({ keyword: q, tempo, themes, keys, sort, dir }),
+      placeholderData: keepPreviousData,
+    });
+  const endRef = useRef<HTMLDivElement>(null);
+  useNearEnd(endRef, {
+    enabled: hasNextPage && !isFetching,
+    onNear: () => void fetchNextPage(),
   });
 
   const { data: library } = useQuery(songSearchQueryOptions({ keyword: '', page: 1 }));
@@ -120,12 +125,12 @@ function SongsPage() {
   useEffect(() => {
     if (keyword !== q)
       void navigate({
-        search: (previous) => ({ ...previous, q: keyword, page: 1 }),
+        search: (previous) => ({ ...previous, q: keyword }),
         replace: true,
       });
   }, [keyword, q, navigate]);
 
-  const changeFilters = (filters: Partial<SongFilterValues>) => setSearch({ ...filters, page: 1 });
+  const changeFilters = (filters: Partial<SongFilterValues>) => setSearch(filters);
   const activeFilters: ActiveFilter[] = [
     ...tempo.map((value) => ({
       key: `tempo-${value}`,
@@ -153,7 +158,8 @@ function SongsPage() {
       : []),
   ];
 
-  const songs = data?.data ?? [];
+  const songs = data?.pages.flatMap((result) => result.data) ?? [];
+  const totalCount = data?.pages[0]?.totalCount;
   const selectedSong = isRoomy ? songs.find((song) => song._id === selectedId) : undefined;
   const hasStaleSelection =
     isRoomy && selectedId !== undefined && !selectedSong && !isFetching && data !== undefined;
@@ -163,7 +169,7 @@ function SongsPage() {
   }, [hasStaleSelection, navigate]);
 
   const sortBy = (next: SongSort) =>
-    setSearch({ sort: next, dir: next === sort && dir === 'asc' ? 'desc' : 'asc', page: 1 });
+    setSearch({ sort: next, dir: next === sort && dir === 'asc' ? 'desc' : 'asc' });
 
   const closePreview = () => {
     if (selectedId) document.getElementById(`song-row-${selectedId}`)?.focus();
@@ -184,9 +190,8 @@ function SongsPage() {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   });
-  const totalPages = Math.max(1, data?.totalPages ?? 1);
   const isFiltered = q !== '' || activeFilters.length > 0;
-  const isSearching = isFetching || toSearchKeyword(text) !== q;
+  const isSearching = (isFetching && !isFetchingNextPage) || toSearchKeyword(text) !== q;
   const addSongLabel = t('songs.add.button');
 
   return (
@@ -226,7 +231,7 @@ function SongsPage() {
 
           <GroupTitle
             title={isFiltered ? t('songs.results') : t('songs.library')}
-            count={data?.totalCount}
+            count={totalCount}
             hint={isWide ? t('songs.previewHint') : t(`songs.sortHint.${sort}`)}
             first
           />
@@ -270,34 +275,12 @@ function SongsPage() {
             </div>
           )}
 
-          {totalPages > 1 ? (
-            <nav
-              className="mt-4 flex items-center justify-between gap-2"
-              aria-label={t('songs.pages')}
-            >
-              <Button
-                variant="secondary"
-                size="sm"
-                disabled={page <= 1}
-                onClick={() => setSearch({ page: page - 1 })}
-              >
-                <ChevronLeft />
-                {t('songs.previous')}
-              </Button>
-              <span className="text-ink-2 font-mono text-sm">
-                {t('songs.page', { page, total: totalPages })}
-              </span>
-              <Button
-                variant="secondary"
-                size="sm"
-                disabled={page >= totalPages}
-                onClick={() => setSearch({ page: page + 1 })}
-              >
-                {t('songs.next')}
-                <ChevronRight />
-              </Button>
-            </nav>
+          {isFetchingNextPage ? (
+            <LoadingStatus compact className="mt-3">
+              {t('songs.loadingMore')}
+            </LoadingStatus>
           ) : null}
+          <div ref={endRef} aria-hidden />
 
           {canAdd && web && q.trim() !== '' ? (
             <WebResults
@@ -328,7 +311,7 @@ function SongsPage() {
         web={web}
         sort={sort}
         availableKeys={availableKeys}
-        matchCount={data?.totalCount}
+        matchCount={totalCount}
         canSearchWeb={canAdd}
         onChange={changeFilters}
       />

@@ -78,9 +78,6 @@
     },
     "empty": "No songs found.",
     "loadFailed": "Could not load songs. Please try again.",
-    "page": "Page {{page}} of {{total}}",
-    "previous": "Previous",
-    "next": "Next",
     "filters": {
       "button": "Filters",
       "tempo": "Tempo",
@@ -133,9 +130,9 @@
     "startingWith": "Songs starting with {{letter}}",
     "startingWithOther": "Songs starting with other characters",
     "results": "Results",
-    "pages": "Pages of results",
     "emptyHint": "Try another search or fewer filters.",
     "webResults": "Web results",
+    "loadingMore": "Loading more songs…",
     "searching": "Searching songs…",
     "add": {
       "button": "Add song",
@@ -294,6 +291,7 @@
     "columns": "Lyric columns: {{columns}}",
     "close": "Close",
     "reading": "Reading",
+    "fullWidth": "Full width",
     "keepAwake": "Keep screen awake",
     "awakeOn": "On while this page is open",
     "awakeOff": "Not supported in this browser",
@@ -633,6 +631,13 @@
     "chordOn": "Chord {{chord}} on {{word}}",
     "addChordTo": "Add a chord to {{word}}",
     "chordOver": "Chord over <word>{{word}}</word>",
+    "slot": { "lead": "before the line", "end": "after the line" },
+    "chordAt": "Chord {{chord}} {{where}}",
+    "addChordAt": "Add a chord {{where}}",
+    "chordSlot": {
+      "lead": "Chord <where>before the line</where>",
+      "end": "Chord <where>after the line</where>"
+    },
     "anotherChord": "Another chord, e.g. D/F#",
     "anotherChordLabel": "Another chord",
     "setChord": "Set",

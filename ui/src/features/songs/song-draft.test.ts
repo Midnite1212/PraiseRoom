@@ -5,10 +5,13 @@ import { keyLabel } from '@/features/chords/theory';
 
 import type { Song } from './api';
 import {
+  chordsOnWord,
   type DraftSection,
   diatonicChords,
   draftProblem,
+  END_SLOT,
   firstChordKey,
+  LEAD_SLOT,
   nextSectionLabel,
   parseLine,
   parseSections,
@@ -16,6 +19,7 @@ import {
   sameInput,
   serializeLine,
   serializeSections,
+  slotsOf,
   toDraft,
   toSongInput,
   withAutoKey,
@@ -254,5 +258,65 @@ describe('nextSectionLabel', () => {
     expect(nextSectionLabel(none, 'Chorus')).toBe('Chorus');
     expect(nextSectionLabel([section('Chorus')], 'Chorus')).toBe('Chorus 2');
     expect(nextSectionLabel([section('Verse 1'), section('Verse 2')], 'Verse')).toBe('Verse 3');
+  });
+});
+
+describe('slotsOf', () => {
+  it('adds a lead-in and an end slot around the words', () => {
+    expect(slotsOf('Amazing grace')).toEqual([
+      { start: LEAD_SLOT, text: '', from: 0, to: 0 },
+      { start: 0, text: 'Amazing', from: 0, to: 8 },
+      { start: 8, text: 'grace', from: 8, to: 13 },
+      { start: END_SLOT, text: '', from: 13, to: Number.POSITIVE_INFINITY },
+    ]);
+  });
+
+  it('gives a chord on a leading or trailing space to the slot, not a word', () => {
+    const line = parseLine('[G] Amazing grace [C]');
+    const chordsAt = (start: number) =>
+      chordsOnWord(
+        line,
+        slotsOf(line.text).find((slot) => slot.start === start) ?? {
+          start,
+          text: '',
+          from: 0,
+          to: 0,
+        }
+      );
+
+    expect(chordsAt(LEAD_SLOT)).toEqual(['G']);
+    expect(chordsAt(1)).toEqual([]);
+    expect(chordsAt(END_SLOT)).toEqual(['C']);
+  });
+
+  it('has no slots for a line without words', () => {
+    expect(slotsOf('   ')).toEqual([]);
+  });
+});
+
+describe('placeChord on the lead-in and end slots', () => {
+  it('puts a chord before the line on a new leading space', () => {
+    expect(placeChord('Amazing grace', LEAD_SLOT, 'G')).toBe('[G] Amazing grace');
+  });
+
+  it('keeps chords already in the line where they were when the leading space is added', () => {
+    expect(placeChord('[C]Amazing [D]grace', LEAD_SLOT, 'G')).toBe('[G] [C]Amazing [D]grace');
+  });
+
+  it('reuses a leading space and replaces the lead-in chord', () => {
+    expect(placeChord('[G] Amazing grace', LEAD_SLOT, 'D')).toBe('[D] Amazing grace');
+  });
+
+  it('puts a chord after the line on a new trailing space', () => {
+    expect(placeChord('Amazing grace', END_SLOT, 'C')).toBe('Amazing grace [C]');
+  });
+
+  it('replaces the end chord and clears it with null', () => {
+    expect(placeChord('Amazing grace [C]', END_SLOT, 'D')).toBe('Amazing grace [D]');
+    expect(placeChord('Amazing grace [C]', END_SLOT, null)).toBe('Amazing grace ');
+  });
+
+  it('leaves the last word its own chord', () => {
+    expect(placeChord('Amazing [G]grace [C]', 8, 'D')).toBe('Amazing [D]grace [C]');
   });
 });

@@ -131,14 +131,54 @@ export const wordsOf = (text: string): Word[] => {
 export const chordsOnWord = (line: ParsedLine, word: Word): string[] =>
   line.chords.filter(({ at }) => at >= word.from && at < word.to).map(({ name }) => name);
 
-// Puts `name` over the word that starts at `wordStart`, replacing whatever chord it had; null clears it.
-export const placeChord = (raw: string, wordStart: number, name: string | null): string => {
+export const LEAD_SLOT = -1;
+
+export const END_SLOT = -2;
+
+// The tap targets of a line: each word, plus a slot before the first word and one after the last for chords
+// with no syllable under them. The slots are keyed by LEAD_SLOT and END_SLOT instead of a word start.
+export const slotsOf = (text: string): Word[] => {
+  const words = wordsOf(text);
+  const first = words[0];
+  const last = words.at(-1);
+  if (!first || !last) return [];
+  const end = last.start + last.text.length;
+  return [
+    { start: LEAD_SLOT, text: '', from: 0, to: first.start },
+    ...words.map(({ start, text: word, from, to }) => ({
+      start,
+      text: word,
+      from: start === first.start ? first.start : from,
+      to: start === last.start ? end : to,
+    })),
+    { start: END_SLOT, text: '', from: end, to: Number.POSITIVE_INFINITY },
+  ];
+};
+
+// Puts `name` on the slot keyed by `slotStart` (a word's start, LEAD_SLOT or END_SLOT), replacing whatever chord it
+// had; null clears it. A lead-in or end chord sits on a space added before the first or after the last word.
+export const placeChord = (raw: string, slotStart: number, name: string | null): string => {
   const line = parseLine(raw);
-  const word = wordsOf(line.text).find((candidate) => candidate.start === wordStart);
-  if (!word) return raw;
-  const chords = line.chords.filter(({ at }) => at < word.from || at >= word.to);
-  if (name !== null && name.trim() !== '') chords.push({ at: word.start, name: name.trim() });
-  return serializeLine({ text: line.text, chords });
+  const slot = slotsOf(line.text).find((candidate) => candidate.start === slotStart);
+  if (!slot) return raw;
+  let { text } = line;
+  let chords = line.chords.filter(({ at }) => at < slot.from || at >= slot.to);
+  const chord = name?.trim() ?? '';
+  if (chord !== '') {
+    if (slotStart === LEAD_SLOT) {
+      if (!/^\s/.test(text)) {
+        text = ` ${text}`;
+        chords = chords.map(({ at, name: chordName }) => ({ at: at + 1, name: chordName }));
+      }
+      chords.push({ at: 0, name: chord });
+    } else if (slotStart === END_SLOT) {
+      if (!/\s$/.test(text)) text += ' ';
+      chords.push({ at: text.length, name: chord });
+    } else {
+      chords.push({ at: slot.start, name: chord });
+    }
+  }
+  return serializeLine({ text, chords });
 };
 
 const PALETTE = [
