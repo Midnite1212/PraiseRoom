@@ -3,6 +3,11 @@ import { Link } from '@tanstack/react-router';
 import { Close, PenSquare, Play, Plus } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 
+import {
+  SLIDE_OVER_CLASSES,
+  SLIDE_OVER_CLOSE_CLASSES,
+  type SlideOver,
+} from '@/components/page/slide-over';
 import { KeyChip } from '@/components/primitives/key-chip';
 import { Tag } from '@/components/primitives/tag';
 import { TempoMeter, tempoLevel } from '@/components/primitives/tempo-meter';
@@ -10,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Session } from '@/features/auth/session';
 import { AddToSetlist } from '@/features/setlists/add-to-setlist';
+import { cn } from '@/lib/utils';
 
 import { songQueryOptions, songSlug, type SongSummary, TEMPO_LABEL_KEYS } from './api';
 import { lyricsPeek } from './lyrics-peek';
@@ -56,17 +62,17 @@ function LyricsPeek({ urlKey }: { urlKey: string }) {
   );
 }
 
-// Desktop: the selected song's facts, themes and opening lines beside the table.
+// Desktop: the selected song's facts, themes and opening lines beside the table, or over it on a compact screen.
 export function SongPreview({
   song,
   session,
   canEdit,
-  onClose,
+  slideOver,
 }: {
   song: SongSummary;
   session: Session;
   canEdit: boolean;
-  onClose: () => void;
+  slideOver: SlideOver;
 }) {
   const { t } = useTranslation();
   const level = tempoLevel(song.tempo);
@@ -74,15 +80,19 @@ export function SongPreview({
   return (
     <aside
       aria-label={t('songs.preview.label', { title: song.title })}
-      className="animate-pane-in border-hairline sticky top-20 border-l pt-4 pl-8"
+      {...slideOver.panelProps}
+      className={cn(
+        'roomy:animate-pane-in roomy:border-hairline roomy:sticky roomy:top-20 roomy:border-l roomy:pt-4 roomy:pl-8',
+        SLIDE_OVER_CLASSES
+      )}
     >
       <Button
         variant="ghost"
         size="icon"
-        className="absolute top-2 -right-2 z-[2]"
+        className={cn('absolute top-2 -right-2 z-[2]', SLIDE_OVER_CLOSE_CLASSES)}
         aria-label={t('songs.preview.close')}
         title={t('songs.preview.closeHint')}
-        onClick={onClose}
+        onClick={slideOver.close}
       >
         <Close />
       </Button>

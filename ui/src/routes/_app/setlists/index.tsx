@@ -11,6 +11,7 @@ import { Finder } from '@/components/page/finder';
 import { GroupTitle } from '@/components/page/group-title';
 import { LIST_CLASSES, LIST_COMPACT_CLASSES } from '@/components/page/list-row';
 import { PageHeader } from '@/components/page/page-header';
+import { useSlideOver } from '@/components/page/slide-over';
 import { Fab } from '@/components/primitives/fab';
 import { nextSetlistId, setStatus } from '@/components/primitives/set-status';
 import { Button } from '@/components/ui/button';
@@ -24,7 +25,7 @@ import { SetlistListContext } from '@/features/setlists/setlist-list-context';
 import { SetlistPreview } from '@/features/setlists/setlist-preview';
 import { ManagedSetlistRow } from '@/features/setlists/setlist-row';
 import { useSetlistNames } from '@/features/setlists/use-setlist-names';
-import { useIsRoomy, useIsWide } from '@/hooks/use-wide';
+import { useIsWide } from '@/hooks/use-wide';
 import { dateLocale } from '@/lib/date-locale';
 
 const setlistsSearchSchema = z.object({
@@ -59,7 +60,6 @@ function SetlistsPage() {
   const { data: setlists } = useSuspenseQuery(setlistsQueryOptions());
   const names = useSetlistNames(session);
   const isWide = useIsWide();
-  const isRoomy = useIsRoomy();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [isPlayedOpen, setIsPlayedOpen] = useState(false);
   const [litDay, setLitDay] = useState<string | null>(null);
@@ -91,9 +91,11 @@ function SetlistsPage() {
   const orderedIds = sections.flatMap(({ key, items }) =>
     key === 'past' && !showPlayed ? [] : items.map((setlist) => setlist._id)
   );
-  const selected = isRoomy ? setlists.find((setlist) => setlist._id === search.set) : undefined;
+  const selected = isWide ? setlists.find((setlist) => setlist._id === search.set) : undefined;
   const selectedId = selected?._id;
   const pick = (setlistId: string | undefined) => setSearch({ set: setlistId });
+  const slideOver = useSlideOver(selected !== undefined, () => pick(undefined));
+  const closePreview = slideOver.close;
 
   useEffect(() => {
     if (!selectedId) return undefined;
@@ -106,7 +108,7 @@ function SetlistsPage() {
       if (event.defaultPrevented || isTyping || isOverlayOpen) return;
       if (event.metaKey || event.ctrlKey || event.altKey || event.shiftKey) return;
       if (event.key === 'Escape') {
-        void navigate({ search: (previous) => ({ ...previous, set: undefined }), replace: true });
+        closePreview();
         return;
       }
       if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
@@ -119,7 +121,7 @@ function SetlistsPage() {
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [selectedId, orderedIds, navigate]);
+  }, [selectedId, orderedIds, navigate, closePreview]);
 
   const activeFilters: ActiveFilter[] = [
     ...(search.show === 'all'
@@ -170,7 +172,7 @@ function SetlistsPage() {
         litDay,
         onLightDay: setLitDay,
         selectedId,
-        onSelect: isRoomy ? pick : undefined,
+        onSelect: isWide ? pick : undefined,
       }}
     >
       <PageHeader
@@ -246,7 +248,7 @@ function SetlistsPage() {
             ))
           )}
         </div>
-        <div className="wide:grid border-hairline roomy:sticky roomy:top-3.5 roomy:max-h-[calc(100vh-28px)] roomy:border-l roomy:pl-8 roomy:mt-0 mt-8 hidden [scrollbar-width:thin] gap-6 overflow-y-auto pr-0.5 pb-0.5">
+        <div className="border-hairline roomy:grid roomy:sticky roomy:top-3.5 roomy:max-h-[calc(100vh-28px)] roomy:border-l roomy:pl-8 roomy:mt-0 compact:contents hidden [scrollbar-width:thin] gap-6 overflow-y-auto pr-0.5 pb-0.5">
           {selected ? (
             <SetlistPreview
               key={selected._id}
@@ -255,15 +257,17 @@ function SetlistsPage() {
               names={names}
               nextId={nextId}
               now={now}
-              onClose={() => pick(undefined)}
+              slideOver={slideOver}
             />
           ) : null}
-          <SetlistCalendar
-            setlists={setlists}
-            now={now}
-            day={search.day}
-            onDayChange={(day) => setSearch({ day })}
-          />
+          <div className="compact:hidden">
+            <SetlistCalendar
+              setlists={setlists}
+              now={now}
+              day={search.day}
+              onDayChange={(day) => setSearch({ day })}
+            />
+          </div>
         </div>
       </div>
       <SetlistFilterSheet

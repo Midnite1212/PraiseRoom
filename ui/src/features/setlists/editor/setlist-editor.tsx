@@ -161,7 +161,7 @@ export function SetlistEditor({ session, setlistId, initialDraft, now }: Setlist
         </>
       }
     >
-      <div className="wide:grid-cols-[minmax(0,1fr)_380px] wide:items-start grid gap-x-10 gap-y-2">
+      <div className="roomy:grid-cols-[minmax(0,1fr)_380px] roomy:items-start grid gap-x-10 gap-y-2">
         <section aria-labelledby="editor-songs" className="min-w-0">
           <GroupTitle
             first
@@ -190,7 +190,7 @@ export function SetlistEditor({ session, setlistId, initialDraft, now }: Setlist
         {isWide ? (
           <aside
             aria-label={t('editor.addSongs')}
-            className="border-hairline sticky top-3.5 flex max-h-[calc(100vh-28px)] flex-col gap-2 border-l pl-8"
+            className="border-hairline roomy:sticky roomy:top-3.5 roomy:max-h-[calc(100vh-28px)] roomy:border-l roomy:pl-8 compact:mt-2 compact:border-t compact:pt-6 flex flex-col gap-2"
           >
             <GroupTitle first title={t('editor.addSongs')} className="mb-0" />
             <div className="flex h-[calc(100vh-7rem)] min-h-0 flex-col">{picker}</div>

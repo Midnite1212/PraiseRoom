@@ -7,14 +7,8 @@ import { BrandMark } from '@/components/primitives/brand-mark';
 import { Vinyl } from '@/components/primitives/vinyl';
 import type { Session } from '@/features/auth/session';
 import { useScrolledClass } from '@/hooks/use-scrolled-class';
-import { useIsWide, useMediaQuery } from '@/hooks/use-wide';
-import {
-  isRailShortcut,
-  RAIL_FOLD_QUERY,
-  railShortcutLabel,
-  toggledRail,
-  useRail,
-} from '@/lib/rail';
+import { useIsRoomy, useIsWide } from '@/hooks/use-wide';
+import { isRailShortcut, railShortcutLabel, toggledRail, useRail } from '@/lib/rail';
 
 import { AppBarSlotsContext } from './app-bar-slots';
 import { NAV_ITEMS, useNavCounts } from './nav';
@@ -55,7 +49,7 @@ function PageChrome({
   const initial = toInitials(session.fullName);
   const [chosenRail, setRail] = useRail();
   const isWide = useIsWide();
-  const isNarrow = useMediaQuery(RAIL_FOLD_QUERY, false);
+  const isNarrow = !useIsRoomy();
   const rail = isNarrow ? 'folded' : chosenRail;
   const folded = rail === 'folded';
   const toggleLabel = t(folded ? 'nav.expandSidebar' : 'nav.collapseSidebar');
@@ -78,7 +72,7 @@ function PageChrome({
         <div aria-hidden className="ground-wash pointer-events-none fixed inset-0 z-0" />
         <div
           aria-hidden
-          className="edge-top wide:h-20 pointer-events-none fixed inset-x-0 top-0 z-20 h-[calc(var(--top)+64px)] opacity-0 transition-opacity duration-200 ease-out in-[.scrolled]:opacity-100 in-[:root:has([data-finder])]:hidden"
+          className="edge-top wide:h-20 compact:in-[:root:has([data-slide-over])]:hidden pointer-events-none fixed inset-x-0 top-0 z-20 h-[calc(var(--top)+64px)] opacity-0 transition-opacity duration-200 ease-out in-[.scrolled]:opacity-100 in-[:root:has([data-finder])]:hidden"
         />
         <div
           aria-hidden
@@ -95,7 +89,7 @@ function PageChrome({
               aria-label={t('app.name')}
               className="flex items-center gap-3 font-bold tracking-[-0.01em] whitespace-nowrap"
             >
-              <BrandMark className="-ml-2.5 transition-opacity duration-150 ease-out group-data-[rail=folded]/rail:ml-[-6px] group-data-[rail=folded]/rail:group-focus-within/brand:opacity-0 group-data-[rail=folded]/rail:group-hover/brand:opacity-0" />
+              <BrandMark className="-ml-2.5 group-data-[rail=folded]/rail:ml-[-6px]" />
               <span className="group-data-[rail=folded]/rail:hidden">{t('app.name')}</span>
             </Link>
             {isNarrow ? null : (
@@ -105,7 +99,7 @@ function PageChrome({
                 aria-expanded={!folded}
                 title={`${toggleLabel} (${shortcut})`}
                 onClick={() => setRail(toggledRail(rail))}
-                className="text-ink-3 hover:text-ink focus-visible:ring-ring [&_svg]:size-icon ml-auto grid size-9 flex-none place-items-center rounded-full transition-[color,opacity] duration-150 ease-out outline-none group-data-[rail=folded]/rail:absolute group-data-[rail=folded]/rail:inset-0 group-data-[rail=folded]/rail:m-auto group-data-[rail=folded]/rail:opacity-0 group-data-[rail=folded]/rail:group-hover/brand:opacity-100 focus-visible:opacity-100 focus-visible:ring-2"
+                className="text-ink-3 hover:text-ink focus-visible:ring-ring [&_svg]:size-icon ml-auto grid size-9 flex-none place-items-center rounded-full transition-colors duration-150 ease-out outline-none group-data-[rail=folded]/rail:absolute group-data-[rail=folded]/rail:top-1/2 group-data-[rail=folded]/rail:left-[calc(100%-6px)] group-data-[rail=folded]/rail:-translate-y-1/2 focus-visible:ring-2"
               >
                 <SidebarIcon />
               </button>
@@ -185,7 +179,7 @@ function PageChrome({
         </header>
 
         <main className="wide:mr-0 wide:ml-[calc(var(--frame-l)+var(--rail-w))] wide:transition-[margin-left] wide:duration-[360ms] wide:ease-liquid wide:max-w-none wide:px-12 wide:pt-(--top) wide:pb-16 relative z-[1] mx-auto max-w-[760px] px-(--pg) pt-[calc(var(--top)+60px)] pb-[calc(var(--tab-h)+var(--bottom)+96px)]">
-          <div key={pathname} className="animate-view-in wide:max-w-[1040px]">
+          <div key={pathname} className="animate-view-in wide:max-w-[calc(1272px-var(--rail-w))]">
             {children}
           </div>
         </main>
