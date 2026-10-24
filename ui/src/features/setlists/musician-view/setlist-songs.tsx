@@ -1,5 +1,8 @@
+import type { ComponentProps } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { ReorderList } from '@/components/editor/reorder-list';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 export type SetlistSongItem = { id: string; title: string; keyLabel: string };
@@ -10,6 +13,12 @@ type SetlistSongsProps = {
   onSelect: (songNumber: number) => void;
 };
 
+type SetlistSongRowsProps = SetlistSongsProps & {
+  // Rows get a grip instead of selecting a song; `onReorder` receives the songs in their new order.
+  isEditing?: boolean;
+  onReorder?: (songs: SetlistSongItem[]) => void;
+};
+
 const pixelClasses = (index: number, currentIndex: number) =>
   index === currentIndex
     ? 'bg-pixel-on'
@@ -17,8 +26,51 @@ const pixelClasses = (index: number, currentIndex: number) =>
       ? 'bg-pixel-played'
       : 'bg-pixel-off';
 
-// The set as rows: a pixel (lit for the song on screen, dimmer once played), number, title and key.
-export function SetlistSongRows({ songs, currentIndex, onSelect }: SetlistSongsProps) {
+const rowClasses =
+  'grid min-h-12 w-full items-center gap-2.5 rounded-[14px] px-2.5 py-1.5 text-left text-[0.9375rem]';
+
+// The set as rows: a pixel (lit for the song on screen, dimmer once played), number, title and key. While editing,
+// each row has a grip to drag it, or to move it with the arrow keys.
+export function SetlistSongRows({
+  songs,
+  currentIndex,
+  onSelect,
+  isEditing = false,
+  onReorder,
+}: SetlistSongRowsProps) {
+  if (isEditing && onReorder) {
+    return (
+      <ReorderList
+        items={songs}
+        getKey={(song) => song.id}
+        getLabel={(song) => song.title}
+        onReorder={onReorder}
+        className="gap-0.5"
+        renderItem={(song, index, handle) => (
+          <div
+            aria-current={index === currentIndex ? 'true' : undefined}
+            className={cn(
+              rowClasses,
+              'aria-[current]:bg-fill-on grid-cols-[36px_10px_22px_minmax(0,1fr)_auto] gap-2 pl-0.5'
+            )}
+          >
+            {handle}
+            <span aria-hidden className={cn('size-2.5', pixelClasses(index, currentIndex))} />
+            <span className="text-ink-3 font-mono text-[0.8125rem]">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <span className={cn('truncate', index === currentIndex && 'font-semibold')}>
+              {song.title}
+            </span>
+            <span className="text-ink-2 font-mono text-[0.8125rem] font-semibold">
+              {song.keyLabel}
+            </span>
+          </div>
+        )}
+      />
+    );
+  }
+
   return (
     <ol className="m-0 flex list-none flex-col gap-0.5 p-0">
       {songs.map((song, index) => (
@@ -27,7 +79,10 @@ export function SetlistSongRows({ songs, currentIndex, onSelect }: SetlistSongsP
             type="button"
             onClick={() => onSelect(index + 1)}
             aria-current={index === currentIndex ? 'true' : undefined}
-            className="hover:bg-fill-hover aria-[current]:bg-fill-on grid min-h-12 w-full grid-cols-[10px_22px_minmax(0,1fr)_auto] items-center gap-2.5 rounded-[14px] px-2.5 py-1.5 text-left text-[0.9375rem] transition-colors"
+            className={cn(
+              rowClasses,
+              'hover:bg-fill-hover aria-[current]:bg-fill-on grid-cols-[10px_22px_minmax(0,1fr)_auto] transition-colors'
+            )}
           >
             <span aria-hidden className={cn('size-2.5', pixelClasses(index, currentIndex))} />
             <span className="text-ink-3 font-mono text-[0.8125rem]">
@@ -43,6 +98,43 @@ export function SetlistSongRows({ songs, currentIndex, onSelect }: SetlistSongsP
         </li>
       ))}
     </ol>
+  );
+}
+
+type EditOrderButtonProps = Omit<ComponentProps<typeof Button>, 'variant' | 'size'> & {
+  isEditing: boolean;
+};
+
+// "Edit order" while browsing the set, "Done" while reordering it. Spreads its props so it can be a panel trigger.
+export function EditOrderButton({ isEditing, className, ...props }: EditOrderButtonProps) {
+  const { t } = useTranslation();
+  return (
+    <Button
+      variant="link"
+      size="sm"
+      className={cn('font-semibold whitespace-nowrap', className)}
+      {...props}
+    >
+      {isEditing ? t('reader.done') : t('reader.editOrder')}
+    </Button>
+  );
+}
+
+type OrderFootProps = { isEditing: boolean; isCustom: boolean; onReset: () => void };
+
+// Under the rows while reordering or after the order was changed: what it affects, and a way back.
+export function OrderFoot({ isEditing, isCustom, onReset }: OrderFootProps) {
+  const { t } = useTranslation();
+  if (!isEditing && !isCustom) return null;
+  return (
+    <div className="border-hairline text-ink-3 mt-2 flex items-center justify-between gap-2 border-t pt-2 pl-2.5 text-[0.8125rem]">
+      <span>{isCustom ? t('reader.yourOrder') : t('reader.orderNote')}</span>
+      {isCustom ? (
+        <Button variant="link" size="sm" onClick={onReset} className="font-semibold">
+          {t('reader.reset')}
+        </Button>
+      ) : null}
+    </div>
   );
 }
 

@@ -18,7 +18,15 @@ import { createStoredChoice } from '@/lib/stored-choice';
 
 import { keyForSong, publicSetlistUrl, type Setlist } from '../api';
 import { formatSetlistDate } from '../format-date';
-import { SetlistProgress, SetlistSongbar, SetlistSongRows } from './setlist-songs';
+import { useLocalOrder } from './local-order';
+import {
+  EditOrderButton,
+  OrderFoot,
+  SetlistProgress,
+  type SetlistSongItem,
+  SetlistSongbar,
+  SetlistSongRows,
+} from './setlist-songs';
 
 // A hook-named alias, so the React Compiler calls it on every render instead of memoizing it.
 const useSongListVisibility = createStoredChoice(
@@ -56,12 +64,24 @@ export function MusicianView({
   const [chosenKeys, setChosenKeys] = useState<Record<string, number>>({});
   const [isListOpen, setIsListOpen] = useState(false);
   const [songList, setSongList] = useSongListVisibility();
+  const [isReordering, setIsReordering] = useState(false);
+  const [isBarOrderOpen, setIsBarOrderOpen] = useState(false);
   const isSidebarShown = songList === 'shown';
 
-  const songCount = setlist.songs.length;
+  const { order, isCustom, setOrder, reset } = useLocalOrder(
+    setlist._id,
+    setlist.songs.map((entry) => entry._id)
+  );
+  const entriesById = new Map(setlist.songs.map((entry) => [entry._id, entry]));
+  const entries = order.flatMap((id) => {
+    const entry = entriesById.get(id);
+    return entry ? [entry] : [];
+  });
+
+  const songCount = entries.length;
   const currentIndex = Math.min(Math.max(songNumber, 1), Math.max(songCount, 1)) - 1;
-  const song = setlist.songs[currentIndex];
-  const nextSong = setlist.songs[currentIndex + 1];
+  const song = entries[currentIndex];
+  const nextSong = entries[currentIndex + 1];
 
   const goToSong = (number: number) => {
     if (number >= 1 && number <= songCount) onSongChange(number);
@@ -78,7 +98,7 @@ export function MusicianView({
   });
 
   const playKeyFor = (index: number): MusicKey | null => {
-    const entry = setlist.songs[index];
+    const entry = entries[index];
     if (!entry) return null;
     const originalKey = parseKey(entry.originalKey);
     const chosenRoot = chosenKeys[entry._id];
@@ -86,7 +106,7 @@ export function MusicianView({
       return conventionalKey(chosenRoot, originalKey.isMinor);
     return parseKey(keyForSong(setlist, entry)) ?? originalKey;
   };
-  const songs = setlist.songs.map((entry, index) => {
+  const songs = entries.map((entry, index) => {
     const playKey = playKeyFor(index);
     return {
       id: entry._id,
@@ -97,6 +117,27 @@ export function MusicianView({
   const select = (number: number) => {
     setIsListOpen(false);
     goToSong(number);
+  };
+  const followSong = (ids: readonly string[]) => {
+    const position = song ? ids.indexOf(song._id) : -1;
+    if (position >= 0) onSongChange(position + 1);
+  };
+  const reorder = (next: SetlistSongItem[]) => {
+    const ids = next.map((item) => item.id);
+    setOrder(ids);
+    followSong(ids);
+  };
+  const resetOrder = () => {
+    reset();
+    followSong(setlist.songs.map((entry) => entry._id));
+  };
+  const changeListOpen = (open: boolean) => {
+    setIsListOpen(open);
+    if (!open) setIsReordering(false);
+  };
+  const changeBarOrderOpen = (open: boolean) => {
+    setIsBarOrderOpen(open);
+    setIsReordering(open);
   };
 
   const date = formatSetlistDate(setlist.date, i18n.language);
@@ -128,6 +169,8 @@ export function MusicianView({
   const changeKey = (key: MusicKey) => setChosenKeys((keys) => ({ ...keys, [song._id]: key.root }));
   const sidebarLabel = isSidebarShown ? t('reader.hideSongList') : t('reader.showSongList');
   const listProps = { songs, currentIndex, onSelect: select };
+  const editableListProps = { ...listProps, isEditing: isReordering, onReorder: reorder };
+  const orderFoot = <OrderFoot isEditing={isReordering} isCustom={isCustom} onReset={resetOrder} />;
 
   return (
     <ReaderLayout
@@ -140,7 +183,10 @@ export function MusicianView({
             aria-pressed={isSidebarShown}
             aria-label={sidebarLabel}
             title={sidebarLabel}
-            onClick={() => setSongList(isSidebarShown ? 'hidden' : 'shown')}
+            onClick={() => {
+              setIsReordering(false);
+              setSongList(isSidebarShown ? 'hidden' : 'shown');
+            }}
           >
             <Bulletlist />
           </Button>
@@ -181,10 +227,15 @@ export function MusicianView({
                 <h2 className="text-base font-semibold">{t('reader.setlist')}</h2>
                 <p className="text-ink-2 mt-0.5 text-[0.8125rem]">{meta}</p>
               </div>
+              <EditOrderButton
+                isEditing={isReordering}
+                onClick={() => setIsReordering(!isReordering)}
+              />
             </div>
             <div className="no-scrollbar min-h-0 flex-1 overflow-y-auto">
-              <SetlistSongRows {...listProps} />
+              <SetlistSongRows {...editableListProps} />
             </div>
+            {orderFoot}
             <div className="border-hairline mt-2 flex items-center justify-between gap-1.5 border-t pt-2">
               <Button
                 variant="ghost"
@@ -217,7 +268,27 @@ export function MusicianView({
           </>
         ) : undefined
       }
-      songbar={isSidebarShown ? undefined : <SetlistSongbar {...listProps} />}
+      songbar={
+        isSidebarShown ? undefined : (
+          <>
+            <SetlistSongbar {...listProps} />
+            <Panel
+              open={isBarOrderOpen}
+              onOpenChange={changeBarOrderOpen}
+              align="end"
+              title={setlist.name}
+              description={meta}
+              headerAction={<EditOrderButton isEditing onClick={() => changeBarOrderOpen(false)} />}
+              trigger={
+                <EditOrderButton isEditing={false} className="h-10 flex-none rounded-full" />
+              }
+            >
+              <SetlistSongRows {...editableListProps} />
+              {orderFoot}
+            </Panel>
+          </>
+        )
+      }
       progress={<SetlistProgress {...listProps} />}
       dock={
         <>
@@ -244,9 +315,15 @@ export function MusicianView({
             </Button>
             <Panel
               open={isListOpen}
-              onOpenChange={setIsListOpen}
+              onOpenChange={changeListOpen}
               title={setlist.name}
               description={meta}
+              headerAction={
+                <EditOrderButton
+                  isEditing={isReordering}
+                  onClick={() => setIsReordering(!isReordering)}
+                />
+              }
               sheetClassName="bottom-[calc(var(--bottom)+var(--dock-h)+10px)]"
               trigger={
                 <button
@@ -263,7 +340,8 @@ export function MusicianView({
                 </button>
               }
             >
-              <SetlistSongRows {...listProps} />
+              <SetlistSongRows {...editableListProps} />
+              {orderFoot}
             </Panel>
             <Button
               variant="ghost"

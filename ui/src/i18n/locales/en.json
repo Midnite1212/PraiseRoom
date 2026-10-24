@@ -278,7 +278,11 @@
     "resetTo": "Reset to {{key}}",
     "done": "Done",
     "upNext": "Up next",
-    "endOfSet": "End of the set"
+    "endOfSet": "End of the set",
+    "editOrder": "Edit order",
+    "reset": "Reset",
+    "yourOrder": "Your order · only this device",
+    "orderNote": "Reordering only changes this device"
   },
   "editor": {
     "newTitle": "New setlist",
