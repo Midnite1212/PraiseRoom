@@ -44,7 +44,7 @@ export function NextUp({
       <div className="grid grid-cols-[52px_minmax(0,1fr)_auto_auto] items-center gap-3.5">
         <DateBlock date={setlist.date} status="up" />
         <div className="min-w-0">
-          <h2 id="next-up" className="m-0 text-[1.375rem] font-bold tracking-[-0.02em]">
+          <h2 id="next-up" className="text-card-title m-0 font-bold tracking-[-0.02em]">
             <Link
               to="/setlists/$setlistId"
               params={{ setlistId: setlist._id }}
@@ -84,7 +84,7 @@ export function NextUp({
           {detail.songs.map((song, index) => (
             <li
               key={song._id}
-              className="bg-fill-hover grid min-h-9 grid-cols-[22px_minmax(0,1fr)_auto] items-center gap-2.5 rounded-xl px-2.5 text-[0.9375rem]"
+              className="bg-fill-hover text-ui grid min-h-9 grid-cols-[22px_minmax(0,1fr)_auto] items-center gap-2.5 rounded-xl px-2.5"
             >
               <span className="text-ink-3 font-mono text-[0.8125rem] font-semibold">
                 {index + 1}

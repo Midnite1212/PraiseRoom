@@ -24,7 +24,7 @@ const createColumns = (t: TFunction) =>
       header: () => t('songs.columns.title'),
       cell: ({ getValue, row }) => (
         <>
-          <b className="text-ink block text-[0.9375rem] font-semibold">{getValue()}</b>
+          <b className="text-ink text-ui block font-semibold">{getValue()}</b>
           <small className="text-ink-3 mt-0.5 block text-[0.8125rem]">{row.original.artist}</small>
         </>
       ),

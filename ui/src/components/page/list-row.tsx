@@ -29,7 +29,5 @@ export function RowText({ title, meta }: { title: ReactNode; meta?: ReactNode })
 
 // The key at the end of a song row.
 export function RowKey({ children }: { children: ReactNode }) {
-  return (
-    <span className="text-ink text-right font-mono text-[0.9375rem] font-bold">{children}</span>
-  );
+  return <span className="text-ink text-ui text-right font-mono font-bold">{children}</span>;
 }

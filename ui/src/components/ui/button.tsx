@@ -1,7 +1,8 @@
 import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from 'cn';
 import { Slot } from 'radix-ui';
 import * as React from 'react';
+
+import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
   "group/button inline-flex shrink-0 items-center justify-center rounded-full font-semibold whitespace-nowrap transition-[background-color,color,transform,opacity] duration-200 ease-out outline-none select-none active:not-disabled:scale-95 disabled:pointer-events-none disabled:opacity-40 aria-invalid:text-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-icon",
@@ -25,7 +26,8 @@ const buttonVariants = cva(
       },
       size: {
         default:
-          'h-11 gap-2 px-[18px] text-base has-data-[icon=inline-start]:pl-3.5 has-[>svg:first-child]:pl-3.5',
+          'wide:h-10 h-11 gap-2 px-[18px] text-ui has-data-[icon=inline-start]:pl-3.5 has-[>svg:first-child]:pl-3.5',
+        compact: 'h-9 gap-2 pr-4 pl-3 text-ui',
         xs: 'h-7 gap-1 px-2.5 text-xs',
         sm: 'h-9 gap-1.5 px-3 text-sm',
         lg: 'h-12 gap-2 px-5 text-base',

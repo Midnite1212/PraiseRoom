@@ -29,7 +29,7 @@ export function GroupTitle({
         className
       )}
     >
-      <h2 id={id} className="text-ink-2 m-0 text-[0.9375rem] font-semibold">
+      <h2 id={id} className="text-ink-2 text-ui m-0 font-semibold">
         {title}
         {count === undefined ? null : (
           <small className="text-ink-3 ml-1.5 font-mono text-[0.8125rem] font-semibold">

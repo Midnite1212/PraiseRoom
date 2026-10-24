@@ -17,7 +17,7 @@ export function SetRow({
   return (
     <div
       className={cn(
-        'bg-fill-hover flex min-h-14 flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-2xl py-1.5 pr-2 pl-3.5 text-[0.9375rem]',
+        'bg-fill-hover flex min-h-14 flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-2xl py-1.5 pr-2 pl-3.5 text-ui',
         className
       )}
     >

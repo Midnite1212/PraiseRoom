@@ -86,9 +86,7 @@ export function SetlistPreview({
       <div className="grid grid-cols-[52px_minmax(0,1fr)] items-center gap-3.5 pr-10">
         <DateBlock date={setlist.date} status={status} />
         <div className="min-w-0">
-          <h2 className="m-0 text-2xl leading-[1.15] font-bold tracking-[-0.02em]">
-            {setlist.name}
-          </h2>
+          <h2 className="text-card-title m-0 font-bold tracking-[-0.02em]">{setlist.name}</h2>
           <p className="text-ink-2 mt-1 mb-0">{when}</p>
         </div>
       </div>
@@ -145,7 +143,7 @@ export function SetlistPreview({
           {songs.map((song, index) => (
             <li
               key={song.key}
-              className="bg-fill-hover grid min-h-9 grid-cols-[22px_minmax(0,1fr)_auto_28px] items-center gap-2.5 rounded-xl px-2.5 text-[0.9375rem]"
+              className="bg-fill-hover text-ui grid min-h-9 grid-cols-[22px_minmax(0,1fr)_auto_28px] items-center gap-2.5 rounded-xl px-2.5"
             >
               <span className="text-ink-3 font-mono text-[0.8125rem] font-semibold">
                 {index + 1}
