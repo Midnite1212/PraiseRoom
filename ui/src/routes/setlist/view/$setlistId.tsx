@@ -1,5 +1,6 @@
 import { useQuery, useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
+import { ExternalLink, Login } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
@@ -34,18 +35,30 @@ function PublicSetlistPage() {
   return (
     <MusicianView
       key={setlist._id}
+      isPublic
       setlist={setlist}
       songNumber={song}
       onSongChange={(number) => void navigate({ search: { song: number }, replace: true })}
       actions={
-        <Button asChild variant="glass" className="h-12 px-4 text-sm">
+        <Button asChild variant="glass" className="wide:w-auto wide:px-4 size-12 px-0 text-sm">
           {session ? (
-            <Link to="/setlists/$setlistId" params={{ setlistId }} search={{ song }}>
-              {t('reader.openInApp')}
+            <Link
+              to="/setlists/$setlistId"
+              params={{ setlistId }}
+              search={{ song }}
+              aria-label={t('reader.openInApp')}
+            >
+              <ExternalLink className="wide:hidden" />
+              <span className="wide:inline hidden">{t('reader.openInApp')}</span>
             </Link>
           ) : (
-            <Link to="/login" search={{ redirect: `/setlist/view/${setlistId}` }}>
-              {t('login.submit')}
+            <Link
+              to="/login"
+              search={{ redirect: `/setlist/view/${setlistId}` }}
+              aria-label={t('login.submit')}
+            >
+              <Login className="wide:hidden" />
+              <span className="wide:inline hidden">{t('login.submit')}</span>
             </Link>
           )}
         </Button>

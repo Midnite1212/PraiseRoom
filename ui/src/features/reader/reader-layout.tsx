@@ -56,7 +56,7 @@ export function ReaderLayout({
         className="edge-bottom wide:hidden pointer-events-none fixed inset-x-0 bottom-0 z-20 h-[calc(var(--bottom)+var(--dock-h)+28px)]"
       />
 
-      <header className="pointer-events-none fixed top-(--top) right-(--frame-r) left-(--frame-l) z-30 flex h-(--top-h) items-center gap-2 *:pointer-events-auto">
+      <header className="wide:gap-2 pointer-events-none fixed top-(--top) right-(--frame-r) left-(--frame-l) z-30 flex h-(--top-h) items-center gap-1.5 *:pointer-events-auto">
         {back}
         {title ? (
           <div className="wide:flex pointer-events-none! hidden min-w-0 items-center gap-3 *:pointer-events-auto">
@@ -64,7 +64,7 @@ export function ReaderLayout({
           </div>
         ) : null}
         {modes}
-        <span className="wide:text-left pointer-events-none! min-w-0 flex-1 truncate px-1 text-center text-[0.9375rem] font-semibold opacity-0 transition-opacity duration-200 in-[.scrolled]:opacity-100">
+        <span className="wide:text-left wide:px-1 pointer-events-none! min-w-0 flex-1 truncate px-0 text-center text-[0.9375rem] font-semibold opacity-0 transition-opacity duration-200 in-[.scrolled]:opacity-100">
           {compactTitle}
         </span>
         {actions}

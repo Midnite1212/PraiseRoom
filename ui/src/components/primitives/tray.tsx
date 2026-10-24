@@ -1,9 +1,18 @@
+import { Close } from 'pixelarticons/react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
 import type { PointerEvent, ReactElement, ReactNode } from 'react';
 import { useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { Dialog, DialogPortal, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogClose,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useIsWide } from '@/hooks/use-wide';
 import { cn } from '@/lib/utils';
 
@@ -40,8 +49,10 @@ function useDragToClose(close: () => void) {
 
 type TrayProps = {
   trigger: ReactElement;
-  // The dialog's accessible name; trays show no visible heading.
+  // The dialog's accessible name; a tray shows no heading unless it has a description.
   title: string;
+  // A line under the title that also shows the title with a close button above the controls.
+  description?: string;
   children: ReactNode;
   align?: 'start' | 'center' | 'end';
   className?: string;
@@ -52,9 +63,41 @@ type TrayProps = {
 
 type OpenState = { open: boolean; onOpenChange: (open: boolean) => void };
 
+function TrayHead({
+  title,
+  description,
+  titleElement,
+  Close: CloseTrigger,
+}: {
+  title: string;
+  description: string;
+  titleElement: 'dialog' | 'heading';
+  Close: typeof DialogClose | typeof PopoverClose;
+}) {
+  const { t } = useTranslation();
+  return (
+    <div className="mb-2.5 flex items-start justify-between gap-2.5">
+      <div className="min-w-0">
+        {titleElement === 'dialog' ? (
+          <DialogTitle className="text-base leading-snug font-semibold">{title}</DialogTitle>
+        ) : (
+          <h2 className="text-base leading-snug font-semibold">{title}</h2>
+        )}
+        <p className="text-ink-2 mt-0.5 text-[0.8125rem]">{description}</p>
+      </div>
+      <CloseTrigger asChild>
+        <Button variant="ghost" size="icon" aria-label={t('reader.close')}>
+          <Close />
+        </Button>
+      </CloseTrigger>
+    </div>
+  );
+}
+
 function PhoneTray({
   trigger,
   title,
+  description,
   children,
   className,
   open,
@@ -74,11 +117,19 @@ function PhoneTray({
             className
           )}
         >
-          <DialogTitle className="sr-only">{title}</DialogTitle>
+          {description ? null : <DialogTitle className="sr-only">{title}</DialogTitle>}
           <span
             aria-hidden
             className="bg-ink-3 mx-auto mb-2.5 block h-1 w-9 flex-none rounded-full opacity-60"
           />
+          {description ? (
+            <TrayHead
+              title={title}
+              description={description}
+              titleElement="dialog"
+              Close={DialogClose}
+            />
+          ) : null}
           {children}
         </DialogPrimitive.Content>
       </DialogPortal>
@@ -96,7 +147,7 @@ export function Tray(props: TrayProps) {
   const onOpenChange = props.onOpenChange ?? setIsOpen;
   if (!isWide) return <PhoneTray {...props} open={open} onOpenChange={onOpenChange} />;
 
-  const { trigger, title, children, align = 'end', className } = props;
+  const { trigger, title, description, children, align = 'end', className } = props;
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>{trigger}</PopoverTrigger>
@@ -109,6 +160,14 @@ export function Tray(props: TrayProps) {
           className
         )}
       >
+        {description ? (
+          <TrayHead
+            title={title}
+            description={description}
+            titleElement="heading"
+            Close={PopoverClose}
+          />
+        ) : null}
         {children}
       </PopoverContent>
     </Popover>

@@ -19,7 +19,6 @@ import { LYRICS_SIZES, stepLyricsSize, useLyricsSize } from '@/features/reader/l
 import { useIsWide } from '@/hooks/use-wide';
 import { cn } from '@/lib/utils';
 
-import { ChordSettingsPanel } from './chord-settings';
 import type { ReaderSong } from './song';
 
 const NOTATION_LABELS = { numbers: '1 4 5', letters: 'A B C' } as const;
@@ -43,6 +42,7 @@ export function ReaderModeToggle({
       value={mode}
       onChange={onChange}
       label={t('reader.mode')}
+      optionClassName="px-3 wide:px-4"
       options={READER_MODES.toReversed().map((value) => ({ value, label: t(`reader.${value}`) }))}
     />
   );
@@ -170,28 +170,24 @@ export function ReadingPanel({ trigger }: { trigger: ReactElement }) {
   );
 }
 
-// Wide screens: Aa and the chord-settings gear (chords mode) in the top row.
+// Wide screens: Aa in the top row (phones have it in the dock).
 export function WideReadingControls() {
   const { t } = useTranslation();
   const isWide = useIsWide();
-  const [mode] = useReaderMode();
   if (!isWide) return null;
   return (
-    <>
-      <ReadingPanel
-        trigger={
-          <Button
-            variant="glass"
-            size="icon-lg"
-            className="text-[0.9375rem]"
-            aria-label={t('reader.reading')}
-          >
-            Aa
-          </Button>
-        }
-      />
-      {mode === 'chords' ? <ChordSettingsPanel glass /> : null}
-    </>
+    <ReadingPanel
+      trigger={
+        <Button
+          variant="glass"
+          size="icon-lg"
+          className="text-[0.9375rem]"
+          aria-label={t('reader.reading')}
+        >
+          Aa
+        </Button>
+      }
+    />
   );
 }
 
