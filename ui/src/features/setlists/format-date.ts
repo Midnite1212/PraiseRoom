@@ -30,3 +30,13 @@ export const fromDateInputValue = (value: string): string | null => {
   const parsed = new Date(`${value}T00:00:00`);
   return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString();
 };
+
+// The seven narrow weekday labels, Monday first; 2024-01-01 was a Monday.
+export const weekdayLabels = (language: string): { key: number; label: string }[] =>
+  Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(2024, 0, 1 + index);
+    return {
+      key: date.getDay(),
+      label: new Intl.DateTimeFormat(dateLocale(language), { weekday: 'narrow' }).format(date),
+    };
+  });
