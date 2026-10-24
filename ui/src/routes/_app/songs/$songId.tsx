@@ -14,6 +14,7 @@ import { ReaderBack } from '@/features/reader/reader-back';
 import { ReadingPanel, WideReadingControls } from '@/features/reader/reader-controls';
 import { ReaderLayout } from '@/features/reader/reader-layout';
 import { ReaderModes } from '@/features/reader/reader-modes';
+import { ReadingSettings } from '@/features/reader/reading-settings';
 import { useSongCapo } from '@/features/reader/song-capo';
 import { SongReader } from '@/features/reader/song-reader';
 import { AddToSetlist } from '@/features/setlists/add-to-setlist';
@@ -60,6 +61,7 @@ function SongView({ song }: { song: Song }) {
       actions={
         <>
           <WideReadingControls />
+          <ReadingSettings />
           <AddToSetlist
             song={song}
             session={session}

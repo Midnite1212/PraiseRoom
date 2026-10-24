@@ -42,6 +42,21 @@ describe('Tray on a phone', () => {
     expect(screen.getByRole('button', { name: 'Outside' })).toBeVisible();
   });
 
+  it('shows a head with a close button when it has a description', async () => {
+    const user = userEvent.setup();
+    render(
+      <Tray trigger={<button type="button">Open</button>} title="Settings" description="Saved here">
+        <p>Body</p>
+      </Tray>
+    );
+    await user.click(screen.getByRole('button', { name: 'Open' }));
+
+    expect(screen.getByRole('dialog', { name: 'Settings' })).toBeInTheDocument();
+    expect(screen.getByText('Saved here')).toBeVisible();
+    await user.click(screen.getByRole('button', { name: 'Close' }));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
   it('closes on Escape and on a tap outside', async () => {
     const user = userEvent.setup();
     renderTray();

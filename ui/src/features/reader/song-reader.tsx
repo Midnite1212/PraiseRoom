@@ -11,7 +11,6 @@ import {
   useColourChords,
   useReaderMode,
 } from './chord-display';
-import { ChordSettingsPanel } from './chord-settings';
 import { KeyPicker } from './key-picker';
 import { useLyricsColumns } from './lyrics-columns';
 import { LyricsSheet } from './lyrics-sheet';
@@ -29,8 +28,7 @@ type SongReaderProps = {
 };
 
 // The reading sheet shared by the song view, the setlist view, and the public setlist view: the title
-// with ⓘ, the artist with the song's key and lyric columns, then the lyrics. On phones the key lives in
-// the dock and the chord-settings gear takes its place here.
+// with ⓘ, the artist with the song's key (wide screens) and lyric columns, then the lyrics.
 export function SongReader({
   song,
   playKey,
@@ -67,18 +65,14 @@ export function SongReader({
         <div className="mt-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
           <span className="text-ink-2 min-w-0">{song.artist}</span>
           <div className="flex items-center gap-1.5">
-            {showChordControls ? (
-              isWide ? (
-                <KeyPicker
-                  originalKey={originalKey}
-                  playKey={playKey}
-                  onChange={onPlayKeyChange}
-                  capo={capo}
-                  onCapoChange={onCapoChange}
-                />
-              ) : (
-                <ChordSettingsPanel />
-              )
+            {showChordControls && isWide ? (
+              <KeyPicker
+                originalKey={originalKey}
+                playKey={playKey}
+                onChange={onPlayKeyChange}
+                capo={capo}
+                onCapoChange={onCapoChange}
+              />
             ) : null}
             <LyricsColumnsControl columns={lyricsColumns} onChange={setLyricsColumns} />
           </div>

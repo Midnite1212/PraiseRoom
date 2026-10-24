@@ -12,6 +12,7 @@ import { KeyPicker } from '@/features/reader/key-picker';
 import { ReadingPanel, ShareButton, WideReadingControls } from '@/features/reader/reader-controls';
 import { ReaderLayout } from '@/features/reader/reader-layout';
 import { ReaderModes } from '@/features/reader/reader-modes';
+import { ReadingSettings } from '@/features/reader/reading-settings';
 import { useSongCapo } from '@/features/reader/song-capo';
 import { SongReader } from '@/features/reader/song-reader';
 import { createStoredChoice } from '@/lib/stored-choice';
@@ -47,6 +48,8 @@ type MusicianViewProps = {
   back?: ReactNode;
   // End of the top row, before Share: Edit in the app; Open in the app / Sign in on the public link.
   actions?: ReactNode;
+  // The public link: Reading settings has no Settings page to link to.
+  isPublic?: boolean;
 };
 
 // One setlist on screen: the current song in the reader, the set beside it (a glass sidebar or a row of
@@ -57,6 +60,7 @@ export function MusicianView({
   onSongChange,
   back,
   actions,
+  isPublic = false,
 }: MusicianViewProps) {
   const { t, i18n } = useTranslation();
   const [mode] = useReaderMode();
@@ -144,6 +148,7 @@ export function MusicianView({
   const meta = [date ?? t('setlists.noDate'), t('reader.songCount', { count: songCount })].join(
     ' · '
   );
+  const readingSettings = <ReadingSettings showSettingsLink={!isPublic} />;
   const share = <ShareButton link={setlist.publicLink ? publicSetlistUrl(setlist._id) : null} />;
 
   if (!song) {
@@ -153,6 +158,7 @@ export function MusicianView({
         modes={<ReaderModes />}
         actions={
           <>
+            {readingSettings}
             {actions}
             {share}
           </>
@@ -202,6 +208,7 @@ export function MusicianView({
       actions={
         <>
           <WideReadingControls />
+          {readingSettings}
           {actions}
           {share}
         </>
