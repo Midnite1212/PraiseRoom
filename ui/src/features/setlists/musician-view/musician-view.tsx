@@ -374,7 +374,8 @@ export function MusicianView({
             trigger={
               <Button
                 variant="glass"
-                className="h-14 w-[52px] px-0 text-[0.9375rem]"
+                size="dock"
+                className="text-[0.9375rem]"
                 aria-label={t('reader.reading')}
               >
                 Aa
@@ -385,7 +386,8 @@ export function MusicianView({
           <div className="glass glass-over flex h-14 min-w-0 flex-1 items-center px-1">
             <Button
               variant="ghost"
-              className="h-11 w-10 flex-none px-0"
+              size="dock-step"
+              className="flex-none"
               aria-label={t('reader.previous')}
               disabled={currentIndex === 0}
               onClick={() => goToSong(currentIndex)}
@@ -424,7 +426,8 @@ export function MusicianView({
             </Panel>
             <Button
               variant="ghost"
-              className="h-11 w-10 flex-none px-0"
+              size="dock-step"
+              className="flex-none"
               aria-label={t('reader.next')}
               disabled={currentIndex >= songCount - 1}
               onClick={() => goToSong(currentIndex + 2)}

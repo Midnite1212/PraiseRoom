@@ -4,10 +4,10 @@ import { useTranslation } from 'react-i18next';
 
 import { GroupTitle } from '@/components/page/group-title';
 import { LIST_CLASSES, listRowClasses, RowText } from '@/components/page/list-row';
+import { LoadingStatus } from '@/components/page/loading-status';
 import { Tag } from '@/components/primitives/tag';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
 
 import { detectImportLink, type ImportSearchResponse, importSearchQueryOptions } from './api';
 
@@ -60,7 +60,9 @@ export function WebResults({ q, onPickUrl, onPaste }: WebResultsProps) {
         </ul>
       ) : (
         <>
-          {results.isFetching ? <Skeleton className="h-24 w-full" /> : null}
+          {results.isFetching ? (
+            <LoadingStatus>{t('songImport.web.searching')}</LoadingStatus>
+          ) : null}
           {results.isError ? (
             <Alert variant="destructive">
               <AlertDescription>{t('songImport.search.failed')}</AlertDescription>

@@ -9,6 +9,7 @@ import { EmptyState } from '@/components/page/empty-state';
 import { type ActiveFilter, FilterChips } from '@/components/page/filter-chips';
 import { Finder } from '@/components/page/finder';
 import { GroupTitle } from '@/components/page/group-title';
+import { LoadingStatus } from '@/components/page/loading-status';
 import { PageHeader } from '@/components/page/page-header';
 import { Fab } from '@/components/primitives/fab';
 import { Button } from '@/components/ui/button';
@@ -183,6 +184,7 @@ function SongsPage() {
   });
   const totalPages = Math.max(1, data?.totalPages ?? 1);
   const isFiltered = q !== '' || activeFilters.length > 0;
+  const isSearching = isFetching || toSearchKeyword(text) !== q;
   const addSongLabel = t('songs.add.button');
 
   return (
@@ -228,8 +230,15 @@ function SongsPage() {
           />
           {isError ? (
             <EmptyState title={t('songs.loadFailed')} />
+          ) : isSearching && songs.length === 0 ? (
+            <LoadingStatus>{t('songs.searching')}</LoadingStatus>
           ) : (
-            <div className={isFetching ? 'opacity-60 transition-opacity' : undefined}>
+            <div className={isSearching ? 'opacity-60 transition-opacity' : undefined}>
+              {isSearching ? (
+                <LoadingStatus compact className="mb-2">
+                  {t('songs.searching')}
+                </LoadingStatus>
+              ) : null}
               {isWide ? (
                 <SongsTable
                   songs={songs}

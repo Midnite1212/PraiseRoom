@@ -17,7 +17,6 @@ import {
   canEditGroup,
   canEditSetlist,
   findCallerOwnership,
-  isAdmin,
   ownedEntryIds,
   sendForbidden,
 } from '../utils/authorization';
@@ -69,7 +68,6 @@ export const keepSetlistSongKeys = (songKeys: SongKeyInput[], songIds: unknown):
 };
 
 const findReach = async (user: TokenUser): Promise<SetlistReach> => {
-  if (isAdmin(user)) return { all: true };
   const ownership = await findCallerOwnership(user);
   return {
     setlistIds: ownedEntryIds(ownership?.setlistIds).filter(isObjectIdString),

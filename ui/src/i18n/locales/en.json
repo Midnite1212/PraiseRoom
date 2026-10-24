@@ -136,6 +136,7 @@
     "pages": "Pages of results",
     "emptyHint": "Try another search or fewer filters.",
     "webResults": "Web results",
+    "searching": "Searching songs…",
     "add": {
       "button": "Add song",
       "title": "Add a song",
@@ -517,6 +518,7 @@
   "songImport": {
     "web": {
       "heading": "From the web",
+      "searching": "Searching the web…",
       "importLink": "Import from this link",
       "pasteButton": "Paste a chart",
       "import": "Import"

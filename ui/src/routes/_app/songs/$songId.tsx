@@ -50,7 +50,8 @@ function SongView({ song }: { song: Song }) {
   const readingTrigger = (
     <Button
       variant="glass"
-      className="h-14 w-[52px] px-0 text-[0.9375rem]"
+      size="dock"
+      className="text-[0.9375rem]"
       aria-label={t('reader.reading')}
     >
       Aa

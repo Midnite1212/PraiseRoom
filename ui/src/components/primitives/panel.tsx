@@ -88,7 +88,11 @@ export function Panel({
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent
         showCloseButton={headerAction === undefined}
-        className={cn('max-h-[min(70svh,620px)] gap-3', sheetClassName, className)}
+        className={cn(
+          'max-h-[min(70svh,620px,calc(100svh-var(--kb,0px)-var(--bottom)-0.75rem))] gap-3',
+          sheetClassName,
+          className
+        )}
       >
         <div className="flex items-start gap-2.5">
           <DialogHeader className={cn('flex-1', headerAction !== undefined && 'pr-0')}>
