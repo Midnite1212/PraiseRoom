@@ -5,6 +5,7 @@ import * as React from 'react';
 
 import { Button } from '@/components/ui/button';
 import { useKeyboardInset } from '@/hooks/use-keyboard-inset';
+import { useMoreBelow } from '@/hooks/use-more-below';
 
 // Praise Room: dialogs are glass sheets that rise from the bottom on phones and sit in the middle on
 // wide screens. Hosts can widen one with `[--dw:520px]`.
@@ -55,6 +56,7 @@ function DialogContent({
   footer?: React.ReactNode;
 }) {
   useKeyboardInset();
+  const body = useMoreBelow();
   return (
     <DialogPortal>
       <DialogOverlay />
@@ -64,7 +66,13 @@ function DialogContent({
         {...props}
       >
         {/* The glass rim is drawn on the host, so the content scrolls inside it rather than with it. */}
-        <div className="no-scrollbar -mx-4 -my-1 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 py-1">
+        <div
+          ref={body.ref}
+          className={cn(
+            'no-scrollbar -mx-4 -my-1 flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 py-1',
+            body.isMore && '[mask-image:linear-gradient(#000_calc(100%-32px),transparent)]'
+          )}
+        >
           {children}
         </div>
         {footer ? <div className="pt-3.5">{footer}</div> : null}

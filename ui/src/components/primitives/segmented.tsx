@@ -1,6 +1,7 @@
 import { ToggleGroup as ToggleGroupPrimitive } from 'radix-ui';
 import type { ReactNode } from 'react';
 
+import { IconTooltip } from '@/components/primitives/icon-tooltip';
 import { cn } from '@/lib/utils';
 
 export type SegmentedOption<T extends string> = {
@@ -59,24 +60,32 @@ export function Segmented<T extends string>({
         className
       )}
     >
-      {options.map((option) => (
-        <ToggleGroupPrimitive.Item
-          key={option.value}
-          value={option.value}
-          data-seg-option
-          aria-label={option.ariaLabel}
-          title={option.ariaLabel}
-          lang={option.lang}
-          className={cn(
-            'relative z-10 inline-flex items-center justify-center gap-1.5 rounded-full font-semibold whitespace-nowrap text-ink-2 transition-colors duration-200 ease-out hover:text-ink data-[state=on]:text-ink [&_svg]:size-icon',
-            OPTION_SIZES[size],
-            mono && 'font-mono',
-            optionClassName
-          )}
-        >
-          {option.label}
-        </ToggleGroupPrimitive.Item>
-      ))}
+      {options.map((option) => {
+        const item = (
+          <ToggleGroupPrimitive.Item
+            key={option.value}
+            value={option.value}
+            data-seg-option
+            aria-label={option.ariaLabel}
+            lang={option.lang}
+            className={cn(
+              'relative z-10 inline-flex items-center justify-center gap-1.5 rounded-full font-semibold whitespace-nowrap text-ink-2 transition-colors duration-200 ease-out hover:text-ink data-[state=on]:text-ink [&_svg]:size-icon',
+              OPTION_SIZES[size],
+              mono && 'font-mono',
+              optionClassName
+            )}
+          >
+            {option.label}
+          </ToggleGroupPrimitive.Item>
+        );
+        return option.ariaLabel ? (
+          <IconTooltip key={option.value} label={option.ariaLabel}>
+            {item}
+          </IconTooltip>
+        ) : (
+          item
+        );
+      })}
       <span aria-hidden className="segmented-thumb" />
     </ToggleGroupPrimitive.Root>
   );

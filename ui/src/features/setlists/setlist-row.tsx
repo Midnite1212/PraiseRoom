@@ -129,9 +129,9 @@ export function SetlistRow({
           </span>
           {sharedBy ? <AuthorLine name={sharedBy} /> : null}
           {folders.map(({ id, name }) => (
-            <Tag key={id}>
+            <Tag key={id} title={name}>
               <Folder />
-              {name}
+              <span className="max-w-[24ch] truncate">{name}</span>
             </Tag>
           ))}
         </span>

@@ -2,6 +2,7 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { Slot } from 'radix-ui';
 import * as React from 'react';
 
+import { IconTooltip } from '@/components/primitives/icon-tooltip';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
@@ -51,26 +52,46 @@ const buttonVariants = cva(
   }
 );
 
+const ICON_SIZES = new Set(['icon', 'icon-xs', 'icon-sm', 'icon-lg']);
+
+// Praise Room: an icon-only button names itself in a tooltip (from its aria-label) on hover and keyboard focus.
+// Touch devices never show it, and it stays closed while the button's own popover or menu is open.
 function Button({
   className,
   variant = 'default',
   size = 'default',
   asChild = false,
+  tooltip = true,
   ...props
 }: React.ComponentProps<'button'> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
+    tooltip?: boolean;
   }) {
   const Comp = asChild ? Slot.Root : 'button';
+  const label = props['aria-label'];
+  const hasTooltip = tooltip && size !== null && ICON_SIZES.has(size) && typeof label === 'string';
 
-  return (
+  const button = (
     <Comp
       data-slot="button"
       data-variant={variant}
       data-size={size}
       className={cn(buttonVariants({ variant, size, className }))}
       {...props}
+      title={hasTooltip ? undefined : props.title}
     />
+  );
+  if (!hasTooltip) return button;
+
+  return (
+    <IconTooltip
+      label={label}
+      disabled={props.disabled === true}
+      suppressed={String(props['aria-expanded']) === 'true'}
+    >
+      {button}
+    </IconTooltip>
   );
 }
 

@@ -14,7 +14,7 @@ export function GroupTitle({
   className,
 }: {
   title: ReactNode;
-  count?: number;
+  count?: number | string;
   action?: ReactNode;
   hint?: ReactNode;
   first?: boolean;

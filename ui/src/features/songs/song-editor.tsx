@@ -189,15 +189,15 @@ export function SongEditor({ song, initialMode = 'song' }: { song: Song; initial
         </>
       }
     >
-      <div className="mb-5 flex items-center gap-3">
-        <span className="text-ink-2 text-[0.8125rem] font-semibold">
-          {t('songEditor.mode.label')}
-        </span>
+      <div className="mt-1 mb-3.5 flex items-center gap-3">
+        <span className="text-ink-2 text-sm font-semibold">{t('songEditor.mode.label')}</span>
         <Segmented
           value={mode}
           onChange={setMode}
           label={t('songEditor.mode.label')}
           size="md"
+          fullWidth={!wide}
+          className="wide:flex-none flex-1"
           options={[
             {
               value: 'song',

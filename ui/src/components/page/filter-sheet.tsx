@@ -108,7 +108,7 @@ export function FilterToggle({
       className={cn(
         'bg-fill-hover text-ink-2 aria-pressed:liquid-on aria-pressed:text-ink font-semibold transition-colors duration-150 [&_svg]:size-icon [&_svg]:flex-none',
         shape === 'chip'
-          ? 'inline-flex h-9 items-center gap-2 rounded-full px-3 text-[0.8125rem]'
+          ? 'wide:after:hidden relative inline-flex h-9 items-center gap-2 rounded-full after:absolute after:-inset-y-1 px-3 text-[0.8125rem]'
           : 'aria-pressed:[&_svg]:text-chord flex min-h-[78px] flex-col items-center justify-center gap-1.5 rounded-2xl px-1 py-2 text-center text-xs leading-tight'
       )}
     >

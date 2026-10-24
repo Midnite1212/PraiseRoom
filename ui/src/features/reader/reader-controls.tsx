@@ -239,7 +239,7 @@ export function ShareButton({ link }: { link: string | null | undefined }) {
 }
 
 // ⓘ beside the title: the song's facts.
-export function SongInfo({ song }: { song: ReaderSong }) {
+export function SongInfo({ song, className }: { song: ReaderSong; className?: string }) {
   const { t } = useTranslation();
   const facts = [
     { label: t('reader.info.originalKey'), value: song.originalKey, mono: true },
@@ -264,7 +264,7 @@ export function SongInfo({ song }: { song: ReaderSong }) {
         <Button
           variant="ghost"
           size="icon"
-          className="text-ink-3 flex-none"
+          className={cn('text-ink-3 flex-none', className)}
           aria-label={t('reader.info.title')}
           title={t('reader.info.title')}
         >

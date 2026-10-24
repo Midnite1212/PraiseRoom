@@ -192,6 +192,16 @@ function SongsPage() {
   });
   const isFiltered = q !== '' || activeFilters.length > 0;
   const isSearching = (isFetching && !isFetchingNextPage) || toSearchKeyword(text) !== q;
+  const typedKeyword = toSearchKeyword(text);
+  const isSearchingKeyword = isSearching && typedKeyword !== '';
+  const searchingLabel = isSearchingKeyword
+    ? t('songs.searchingFor', { total: library?.totalCount ?? 0, q: typedKeyword })
+    : t('songs.searching');
+  const clearSearch = q === '' && text === '' ? undefined : () => setText('');
+  const clearFilters =
+    activeFilters.length === 0
+      ? undefined
+      : () => changeFilters({ tempo: [], themes: [], keys: [], web: false });
   const addSongLabel = t('songs.add.button');
 
   return (
@@ -234,19 +244,19 @@ function SongsPage() {
 
           <GroupTitle
             title={isFiltered ? t('songs.results') : t('songs.library')}
-            count={totalCount}
+            count={isSearchingKeyword ? '…' : totalCount}
             hint={isWide ? t('songs.previewHint') : t(`songs.sortHint.${sort}`)}
             first
           />
           {isError ? (
             <EmptyState title={t('songs.loadFailed')} />
-          ) : isSearching && songs.length === 0 ? (
-            <LoadingStatus>{t('songs.searching')}</LoadingStatus>
+          ) : isSearchingKeyword || (isSearching && songs.length === 0) ? (
+            <LoadingStatus>{searchingLabel}</LoadingStatus>
           ) : (
             <div className={isSearching ? 'opacity-60 transition-opacity' : undefined}>
               {isSearching ? (
                 <LoadingStatus compact className="mb-2">
-                  {t('songs.searching')}
+                  {searchingLabel}
                 </LoadingStatus>
               ) : null}
               {isWide ? (
@@ -257,6 +267,8 @@ function SongsPage() {
                   dir={dir}
                   onSort={sortBy}
                   onSelect={(songId) => setSearch({ song: songId })}
+                  onClearSearch={clearSearch}
+                  onClearFilters={clearFilters}
                 />
               ) : (
                 <SongRows
@@ -264,6 +276,8 @@ function SongsPage() {
                   sort={sort}
                   grouped={q.trim() === ''}
                   nextSetSongIds={nextSetSongs}
+                  onClearSearch={clearSearch}
+                  onClearFilters={clearFilters}
                 />
               )}
             </div>

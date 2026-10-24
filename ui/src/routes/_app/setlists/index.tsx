@@ -201,6 +201,12 @@ function SetlistsPage() {
           {sections.length === 0 && !groups.next ? (
             <EmptyState
               title={setlists.length === 0 ? t('setlists.empty') : t('setlists.noMatches')}
+              onClearSearch={search.q.trim() === '' ? undefined : () => setSearch({ q: '' })}
+              onClearFilters={
+                search.show === 'all' && search.folders.length === 0 && !search.day
+                  ? undefined
+                  : () => setSearch({ show: 'all', folders: [], day: undefined })
+              }
             >
               {setlists.length === 0 ? null : t('setlists.noMatchesHint')}
             </EmptyState>

@@ -9,7 +9,7 @@ export function KeyChip({ musicKey, className }: { musicKey: string; className?:
     <span
       aria-label={t('songs.keyLabel', { key: musicKey })}
       className={cn(
-        'bg-fill-hover text-ink inline-grid h-5 min-w-7 flex-none place-items-center rounded-md px-1.5 font-mono text-xs font-bold',
+        'bg-fill-hover text-ink inline-grid h-6 min-w-[30px] flex-none place-items-center rounded-lg px-1.5 font-mono text-[0.8125rem] font-bold',
         className
       )}
     >
@@ -31,11 +31,11 @@ export function KeyTile({
   return (
     <span
       className={cn(
-        'bg-fill-hover grid h-12 w-11 flex-none content-center justify-items-center gap-[3px] rounded-xl text-center leading-none',
+        'bg-fill-hover grid size-13 flex-none content-center justify-items-center gap-0.5 rounded-[14px] text-center leading-none',
         className
       )}
     >
-      <b className="font-mono text-base font-bold">{musicKey}</b>
+      <b className="font-mono text-[1.125rem] font-bold">{musicKey}</b>
       {timeSignature ? (
         <small className="text-ink-3 font-mono text-[0.6875rem] font-semibold">
           {timeSignature}

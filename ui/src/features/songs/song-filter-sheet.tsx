@@ -1,8 +1,9 @@
-import { Globe, SpeedFast, SpeedMedium, SpeedSlow } from 'pixelarticons/react';
+import { Globe } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 
 import { FilterSection, FilterSheet, FilterToggle } from '@/components/page/filter-sheet';
 import { Segmented } from '@/components/primitives/segmented';
+import { TempoMeter } from '@/components/primitives/tempo-meter';
 
 import {
   SONG_SORTS,
@@ -22,13 +23,6 @@ export type SongFilterValues = {
   sort: SongSort;
   dir: SortDirection;
 };
-
-const TEMPO_ICONS = {
-  Fast: SpeedFast,
-  Medium: SpeedMedium,
-  'Medium Slow': SpeedMedium,
-  Slow: SpeedSlow,
-} as const;
 
 const toggle = <T extends string>(values: readonly T[], value: T): T[] =>
   values.includes(value) ? values.filter((item) => item !== value) : [...values, value];
@@ -74,20 +68,19 @@ export function SongFilterSheet({
         onClear={tempo.length > 0 ? () => onChange({ tempo: [] }) : undefined}
       >
         <div className="grid grid-cols-4 gap-1.5">
-          {TEMPO_OPTIONS.map((option) => {
-            const Icon = TEMPO_ICONS[option];
-            return (
-              <FilterToggle
-                key={option}
-                shape="tile"
-                pressed={tempo.includes(option)}
-                onToggle={() => onChange({ tempo: toggle(tempo, option) })}
-              >
-                <Icon />
-                {t(TEMPO_LABEL_KEYS[option])}
-              </FilterToggle>
-            );
-          })}
+          {TEMPO_OPTIONS.map((option) => (
+            <FilterToggle
+              key={option}
+              shape="tile"
+              pressed={tempo.includes(option)}
+              onToggle={() => onChange({ tempo: toggle(tempo, option) })}
+            >
+              <span aria-hidden className="mb-0.5">
+                <TempoMeter tempo={[option]} />
+              </span>
+              {t(TEMPO_LABEL_KEYS[option])}
+            </FilterToggle>
+          ))}
         </div>
       </FilterSection>
       <FilterSection
