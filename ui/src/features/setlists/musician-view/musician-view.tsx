@@ -12,6 +12,7 @@ import { KeyPicker } from '@/features/reader/key-picker';
 import { ReadingPanel, ShareButton } from '@/features/reader/reader-controls';
 import { ReaderLayout } from '@/features/reader/reader-layout';
 import { ReaderModes } from '@/features/reader/reader-modes';
+import { useSongCapo } from '@/features/reader/song-capo';
 import { SongReader } from '@/features/reader/song-reader';
 import { useIsWide } from '@/hooks/use-wide';
 import { createStoredChoice } from '@/lib/stored-choice';
@@ -81,6 +82,7 @@ export function MusicianView({
   const songCount = entries.length;
   const currentIndex = Math.min(Math.max(songNumber, 1), Math.max(songCount, 1)) - 1;
   const song = entries[currentIndex];
+  const [capo, changeCapo] = useSongCapo(song?._id ?? '', song?.capo);
   const nextSong = entries[currentIndex + 1];
 
   const goToSong = (number: number) => {
@@ -359,12 +361,21 @@ export function MusicianView({
               originalKey={originalKey}
               playKey={playKey}
               onChange={changeKey}
+              capo={capo}
+              onCapoChange={changeCapo}
             />
           ) : null}
         </>
       }
     >
-      <SongReader key={song._id} song={song} playKey={playKey} onPlayKeyChange={changeKey}>
+      <SongReader
+        key={song._id}
+        song={song}
+        playKey={playKey}
+        onPlayKeyChange={changeKey}
+        capo={capo}
+        onCapoChange={changeCapo}
+      >
         {currentIndex === songCount - 1 ? (
           <div className="border-hairline text-ink-2 mt-10 flex items-center gap-3.5 border-t py-5">
             <span aria-hidden className="flex gap-1">

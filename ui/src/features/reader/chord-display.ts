@@ -32,3 +32,14 @@ export const useColourChords = createStoredChoice('chord-colour', COLOUR_CHORDS,
 
 export const chordsUseFlats = (accidentals: Accidentals, playKey: MusicKey | null): boolean =>
   accidentals === 'auto' ? (playKey?.prefersFlats ?? false) : accidentals === 'flat';
+
+export const GUITAR_CAPO = ['off', 'on'] as const;
+export type GuitarCapo = (typeof GUITAR_CAPO)[number];
+
+export const useGuitarCapo = createStoredChoice('guitar-capo', GUITAR_CAPO, 'off').use;
+
+export const MAX_CAPO = 9;
+
+// A capo only applies while the Guitar capo switch is on.
+export const activeCapo = (guitarCapo: GuitarCapo, capo: number): number =>
+  guitarCapo === 'on' ? capo : 0;
