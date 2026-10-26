@@ -1,1358 +1,600 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-23T00:00:00.000Z",
+  "generatedAt": "2026-10-24T12:55:26+00:00",
   "title": "Design System: Praise Room",
+  "status": "Recorded from the app pages design mock (.impeccable/mocks/praise-room-app-pages.html), which carries the reader; earlier explorations are in .impeccable/mocks/design-journey-archived.html. ui/ has not adopted this world yet.",
   "extensions": {
     "colorMeta": {
-      "accent": {
-        "role": "accent",
-        "displayName": "Electric Blue",
+      "your-hue": {
+        "role": "primary",
+        "displayName": "Your Hue (Electric Blue)",
         "canonical": "oklch(0.68 0.21 262)",
-        "theme": "dark",
         "tonalRamp": [
-          "oklch(0.150 0.21 262)",
-          "oklch(0.264 0.21 262)",
-          "oklch(0.379 0.21 262)",
-          "oklch(0.493 0.21 262)",
-          "oklch(0.607 0.21 262)",
-          "oklch(0.721 0.21 262)",
-          "oklch(0.836 0.21 262)",
-          "oklch(0.950 0.21 262)"
+          "oklch(0.15 0.21 262)",
+          "oklch(0.27 0.21 262)",
+          "oklch(0.39 0.21 262)",
+          "oklch(0.51 0.21 262)",
+          "oklch(0.63 0.21 262)",
+          "oklch(0.75 0.21 262)",
+          "oklch(0.86 0.21 262)",
+          "oklch(0.95 0.21 262)"
+        ]
+      },
+      "your-hue-light": {
+        "role": "primary",
+        "displayName": "Your Hue, light theme",
+        "canonical": "oklch(0.52 0.26 264)",
+        "tonalRamp": [
+          "oklch(0.15 0.21 264)",
+          "oklch(0.27 0.21 264)",
+          "oklch(0.39 0.21 264)",
+          "oklch(0.51 0.21 264)",
+          "oklch(0.63 0.21 264)",
+          "oklch(0.75 0.21 264)",
+          "oklch(0.86 0.21 264)",
+          "oklch(0.95 0.21 264)"
+        ]
+      },
+      "hue-ultraviolet": {
+        "role": "primary",
+        "displayName": "Ultraviolet (alternate hue)",
+        "canonical": "oklch(0.7 0.2 300)",
+        "tonalRamp": [
+          "oklch(0.15 0.2 300)",
+          "oklch(0.27 0.2 300)",
+          "oklch(0.39 0.2 300)",
+          "oklch(0.51 0.2 300)",
+          "oklch(0.63 0.2 300)",
+          "oklch(0.75 0.2 300)",
+          "oklch(0.86 0.2 300)",
+          "oklch(0.95 0.2 300)"
+        ]
+      },
+      "hue-volt": {
+        "role": "primary",
+        "displayName": "Volt (alternate hue)",
+        "canonical": "oklch(0.9 0.21 128)",
+        "tonalRamp": [
+          "oklch(0.15 0.19 128)",
+          "oklch(0.27 0.19 128)",
+          "oklch(0.39 0.19 128)",
+          "oklch(0.51 0.19 128)",
+          "oklch(0.63 0.19 128)",
+          "oklch(0.75 0.19 128)",
+          "oklch(0.86 0.19 128)",
+          "oklch(0.95 0.19 128)"
+        ]
+      },
+      "hue-signal": {
+        "role": "primary",
+        "displayName": "Signal Orange (alternate hue)",
+        "canonical": "oklch(0.73 0.19 45)",
+        "tonalRamp": [
+          "oklch(0.15 0.19 45)",
+          "oklch(0.27 0.19 45)",
+          "oklch(0.39 0.19 45)",
+          "oklch(0.51 0.19 45)",
+          "oklch(0.63 0.19 45)",
+          "oklch(0.75 0.19 45)",
+          "oklch(0.86 0.19 45)",
+          "oklch(0.95 0.19 45)"
         ]
       },
       "ground": {
         "role": "neutral",
-        "displayName": "Ground",
-        "canonical": "oklch(0 0 0)",
-        "theme": "dark",
+        "displayName": "Ground (pure black)",
+        "canonical": "oklch(0 0 none)",
         "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
+          "oklch(0.15 0 none)",
+          "oklch(0.27 0 none)",
+          "oklch(0.39 0 none)",
+          "oklch(0.51 0 none)",
+          "oklch(0.63 0 none)",
+          "oklch(0.75 0 none)",
+          "oklch(0.86 0 none)",
+          "oklch(0.95 0 none)"
         ]
       },
       "ground-lift": {
         "role": "neutral",
-        "displayName": "Ground Lift",
-        "canonical": "oklch(0.17 0 0)",
-        "theme": "dark",
+        "displayName": "Lifted Ground",
+        "canonical": "oklch(0.17 0 none)",
         "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
+          "oklch(0.15 0 none)",
+          "oklch(0.27 0 none)",
+          "oklch(0.39 0 none)",
+          "oklch(0.51 0 none)",
+          "oklch(0.63 0 none)",
+          "oklch(0.75 0 none)",
+          "oklch(0.86 0 none)",
+          "oklch(0.95 0 none)"
         ]
       },
       "ink": {
         "role": "neutral",
         "displayName": "Ink",
-        "canonical": "oklch(0.98 0 0)",
-        "theme": "dark",
+        "canonical": "oklch(0.98 0 none)",
         "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
+          "oklch(0.15 0 none)",
+          "oklch(0.27 0 none)",
+          "oklch(0.39 0 none)",
+          "oklch(0.51 0 none)",
+          "oklch(0.63 0 none)",
+          "oklch(0.75 0 none)",
+          "oklch(0.86 0 none)",
+          "oklch(0.95 0 none)"
         ]
       },
       "ink-2": {
         "role": "neutral",
-        "displayName": "Ink 2",
-        "canonical": "oklch(0.78 0 0)",
-        "theme": "dark",
+        "displayName": "Secondary Ink",
+        "canonical": "oklch(0.78 0 none)",
         "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
+          "oklch(0.15 0 none)",
+          "oklch(0.27 0 none)",
+          "oklch(0.39 0 none)",
+          "oklch(0.51 0 none)",
+          "oklch(0.63 0 none)",
+          "oklch(0.75 0 none)",
+          "oklch(0.86 0 none)",
+          "oklch(0.95 0 none)"
         ]
       },
       "ink-3": {
         "role": "neutral",
-        "displayName": "Ink 3",
-        "canonical": "oklch(0.62 0 0)",
-        "theme": "dark",
+        "displayName": "Tertiary Ink",
+        "canonical": "oklch(0.62 0 none)",
         "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "chord": {
-        "role": "accent",
-        "displayName": "Chord (accent)",
-        "canonical": "oklch(0.68 0.21 262)",
-        "theme": "dark",
-        "tonalRamp": [
-          "oklch(0.150 0.21 262)",
-          "oklch(0.264 0.21 262)",
-          "oklch(0.379 0.21 262)",
-          "oklch(0.493 0.21 262)",
-          "oklch(0.607 0.21 262)",
-          "oklch(0.721 0.21 262)",
-          "oklch(0.836 0.21 262)",
-          "oklch(0.950 0.21 262)"
+          "oklch(0.15 0 none)",
+          "oklch(0.27 0 none)",
+          "oklch(0.39 0 none)",
+          "oklch(0.51 0 none)",
+          "oklch(0.63 0 none)",
+          "oklch(0.75 0 none)",
+          "oklch(0.86 0 none)",
+          "oklch(0.95 0 none)"
         ]
       },
       "label": {
         "role": "neutral",
-        "displayName": "Section Label",
-        "canonical": "oklch(0.74 0 0)",
-        "theme": "dark",
+        "displayName": "Label Grey",
+        "canonical": "oklch(0.74 0 none)",
         "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
+          "oklch(0.15 0 none)",
+          "oklch(0.27 0 none)",
+          "oklch(0.39 0 none)",
+          "oklch(0.51 0 none)",
+          "oklch(0.63 0 none)",
+          "oklch(0.75 0 none)",
+          "oklch(0.86 0 none)",
+          "oklch(0.95 0 none)"
         ]
       },
       "hairline": {
         "role": "neutral",
         "displayName": "Hairline",
-        "canonical": "oklch(1 0 0 / 0.14)",
-        "theme": "dark",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
+        "canonical": "oklch(1 0 none / 0.14)"
       },
-      "glass-tint": {
+      "glass-clear": {
         "role": "neutral",
-        "displayName": "Glass Tint",
-        "canonical": "oklch(0.2 0 0 / 0.56)",
-        "theme": "dark",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
+        "displayName": "Clear Glass",
+        "canonical": "oklch(0.22 0 none / 0.34)"
       },
-      "glass-tint-strong": {
+      "glass-over": {
         "role": "neutral",
-        "displayName": "Glass Tint Strong",
-        "canonical": "oklch(0.15 0 0 / 0.82)",
-        "theme": "dark",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
+        "displayName": "Over Glass",
+        "canonical": "oklch(0.17 0 none / 0.6)"
       },
-      "glass-tint-over": {
+      "glass-strong": {
         "role": "neutral",
-        "displayName": "Glass Tint Over",
-        "canonical": "oklch(0.16 0 0 / 0.74)",
-        "theme": "dark",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "rim-hi": {
-        "role": "neutral",
-        "displayName": "Rim High",
-        "canonical": "oklch(1 0 0 / 0.6)",
-        "theme": "dark",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "rim-lo": {
-        "role": "neutral",
-        "displayName": "Rim Low",
-        "canonical": "oklch(1 0 0 / 0.08)",
-        "theme": "dark",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "rim-edge": {
-        "role": "neutral",
-        "displayName": "Rim Edge",
-        "canonical": "oklch(1 0 0 / 0.08)",
-        "theme": "dark",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "shadow": {
-        "role": "neutral",
-        "displayName": "Shadow",
-        "canonical": "oklch(0 0 0 / 0.7)",
-        "theme": "dark",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "fill-hover": {
-        "role": "neutral",
-        "displayName": "Fill Hover",
-        "canonical": "oklch(1 0 0 / 0.09)",
-        "theme": "dark",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "fill-press": {
-        "role": "neutral",
-        "displayName": "Fill Press",
-        "canonical": "oklch(1 0 0 / 0.15)",
-        "theme": "dark",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "fill-on": {
-        "role": "accent",
-        "displayName": "Selection Wash",
-        "canonical": "oklch(0.68 0.21 262 / 0.32)",
-        "theme": "dark",
-        "tonalRamp": [
-          "oklch(0.150 0.21 262)",
-          "oklch(0.264 0.21 262)",
-          "oklch(0.379 0.21 262)",
-          "oklch(0.493 0.21 262)",
-          "oklch(0.607 0.21 262)",
-          "oklch(0.721 0.21 262)",
-          "oklch(0.836 0.21 262)",
-          "oklch(0.950 0.21 262)"
-        ]
-      },
-      "pixel-off": {
-        "role": "neutral",
-        "displayName": "Pixel Off",
-        "canonical": "oklch(1 0 0 / 0.18)",
-        "theme": "dark",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "pixel-played": {
-        "role": "neutral",
-        "displayName": "Pixel Played",
-        "canonical": "oklch(1 0 0 / 0.52)",
-        "theme": "dark",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
+        "displayName": "Strong Glass",
+        "canonical": "oklch(0.16 0 none / 0.72)"
       },
       "pixel-on": {
-        "role": "accent",
+        "role": "primary",
         "displayName": "Lit Pixel",
-        "canonical": "oklch(0.68 0.21 262)",
-        "theme": "dark",
+        "canonical": "oklch(0.68 0.21 262)"
+      },
+      "done": {
+        "role": "secondary",
+        "displayName": "Done Green",
+        "canonical": "oklch(0.8 0.15 150)",
         "tonalRamp": [
-          "oklch(0.150 0.21 262)",
-          "oklch(0.264 0.21 262)",
-          "oklch(0.379 0.21 262)",
-          "oklch(0.493 0.21 262)",
-          "oklch(0.607 0.21 262)",
-          "oklch(0.721 0.21 262)",
-          "oklch(0.836 0.21 262)",
-          "oklch(0.950 0.21 262)"
+          "oklch(0.15 0.15 150)",
+          "oklch(0.27 0.15 150)",
+          "oklch(0.39 0.15 150)",
+          "oklch(0.51 0.15 150)",
+          "oklch(0.63 0.15 150)",
+          "oklch(0.75 0.15 150)",
+          "oklch(0.86 0.15 150)",
+          "oklch(0.95 0.15 150)"
         ]
       },
-      "pixel-glow": {
-        "role": "accent",
-        "displayName": "Pixel Glow",
-        "canonical": "oklch(0.68 0.21 262 / 0.8)",
-        "theme": "dark",
+      "ends": {
+        "role": "secondary",
+        "displayName": "Ends Red",
+        "canonical": "oklch(0.7 0.19 25)",
         "tonalRamp": [
-          "oklch(0.150 0.21 262)",
-          "oklch(0.264 0.21 262)",
-          "oklch(0.379 0.21 262)",
-          "oklch(0.493 0.21 262)",
-          "oklch(0.607 0.21 262)",
-          "oklch(0.721 0.21 262)",
-          "oklch(0.836 0.21 262)",
-          "oklch(0.950 0.21 262)"
-        ]
-      },
-      "accent-light": {
-        "role": "accent",
-        "displayName": "Electric Blue (light)",
-        "canonical": "oklch(0.52 0.26 264)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0.26 264)",
-          "oklch(0.264 0.26 264)",
-          "oklch(0.379 0.26 264)",
-          "oklch(0.493 0.26 264)",
-          "oklch(0.607 0.26 264)",
-          "oklch(0.721 0.26 264)",
-          "oklch(0.836 0.26 264)",
-          "oklch(0.950 0.26 264)"
-        ]
-      },
-      "ground-light": {
-        "role": "neutral",
-        "displayName": "Ground (light)",
-        "canonical": "oklch(1 0 0)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "ground-lift-light": {
-        "role": "neutral",
-        "displayName": "Ground Lift (light)",
-        "canonical": "oklch(0.955 0 0)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "ink-light": {
-        "role": "neutral",
-        "displayName": "Ink (light)",
-        "canonical": "oklch(0.13 0 0)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "ink-2-light": {
-        "role": "neutral",
-        "displayName": "Ink 2 (light)",
-        "canonical": "oklch(0.38 0 0)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "ink-3-light": {
-        "role": "neutral",
-        "displayName": "Ink 3 (light)",
-        "canonical": "oklch(0.5 0 0)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "chord-light": {
-        "role": "accent",
-        "displayName": "Chord (accent) (light)",
-        "canonical": "oklch(0.52 0.26 264)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0.26 264)",
-          "oklch(0.264 0.26 264)",
-          "oklch(0.379 0.26 264)",
-          "oklch(0.493 0.26 264)",
-          "oklch(0.607 0.26 264)",
-          "oklch(0.721 0.26 264)",
-          "oklch(0.836 0.26 264)",
-          "oklch(0.950 0.26 264)"
-        ]
-      },
-      "label-light": {
-        "role": "neutral",
-        "displayName": "Section Label (light)",
-        "canonical": "oklch(0.34 0 0)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "hairline-light": {
-        "role": "neutral",
-        "displayName": "Hairline (light)",
-        "canonical": "oklch(0 0 0 / 0.12)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "glass-tint-light": {
-        "role": "neutral",
-        "displayName": "Glass Tint (light)",
-        "canonical": "oklch(1 0 0 / 0.6)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "glass-tint-strong-light": {
-        "role": "neutral",
-        "displayName": "Glass Tint Strong (light)",
-        "canonical": "oklch(1 0 0 / 0.86)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "glass-tint-over-light": {
-        "role": "neutral",
-        "displayName": "Glass Tint Over (light)",
-        "canonical": "oklch(1 0 0 / 0.76)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "rim-hi-light": {
-        "role": "neutral",
-        "displayName": "Rim High (light)",
-        "canonical": "oklch(1 0 0 / 0.95)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "rim-lo-light": {
-        "role": "neutral",
-        "displayName": "Rim Low (light)",
-        "canonical": "oklch(1 0 0 / 0.3)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "rim-edge-light": {
-        "role": "neutral",
-        "displayName": "Rim Edge (light)",
-        "canonical": "oklch(0 0 0 / 0.1)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "shadow-light": {
-        "role": "neutral",
-        "displayName": "Shadow (light)",
-        "canonical": "oklch(0 0 0 / 0.18)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "fill-hover-light": {
-        "role": "neutral",
-        "displayName": "Fill Hover (light)",
-        "canonical": "oklch(0 0 0 / 0.06)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "fill-press-light": {
-        "role": "neutral",
-        "displayName": "Fill Press (light)",
-        "canonical": "oklch(0 0 0 / 0.11)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "fill-on-light": {
-        "role": "accent",
-        "displayName": "Selection Wash (light)",
-        "canonical": "oklch(0.52 0.26 264 / 0.14)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0.26 264)",
-          "oklch(0.264 0.26 264)",
-          "oklch(0.379 0.26 264)",
-          "oklch(0.493 0.26 264)",
-          "oklch(0.607 0.26 264)",
-          "oklch(0.721 0.26 264)",
-          "oklch(0.836 0.26 264)",
-          "oklch(0.950 0.26 264)"
-        ]
-      },
-      "pixel-off-light": {
-        "role": "neutral",
-        "displayName": "Pixel Off (light)",
-        "canonical": "oklch(0 0 0 / 0.14)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "pixel-played-light": {
-        "role": "neutral",
-        "displayName": "Pixel Played (light)",
-        "canonical": "oklch(0 0 0 / 0.45)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0 0)",
-          "oklch(0.264 0 0)",
-          "oklch(0.379 0 0)",
-          "oklch(0.493 0 0)",
-          "oklch(0.607 0 0)",
-          "oklch(0.721 0 0)",
-          "oklch(0.836 0 0)",
-          "oklch(0.950 0 0)"
-        ]
-      },
-      "pixel-on-light": {
-        "role": "accent",
-        "displayName": "Lit Pixel (light)",
-        "canonical": "oklch(0.52 0.26 264)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0.26 264)",
-          "oklch(0.264 0.26 264)",
-          "oklch(0.379 0.26 264)",
-          "oklch(0.493 0.26 264)",
-          "oklch(0.607 0.26 264)",
-          "oklch(0.721 0.26 264)",
-          "oklch(0.836 0.26 264)",
-          "oklch(0.950 0.26 264)"
-        ]
-      },
-      "pixel-glow-light": {
-        "role": "accent",
-        "displayName": "Pixel Glow (light)",
-        "canonical": "oklch(0.52 0.26 264 / 0.4)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0.26 264)",
-          "oklch(0.264 0.26 264)",
-          "oklch(0.379 0.26 264)",
-          "oklch(0.493 0.26 264)",
-          "oklch(0.607 0.26 264)",
-          "oklch(0.721 0.26 264)",
-          "oklch(0.836 0.26 264)",
-          "oklch(0.950 0.26 264)"
-        ]
-      },
-      "accent-violet": {
-        "role": "accent",
-        "displayName": "Ultraviolet (experiment)",
-        "canonical": "oklch(0.7 0.2 300)",
-        "theme": "dark",
-        "tonalRamp": [
-          "oklch(0.150 0.2 300)",
-          "oklch(0.264 0.2 300)",
-          "oklch(0.379 0.2 300)",
-          "oklch(0.493 0.2 300)",
-          "oklch(0.607 0.2 300)",
-          "oklch(0.721 0.2 300)",
-          "oklch(0.836 0.2 300)",
-          "oklch(0.950 0.2 300)"
-        ]
-      },
-      "accent-violet-light": {
-        "role": "accent",
-        "displayName": "Ultraviolet (experiment) (light)",
-        "canonical": "oklch(0.5 0.26 300)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0.26 300)",
-          "oklch(0.264 0.26 300)",
-          "oklch(0.379 0.26 300)",
-          "oklch(0.493 0.26 300)",
-          "oklch(0.607 0.26 300)",
-          "oklch(0.721 0.26 300)",
-          "oklch(0.836 0.26 300)",
-          "oklch(0.950 0.26 300)"
-        ]
-      },
-      "accent-volt": {
-        "role": "accent",
-        "displayName": "Volt (experiment)",
-        "canonical": "oklch(0.9 0.21 128)",
-        "theme": "dark",
-        "tonalRamp": [
-          "oklch(0.150 0.21 128)",
-          "oklch(0.264 0.21 128)",
-          "oklch(0.379 0.21 128)",
-          "oklch(0.493 0.21 128)",
-          "oklch(0.607 0.21 128)",
-          "oklch(0.721 0.21 128)",
-          "oklch(0.836 0.21 128)",
-          "oklch(0.950 0.21 128)"
-        ]
-      },
-      "accent-volt-light": {
-        "role": "accent",
-        "displayName": "Volt (experiment) (light)",
-        "canonical": "oklch(0.55 0.17 140)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0.17 140)",
-          "oklch(0.264 0.17 140)",
-          "oklch(0.379 0.17 140)",
-          "oklch(0.493 0.17 140)",
-          "oklch(0.607 0.17 140)",
-          "oklch(0.721 0.17 140)",
-          "oklch(0.836 0.17 140)",
-          "oklch(0.950 0.17 140)"
-        ]
-      },
-      "accent-signal": {
-        "role": "accent",
-        "displayName": "Signal Orange (experiment)",
-        "canonical": "oklch(0.73 0.19 45)",
-        "theme": "dark",
-        "tonalRamp": [
-          "oklch(0.150 0.19 45)",
-          "oklch(0.264 0.19 45)",
-          "oklch(0.379 0.19 45)",
-          "oklch(0.493 0.19 45)",
-          "oklch(0.607 0.19 45)",
-          "oklch(0.721 0.19 45)",
-          "oklch(0.836 0.19 45)",
-          "oklch(0.950 0.19 45)"
-        ]
-      },
-      "accent-signal-light": {
-        "role": "accent",
-        "displayName": "Signal Orange (experiment) (light)",
-        "canonical": "oklch(0.58 0.21 38)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0.21 38)",
-          "oklch(0.264 0.21 38)",
-          "oklch(0.379 0.21 38)",
-          "oklch(0.493 0.21 38)",
-          "oklch(0.607 0.21 38)",
-          "oklch(0.721 0.21 38)",
-          "oklch(0.836 0.21 38)",
-          "oklch(0.950 0.21 38)"
-        ]
-      },
-      "chord-1": {
-        "role": "accent",
-        "displayName": "Colour Chord 1",
-        "canonical": "oklch(0.68 0.21 262)",
-        "theme": "dark",
-        "tonalRamp": [
-          "oklch(0.150 0.21 262)",
-          "oklch(0.264 0.21 262)",
-          "oklch(0.379 0.21 262)",
-          "oklch(0.493 0.21 262)",
-          "oklch(0.607 0.21 262)",
-          "oklch(0.721 0.21 262)",
-          "oklch(0.836 0.21 262)",
-          "oklch(0.950 0.21 262)"
+          "oklch(0.15 0.19 25)",
+          "oklch(0.27 0.19 25)",
+          "oklch(0.39 0.19 25)",
+          "oklch(0.51 0.19 25)",
+          "oklch(0.63 0.19 25)",
+          "oklch(0.75 0.19 25)",
+          "oklch(0.86 0.19 25)",
+          "oklch(0.95 0.19 25)"
         ]
       },
       "chord-4": {
-        "role": "accent",
-        "displayName": "Colour Chord 4",
+        "role": "tertiary",
+        "displayName": "Chord 4 Sea Green",
         "canonical": "oklch(0.83 0.12 165)",
-        "theme": "dark",
         "tonalRamp": [
-          "oklch(0.150 0.12 165)",
-          "oklch(0.264 0.12 165)",
-          "oklch(0.379 0.12 165)",
-          "oklch(0.493 0.12 165)",
-          "oklch(0.607 0.12 165)",
-          "oklch(0.721 0.12 165)",
-          "oklch(0.836 0.12 165)",
-          "oklch(0.950 0.12 165)"
+          "oklch(0.15 0.12 165)",
+          "oklch(0.27 0.12 165)",
+          "oklch(0.39 0.12 165)",
+          "oklch(0.51 0.12 165)",
+          "oklch(0.63 0.12 165)",
+          "oklch(0.75 0.12 165)",
+          "oklch(0.86 0.12 165)",
+          "oklch(0.95 0.12 165)"
         ]
       },
       "chord-5": {
-        "role": "accent",
-        "displayName": "Colour Chord 5",
+        "role": "tertiary",
+        "displayName": "Chord 5 Warm Gold",
         "canonical": "oklch(0.85 0.12 80)",
-        "theme": "dark",
         "tonalRamp": [
-          "oklch(0.150 0.12 80)",
-          "oklch(0.264 0.12 80)",
-          "oklch(0.379 0.12 80)",
-          "oklch(0.493 0.12 80)",
-          "oklch(0.607 0.12 80)",
-          "oklch(0.721 0.12 80)",
-          "oklch(0.836 0.12 80)",
-          "oklch(0.950 0.12 80)"
+          "oklch(0.15 0.12 80)",
+          "oklch(0.27 0.12 80)",
+          "oklch(0.39 0.12 80)",
+          "oklch(0.51 0.12 80)",
+          "oklch(0.63 0.12 80)",
+          "oklch(0.75 0.12 80)",
+          "oklch(0.86 0.12 80)",
+          "oklch(0.95 0.12 80)"
         ]
       },
       "chord-minor": {
-        "role": "accent",
-        "displayName": "Colour Chord Minor",
+        "role": "tertiary",
+        "displayName": "Minor Chord Violet",
         "canonical": "oklch(0.8 0.11 305)",
-        "theme": "dark",
         "tonalRamp": [
-          "oklch(0.150 0.11 305)",
-          "oklch(0.264 0.11 305)",
-          "oklch(0.379 0.11 305)",
-          "oklch(0.493 0.11 305)",
-          "oklch(0.607 0.11 305)",
-          "oklch(0.721 0.11 305)",
-          "oklch(0.836 0.11 305)",
-          "oklch(0.950 0.11 305)"
-        ]
-      },
-      "chord-1-light": {
-        "role": "accent",
-        "displayName": "Colour Chord 1 (light)",
-        "canonical": "oklch(0.52 0.26 264)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0.26 264)",
-          "oklch(0.264 0.26 264)",
-          "oklch(0.379 0.26 264)",
-          "oklch(0.493 0.26 264)",
-          "oklch(0.607 0.26 264)",
-          "oklch(0.721 0.26 264)",
-          "oklch(0.836 0.26 264)",
-          "oklch(0.950 0.26 264)"
-        ]
-      },
-      "chord-4-light": {
-        "role": "accent",
-        "displayName": "Colour Chord 4 (light)",
-        "canonical": "oklch(0.5 0.12 165)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0.12 165)",
-          "oklch(0.264 0.12 165)",
-          "oklch(0.379 0.12 165)",
-          "oklch(0.493 0.12 165)",
-          "oklch(0.607 0.12 165)",
-          "oklch(0.721 0.12 165)",
-          "oklch(0.836 0.12 165)",
-          "oklch(0.950 0.12 165)"
-        ]
-      },
-      "chord-5-light": {
-        "role": "accent",
-        "displayName": "Colour Chord 5 (light)",
-        "canonical": "oklch(0.55 0.13 70)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0.13 70)",
-          "oklch(0.264 0.13 70)",
-          "oklch(0.379 0.13 70)",
-          "oklch(0.493 0.13 70)",
-          "oklch(0.607 0.13 70)",
-          "oklch(0.721 0.13 70)",
-          "oklch(0.836 0.13 70)",
-          "oklch(0.950 0.13 70)"
-        ]
-      },
-      "chord-minor-light": {
-        "role": "accent",
-        "displayName": "Colour Chord Minor (light)",
-        "canonical": "oklch(0.5 0.14 305)",
-        "theme": "light",
-        "tonalRamp": [
-          "oklch(0.150 0.14 305)",
-          "oklch(0.264 0.14 305)",
-          "oklch(0.379 0.14 305)",
-          "oklch(0.493 0.14 305)",
-          "oklch(0.607 0.14 305)",
-          "oklch(0.721 0.14 305)",
-          "oklch(0.836 0.14 305)",
-          "oklch(0.950 0.14 305)"
+          "oklch(0.15 0.11 305)",
+          "oklch(0.27 0.11 305)",
+          "oklch(0.39 0.11 305)",
+          "oklch(0.51 0.11 305)",
+          "oklch(0.63 0.11 305)",
+          "oklch(0.75 0.11 305)",
+          "oklch(0.86 0.11 305)",
+          "oklch(0.95 0.11 305)"
         ]
       }
     },
     "typographyMeta": {
       "display": {
         "displayName": "Display",
-        "purpose": "The song title only. Geist 700, -0.035em, balanced wrap."
+        "purpose": "The song title in the reader."
       },
-      "headline": {
-        "displayName": "Headline",
-        "purpose": "The next song title in the up-next row."
+      "page-title": {
+        "displayName": "Page Title",
+        "purpose": "The title of every app page, in the 64px header row."
       },
-      "title": {
-        "displayName": "Title",
-        "purpose": "Setlist name at the head of the rail and the sheet."
+      "pane-title": {
+        "displayName": "Pane Title",
+        "purpose": "A title inside a preview or slide-over."
+      },
+      "card-title": {
+        "displayName": "Card Title",
+        "purpose": "The next set on Home and the setlist card."
+      },
+      "present": {
+        "displayName": "Present",
+        "purpose": "Lyrics on a TV in Present mode."
+      },
+      "row-title": {
+        "displayName": "Row Title",
+        "purpose": "Titles in lists."
       },
       "lyrics": {
         "displayName": "Lyrics",
-        "purpose": "Lyrics at regular 400, user-sized in five steps: 1rem, 1.125rem (default), 1.375rem, 1.625rem, 2rem; size changes animate 260ms."
-      },
-      "chord": {
-        "displayName": "Chord",
-        "purpose": "Chord symbols over their word, in the chord colour; superscripts at 0.68em. Accidentals spelled b and #."
-      },
-      "mono": {
-        "displayName": "Mono",
-        "purpose": "Geist Mono for musical data and numbers only: row numbers and keys, the key chip; at other sizes the key name, offset, key grid, notation segment, keycaps, dock count and up-next key."
-      },
-      "subtitle": {
-        "displayName": "Subtitle",
-        "purpose": "The artist line under the song title, in ink-2."
+        "purpose": "Song lyrics; five sizes from 0.9375rem to 1.5rem."
       },
       "body": {
         "displayName": "Body",
-        "purpose": "Base text at regular 400; no weight lighter than 400."
+        "purpose": "Prose in sheets and empty states."
       },
-      "ui-strong": {
-        "displayName": "UI Strong",
-        "purpose": "Bar titles, the current song-row title, the dock song name, the toast."
+      "control": {
+        "displayName": "Control",
+        "purpose": "Buttons, navigation and toasts."
+      },
+      "group-heading": {
+        "displayName": "Group Heading",
+        "purpose": "The one section heading style on every page, with a mono count."
       },
       "label": {
         "displayName": "Label",
-        "purpose": "Geist control labels: segment options, Sign in, menu rows (Aa at 0.9375rem). Centred in their controls with no padding offset."
+        "purpose": "Field labels and segmented options."
       },
       "caption": {
         "displayName": "Caption",
-        "purpose": "Dates, meta, the Key and Up next captions, song details, popover headings (600, ink-2)."
+        "purpose": "Hints and metadata."
       },
       "section-label": {
         "displayName": "Section Label",
-        "purpose": "Song section names only (Verse, Chorus), uppercase, led by a 6px square pixel. Never a decorative eyebrow."
+        "purpose": "VERSE 1, CHORUS: pixel-marked small capitals in reader, editor and previews."
+      },
+      "chord": {
+        "displayName": "Chord",
+        "purpose": "Chords above lyrics, in the chord colour."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Keys, dates in tiles, song codes and counts."
+      },
+      "present-title": {
+        "displayName": "Present Title",
+        "purpose": "The song title on a TV in Present mode."
       }
     },
     "shadows": [
       {
-        "name": "glass-float",
-        "value": "0 12px 32px -10px var(--shadow), 0 2px 8px -2px var(--shadow)",
-        "purpose": "Every glass surface."
+        "name": "glass-lift",
+        "value": "0 12px 32px -10px oklch(0 0 none / 0.7), 0 2px 8px -2px oklch(0 0 none / 0.7)",
+        "purpose": "Under every piece of glass."
       },
       {
-        "name": "lens",
-        "value": "0 3px 8px -2px var(--shadow)",
-        "purpose": "The strip lens bead."
+        "name": "action-button",
+        "value": "0 14px 28px -10px oklch(0 0 none / 0.7), 0 2px 6px -2px oklch(0 0 none / 0.5)",
+        "purpose": "Under the phone's round add button."
       },
       {
-        "name": "pixel-now-glow",
-        "value": "0 2px 10px 1px var(--pixel-glow)",
-        "purpose": "Current song pixel in the strip."
+        "name": "slide-over",
+        "value": "inset 0 0 0 1px oklch(1 0 none / 0.14), 0 24px 60px -20px oklch(0 0 none / 0.7)",
+        "purpose": "Under the iPad's slide-in panels."
       },
       {
-        "name": "thumb-ring",
-        "value": "inset 0 0 0 1px oklch(0.84 0.13 var(--h) / 0.25)",
-        "purpose": "Segmented control liquid thumb."
+        "name": "liquid-on-edge",
+        "value": "inset 0 1px 0 oklch(1 0 none / 0.2), inset 0 -1px 1px oklch(0 0 none / 0.24), inset 0 0 0 1px color-mix(in oklch, var(--accent) 20%, transparent)",
+        "purpose": "The rim of a selected liquid fill."
+      },
+      {
+        "name": "pixel-glow",
+        "value": "drop-shadow(0 0 3px color-mix(in oklch, var(--accent) 80%, transparent))",
+        "purpose": "A pixel icon lit on hover; a filter, not a box-shadow."
+      }
+    ],
+    "glass": [
+      {
+        "name": "glass-backdrop",
+        "value": "blur(12px) saturate(220%) brightness(1.08)",
+        "purpose": "Every glass layer; 22–24px blur for strong glass."
+      },
+      {
+        "name": "glass-sheen",
+        "value": "radial-gradient(140% 70% at 28% -10%, oklch(1 0 none / 0.13), transparent 62%)",
+        "purpose": "The soft highlight across the top of glass."
+      },
+      {
+        "name": "liquid-on",
+        "value": "radial-gradient(90% 120% at var(--mx, 30%) var(--my, -20%), oklch(1 0 none / 0.17), transparent 70%), radial-gradient(70% 80% at 65% 125%, color-mix(in oklch, var(--accent) 34%, transparent), transparent 70%), color-mix(in oklch, var(--accent) 32%, transparent)",
+        "purpose": "Selected tab, row or segment; the highlight follows the pointer."
+      },
+      {
+        "name": "liquid-hover",
+        "value": "radial-gradient(90% 120% at var(--mx, 30%) var(--my, -20%), oklch(1 0 none / 0.09), transparent 70%), oklch(1 0 none / 0.09)",
+        "purpose": "Hovered control, half strength, grey."
       }
     ],
     "motion": [
       {
         "name": "ease-out",
         "value": "cubic-bezier(0.16, 1, 0.3, 1)",
-        "purpose": "Colour, opacity, fades, TV slides."
+        "purpose": "Fades, colour changes and slides."
       },
       {
         "name": "ease-liquid",
         "value": "cubic-bezier(0.34, 1.32, 0.52, 1)",
-        "purpose": "Anything glass that moves or scales: presses, the segmented thumb, panels, the toast, switches."
+        "purpose": "Springy glass: presses, the segmented thumb, switch knobs, records."
       },
       {
-        "name": "thumb",
-        "value": "480ms ease-liquid",
-        "purpose": "Segmented thumb translateX and width; placed without animation the first time."
+        "name": "duration-quick",
+        "value": "160ms",
+        "purpose": "Hover fills and colour changes."
       },
       {
-        "name": "panel",
-        "value": "open 480ms ease-liquid from translateY(18px) scale(0.96); close 420ms",
-        "purpose": "Bottom sheets on phones; popovers on wide screens grow from their trigger."
+        "name": "duration-press",
+        "value": "260ms",
+        "purpose": "Press and release."
       },
       {
-        "name": "pixel-state",
-        "value": "400ms ease-out",
-        "purpose": "Progress segment state changes."
-      },
-      {
-        "name": "tv-slide",
-        "value": "420ms ease-out from translateY(14px)",
-        "purpose": "Each Present to TV slide."
-      },
-      {
-        "name": "reduced",
-        "value": "1ms",
-        "purpose": "prefers-reduced-motion: every transition and animation; scrolling jumps."
+        "name": "duration-move",
+        "value": "360–480ms",
+        "purpose": "Thumbs, sidebar folding, sheets and trays."
       }
     ],
     "breakpoints": [
       {
-        "name": "wide",
-        "value": "(min-width: 900px) and (orientation: landscape)",
-        "purpose": "Setlist sidebar (or a full-width set row under the top row), chord settings in the top row, split songs with equal panes (or one song in two lyric columns); hides the progress segments and bottom row."
+        "name": "phone",
+        "value": "0–767px",
+        "purpose": "One column, top bar, floating tab bar, round add button."
       },
       {
-        "name": "phone",
-        "value": "everything else",
-        "purpose": "Top row (Lyrics | Chords, share), progress segments, bottom row (Aa, Up next, key), panels as bottom sheets."
+        "name": "ipad",
+        "value": "768px",
+        "purpose": "Folded icon sidebar, stacked pages, slide-over panels."
+      },
+      {
+        "name": "wide",
+        "value": "1100px",
+        "purpose": "Full 232px sidebar, two-column pages."
+      },
+      {
+        "name": "frame",
+        "value": "1600px",
+        "purpose": "The app frame stops widening and centres."
       }
-    ],
-    "ground": {
-      "base": "var(--ground)",
-      "wash": "linear-gradient(180deg, var(--ground-lift) 0%, transparent 46vh)",
-      "layer": "position: fixed; inset: 0; z-index: 0; pointer-events: none",
-      "note": "One even field with a single soft wash of light from the top. No radial glows, textures or decorative pixels in the ground."
-    },
-    "glassEngine": {
-      "technique": "Hybrid: CSS backdrop-filter stack everywhere; Chromium-only bezel refraction via size-specific SVG displacement maps.",
-      "frosted": "blur(var(--glass-blur, 14px)) saturate(185%) brightness(1.04); 24px for sheets and popovers",
-      "refraction": {
-        "surface": "(1 - (1 - x)^4)^(1/4) convex squircle",
-        "law": "Snell's law",
-        "ior": 1.5,
-        "thickness": 36,
-        "samples": 96,
-        "bezelDefault": "round(radius * 0.6), clamped 1-18 and radius - 1; skip radius < 3",
-        "computeRegion": "bezel band only; centre undisplaced",
-        "cacheKeys": [
-          "width x height x radius x bezel x blur (filter)",
-          "thickness | bezel | ior (profile)"
-        ],
-        "resize": "ResizeObserver, debounced 90ms then one requestAnimationFrame",
-        "specular": "map over 2.5x bezel, light at 60deg, alpha slope 0.55, saturate 1.8",
-        "detection": "'userAgentData' in navigator && CSS.supports('backdrop-filter', 'url(#id)')",
-        "blurPerElement": {
-          "topBar": 3,
-          "rail": 4,
-          "controls": 2,
-          "dock": 3,
-          "popoverAndSheet": 8,
-          "toast": 6,
-          "lens": 0.4
-        }
-      },
-      "fallbacks": {
-        "reducedTransparency": "solid glass-tint-strong, no backdrop-filter",
-        "noBackdropFilter": "glass-tint-strong",
-        "forcedColors": "1px solid CanvasText border"
-      },
-      "rejected": [
-        "WebGL",
-        "SVG-only glass"
-      ],
-      "refractionBlur": "data-blur 3 for floating groups and the sidebar, 6 for the toast and TV controls, 8 for sheets and popovers",
-      "grouping": "No full-width bars: each group of related controls is its own capsule (48px top, 56px bottom); the rows holding them have no glass and pass clicks through.",
-      "contrast": "prefers-contrast: more makes neutral tints near-opaque (0.95-0.97 alpha) and strengthens ink-2, ink-3, hairline, rim-edge, fill-on and pixel-off."
-    },
-    "pixelStates": {
-      "off": "var(--pixel-off): upcoming songs",
-      "played": "var(--pixel-played): white at 0.52 (black at 0.45 in light), songs already played and the end-of-set row",
-      "now": "var(--pixel-on): the accent; on the phone progress segments it adds 0 1px 8px var(--pixel-glow)",
-      "shapes": "4px progress segments (22 x 4px on the TV), 10px row pixels, 8px end-of-set pixels"
-    },
-    "fonts": {
-      "ui": "Geist 400/500/600/700: every word, controls included; 400 lyrics and body, 600 labels and UI strong, 700 song titles at -0.035em. Stack: 'Geist', ui-sans-serif, system-ui, -apple-system, 'PingFang TC', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif.",
-      "mono": "Geist Mono 500/600/700: musical data and numbers only (chords, key names, offsets, key grid, the 1 4 5 / A B C segment, row numbers and keys, counts, steppers, keycaps). Stack: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, Consolas, 'PingFang TC', 'Noto Sans TC', monospace.",
-      "accidentals": "Spelled b and #; neither face has the flat or sharp glyph.",
-      "productionRequirement": "Self-host both families; the Google Fonts CDN link in the mock is not part of the system."
-    },
-    "opticalAlignment": {
-      "capCentre": "Geist and Geist Mono centre their capitals in the line box (cap 0.71em, ascent 1.01em, descent 0.29em).",
-      "controlLabels": "No padding offset: labels centre in fixed-height controls by the box alone.",
-      "titleInfoButton": "margin-top: calc(var(--title-size) * 0.54 - 20px) centres the 40px info button on the title's first line (1.08 line height).",
-      "tolerance": "Measured in the browser: info icon within 0.1px of the title cap height, labels within about 0.5px of their control centre. Re-measure after changing a font, size or control height."
-    },
-    "icons": {
-      "set": "pixelarticons (MIT, Gerrit Halfmann)",
-      "size": "var(--icon): 24px at 1x; 18px at min-resolution 2dppx; 20px at min-resolution 2.5dppx",
-      "reason": "Each icon pixel is two grid units, so it spans 2 device px at 1x, 3 at 2x and 5 at 3x.",
-      "rendering": "fill='currentColor', shape-rendering: crispEdges",
-      "mark": "Pixel cross drawn at 20px in a 32px box, in chord, independent of --icon"
-    },
-    "status": "Recorded from the public setlist view design mock (.impeccable/mocks/praise-room-public-setlist-view.html), the only implementation. ui/ has not adopted this world; ui/src/styles.css still carries the provisional navy palette being replaced.",
-    "accent": {
-      "token": "--accent",
-      "default": "electric blue: oklch(0.68 0.21 262) dark, oklch(0.52 0.26 264) light",
-      "derived": "chord and pixel-on = accent; fill-on = accent at 32% (14% light); pixel-glow = accent at 80% (40% light); c1 = accent",
-      "alternatives": "data-palette on <html>: violet, volt, signal (experiments)"
-    }
+    ]
   },
   "components": [
     {
-      "name": "Tap (plain control inside glass)",
+      "name": "Primary Button",
       "kind": "button",
-      "refersTo": "tap",
-      "description": "Icon or text control living inside a glass surface; fills, never more glass.",
-      "html": "<div class=\"ds-scope ds-glass\" style=\"display:inline-flex;padding:2px;gap:2px\"><button class=\"ds-tap\" aria-label=\"Previous song\"><svg width=\"24\" height=\"24\" style=\"width:var(--icon);height:var(--icon)\" viewBox=\"0 0 24 24\" fill=\"currentColor\" shape-rendering=\"crispEdges\" aria-hidden=\"true\"><path d=\"M8 13v-2h2v2H8Zm2-2V9h2v2h-2Zm0 4v-2h2v2h-2Zm2-6V7h2v2h-2Zm0 8v-2h2v2h-2Zm2-10V5h2v2h-2Zm0 12v-2h2v2h-2Z\"/></svg></button><button class=\"ds-tap\" aria-label=\"Display\"><svg width=\"24\" height=\"24\" style=\"width:var(--icon);height:var(--icon)\" viewBox=\"0 0 24 24\" fill=\"currentColor\" shape-rendering=\"crispEdges\" aria-hidden=\"true\"><path d=\"M8 14H7v6H5v-6H2v-2h6v2Zm5 6h-2V10h2v10Zm9-2h-3v2h-2v-2h-1v-2h6v2Zm-3-4h-2V4h2v10ZM7 10H5V4h2v6Zm6-4h2v2H9V6h2V4h2v2Z\"/></svg></button></div>",
-      "css": ".ds-scope{--accent:oklch(0.68 0.21 262);--ground:oklch(0 0 0);--ink:oklch(0.98 0 0);--ink-2:oklch(0.78 0 0);--ink-3:oklch(0.62 0 0);--chord:var(--accent);--glass-tint:oklch(0.2 0 0 / 0.56);--glass-tint-strong:oklch(0.15 0 0 / 0.82);--glass-tint-over:oklch(0.16 0 0 / 0.74);--rim-hi:oklch(1 0 0 / 0.55);--rim-lo:oklch(1 0 0 / 0.07);--rim-edge:oklch(1 0 0 / 0.06);--shadow:oklch(0 0 0 / 0.7);--fill-hover:oklch(1 0 0 / 0.08);--fill-press:oklch(1 0 0 / 0.14);--fill-on:color-mix(in oklch,var(--accent) 32%,transparent);--pixel-off:oklch(1 0 0 / 0.18);--pixel-played:oklch(1 0 0 / 0.52);--pixel-on:var(--accent);--pixel-glow:color-mix(in oklch,var(--accent) 80%,transparent);--icon:24px;--ease-out:cubic-bezier(0.16,1,0.3,1);--ease-liquid:cubic-bezier(0.34,1.32,0.52,1);font-family:'Geist',ui-sans-serif,system-ui,-apple-system,'PingFang TC','Noto Sans TC','Microsoft JhengHei',sans-serif;color:var(--ink);}.ds-glass{position:relative;isolation:isolate;border-radius:var(--glass-r,999px);box-shadow:0 12px 32px -10px var(--shadow),0 2px 8px -2px var(--shadow);}.ds-glass::after{content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;background:var(--glass-fill,var(--glass-tint));-webkit-backdrop-filter:blur(var(--glass-blur,14px)) saturate(185%) brightness(1.04);backdrop-filter:blur(var(--glass-blur,14px)) saturate(185%) brightness(1.04);pointer-events:none;}.ds-glass::before{content:'';position:absolute;inset:0;z-index:1;border-radius:inherit;padding:1px;background:linear-gradient(150deg,var(--rim-hi) 0%,var(--rim-lo) 28%,transparent 50%,var(--rim-lo) 74%,color-mix(in oklch,var(--rim-hi) 60%,transparent) 100%),linear-gradient(var(--rim-edge),var(--rim-edge));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);pointer-events:none;}@media (prefers-reduced-transparency: reduce){.ds-glass::after{background:var(--glass-tint-strong);-webkit-backdrop-filter:none;backdrop-filter:none;}}.ds-tap{display:inline-flex;align-items:center;justify-content:center;min-width:40px;height:40px;padding:0 8px;border:0;border-radius:999px;background:none;color:inherit;cursor:pointer;transition:background-color 180ms var(--ease-out),transform 260ms var(--ease-liquid);}.ds-tap:hover{background:var(--fill-hover);}.ds-tap:active{background:var(--fill-press);transform:scale(0.94);}.ds-tap:focus-visible{outline:2px solid var(--chord);outline-offset:2px;}"
+      "refersTo": "button-primary",
+      "description": "The ink pill: one per page or sheet.",
+      "html": "<button class=\"ds-btn-primary\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"currentColor\" aria-hidden=\"true\" style=\"shape-rendering:crispEdges\"><path d=\"M13 11h7v2h-7v7h-2v-7H4v-2h7V4h2v7Z\"/></svg>Add song</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 18px 0 14px; border: 0; border-radius: 999px; background: var(--ink, oklch(0.98 0 none)); color: var(--ground, oklch(0 0 none)); font: 600 0.9375rem 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; cursor: pointer; transition: transform 260ms cubic-bezier(0.34, 1.32, 0.52, 1); } .ds-btn-primary:active { transform: scale(0.96); } .ds-btn-primary:focus-visible { outline: 2px solid var(--accent, oklch(0.68 0.21 262)); outline-offset: 2px; }"
     },
     {
-      "name": "Top Row Glass Groups",
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary actions on a grey fill; liquid on hover.",
+      "html": "<button class=\"ds-btn-ghost\">Cancel</button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; height: 44px; padding: 0 16px; border: 0; border-radius: 999px; background: var(--fill-hover, oklch(1 0 none / 0.09)); color: var(--ink, oklch(0.98 0 none)); font: 600 0.9375rem 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; cursor: pointer; transition: background-color 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-ghost:hover { background: radial-gradient(90% 120% at 30% -20%, oklch(1 0 none / 0.09), transparent 70%), var(--fill-hover, oklch(1 0 none / 0.09)); box-shadow: inset 0 1px 0 oklch(1 0 none / 0.1); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--accent, oklch(0.68 0.21 262)); outline-offset: 2px; }"
+    },
+    {
+      "name": "Ends Button",
+      "kind": "button",
+      "refersTo": "button-ends",
+      "description": "Leave, Delete, Sign out: quiet red at rest, full red on hover.",
+      "html": "<button class=\"ds-btn-ends\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"currentColor\" aria-hidden=\"true\" style=\"shape-rendering:crispEdges\"><path d=\"M8 2h8v2H8zM4 4h16v2H4zm2 2h2v14H6zm10 0h2v14h-2zM8 20h8v2H8zm2-12h2v8h-2zm4 0h2v8h-2z\"/></svg>Delete</button>",
+      "css": ".ds-btn-ends { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 14px; border: 0; border-radius: 999px; background: color-mix(in oklch, var(--danger, oklch(0.7 0.19 25)) 5%, transparent); color: color-mix(in oklch, var(--danger, oklch(0.7 0.19 25)) 45%, var(--ink-2, oklch(0.78 0 none))); font: 600 0.9375rem 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; cursor: pointer; transition: color 160ms, background-color 160ms; } .ds-btn-ends:hover { background: color-mix(in oklch, var(--danger, oklch(0.7 0.19 25)) 18%, transparent); color: var(--danger, oklch(0.7 0.19 25)); } .ds-btn-ends:hover svg { filter: drop-shadow(0 0 3px color-mix(in oklch, var(--danger, oklch(0.7 0.19 25)) 70%, transparent)); }"
+    },
+    {
+      "name": "Icon Button (lit pixel)",
+      "kind": "button",
+      "refersTo": "icon-button",
+      "description": "A pixel icon that lights in Your Hue on hover; the label never does.",
+      "html": "<button class=\"ds-icon-btn\" aria-label=\"Copy public link\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"currentColor\" aria-hidden=\"true\" style=\"shape-rendering:crispEdges\"><path d=\"M4 9h2v6H4zm2-2h6v2H6zm0 8h6v2H6zm6-4h6v2h-6zm6-4h2v2h-2zm0 8h2v2h-2zm2-6h2v6h-2zm-8-2h6v2h-6zm0 8h6v2h-6z\"/></svg></button>",
+      "css": ".ds-icon-btn { display: grid; place-items: center; width: 40px; height: 40px; border: 0; border-radius: 999px; background: none; color: var(--ink, oklch(0.98 0 none)); cursor: pointer; transition: background-color 160ms; } .ds-icon-btn svg { transition: color 160ms, filter 220ms; } .ds-icon-btn:hover { background: radial-gradient(90% 120% at 30% -20%, oklch(1 0 none / 0.09), transparent 70%), var(--fill-hover, oklch(1 0 none / 0.09)); } .ds-icon-btn:hover svg { color: var(--accent, oklch(0.68 0.21 262)); filter: drop-shadow(0 0 3px color-mix(in oklch, var(--accent, oklch(0.68 0.21 262)) 80%, transparent)); } .ds-icon-btn:focus-visible { outline: 2px solid var(--accent, oklch(0.68 0.21 262)); outline-offset: 2px; }"
+    },
+    {
+      "name": "Navigation Island",
       "kind": "nav",
-      "refersTo": "glass-group-top",
-      "description": "Phone top row: Lyrics | Chords and Copy link float as separate 48px glass capsules, with no bar behind them. The segment buttons sit 3px in, concentric with the capsule.",
-      "html": "<div class=\"ds-scope ds-row\" style=\"padding:12px\"><div class=\"ds-glass ds-seg\" role=\"group\" aria-label=\"Show\"><span class=\"ds-thumb\" aria-hidden=\"true\"></span><button aria-pressed=\"false\">Lyrics</button><button aria-pressed=\"true\">Chords</button></div><span style=\"flex:1\"></span><button class=\"ds-glass ds-tap ds-circ\" aria-label=\"Copy link\"><svg width=\"24\" height=\"24\" style=\"width:var(--icon);height:var(--icon)\" viewBox=\"0 0 24 24\" fill=\"currentColor\" shape-rendering=\"crispEdges\" aria-hidden=\"true\"><path d=\"M4 6h7v2H4zm0 10h7v2H4zM2 8h2v8H2zm18-2h-7v2h7zm0 10h-7v2h7zm2-8h-2v8h2zM7 11h10v2H7z\"/></svg></button></div>",
-      "css": ".ds-scope{--accent:oklch(0.68 0.21 262);--ground:oklch(0 0 0);--ink:oklch(0.98 0 0);--ink-2:oklch(0.78 0 0);--ink-3:oklch(0.62 0 0);--chord:var(--accent);--glass-tint:oklch(0.2 0 0 / 0.56);--glass-tint-strong:oklch(0.15 0 0 / 0.82);--glass-tint-over:oklch(0.16 0 0 / 0.74);--rim-hi:oklch(1 0 0 / 0.55);--rim-lo:oklch(1 0 0 / 0.07);--rim-edge:oklch(1 0 0 / 0.06);--shadow:oklch(0 0 0 / 0.7);--fill-hover:oklch(1 0 0 / 0.08);--fill-press:oklch(1 0 0 / 0.14);--fill-on:color-mix(in oklch,var(--accent) 32%,transparent);--pixel-off:oklch(1 0 0 / 0.18);--pixel-played:oklch(1 0 0 / 0.52);--pixel-on:var(--accent);--pixel-glow:color-mix(in oklch,var(--accent) 80%,transparent);--icon:24px;--ease-out:cubic-bezier(0.16,1,0.3,1);--ease-liquid:cubic-bezier(0.34,1.32,0.52,1);font-family:'Geist',ui-sans-serif,system-ui,-apple-system,'PingFang TC','Noto Sans TC','Microsoft JhengHei',sans-serif;color:var(--ink);}.ds-glass{position:relative;isolation:isolate;border-radius:var(--glass-r,999px);box-shadow:0 12px 32px -10px var(--shadow),0 2px 8px -2px var(--shadow);}.ds-glass::after{content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;background:var(--glass-fill,var(--glass-tint));-webkit-backdrop-filter:blur(var(--glass-blur,14px)) saturate(185%) brightness(1.04);backdrop-filter:blur(var(--glass-blur,14px)) saturate(185%) brightness(1.04);pointer-events:none;}.ds-glass::before{content:'';position:absolute;inset:0;z-index:1;border-radius:inherit;padding:1px;background:linear-gradient(150deg,var(--rim-hi) 0%,var(--rim-lo) 28%,transparent 50%,var(--rim-lo) 74%,color-mix(in oklch,var(--rim-hi) 60%,transparent) 100%),linear-gradient(var(--rim-edge),var(--rim-edge));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);pointer-events:none;}@media (prefers-reduced-transparency: reduce){.ds-glass::after{background:var(--glass-tint-strong);-webkit-backdrop-filter:none;backdrop-filter:none;}}.ds-tap{display:inline-flex;align-items:center;justify-content:center;min-width:40px;height:40px;padding:0 8px;border:0;border-radius:999px;background:none;color:inherit;cursor:pointer;transition:background-color 180ms var(--ease-out),transform 260ms var(--ease-liquid);}.ds-tap:hover{background:var(--fill-hover);}.ds-tap:active{background:var(--fill-press);transform:scale(0.94);}.ds-tap:focus-visible{outline:2px solid var(--chord);outline-offset:2px;}.ds-seg{position:relative;display:inline-grid;grid-auto-flow:column;grid-auto-columns:1fr;padding:3px;}.ds-seg button{position:relative;z-index:1;height:42px;padding:0 16px;border:0;border-radius:999px;background:none;color:var(--ink-2);font:inherit;font-size:0.875rem;font-weight:600;line-height:1;cursor:pointer;}.ds-seg button[aria-pressed='true']{color:var(--ink);}.ds-thumb{position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);transform:translateX(100%);border-radius:999px;background:var(--fill-on);box-shadow:inset 0 0 0 1px color-mix(in oklch,var(--accent) 30%,transparent);}.ds-row{display:flex;align-items:center;gap:8px;}.ds-row .ds-circ{width:48px;height:48px;padding:0;}"
+      "refersTo": "nav-island",
+      "description": "Clear glass with the current page as a liquid fill in Your Hue.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-i\" href=\"#\">Home</a><a class=\"ds-nav-i on\" href=\"#\" aria-current=\"page\">Songs<small>148</small></a><a class=\"ds-nav-i\" href=\"#\">Setlists<small>6</small></a><a class=\"ds-nav-i\" href=\"#\">Folders<small>3</small></a></nav>",
+      "css": ".ds-nav { display: grid; gap: 2px; width: 232px; padding: 8px; border-radius: 24px; background: var(--glass-tint, oklch(0.22 0 none / 0.34)); box-shadow: inset 0 0 0 1px oklch(1 0 none / 0.1), 0 12px 32px -10px oklch(0 0 none / 0.7); backdrop-filter: blur(12px) saturate(220%); font: 600 0.9375rem 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; } .ds-nav-i { display: flex; align-items: center; height: 44px; padding: 0 12px; border-radius: 16px; color: var(--ink-2, oklch(0.78 0 none)); text-decoration: none; } .ds-nav-i small { margin-left: auto; color: var(--ink-3, oklch(0.62 0 none)); font: 600 0.75rem 'IBM Plex Mono', ui-monospace, monospace; } .ds-nav-i:hover { background: radial-gradient(90% 120% at 30% -20%, oklch(1 0 none / 0.09), transparent 70%), var(--fill-hover, oklch(1 0 none / 0.09)); color: var(--ink, oklch(0.98 0 none)); } .ds-nav-i.on { background: radial-gradient(90% 120% at 30% -20%, oklch(1 0 none / 0.17), transparent 70%), radial-gradient(70% 80% at 65% 125%, color-mix(in oklch, var(--accent, oklch(0.68 0.21 262)) 34%, transparent), transparent 70%), color-mix(in oklch, var(--accent, oklch(0.68 0.21 262)) 32%, transparent); box-shadow: inset 0 1px 0 oklch(1 0 none / 0.2), inset 0 -1px 1px oklch(0 0 none / 0.24), inset 0 0 0 1px color-mix(in oklch, var(--accent, oklch(0.68 0.21 262)) 20%, transparent); color: var(--ink, oklch(0.98 0 none)); }"
     },
     {
-      "name": "Bottom Row: Aa · Up next · Key",
-      "kind": "nav",
-      "refersTo": "glass-group-dock",
-      "description": "Phone bottom row in thumb reach: three 56px glass groups on glass-tint-over. Up next lights up with 24% chord once the last section is on screen.",
-      "html": "<nav class=\"ds-scope ds-row ds-bot\" aria-label=\"Change songs\"><button class=\"ds-glass ds-tap ds-aa\">Aa</button><div class=\"ds-glass ds-up\"><button class=\"ds-tap\" aria-label=\"Previous song\"><svg width=\"24\" height=\"24\" style=\"width:var(--icon);height:var(--icon)\" viewBox=\"0 0 24 24\" fill=\"currentColor\" shape-rendering=\"crispEdges\" aria-hidden=\"true\"><path d=\"M8 13v-2h2v2H8Zm2-2V9h2v2h-2Zm0 4v-2h2v2h-2Zm2-6V7h2v2h-2Zm0 8v-2h2v2h-2Zm2-10V5h2v2h-2Zm0 12v-2h2v2h-2Z\"/></svg></button><button class=\"ds-lab\"><small>Up next</small><span>It Is Well With My Soul</span></button><button class=\"ds-tap\" aria-label=\"Next song\"><svg width=\"24\" height=\"24\" style=\"width:var(--icon);height:var(--icon)\" viewBox=\"0 0 24 24\" fill=\"currentColor\" shape-rendering=\"crispEdges\" aria-hidden=\"true\"><path d=\"M16 13v-2h-2v2h2Zm-2-2V9h-2v2h2Zm0 4v-2h-2v2h2Zm-2-6V7h-2v2h2Zm0 8v-2h-2v2h2ZM10 7V5H8v2h2Zm0 12v-2H8v2h2Z\"/></svg></button></div><button class=\"ds-glass ds-pill\"><span class=\"k\">E</span><span class=\"off\">+2</span></button></nav>",
-      "css": ".ds-scope{--accent:oklch(0.68 0.21 262);--ground:oklch(0 0 0);--ink:oklch(0.98 0 0);--ink-2:oklch(0.78 0 0);--ink-3:oklch(0.62 0 0);--chord:var(--accent);--glass-tint:oklch(0.2 0 0 / 0.56);--glass-tint-strong:oklch(0.15 0 0 / 0.82);--glass-tint-over:oklch(0.16 0 0 / 0.74);--rim-hi:oklch(1 0 0 / 0.55);--rim-lo:oklch(1 0 0 / 0.07);--rim-edge:oklch(1 0 0 / 0.06);--shadow:oklch(0 0 0 / 0.7);--fill-hover:oklch(1 0 0 / 0.08);--fill-press:oklch(1 0 0 / 0.14);--fill-on:color-mix(in oklch,var(--accent) 32%,transparent);--pixel-off:oklch(1 0 0 / 0.18);--pixel-played:oklch(1 0 0 / 0.52);--pixel-on:var(--accent);--pixel-glow:color-mix(in oklch,var(--accent) 80%,transparent);--icon:24px;--ease-out:cubic-bezier(0.16,1,0.3,1);--ease-liquid:cubic-bezier(0.34,1.32,0.52,1);font-family:'Geist',ui-sans-serif,system-ui,-apple-system,'PingFang TC','Noto Sans TC','Microsoft JhengHei',sans-serif;color:var(--ink);}.ds-glass{position:relative;isolation:isolate;border-radius:var(--glass-r,999px);box-shadow:0 12px 32px -10px var(--shadow),0 2px 8px -2px var(--shadow);}.ds-glass::after{content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;background:var(--glass-fill,var(--glass-tint));-webkit-backdrop-filter:blur(var(--glass-blur,14px)) saturate(185%) brightness(1.04);backdrop-filter:blur(var(--glass-blur,14px)) saturate(185%) brightness(1.04);pointer-events:none;}.ds-glass::before{content:'';position:absolute;inset:0;z-index:1;border-radius:inherit;padding:1px;background:linear-gradient(150deg,var(--rim-hi) 0%,var(--rim-lo) 28%,transparent 50%,var(--rim-lo) 74%,color-mix(in oklch,var(--rim-hi) 60%,transparent) 100%),linear-gradient(var(--rim-edge),var(--rim-edge));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);pointer-events:none;}@media (prefers-reduced-transparency: reduce){.ds-glass::after{background:var(--glass-tint-strong);-webkit-backdrop-filter:none;backdrop-filter:none;}}.ds-tap{display:inline-flex;align-items:center;justify-content:center;min-width:40px;height:40px;padding:0 8px;border:0;border-radius:999px;background:none;color:inherit;cursor:pointer;transition:background-color 180ms var(--ease-out),transform 260ms var(--ease-liquid);}.ds-tap:hover{background:var(--fill-hover);}.ds-tap:active{background:var(--fill-press);transform:scale(0.94);}.ds-tap:focus-visible{outline:2px solid var(--chord);outline-offset:2px;}.ds-row{display:flex;align-items:center;gap:8px;}.ds-row .ds-circ{width:48px;height:48px;padding:0;}.ds-bot{--glass-fill:var(--glass-tint-over);gap:6px;width:min(100%,394px);box-sizing:border-box;padding:12px;}.ds-aa{width:52px;height:56px;padding:0;font-weight:600;font-size:0.9375rem;}.ds-up{flex:1;min-width:0;display:flex;align-items:center;height:56px;padding:0 4px;--glass-fill:color-mix(in oklch,var(--glass-tint-over),var(--chord) 24%);}.ds-up .ds-tap{width:40px;height:44px;padding:0;}.ds-lab{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;height:44px;border:0;border-radius:999px;background:none;color:inherit;font:inherit;line-height:1.2;cursor:pointer;}.ds-lab small{color:var(--ink-3);font-size:0.75rem;}.ds-lab span{max-width:100%;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:0.875rem;font-weight:600;}.ds-pill{display:inline-flex;align-items:center;gap:8px;height:56px;padding:0 8px 0 14px;border:0;background:none;color:inherit;font:inherit;font-size:0.875rem;font-weight:600;cursor:pointer;}.ds-pill .k{font-family:'Geist Mono',ui-monospace,monospace;font-size:1rem;font-weight:700;}.ds-pill .off{display:inline-grid;place-items:center;min-width:28px;height:24px;padding:0 6px;border-radius:999px;background:var(--fill-on);color:var(--chord);font-family:'Geist Mono',ui-monospace,monospace;font-size:0.75rem;font-weight:700;}"
-    },
-    {
-      "name": "Progress Segments",
-      "kind": "nav",
-      "refersTo": "progress-segment",
-      "description": "Phone only: the set as a strip of light under the top row. One 4px pixel segment per song (off, played, lit and glowing), each a 20px button that jumps to its song, with a Mono count.",
-      "html": "<nav class=\"ds-scope ds-segs\" aria-label=\"Setlist\"><button class=\"played\" aria-label=\"Song 1\"></button><button aria-current=\"true\" aria-label=\"Song 2\"></button><button aria-label=\"Song 3\"></button><button aria-label=\"Song 4\"></button><button aria-label=\"Song 5\"></button><button aria-label=\"Song 6\"></button><span class=\"c\">2/6</span></nav>",
-      "css": ".ds-scope{--accent:oklch(0.68 0.21 262);--ground:oklch(0 0 0);--ink:oklch(0.98 0 0);--ink-2:oklch(0.78 0 0);--ink-3:oklch(0.62 0 0);--chord:var(--accent);--glass-tint:oklch(0.2 0 0 / 0.56);--glass-tint-strong:oklch(0.15 0 0 / 0.82);--glass-tint-over:oklch(0.16 0 0 / 0.74);--rim-hi:oklch(1 0 0 / 0.55);--rim-lo:oklch(1 0 0 / 0.07);--rim-edge:oklch(1 0 0 / 0.06);--shadow:oklch(0 0 0 / 0.7);--fill-hover:oklch(1 0 0 / 0.08);--fill-press:oklch(1 0 0 / 0.14);--fill-on:color-mix(in oklch,var(--accent) 32%,transparent);--pixel-off:oklch(1 0 0 / 0.18);--pixel-played:oklch(1 0 0 / 0.52);--pixel-on:var(--accent);--pixel-glow:color-mix(in oklch,var(--accent) 80%,transparent);--icon:24px;--ease-out:cubic-bezier(0.16,1,0.3,1);--ease-liquid:cubic-bezier(0.34,1.32,0.52,1);font-family:'Geist',ui-sans-serif,system-ui,-apple-system,'PingFang TC','Noto Sans TC','Microsoft JhengHei',sans-serif;color:var(--ink);}.ds-glass{position:relative;isolation:isolate;border-radius:var(--glass-r,999px);box-shadow:0 12px 32px -10px var(--shadow),0 2px 8px -2px var(--shadow);}.ds-glass::after{content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;background:var(--glass-fill,var(--glass-tint));-webkit-backdrop-filter:blur(var(--glass-blur,14px)) saturate(185%) brightness(1.04);backdrop-filter:blur(var(--glass-blur,14px)) saturate(185%) brightness(1.04);pointer-events:none;}.ds-glass::before{content:'';position:absolute;inset:0;z-index:1;border-radius:inherit;padding:1px;background:linear-gradient(150deg,var(--rim-hi) 0%,var(--rim-lo) 28%,transparent 50%,var(--rim-lo) 74%,color-mix(in oklch,var(--rim-hi) 60%,transparent) 100%),linear-gradient(var(--rim-edge),var(--rim-edge));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);pointer-events:none;}@media (prefers-reduced-transparency: reduce){.ds-glass::after{background:var(--glass-tint-strong);-webkit-backdrop-filter:none;backdrop-filter:none;}}.ds-tap{display:inline-flex;align-items:center;justify-content:center;min-width:40px;height:40px;padding:0 8px;border:0;border-radius:999px;background:none;color:inherit;cursor:pointer;transition:background-color 180ms var(--ease-out),transform 260ms var(--ease-liquid);}.ds-tap:hover{background:var(--fill-hover);}.ds-tap:active{background:var(--fill-press);transform:scale(0.94);}.ds-tap:focus-visible{outline:2px solid var(--chord);outline-offset:2px;}.ds-segs{display:flex;align-items:center;gap:4px;width:min(100%,340px);padding:12px;}.ds-segs button{flex:1;height:20px;display:grid;align-items:center;padding:0;border:0;background:none;cursor:pointer;}.ds-segs button::before{content:'';height:4px;background:var(--pixel-off);}.ds-segs button.played::before{background:var(--pixel-played);}.ds-segs button[aria-current='true']::before{background:var(--pixel-on);box-shadow:0 1px 8px var(--pixel-glow);}.ds-segs .c{margin-left:6px;color:var(--ink-3);font:0.75rem 'Geist Mono',ui-monospace,monospace;}"
-    },
-    {
-      "name": "Segmented Control with Liquid Thumb",
-      "kind": "chip",
-      "refersTo": "segmented-option",
-      "description": "Geist word options and the Geist Mono notation segment; a fill-on thumb springs to the selected option over 480ms.",
-      "html": "<div class=\"ds-scope\" style=\"display:flex\"><div class=\"ds-glass ds-ctl\"><div class=\"ds-seg\"><span class=\"ds-thumb\"></span><button aria-pressed=\"false\">Lyrics</button><button aria-pressed=\"true\">Chords</button></div></div><div class=\"ds-glass ds-ctl\" style=\"margin-left:8px\"><div class=\"ds-seg ds-nums\"><span class=\"ds-thumb\"></span><button aria-pressed=\"false\">1 4 5</button><button aria-pressed=\"true\">A B C</button></div></div></div>",
-      "css": ".ds-scope{--accent:oklch(0.68 0.21 262);--ground:oklch(0 0 0);--ink:oklch(0.98 0 0);--ink-2:oklch(0.78 0 0);--ink-3:oklch(0.62 0 0);--chord:var(--accent);--glass-tint:oklch(0.2 0 0 / 0.56);--glass-tint-strong:oklch(0.15 0 0 / 0.82);--glass-tint-over:oklch(0.16 0 0 / 0.74);--rim-hi:oklch(1 0 0 / 0.55);--rim-lo:oklch(1 0 0 / 0.07);--rim-edge:oklch(1 0 0 / 0.06);--shadow:oklch(0 0 0 / 0.7);--fill-hover:oklch(1 0 0 / 0.08);--fill-press:oklch(1 0 0 / 0.14);--fill-on:color-mix(in oklch,var(--accent) 32%,transparent);--pixel-off:oklch(1 0 0 / 0.18);--pixel-played:oklch(1 0 0 / 0.52);--pixel-on:var(--accent);--pixel-glow:color-mix(in oklch,var(--accent) 80%,transparent);--icon:24px;--ease-out:cubic-bezier(0.16,1,0.3,1);--ease-liquid:cubic-bezier(0.34,1.32,0.52,1);font-family:'Geist',ui-sans-serif,system-ui,-apple-system,'PingFang TC','Noto Sans TC','Microsoft JhengHei',sans-serif;color:var(--ink);}.ds-glass{position:relative;isolation:isolate;border-radius:var(--glass-r,999px);box-shadow:0 12px 32px -10px var(--shadow),0 2px 8px -2px var(--shadow);}.ds-glass::after{content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;background:var(--glass-fill,var(--glass-tint));-webkit-backdrop-filter:blur(var(--glass-blur,14px)) saturate(185%) brightness(1.04);backdrop-filter:blur(var(--glass-blur,14px)) saturate(185%) brightness(1.04);pointer-events:none;}.ds-glass::before{content:'';position:absolute;inset:0;z-index:1;border-radius:inherit;padding:1px;background:linear-gradient(150deg,var(--rim-hi) 0%,var(--rim-lo) 28%,transparent 50%,var(--rim-lo) 74%,color-mix(in oklch,var(--rim-hi) 60%,transparent) 100%),linear-gradient(var(--rim-edge),var(--rim-edge));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);pointer-events:none;}@media (prefers-reduced-transparency: reduce){.ds-glass::after{background:var(--glass-tint-strong);-webkit-backdrop-filter:none;backdrop-filter:none;}}.ds-ctl{--glass-blur:10px;height:44px;display:inline-flex;align-items:center;padding:2px;}.ds-seg{position:relative;display:inline-grid;grid-auto-flow:column;grid-auto-columns:1fr;}.ds-seg button{position:relative;z-index:1;height:40px;padding:0 14px;border:0;border-radius:999px;background:none;color:var(--ink-2);font:600 0.875rem 'Geist',ui-sans-serif,system-ui,-apple-system,'PingFang TC','Noto Sans TC','Microsoft JhengHei',sans-serif;cursor:pointer;transition:color 220ms var(--ease-out);}.ds-seg button:hover{color:var(--ink);}.ds-seg button[aria-pressed='true']{color:var(--ink);}.ds-seg button:focus-visible{outline:2px solid var(--chord);outline-offset:2px;}.ds-thumb{position:absolute;z-index:0;top:0;bottom:0;left:50%;width:50%;border-radius:999px;background:var(--fill-on);box-shadow:inset 0 0 0 1px color-mix(in oklch,var(--accent) 30%,transparent);transition:transform 520ms var(--ease-liquid),width 520ms var(--ease-liquid);}.ds-seg.ds-nums button{font-family:'Geist Mono',ui-monospace,'SF Mono',Menlo,Consolas,'PingFang TC','Noto Sans TC',monospace;}"
-    },
-    {
-      "name": "Key Picker Grid",
+      "name": "Segmented Control",
       "kind": "custom",
-      "refersTo": "key-cell",
-      "description": "Key panel grid: four columns of 44px fill-hover cells (12px radius); the selected key is solid chord, the original key marked by a 4px pixel.",
-      "html": "<div class=\"ds-scope ds-glass ds-pop\"><h2>Key · Amazing Grace</h2><div class=\"ds-grid\"><button>G</button><button>Ab</button><button aria-pressed=\"true\">A</button><button>Bb</button><button>B</button><button>C</button><button>Db</button><button data-original=\"true\">G</button></div><p class=\"ds-hint\"><i></i>Original key</p></div>",
-      "css": ".ds-scope{--accent:oklch(0.68 0.21 262);--ground:oklch(0 0 0);--ink:oklch(0.98 0 0);--ink-2:oklch(0.78 0 0);--ink-3:oklch(0.62 0 0);--chord:var(--accent);--glass-tint:oklch(0.2 0 0 / 0.56);--glass-tint-strong:oklch(0.15 0 0 / 0.82);--glass-tint-over:oklch(0.16 0 0 / 0.74);--rim-hi:oklch(1 0 0 / 0.55);--rim-lo:oklch(1 0 0 / 0.07);--rim-edge:oklch(1 0 0 / 0.06);--shadow:oklch(0 0 0 / 0.7);--fill-hover:oklch(1 0 0 / 0.08);--fill-press:oklch(1 0 0 / 0.14);--fill-on:color-mix(in oklch,var(--accent) 32%,transparent);--pixel-off:oklch(1 0 0 / 0.18);--pixel-played:oklch(1 0 0 / 0.52);--pixel-on:var(--accent);--pixel-glow:color-mix(in oklch,var(--accent) 80%,transparent);--icon:24px;--ease-out:cubic-bezier(0.16,1,0.3,1);--ease-liquid:cubic-bezier(0.34,1.32,0.52,1);font-family:'Geist',ui-sans-serif,system-ui,-apple-system,'PingFang TC','Noto Sans TC','Microsoft JhengHei',sans-serif;color:var(--ink);}.ds-glass{position:relative;isolation:isolate;border-radius:var(--glass-r,999px);box-shadow:0 12px 32px -10px var(--shadow),0 2px 8px -2px var(--shadow);}.ds-glass::after{content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;background:var(--glass-fill,var(--glass-tint));-webkit-backdrop-filter:blur(var(--glass-blur,14px)) saturate(185%) brightness(1.04);backdrop-filter:blur(var(--glass-blur,14px)) saturate(185%) brightness(1.04);pointer-events:none;}.ds-glass::before{content:'';position:absolute;inset:0;z-index:1;border-radius:inherit;padding:1px;background:linear-gradient(150deg,var(--rim-hi) 0%,var(--rim-lo) 28%,transparent 50%,var(--rim-lo) 74%,color-mix(in oklch,var(--rim-hi) 60%,transparent) 100%),linear-gradient(var(--rim-edge),var(--rim-edge));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);pointer-events:none;}@media (prefers-reduced-transparency: reduce){.ds-glass::after{background:var(--glass-tint-strong);-webkit-backdrop-filter:none;backdrop-filter:none;}}.ds-pop{--glass-r:22px;--glass-fill:var(--glass-tint-strong);--glass-blur:22px;display:inline-block;padding:14px;}.ds-pop h2{margin:0 0 10px;font-size:0.8125rem;font-weight:600;color:var(--ink-2);}.ds-grid{display:grid;grid-template-columns:repeat(4,52px);gap:4px;}.ds-grid button{position:relative;height:44px;border:0;border-radius:12px;background:none;color:inherit;font:600 1rem 'Geist Mono',ui-monospace,'SF Mono',Menlo,Consolas,'PingFang TC','Noto Sans TC',monospace;cursor:pointer;transition:background-color 160ms var(--ease-out);}.ds-grid button:hover{background:var(--fill-hover);}.ds-grid button:focus-visible{outline:2px solid var(--chord);outline-offset:2px;}.ds-grid button[aria-pressed='true']{background:var(--chord);color:var(--ground);}.ds-grid button[data-original='true']::after{content:'';position:absolute;left:50%;bottom:5px;width:4px;height:4px;margin-left:-2px;background:currentColor;opacity:0.7;}.ds-hint{display:flex;align-items:center;gap:8px;margin:12px 2px 0;color:var(--ink-3);font-size:0.75rem;}.ds-hint i{width:4px;height:4px;background:currentColor;}"
+      "refersTo": "segmented",
+      "description": "A grey capsule track; the chosen option is a liquid pill.",
+      "html": "<div class=\"ds-seg\" role=\"group\" aria-label=\"Show chords as\"><button aria-pressed=\"false\">1 4 5</button><button aria-pressed=\"true\">A B C</button></div>",
+      "css": ".ds-seg { display: inline-flex; gap: 2px; padding: 3px; border-radius: 999px; background: var(--fill-hover, oklch(1 0 none / 0.09)); } .ds-seg button { height: 36px; padding: 0 16px; border: 0; border-radius: 999px; background: none; color: var(--ink-2, oklch(0.78 0 none)); font: 600 0.875rem 'IBM Plex Mono', ui-monospace, monospace; cursor: pointer; } .ds-seg button:hover { color: var(--ink, oklch(0.98 0 none)); } .ds-seg button[aria-pressed='true'] { background: radial-gradient(90% 120% at 30% -20%, oklch(1 0 none / 0.17), transparent 70%), radial-gradient(70% 80% at 65% 125%, color-mix(in oklch, var(--accent, oklch(0.68 0.21 262)) 34%, transparent), transparent 70%), color-mix(in oklch, var(--accent, oklch(0.68 0.21 262)) 32%, transparent); box-shadow: inset 0 1px 0 oklch(1 0 none / 0.2), inset 0 -1px 1px oklch(0 0 none / 0.24), inset 0 0 0 1px color-mix(in oklch, var(--accent, oklch(0.68 0.21 262)) 20%, transparent); color: var(--ink, oklch(0.98 0 none)); }"
     },
     {
-      "name": "Song Row",
+      "name": "Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "A 48px box on a grey fill with its label above; Your Hue ring on focus.",
+      "html": "<label class=\"ds-field\"><span>Email</span><input type=\"email\" placeholder=\"you@example.com\" /></label>",
+      "css": ".ds-field { display: grid; gap: 6px; width: 320px; font: 600 0.875rem 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; color: var(--ink-2, oklch(0.78 0 none)); } .ds-field input { height: 48px; padding: 0 14px; border: 0; border-radius: 14px; background: var(--fill-hover, oklch(1 0 none / 0.09)); box-shadow: inset 0 0 0 1px oklch(1 0 none / 0.14); color: var(--ink, oklch(0.98 0 none)); font: 400 1rem 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; outline: none; } .ds-field input:focus { box-shadow: inset 0 0 0 2px var(--accent, oklch(0.68 0.21 262)); }"
+    },
+    {
+      "name": "Search",
+      "kind": "input",
+      "refersTo": "search",
+      "description": "The sticky glass search capsule.",
+      "html": "<div class=\"ds-search\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"currentColor\" aria-hidden=\"true\" style=\"shape-rendering:crispEdges\"><path d=\"M6 2h8v2H6zM4 4h2v2H4zm10 0h2v2h-2zM2 6h2v8H2zm14 0h2v8h-2zM4 14h2v2H4zm10 0h2v2h-2zm-8 2h8v2H6zm10 0h2v2h-2zm2 2h2v2h-2zm2 2h2v2h-2z\"/></svg><input placeholder=\"Search songs, lyrics or codes\" /></div>",
+      "css": ".ds-search { display: flex; align-items: center; gap: 10px; width: 360px; height: 48px; padding: 0 16px; border-radius: 999px; background: var(--glass-tint, oklch(0.22 0 none / 0.34)); box-shadow: inset 0 0 0 1px oklch(1 0 none / 0.1); color: var(--ink-3, oklch(0.62 0 none)); } .ds-search input { flex: 1; border: 0; background: none; color: var(--ink, oklch(0.98 0 none)); font: 400 1rem 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; outline: none; } .ds-search:focus-within { box-shadow: inset 0 0 0 2px var(--accent, oklch(0.68 0.21 262)); }"
+    },
+    {
+      "name": "Setlist Row",
       "kind": "card",
-      "refersTo": "song-row",
-      "description": "Shared sidebar and setlist row: song pixel (off, played, or lit), mono number, title, mono key; 48px tall; the current row gets a fill-on wash.",
-      "html": "<ol class=\"ds-scope ds-glass ds-list\"><li><button class=\"ds-row\"><i class=\"played\"></i><span class=\"num\">1</span><span class=\"t\">Holy, Holy, Holy</span><span class=\"k\">D</span></button></li><li><button class=\"ds-row\" aria-current=\"true\"><i></i><span class=\"num\">2</span><span class=\"t\">Amazing Grace</span><span class=\"k\">A</span></button></li></ol>",
-      "css": ".ds-scope{--accent:oklch(0.68 0.21 262);--ground:oklch(0 0 0);--ink:oklch(0.98 0 0);--ink-2:oklch(0.78 0 0);--ink-3:oklch(0.62 0 0);--chord:var(--accent);--glass-tint:oklch(0.2 0 0 / 0.56);--glass-tint-strong:oklch(0.15 0 0 / 0.82);--glass-tint-over:oklch(0.16 0 0 / 0.74);--rim-hi:oklch(1 0 0 / 0.55);--rim-lo:oklch(1 0 0 / 0.07);--rim-edge:oklch(1 0 0 / 0.06);--shadow:oklch(0 0 0 / 0.7);--fill-hover:oklch(1 0 0 / 0.08);--fill-press:oklch(1 0 0 / 0.14);--fill-on:color-mix(in oklch,var(--accent) 32%,transparent);--pixel-off:oklch(1 0 0 / 0.18);--pixel-played:oklch(1 0 0 / 0.52);--pixel-on:var(--accent);--pixel-glow:color-mix(in oklch,var(--accent) 80%,transparent);--icon:24px;--ease-out:cubic-bezier(0.16,1,0.3,1);--ease-liquid:cubic-bezier(0.34,1.32,0.52,1);font-family:'Geist',ui-sans-serif,system-ui,-apple-system,'PingFang TC','Noto Sans TC','Microsoft JhengHei',sans-serif;color:var(--ink);}.ds-glass{position:relative;isolation:isolate;border-radius:var(--glass-r,999px);box-shadow:0 12px 32px -10px var(--shadow),0 2px 8px -2px var(--shadow);}.ds-glass::after{content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;background:var(--glass-fill,var(--glass-tint));-webkit-backdrop-filter:blur(var(--glass-blur,14px)) saturate(185%) brightness(1.04);backdrop-filter:blur(var(--glass-blur,14px)) saturate(185%) brightness(1.04);pointer-events:none;}.ds-glass::before{content:'';position:absolute;inset:0;z-index:1;border-radius:inherit;padding:1px;background:linear-gradient(150deg,var(--rim-hi) 0%,var(--rim-lo) 28%,transparent 50%,var(--rim-lo) 74%,color-mix(in oklch,var(--rim-hi) 60%,transparent) 100%),linear-gradient(var(--rim-edge),var(--rim-edge));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);pointer-events:none;}@media (prefers-reduced-transparency: reduce){.ds-glass::after{background:var(--glass-tint-strong);-webkit-backdrop-filter:none;backdrop-filter:none;}}.ds-list{--glass-r:24px;list-style:none;margin:0;padding:10px;width:272px;}.ds-row{display:grid;grid-template-columns:12px 20px minmax(0,1fr) auto;align-items:center;gap:10px;width:100%;min-height:44px;padding:6px 10px;border:0;border-radius:14px;background:none;color:inherit;font:inherit;text-align:left;cursor:pointer;transition:background-color 180ms var(--ease-out);}.ds-row:hover{background:var(--fill-hover);}.ds-row:focus-visible{outline:2px solid var(--chord);outline-offset:2px;}.ds-row[aria-current='true']{background:var(--fill-on);}.ds-row[aria-current='true'] .t{font-weight:600;}.ds-row i{width:10px;height:10px;background:var(--pixel-off);}.ds-row i.played{background:var(--pixel-played);}.ds-row[aria-current='true'] i{background:var(--pixel-on);}.ds-row .num{color:var(--ink-3);font-size:0.8125rem;font-family:'Geist Mono',ui-monospace,'SF Mono',Menlo,Consolas,'PingFang TC','Noto Sans TC',monospace;}.ds-row .t{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:0.9375rem;font-weight:400;}.ds-row .k{color:var(--ink-2);font-size:0.8125rem;font-weight:600;font-family:'Geist Mono',ui-monospace,'SF Mono',Menlo,Consolas,'PingFang TC','Noto Sans TC',monospace;}"
+      "refersTo": "list-row",
+      "description": "Date tile, title and metadata, and the set's strip of light; liquid on hover.",
+      "html": "<button class=\"ds-row\"><span class=\"ds-date\"><b>1</b><small>Nov</small></span><span class=\"ds-row-t\"><b>Sunday Service</b><small>Sun · 4 songs</small><span class=\"ds-strip\"><i class=\"on\"></i><i class=\"on\"></i><i class=\"on\"></i><i class=\"on\"></i></span></span></button>",
+      "css": ".ds-row { display: grid; grid-template-columns: 52px 1fr; align-items: center; gap: 12px; width: 420px; min-height: 64px; padding: 8px 12px; border: 0; border-radius: 16px; background: none; color: var(--ink, oklch(0.98 0 none)); text-align: left; cursor: pointer; font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; } .ds-row:hover { background: radial-gradient(90% 120% at 30% -20%, oklch(1 0 none / 0.09), transparent 70%), var(--fill-hover, oklch(1 0 none / 0.09)); } .ds-date { display: grid; place-content: center; width: 52px; height: 52px; border-radius: 14px; background: var(--fill-hover, oklch(1 0 none / 0.09)); text-align: center; line-height: 1; } .ds-date b { font: 700 1.25rem 'IBM Plex Mono', ui-monospace, monospace; } .ds-date small { margin-top: 4px; color: var(--ink-2, oklch(0.78 0 none)); font: 600 0.6875rem 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif; } .ds-row-t b { display: block; font-weight: 600; } .ds-row-t small { display: block; margin-top: 2px; color: var(--ink-3, oklch(0.62 0 none)); font-size: 0.8125rem; } .ds-strip { display: flex; gap: 3px; margin-top: 6px; } .ds-strip i { width: 6px; height: 6px; background: oklch(1 0 none / 0.18); } .ds-strip i.on { background: var(--accent, oklch(0.68 0.21 262)); box-shadow: 0 0 6px color-mix(in oklch, var(--accent, oklch(0.68 0.21 262)) 80%, transparent); }"
     },
     {
-      "name": "Menu Row",
-      "kind": "button",
-      "refersTo": "menu-row",
-      "description": "48px row inside a panel with a 16px radius (concentric with the 32px sheet): pixel icon plus a Geist label.",
-      "html": "<div class=\"ds-scope\" style=\"padding:12px;background:var(--ground)\"><button class=\"ds-menu\"><svg viewBox=\"0 0 24 24\" fill=\"currentColor\" shape-rendering=\"crispEdges\" aria-hidden=\"true\"><path d=\"M4 6h7v2H4zm0 10h7v2H4zM2 8h2v8H2zm18-2h-7v2h7zm0 10h-7v2h7zm2-8h-2v8h2zM7 11h10v2H7z\"/></svg><span>Copy link</span></button></div>",
-      "css": ".ds-scope{--accent:oklch(0.68 0.21 262);--ground:oklch(0 0 0);--ink:oklch(0.98 0 0);--ink-2:oklch(0.78 0 0);--ink-3:oklch(0.62 0 0);--chord:var(--accent);--glass-tint:oklch(0.2 0 0 / 0.56);--glass-tint-strong:oklch(0.15 0 0 / 0.82);--glass-tint-over:oklch(0.16 0 0 / 0.74);--rim-hi:oklch(1 0 0 / 0.55);--rim-lo:oklch(1 0 0 / 0.07);--rim-edge:oklch(1 0 0 / 0.06);--shadow:oklch(0 0 0 / 0.7);--fill-hover:oklch(1 0 0 / 0.08);--fill-press:oklch(1 0 0 / 0.14);--fill-on:color-mix(in oklch,var(--accent) 32%,transparent);--pixel-off:oklch(1 0 0 / 0.18);--pixel-played:oklch(1 0 0 / 0.52);--pixel-on:var(--accent);--pixel-glow:color-mix(in oklch,var(--accent) 80%,transparent);--icon:24px;--ease-out:cubic-bezier(0.16,1,0.3,1);--ease-liquid:cubic-bezier(0.34,1.32,0.52,1);font-family:'Geist',ui-sans-serif,system-ui,-apple-system,'PingFang TC','Noto Sans TC','Microsoft JhengHei',sans-serif;color:var(--ink);}.ds-menu{display:flex;align-items:center;gap:10px;width:240px;height:44px;padding:0 12px;border:0;border-radius:14px;background:var(--fill-hover);color:var(--ink);font:600 0.875rem 'Geist',ui-sans-serif,system-ui,-apple-system,'PingFang TC','Noto Sans TC','Microsoft JhengHei',sans-serif;cursor:pointer;transition:background-color 180ms var(--ease-out);}.ds-menu:hover{background:var(--fill-press);}.ds-menu:focus-visible{outline:2px solid var(--chord);outline-offset:2px;}.ds-menu svg{width:var(--icon);height:var(--icon);flex:none;}"
-    },
-    {
-      "name": "Toast",
+      "name": "Switch",
       "kind": "custom",
-      "refersTo": "toast",
-      "description": "Strong-glass status capsule below the top bar, pixel check in chord; dwells 1800ms.",
-      "html": "<div class=\"ds-scope ds-glass ds-toast\" role=\"status\"><span class=\"ic\"><svg width=\"24\" height=\"24\" style=\"width:var(--icon);height:var(--icon)\" viewBox=\"0 0 24 24\" fill=\"currentColor\" shape-rendering=\"crispEdges\" aria-hidden=\"true\"><path d=\"M10 18H8v-2h2v2Zm-2-2H6v-2h2v2Zm4-2v2h-2v-2h2Zm-6 0H4v-2h2v2Zm8 0h-2v-2h2v2Zm2-2h-2v-2h2v2Zm2-2h-2V8h2v2Zm2-2h-2V6h2v2Z\"/></svg></span><span class=\"tx\">Link copied</span></div>",
-      "css": ".ds-scope{--accent:oklch(0.68 0.21 262);--ground:oklch(0 0 0);--ink:oklch(0.98 0 0);--ink-2:oklch(0.78 0 0);--ink-3:oklch(0.62 0 0);--chord:var(--accent);--glass-tint:oklch(0.2 0 0 / 0.56);--glass-tint-strong:oklch(0.15 0 0 / 0.82);--glass-tint-over:oklch(0.16 0 0 / 0.74);--rim-hi:oklch(1 0 0 / 0.55);--rim-lo:oklch(1 0 0 / 0.07);--rim-edge:oklch(1 0 0 / 0.06);--shadow:oklch(0 0 0 / 0.7);--fill-hover:oklch(1 0 0 / 0.08);--fill-press:oklch(1 0 0 / 0.14);--fill-on:color-mix(in oklch,var(--accent) 32%,transparent);--pixel-off:oklch(1 0 0 / 0.18);--pixel-played:oklch(1 0 0 / 0.52);--pixel-on:var(--accent);--pixel-glow:color-mix(in oklch,var(--accent) 80%,transparent);--icon:24px;--ease-out:cubic-bezier(0.16,1,0.3,1);--ease-liquid:cubic-bezier(0.34,1.32,0.52,1);font-family:'Geist',ui-sans-serif,system-ui,-apple-system,'PingFang TC','Noto Sans TC','Microsoft JhengHei',sans-serif;color:var(--ink);}.ds-glass{position:relative;isolation:isolate;border-radius:var(--glass-r,999px);box-shadow:0 12px 32px -10px var(--shadow),0 2px 8px -2px var(--shadow);}.ds-glass::after{content:'';position:absolute;inset:0;z-index:-1;border-radius:inherit;background:var(--glass-fill,var(--glass-tint));-webkit-backdrop-filter:blur(var(--glass-blur,14px)) saturate(185%) brightness(1.04);backdrop-filter:blur(var(--glass-blur,14px)) saturate(185%) brightness(1.04);pointer-events:none;}.ds-glass::before{content:'';position:absolute;inset:0;z-index:1;border-radius:inherit;padding:1px;background:linear-gradient(150deg,var(--rim-hi) 0%,var(--rim-lo) 28%,transparent 50%,var(--rim-lo) 74%,color-mix(in oklch,var(--rim-hi) 60%,transparent) 100%),linear-gradient(var(--rim-edge),var(--rim-edge));-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);pointer-events:none;}@media (prefers-reduced-transparency: reduce){.ds-glass::after{background:var(--glass-tint-strong);-webkit-backdrop-filter:none;backdrop-filter:none;}}.ds-toast{--glass-fill:var(--glass-tint-strong);--glass-blur:22px;display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 18px 0 14px;font-size:0.9375rem;font-weight:600;}.ds-toast .ic{display:flex;color:var(--chord);}"
+      "refersTo": "switch",
+      "description": "46 × 28px; Your Hue when on, a springy knob.",
+      "html": "<button class=\"ds-switch\" role=\"switch\" aria-checked=\"true\" aria-label=\"Keep screen awake\"></button>",
+      "css": ".ds-switch { position: relative; width: 46px; height: 28px; border: 0; border-radius: 999px; background: oklch(1 0 none / 0.18); cursor: pointer; transition: background-color 200ms; } .ds-switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 999px; background: var(--ink, oklch(0.98 0 none)); transition: transform 360ms cubic-bezier(0.34, 1.32, 0.52, 1); } .ds-switch[aria-checked='true'] { background: var(--accent, oklch(0.68 0.21 262)); } .ds-switch[aria-checked='true']::after { transform: translateX(18px); background: var(--ground, oklch(0 0 none)); }"
     }
   ],
   "narrative": {
-    "northStar": "The Set as a Strip of Light",
-    "overview": "The song owns the screen. The controls float above it as separate pieces of liquid glass, grouped by what they do, with no full-width bar behind them. The palette is black and white with one accent, electric blue: pure black ground (white in the light theme), hue-free greys, and blue only where something is lit. The set is drawn as a strip of square pixels, one per song: songs still to come are dark, played songs are half-lit white, and the current song is lit in electric blue and glowing. On phones the strip is a row of thin segments under the top controls. On wide screens it is the pixel beside each song in the sidebar, and on a TV it runs along the foot of the screen.\n\nThe density is that of a reading instrument. On a phone the lyrics run in one column of up to 760px. On wide screens two songs stand side by side: the current one and the next, ready to slide over. Reading text never sits on glass or a card. Content dissolves into a scroll-edge band before it reaches the floating controls. Dark is the default theme, for dim rooms and stages. The light theme has the same structure, on white, with a deeper blue.\n\nTwo materials carry the brand. The first is the pixel, sharp and square: the smallest unit of light. The second is liquid glass: round, rimmed, refracting, and springy in motion. Pixels are never rounded. Glass is never square.\n\nThe layout follows Apple's Liquid Glass guidance (developer.apple.com, \"Adopting Liquid Glass\"). Glass is the navigation layer above the content. Related controls share one piece of glass, and unrelated ones float apart. Nested shapes are concentric. The page works with reduced transparency, increased contrast and reduced motion.",
+    "northStar": "Pixels Behind Glass",
+    "overview": "Praise Room is built from two materials, and both carry meaning. The pixel is the smallest unit of light: square, exact, and the people of a church shining as they worship. Liquid glass reflects like a mirror and overflows its edges, the way worship spills out of the room into a life. Every screen is pixel light seen through layers of glass, over a ground of pure black, or pure white in the light theme.\n\nThe mood is calm, precise and luminous. Greys carry no hue at all, and one colour lights the whole app: Your Hue, which each person picks in Settings (Electric Blue by default). Controls are quiet until touched. At rest they are plain glass and grey; under a finger or pointer they fill with liquid light, and their pixel icons glow in Your Hue. The song is the brightest thing on any screen, and nothing in the interface competes with it mid-song.\n\nDensity follows the moment. Reading is a single generous column on a phone and two songs side by side on a wide screen. Planning (songs, setlists, folders, settings) is calm, list-led and scannable, with one primary action per page. The layout follows Apple's Liquid Glass guidance: glass is the navigation layer above the content, related controls share one piece of glass, unrelated ones float apart, nested shapes are concentric, and the page still works with reduced transparency and increased contrast.",
     "keyCharacteristics": [
-      "Black, white and hue-free greys, with one accent (`--accent`, electric blue). Colour chords, an opt-in reading aid, is the only other colour.",
-      "Controls float as glass groups; the reading surface is bare ground.",
-      "Every essential control a phone player needs mid-song is in the bottom row, in thumb reach.",
-      "Square pixels mark the set, sections, the original key, pins and the brand mark. A pixel's state is told by brightness alone: off, played, on.",
-      "Pixelarticons (MIT) are drawn at the `--icon` size (24px at 1x, 18px at 2x, 20px at 2.5x and up) with `shape-rendering: crispEdges`.",
-      "Motion uses two curves: a calm ease-out for colour and fades, and a liquid overshoot for anything that moves like glass.",
-      "Geist sets every word, controls included. Geist Mono sets musical data and numbers only. Both fall back to PingFang TC and Noto Sans TC for 繁體中文."
+      "Black and white, lit by one user-chosen hue; green only for done, red only for what removes or ends.",
+      "Square pixels (icons, progress strips, section markers) against round, rimmed liquid glass.",
+      "Layered glass in three densities (clear, over, strong) that stack by importance.",
+      "Quiet until touched: liquid fills and lit pixel icons appear on hover, press and selection only.",
+      "IBM Plex Sans for words, IBM Plex Mono for music (chords, keys, codes, counts).",
+      "Phone first at 390px, an iPad layout from 768px, the full sidebar layout from 1100px."
     ],
     "rules": [
       {
-        "name": "The One Accent Rule",
-        "body": "Black, white and hue-free greys carry the interface; one accent, `--accent`, lights what matters (chords, the current song, selection, focus). Every coloured token derives from `--accent`, never from a hue of its own. No song, section or state gets a colour of its own. Colour chords is the one, opt-in exception, and it touches chord text alone.",
+        "name": "The One Hue Rule",
+        "body": "Your Hue means \"act\", \"next\", \"selected\" or \"lit\", and nothing else. If an element is none of those, it is grey.",
         "section": "colors"
       },
       {
-        "name": "The Light by State Rule",
-        "body": "A set pixel tells where a song sits in the set by brightness alone: dark (`pixel-off`) to come, half-lit (`pixel-played`) played, lit (`pixel-on`, glowing on the phone's segments) now.",
+        "name": "The Few Meanings Rule",
+        "body": "Green means done; red means something removes or ends. Nothing else gets a colour: not \"soon\", not folders, not the Home card, not decoration.",
         "section": "colors"
       },
       {
-        "name": "The Chord Carries the Light Rule",
-        "body": "`chord` (the accent) is the only saturated text colour by default. Labels sit a step quieter. Body text, titles and controls stay in ink.",
+        "name": "The Hue-Free Grey Rule",
+        "body": "In CSS every grey is written with the `none` hue (`oklch(L 0 none)`), so anything mixed with Your Hue stays true to it instead of swinging through magenta. The tokens above write the same greys as `oklch(L 0 0)` for tooling that can't read `none`.",
         "section": "colors"
-      },
-      {
-        "name": "The One Sans Rule",
-        "body": "Geist sets every word: titles, lyrics, artist, setlist names, song titles, meta, and every control label. Lyrics and body are regular 400; song titles are 700. Weight and size make the hierarchy; don't add a second sans, a display family, or a Light weight.",
-        "section": "typography"
       },
       {
         "name": "The Mono Is Music Rule",
-        "body": "Geist Mono sets musical data and numbers only: chords, key names, offsets, the key grid, the 1 4 5 / A B C segment, row numbers and keys, counts, steppers and keycaps. Never use it for a control's word label, prose, headings, section names, or song titles. Accidentals are spelled `b` and `#` (`Bb`, `F#m`), because neither face has ♭ or ♯ glyphs and a fallback glyph would break the monospace rhythm.",
+        "body": "IBM Plex Mono sets musical data and codes only: chords, keys, key offsets, time signatures, song codes, dates in tiles and counts. Words are always set in Sans.",
         "section": "typography"
       },
       {
-        "name": "The Optical Centre Rule",
-        "body": "Geist and Geist Mono centre their capitals in the line box, so labels centre in fixed-height controls with no padding nudge. The title's info button centres on the title's first line: `margin-top: calc(var(--title-size) * 0.54 - 20px)`. Measure again before changing a font, size or control height.",
+        "name": "The Titles Name, Content Carries Rule",
+        "body": "Page titles are a modest 25px and identical on every page; the song is what carries the weight.",
         "section": "typography"
       },
       {
-        "name": "The Song Owns the Screen Rule",
-        "body": "The lyrics start above the fold at 390px. Chrome floats; nothing pushes the song down except the title, artist, chord controls and section chips.",
-        "section": "layout"
-      },
-      {
-        "name": "The Thumb Rule",
-        "body": "On a phone, everything a player reaches for mid-song (text size, the next song, the key) is in the bottom row. The top holds only what is set once.",
-        "section": "layout"
-      },
-      {
-        "name": "The Glass Floats Rule",
-        "body": "Only the navigation layer is glass: the floating control groups, the sidebar, sheets, popovers, the toast and the auto-scroll pill. Lyrics, titles, the set name and the split panes sit on bare ground.",
+        "name": "The Song Never Sits on Glass Rule",
+        "body": "Reading text lives on the ground. Glass only ever holds controls, and content scrolls under it into a soft edge band.",
         "section": "elevation"
       },
       {
-        "name": "The Group, Don't Bar Rule",
-        "body": "There is no full-width bar. Related controls share one piece of glass (Lyrics | Chords; ‹ Up next ›), and unrelated controls float apart, 6–8px from each other. The rows that hold them have no glass and let clicks through.",
+        "name": "The Hairline Rim Rule",
+        "body": "A glass edge is one quiet hairline. It never gets a bright glow or a white highlight running around it.",
         "section": "elevation"
       },
       {
-        "name": "The No Glass-in-Glass Rule",
-        "body": "Glass never sits on glass. Controls inside a glass group or panel are plain fills (`fill-hover`, `fill-press`, `fill-on`) or bare taps.",
+        "name": "The Densest Glass Wins Rule",
+        "body": "The more a layer must be read over moving content, the denser its glass: clear for islands, over for the dock and tab bar, strong for sheets and trays.",
         "section": "elevation"
       },
       {
-        "name": "The Denser Over Motion Rule",
-        "body": "Glass over moving lyrics (the bottom groups and the auto-scroll pill) uses `glass-tint-over`, so its own labels always win.",
-        "section": "elevation"
-      },
-      {
-        "name": "The Concentric Rule",
-        "body": "A shape nested in another keeps the same centre of curvature: inner radius = outer radius − inset.\n- A 48px top capsule (24px) holds 42px segment buttons 3px in (21px).\n- A 56px bottom capsule (28px) holds 44px controls 6px in (22px).\n- A 32px sheet with 16px padding holds 16px rows.\n- A 24px sidebar with 10px padding holds 14px rows.",
-        "section": "shapes"
-      },
-      {
-        "name": "The Square Pixel Rule",
-        "body": "A pixel is never rounded, never blurred into a dot, and never drawn at a size where it spans a fractional number of device pixels. Icons take `--icon`, never a fixed size.",
+        "name": "The Square Pixel, Round Glass Rule",
+        "body": "A pixel is never rounded, and glass is never square.",
         "section": "shapes"
       }
     ],
     "dos": [
-      "**Do** keep neutrals hue-free (`oklch(L 0 0)`) and derive every coloured token from `--accent`.",
-      "**Do** float controls as glass groups: put related controls in one capsule, keep unrelated ones apart, and leave the rows that hold them clear.",
-      "**Do** keep nested corners concentric: inner radius = outer radius − inset.",
-      "**Do** keep everything a phone player needs mid-song in the bottom row, and open panels from the control that triggered them.",
-      "**Do** show a set pixel's state by brightness: `pixel-off` to come, `pixel-played` played, `pixel-on` now.",
-      "**Do** build glass as a hybrid: the CSS backdrop-filter stack everywhere, with bezel refraction from size-cached SVG maps in Chromium. Honour reduced transparency, increased contrast and forced colours.",
-      "**Do** draw pixelarticons (MIT) at `var(--icon)`, with `fill=\"currentColor\"` and `shape-rendering: crispEdges`.",
-      "**Do** set every word in Geist, controls included; keep Geist Mono for chords, keys, offsets, counts, row numbers, steppers, keycaps and the notation segment.",
-      "**Do** spell accidentals `b` and `#`.",
-      "**Do** self-host Geist (400/500/600/700) and Geist Mono (500/600/700) in production, keeping the PingFang TC / Noto Sans TC fallbacks for 繁體中文.",
-      "**Do** keep tap targets at least 40px, and 44px or more for rows, key cells and standalone glass controls.",
-      "**Do** dissolve content into a scroll-edge band before it reaches floating controls."
+      "**Do** keep one hue: Your Hue for act, next, selected and lit, and grey for everything else.",
+      "**Do** write every grey with the `none` hue (`oklch(L 0 none)`).",
+      "**Do** use liquid fills for selected and hovered controls, in Your Hue for selected and grey for hover.",
+      "**Do** light pixel icons in Your Hue on hover, never their text labels.",
+      "**Do** give every touchable element 44px on phones, enlarging the hit area rather than the look where needed.",
+      "**Do** line page titles and back links up with the sidebar's brand row in a 64px header.",
+      "**Do** put \"Saved\" at the right end of the page header, and only there.",
+      "**Do** show Verse 1 first in song previews, falling back to the first section.",
+      "**Do** set chords, keys, dates and codes in IBM Plex Mono."
     ],
     "donts": [
-      "**Don't** give songs, sections or states their own colour, tint the greys, or let colour chords tint anything but chord text.",
-      "**Don't** put a full-width glass bar behind controls, or join unrelated controls in one piece of glass.",
-      "**Don't** put lyrics, titles or reading text inside glass, or in a bordered sheet or card.",
-      "**Don't** nest glass inside glass. Controls inside glass are fills.",
-      "**Don't** show the next song's lyrics below the current song on a phone; Up next names it instead.",
-      "**Don't** dim one of the split songs or call one \"now\" and the other \"next\"; both are read at once.",
-      "**Don't** hide the setlist on wide screens; fold it into the set row. Don't squeeze it into the top row either: there the titles don't fit, and showing only the songs already on screen repeats the panes.",
-      "**Don't** round a pixel, or replace a square pixel with a dot.",
-      "**Don't** draw icons at a fixed size, or use any icon set other than pixelarticons.",
-      "**Don't** set control labels, prose, headings, section names or song titles in Geist Mono, or use a Light weight for lyrics.",
-      "**Don't** use the section-label style (uppercase, 0.12em tracking) for anything but song section names.",
-      "**Don't** use ♭ or ♯ glyphs.",
-      "**Don't** implement glass with WebGL or SVG-only filters, or recompute refraction maps every frame.",
-      "**Don't** reuse the old navy palette from `ui/src/styles.css`, or the retired ink-blue tokens."
+      "**Don't** colour \"soon\", folders, the Home card or anything decorative.",
+      "**Don't** add a bright glow or white highlight around the edge of glass.",
+      "**Don't** put lyrics or reading text on glass or on a card.",
+      "**Don't** round a pixel or square off glass.",
+      "**Don't** use a plain × to remove something from a list; × only closes.",
+      "**Don't** draw tempo as anything but the four-pixel meter.",
+      "**Don't** let a chord split its word across lines."
     ]
   }
 }

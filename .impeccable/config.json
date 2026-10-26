@@ -326,6 +326,771 @@
         ],
         "createdAt": "2026-10-23T03:25:08.891Z",
         "reason": "Showcase wrapper text outside the app frames."
+      },
+      {
+        "rule": "design-system-color",
+        "value": "rgb(190, 190, 190)",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T04:48:42.727Z",
+        "reason": "Showcase wrapper outside the app frames (device bezels, page headings, notes), or the reader's existing TV label size; same as the public view file."
+      },
+      {
+        "rule": "design-system-color",
+        "value": "rgb(215, 215, 215)",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T04:48:42.751Z",
+        "reason": "Showcase wrapper outside the app frames (device bezels, page headings, notes), or the reader's existing TV label size; same as the public view file."
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "0.6875rem",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T04:48:42.774Z",
+        "reason": "Tab-bar labels and the date block's month, the same 0.6875rem as the documented sidebar tags."
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "1.25rem",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T04:48:42.797Z",
+        "reason": "Showcase wrapper outside the app frames (device bezels, page headings, notes), or the reader's existing TV label size; same as the public view file."
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "1.5rem",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T04:48:42.821Z",
+        "reason": "Showcase wrapper outside the app frames (device bezels, page headings, notes), or the reader's existing TV label size; same as the public view file."
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "2.25rem",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T04:48:42.844Z",
+        "reason": "Showcase wrapper outside the app frames (device bezels, page headings, notes), or the reader's existing TV label size; same as the public view file."
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "20px",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T04:48:42.868Z",
+        "reason": "Showcase wrapper outside the app frames (device bezels, page headings, notes), or the reader's existing TV label size; same as the public view file."
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "22px",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T04:48:42.891Z",
+        "reason": "Showcase wrapper outside the app frames (device bezels, page headings, notes), or the reader's existing TV label size; same as the public view file."
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "44px",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T04:48:42.914Z",
+        "reason": "Showcase wrapper outside the app frames (device bezels, page headings, notes), or the reader's existing TV label size; same as the public view file."
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "56px",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T04:48:42.937Z",
+        "reason": "Showcase wrapper outside the app frames (device bezels, page headings, notes), or the reader's existing TV label size; same as the public view file."
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "6px",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T04:48:42.959Z",
+        "reason": "Showcase wrapper outside the app frames (device bezels, page headings, notes), or the reader's existing TV label size; same as the public view file."
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "7px",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T04:48:42.982Z",
+        "reason": "Checkbox in the Add setlists sheet: a 22px box with 7px corners, a new small control not yet in the DESIGN.md scale."
+      },
+      {
+        "rule": "overused-font",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T04:48:43.006Z",
+        "reason": "Showcase wrapper outside the app frames (device bezels, page headings, notes), or the reader's existing TV label size; same as the public view file."
+      },
+      {
+        "rule": "repeating-stripes-gradient",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T12:35:15.961Z",
+        "reason": "The vinyl record's grooves (profile button and folder sleeves), a user-requested experiment."
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "1.375rem",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T16:20:11.824Z",
+        "reason": "Home's up-next setlist title, a step between Title and Display; a candidate token if Home is kept."
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr dm sans",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T18:41:56.543Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr fira code",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T18:41:56.571Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr ibm plex mono",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T18:41:56.598Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr ibm plex sans",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T18:41:56.626Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr inter",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T18:41:56.653Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr jetbrains mono",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T18:41:56.680Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr open sans",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T18:41:56.707Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr overpass",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T18:41:56.736Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr overpass mono",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T18:41:56.762Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr plus jakarta sans",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T18:41:56.791Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr roboto",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T18:41:56.818Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr source code pro",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T18:41:56.844Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr space grotesk",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T18:41:56.871Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr space mono",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T18:41:56.899Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr work sans",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T18:41:56.925Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr dm sans",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T18:41:57.111Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr fira code",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T18:41:57.136Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr ibm plex mono",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T18:41:57.161Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr ibm plex sans",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T18:41:57.184Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr inter",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T18:41:57.209Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr jetbrains mono",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T18:41:57.233Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr open sans",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T18:41:57.257Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr overpass",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T18:41:57.281Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr overpass mono",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T18:41:57.305Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr plus jakarta sans",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T18:41:57.329Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr roboto",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T18:41:57.354Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr source code pro",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T18:41:57.377Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr space grotesk",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T18:41:57.400Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr space mono",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T18:41:57.425Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr work sans",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T18:41:57.448Z",
+        "reason": "Temporary font-pairing switch; remove once a pairing is chosen"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "rgb(190, 190, 190)",
+        "files": [
+          ".impeccable/mocks/text-chord-controls.html"
+        ],
+        "createdAt": "2026-10-23T19:53:31.876Z",
+        "reason": "Comparison page chrome (device frames, page headings), not the product"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "rgb(215, 215, 215)",
+        "files": [
+          ".impeccable/mocks/text-chord-controls.html"
+        ],
+        "createdAt": "2026-10-23T19:53:31.902Z",
+        "reason": "Comparison page chrome (device frames, page headings), not the product"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "1.0625rem",
+        "files": [
+          ".impeccable/mocks/text-chord-controls.html"
+        ],
+        "createdAt": "2026-10-23T19:53:31.929Z",
+        "reason": "Comparison page chrome (device frames, page headings), not the product"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "1.375rem",
+        "files": [
+          ".impeccable/mocks/text-chord-controls.html"
+        ],
+        "createdAt": "2026-10-23T19:53:31.955Z",
+        "reason": "Comparison page chrome (device frames, page headings), not the product"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "2rem",
+        "files": [
+          ".impeccable/mocks/text-chord-controls.html"
+        ],
+        "createdAt": "2026-10-23T19:53:31.979Z",
+        "reason": "Comparison page chrome (device frames, page headings), not the product"
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "22px",
+        "files": [
+          ".impeccable/mocks/text-chord-controls.html"
+        ],
+        "createdAt": "2026-10-23T19:53:32.003Z",
+        "reason": "Comparison page chrome (device frames, page headings), not the product"
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "44px",
+        "files": [
+          ".impeccable/mocks/text-chord-controls.html"
+        ],
+        "createdAt": "2026-10-23T19:53:32.027Z",
+        "reason": "Comparison page chrome (device frames, page headings), not the product"
+      },
+      {
+        "rule": "overused-font",
+        "value": "geist",
+        "files": [
+          ".impeccable/mocks/text-chord-controls.html"
+        ],
+        "createdAt": "2026-10-23T19:53:47.238Z",
+        "reason": "Geist and Geist Mono are the brief's chosen faces (DESIGN.md)"
+      },
+      {
+        "rule": "overused-font",
+        "value": "geist mono",
+        "files": [
+          ".impeccable/mocks/text-chord-controls.html"
+        ],
+        "createdAt": "2026-10-23T19:53:47.264Z",
+        "reason": "Geist and Geist Mono are the brief's chosen faces (DESIGN.md)"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "geist",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T20:13:53.512Z",
+        "reason": "Temporary font-pairing switch: Geist is now an alternative to the IBM Plex default"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "geist mono",
+        "files": [
+          ".impeccable/mocks/praise-room-public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T20:13:53.540Z",
+        "reason": "Temporary font-pairing switch: Geist is now an alternative to the IBM Plex default"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "geist",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T20:13:53.568Z",
+        "reason": "Temporary font-pairing switch: Geist is now an alternative to the IBM Plex default"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "geist mono",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-23T20:13:53.595Z",
+        "reason": "Temporary font-pairing switch: Geist is now an alternative to the IBM Plex default"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr ibm plex sans",
+        "files": [
+          ".impeccable/mocks/text-chord-controls.html"
+        ],
+        "createdAt": "2026-10-23T20:13:53.622Z",
+        "reason": "IBM Plex embedded under a PR-prefixed name so it can't clash with an installed copy"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr ibm plex mono",
+        "files": [
+          ".impeccable/mocks/text-chord-controls.html"
+        ],
+        "createdAt": "2026-10-23T20:13:53.650Z",
+        "reason": "IBM Plex embedded under a PR-prefixed name so it can't clash with an installed copy"
+      },
+      {
+        "rule": "design-system-color",
+        "value": "rgb(237, 242, 248)",
+        "files": [
+          ".impeccable/mocks/public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T20:14:33.057Z",
+        "reason": "Earlier exploration mock, kept for reference; made before the switch to IBM Plex"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "geist",
+        "files": [
+          ".impeccable/mocks/public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T20:14:33.083Z",
+        "reason": "Earlier exploration mock, kept for reference; made before the switch to IBM Plex"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "geist mono",
+        "files": [
+          ".impeccable/mocks/public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T20:14:33.109Z",
+        "reason": "Earlier exploration mock, kept for reference; made before the switch to IBM Plex"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "1.0625rem",
+        "files": [
+          ".impeccable/mocks/public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T20:14:33.161Z",
+        "reason": "Earlier exploration mock, kept for reference; made before the switch to IBM Plex"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "1.25rem",
+        "files": [
+          ".impeccable/mocks/public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T20:14:33.185Z",
+        "reason": "Earlier exploration mock, kept for reference; made before the switch to IBM Plex"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "1.375rem",
+        "files": [
+          ".impeccable/mocks/public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T20:14:33.210Z",
+        "reason": "Earlier exploration mock, kept for reference; made before the switch to IBM Plex"
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "22px",
+        "files": [
+          ".impeccable/mocks/public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T20:14:33.234Z",
+        "reason": "Earlier exploration mock, kept for reference; made before the switch to IBM Plex"
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "6px",
+        "files": [
+          ".impeccable/mocks/public-setlist-view.html"
+        ],
+        "createdAt": "2026-10-23T20:14:33.260Z",
+        "reason": "Earlier exploration mock, kept for reference; made before the switch to IBM Plex"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "geist",
+        "files": [
+          ".impeccable/mocks/layout-brainstorm.html"
+        ],
+        "createdAt": "2026-10-23T20:14:33.437Z",
+        "reason": "Earlier exploration mock, kept for reference; made before the switch to IBM Plex"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "geist mono",
+        "files": [
+          ".impeccable/mocks/layout-brainstorm.html"
+        ],
+        "createdAt": "2026-10-23T20:14:33.463Z",
+        "reason": "Earlier exploration mock, kept for reference; made before the switch to IBM Plex"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "1.0625rem",
+        "files": [
+          ".impeccable/mocks/collections-brainstorm.html"
+        ],
+        "createdAt": "2026-10-24T03:43:12.329Z",
+        "reason": "Brainstorm page chrome (device frames, page headings), not the product"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "1.375rem",
+        "files": [
+          ".impeccable/mocks/collections-brainstorm.html"
+        ],
+        "createdAt": "2026-10-24T03:43:12.377Z",
+        "reason": "Brainstorm page chrome (device frames, page headings), not the product"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "2rem",
+        "files": [
+          ".impeccable/mocks/collections-brainstorm.html"
+        ],
+        "createdAt": "2026-10-24T03:43:12.425Z",
+        "reason": "Brainstorm page chrome (device frames, page headings), not the product"
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "22px",
+        "files": [
+          ".impeccable/mocks/collections-brainstorm.html"
+        ],
+        "createdAt": "2026-10-24T03:43:12.474Z",
+        "reason": "Brainstorm page chrome (device frames, page headings), not the product"
+      },
+      {
+        "rule": "design-system-radius",
+        "value": "44px",
+        "files": [
+          ".impeccable/mocks/collections-brainstorm.html"
+        ],
+        "createdAt": "2026-10-24T03:43:12.520Z",
+        "reason": "Brainstorm page chrome (device frames, page headings), not the product"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr ibm plex sans",
+        "files": [
+          ".impeccable/mocks/collections-brainstorm.html"
+        ],
+        "createdAt": "2026-10-24T03:43:12.566Z",
+        "reason": "IBM Plex embedded under a PR-prefixed name so it can't clash with an installed copy"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr ibm plex mono",
+        "files": [
+          ".impeccable/mocks/collections-brainstorm.html"
+        ],
+        "createdAt": "2026-10-24T03:43:12.611Z",
+        "reason": "IBM Plex embedded under a PR-prefixed name so it can't clash with an installed copy"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "1.5625rem",
+        "files": [
+          ".impeccable/mocks/praise-room-app-pages.html"
+        ],
+        "createdAt": "2026-10-24T12:10:06.551Z",
+        "reason": "user confirmed: issue #249 asks for page headers at 90% of their old 28px size"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr ibm plex sans",
+        "files": [
+          ".impeccable/mocks/design-journey-archived.html"
+        ],
+        "createdAt": "2026-10-24T12:44:28.530Z",
+        "reason": "IBM Plex embedded under a PR-prefixed name so it can't clash with an installed copy"
+      },
+      {
+        "rule": "design-system-font",
+        "value": "pr ibm plex mono",
+        "files": [
+          ".impeccable/mocks/design-journey-archived.html"
+        ],
+        "createdAt": "2026-10-24T12:44:28.576Z",
+        "reason": "IBM Plex embedded under a PR-prefixed name so it can't clash with an installed copy"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "2rem",
+        "files": [
+          ".impeccable/mocks/design-journey-archived.html"
+        ],
+        "createdAt": "2026-10-24T12:44:28.620Z",
+        "reason": "Archive page chrome (timeline headings), not the product"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "1.0625rem",
+        "files": [
+          ".impeccable/mocks/design-journey-archived.html"
+        ],
+        "createdAt": "2026-10-24T12:44:28.666Z",
+        "reason": "Archive page chrome (timeline headings), not the product"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "1.25rem",
+        "files": [
+          ".impeccable/mocks/design-journey-archived.html"
+        ],
+        "createdAt": "2026-10-24T12:44:28.712Z",
+        "reason": "Archive page chrome (timeline headings), not the product"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "1.625rem",
+        "files": [
+          ".impeccable/mocks/design-journey-archived.html"
+        ],
+        "createdAt": "2026-10-24T12:44:28.756Z",
+        "reason": "Archive page chrome (timeline headings), not the product"
+      },
+      {
+        "rule": "design-system-font-size",
+        "value": "1.875rem",
+        "files": [
+          ".impeccable/mocks/collections-brainstorm.html"
+        ],
+        "createdAt": "2026-10-24T12:55:59.743Z",
+        "reason": "Brainstorm page chrome (device frames, page headings), not the product"
       }
     ]
   }
