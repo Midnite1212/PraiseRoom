@@ -223,7 +223,7 @@ function WordButton({
           className={cn(
             'group/word hover:bg-fill-hover aria-expanded:bg-fill-on -mx-[3px] inline-flex flex-col items-start rounded-lg px-[3px] py-0.5 text-left transition-colors duration-100',
             slot !== null && 'min-w-[18px]',
-            slot === 'lead' && 'absolute top-0 right-[calc(100%-18px)] m-0 items-end'
+            slot === 'lead' && !on && 'absolute top-0 right-[calc(100%-18px)] m-0 items-end'
           )}
         >
           <span

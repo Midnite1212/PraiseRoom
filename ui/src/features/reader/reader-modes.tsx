@@ -25,7 +25,7 @@ export function ReaderModes() {
           aria-label={label}
           aria-pressed={width === 'full'}
           onClick={() => setWidth(toggleReaderWidth(width))}
-          className="aria-pressed:[--glass-fill:color-mix(in_oklch,var(--chord)_28%,var(--glass-tint))]"
+          className="aria-pressed:[--glass-fill:color-mix(in_oklab,var(--chord)_28%,var(--glass-tint))]"
         >
           <ArrowsHorizontal />
         </Button>

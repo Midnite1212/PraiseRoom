@@ -222,6 +222,10 @@ describe('Neon Auth routes', () => {
         next: '/a',
         verifier: 'v2',
       });
+      assert.deepEqual(readCallbackParams({ next: '/a?x=1?neon_auth_session_verifier=v3' }), {
+        next: '/a?x=1',
+        verifier: 'v3',
+      });
       assert.deepEqual(readCallbackParams({ next: '/a?x=1' }), {
         next: '/a?x=1',
         verifier: undefined,

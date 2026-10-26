@@ -10,9 +10,9 @@ export const AUTO_SCROLL_SPEEDS = ['slow', 'med', 'fast'] as const;
 export type AutoScrollSpeed = (typeof AUTO_SCROLL_SPEEDS)[number];
 
 export const PIXELS_PER_SECOND = {
-  slow: 16,
-  med: 28,
-  fast: 44,
+  slow: 6,
+  med: 10,
+  fast: 16,
 } as const satisfies Record<AutoScrollSpeed, number>;
 
 const scrollSpeed = createStoredChoice('auto-scroll-speed', AUTO_SCROLL_SPEEDS, 'med');

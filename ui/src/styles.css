@@ -756,7 +756,8 @@
   }
 
   /* Segmented control with a liquid thumb. Options share the width evenly, so the thumb's size and place
-     follow from how many options there are and which one is on. */
+     follow from how many options there are and which one is on. The chosen option is read from `aria-checked`,
+     since an option's tooltip trigger overwrites its `data-state`. */
   .segmented {
     --seg-n: 1;
     --seg-i: 0;
@@ -782,16 +783,16 @@
   .segmented:has(> [data-seg-option]:nth-child(5)) {
     --seg-n: 5;
   }
-  .segmented:has(> [data-seg-option]:nth-child(2)[data-state='on']) {
+  .segmented:has(> [data-seg-option]:nth-child(2)[aria-checked='true']) {
     --seg-i: 1;
   }
-  .segmented:has(> [data-seg-option]:nth-child(3)[data-state='on']) {
+  .segmented:has(> [data-seg-option]:nth-child(3)[aria-checked='true']) {
     --seg-i: 2;
   }
-  .segmented:has(> [data-seg-option]:nth-child(4)[data-state='on']) {
+  .segmented:has(> [data-seg-option]:nth-child(4)[aria-checked='true']) {
     --seg-i: 3;
   }
-  .segmented:has(> [data-seg-option]:nth-child(5)[data-state='on']) {
+  .segmented:has(> [data-seg-option]:nth-child(5)[aria-checked='true']) {
     --seg-i: 4;
   }
 
@@ -809,7 +810,7 @@
     pointer-events: none;
   }
 
-  .segmented:not(:has(> [data-state='on'])) > .segmented-thumb {
+  .segmented:not(:has(> [aria-checked='true'])) > .segmented-thumb {
     opacity: 0;
   }
 

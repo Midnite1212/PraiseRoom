@@ -61,6 +61,21 @@ describe('LyricsSheet', () => {
     expect(screen.queryByText('A')).not.toBeInTheDocument();
   });
 
+  it('drops sections without lyrics in lyrics mode and keeps them in chords mode', () => {
+    const chordLyrics = `{Intro}\n[G] [C]\n${LYRICS}\n{Interlude}\n[D]`;
+    const props = { chordLyrics, notation: 'letters', originalKey: G, playKey: G } as const;
+    const { rerender } = render(<LyricsSheet {...props} mode="lyrics" />);
+
+    expect(screen.queryByRole('heading', { name: 'Intro' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('heading', { name: 'Interlude' })).not.toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Verse 1' })).toBeInTheDocument();
+
+    rerender(<LyricsSheet {...props} mode="chords" />);
+
+    expect(screen.getByRole('heading', { name: 'Intro' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Interlude' })).toBeInTheDocument();
+  });
+
   it('keeps the lyrics size class alongside the column classes', () => {
     const { container } = render(
       <LyricsSheet
