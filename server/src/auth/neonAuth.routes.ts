@@ -123,7 +123,7 @@ export const readCallbackParams = (
   if (query[VERIFIER_PARAM] !== undefined || typeof next !== 'string') {
     return { next, verifier: query[VERIFIER_PARAM] };
   }
-  const queryStart = next.indexOf('?');
+  const queryStart = next.lastIndexOf(`?${VERIFIER_PARAM}=`);
   const verifier =
     queryStart === -1 ? null : new URLSearchParams(next.slice(queryStart + 1)).get(VERIFIER_PARAM);
   return verifier ? { next: next.slice(0, queryStart), verifier } : { next, verifier: undefined };

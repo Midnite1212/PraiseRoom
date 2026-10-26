@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { type ChordClass, classifyChord } from '@/features/chords/chord-class';
 import { shapeKey } from '@/features/chords/key-spelling';
 import { chordToNumberParts } from '@/features/chords/nashville';
-import { type ChordLine, parseChordLyrics } from '@/features/chords/parse';
+import { type ChordLine, hasLyrics, parseChordLyrics } from '@/features/chords/parse';
 import {
   type MusicKey,
   semitonesBetween,
@@ -136,7 +136,10 @@ export function LyricsSheet({
   capo = 0,
   columns = DEFAULT_LYRICS_COLUMNS,
 }: LyricsSheetProps) {
-  const sections = parseChordLyrics(chordLyrics);
+  const showChords = mode === 'chords';
+  const sections = parseChordLyrics(chordLyrics).filter(
+    (section) => showChords || hasLyrics(section)
+  );
   const renderChord = createChordRenderer(
     notation,
     originalKey,
@@ -145,7 +148,6 @@ export function LyricsSheet({
     chordStyle,
     capo
   );
-  const showChords = mode === 'chords';
 
   return (
     // Not merged with cn(): tailwind-merge reads text-lyrics (size) and text-sheet-foreground (colour)

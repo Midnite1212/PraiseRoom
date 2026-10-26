@@ -60,3 +60,6 @@ export const hasChords = (sections: ChordSection[]): boolean =>
   sections.some(({ lines }) =>
     lines.some(({ segments }) => segments.some(({ chord }) => chord !== null && chord !== ''))
   );
+
+export const hasLyrics = ({ lines }: ChordSection): boolean =>
+  lines.some(({ segments }) => segments.some(({ lyric }) => lyric.trim() !== ''));

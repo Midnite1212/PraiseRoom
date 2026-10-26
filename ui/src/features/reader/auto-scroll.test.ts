@@ -38,8 +38,8 @@ describe('createAutoScroller', () => {
     const { scroller, position } = setup(PIXELS_PER_SECOND.slow);
     scroller.start();
     vi.advanceTimersByTime(10_000);
-    expect(position()).toBeGreaterThanOrEqual(158);
-    expect(position()).toBeLessThanOrEqual(160);
+    expect(position()).toBeGreaterThanOrEqual(PIXELS_PER_SECOND.slow * 10 - 2);
+    expect(position()).toBeLessThanOrEqual(PIXELS_PER_SECOND.slow * 10);
   });
 
   it('scrolls faster at a faster speed', () => {

@@ -69,7 +69,7 @@ export function Segmented<T extends string>({
             aria-label={option.ariaLabel}
             lang={option.lang}
             className={cn(
-              'relative z-10 inline-flex items-center justify-center gap-1.5 rounded-full font-semibold whitespace-nowrap text-ink-2 transition-colors duration-200 ease-out hover:text-ink data-[state=on]:text-ink [&_svg]:size-icon',
+              'relative z-10 inline-flex items-center justify-center gap-1.5 rounded-full font-semibold whitespace-nowrap text-ink-2 transition-colors duration-200 ease-out hover:text-ink aria-checked:text-ink [&_svg]:size-icon',
               OPTION_SIZES[size],
               mono && 'font-mono',
               optionClassName

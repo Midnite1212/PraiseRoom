@@ -50,7 +50,7 @@ export function AutoScrollButton({
       data-keeps-tray
       onClick={auto.toggle}
       className={cn(
-        'aria-pressed:[--glass-fill:color-mix(in_oklch,var(--chord)_28%,var(--glass-tint))]',
+        'aria-pressed:[--glass-fill:color-mix(in_oklab,var(--chord)_28%,var(--glass-tint))]',
         className
       )}
     >
