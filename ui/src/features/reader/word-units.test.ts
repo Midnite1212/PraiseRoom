@@ -44,8 +44,21 @@ describe('groupWordUnits', () => {
     expect(texts([seg('G', 'amen'), seg('C', '')])).toEqual(['amen']);
   });
 
-  it('keeps leading spaces as their own unit', () => {
-    expect(texts([seg('G', '  hey')])).toEqual(['  ', 'hey']);
+  it('puts a lead-in chord over the first word instead of the space before it', () => {
+    const units = groupWordUnits([seg('G', ' hey '), seg('C', 'there')]);
+    expect(units.map((unit) => unit.pieces.map((piece) => piece.text).join(''))).toEqual([
+      'hey ',
+      'there',
+    ]);
+    expect(units[0]?.pieces[0]?.chord).toBe('G');
+  });
+
+  it('keeps leading spaces when no chord sits on them', () => {
+    expect(texts([seg(null, '  hey')])).toEqual(['  ', 'hey']);
+  });
+
+  it('keeps the spacing of a chord-only line', () => {
+    expect(texts([seg('G', ' '), seg('C', ' '), seg('D', '')])).toEqual([' ', ' ', '']);
   });
 
   it('breaks after each Chinese character but keeps punctuation with it', () => {

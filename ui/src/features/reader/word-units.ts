@@ -15,17 +15,28 @@ const endsWord = (piece: WordPiece, next: WordPiece | undefined) => {
   return ENDS_IN_CJK.test(piece.text) || STARTS_WITH_CJK.test(next.text);
 };
 
+// A lead-in chord is stored on a space before the first word (`[G] Holy`); shown, it sits over that word.
+const leadChordOntoFirstWord = (pieces: WordPiece[]): WordPiece[] => {
+  const [lead, word] = pieces;
+  if (!lead?.chord || lead.text.trim() !== '' || !word || word.chord || word.text.trim() === '') {
+    return pieces;
+  }
+  return [{ ...word, chord: lead.chord }, ...pieces.slice(2)];
+};
+
 // Splits a line's chord segments into words, so a chord inside a word keeps the whole word in one
 // unit and the line can only wrap between units. Chinese and Japanese text breaks after each character.
 export const groupWordUnits = (segments: readonly ChordSegment[]): WordUnit[] => {
-  const pieces = segments.flatMap(({ id, chord, lyric }): WordPiece[] => {
-    const texts = lyric === '' ? [''] : (lyric.match(PIECE_PATTERN) ?? [lyric]);
-    return texts.map((text, index) => ({
-      id: `${id}.${index}`,
-      chord: index === 0 ? chord : null,
-      text,
-    }));
-  });
+  const pieces = leadChordOntoFirstWord(
+    segments.flatMap(({ id, chord, lyric }): WordPiece[] => {
+      const texts = lyric === '' ? [''] : (lyric.match(PIECE_PATTERN) ?? [lyric]);
+      return texts.map((text, index) => ({
+        id: `${id}.${index}`,
+        chord: index === 0 ? chord : null,
+        text,
+      }));
+    })
+  );
   const units: WordUnit[] = [];
   let open: WordPiece[] = [];
   pieces.forEach((piece, index) => {

@@ -104,7 +104,8 @@ export function LyricLine({
   }
   const lineHasChords = line.segments.some(({ chord }) => Boolean(chord));
   if (!showChords || !lineHasChords) {
-    const text = line.segments.map(({ lyric }) => lyric).join('');
+    const joined = line.segments.map(({ lyric }) => lyric).join('');
+    const text = line.segments[0]?.chord ? joined.trimStart() : joined;
     return text.trim() === '' ? null : <p className="whitespace-pre-wrap">{text}</p>;
   }
   return (
