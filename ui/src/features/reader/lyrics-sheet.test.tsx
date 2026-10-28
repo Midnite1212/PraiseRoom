@@ -76,6 +76,35 @@ describe('LyricsSheet', () => {
     expect(screen.getByRole('heading', { name: 'Interlude' })).toBeInTheDocument();
   });
 
+  it('shows a repeated section once in chords view and gives each block an id', () => {
+    const repeated = `${LYRICS}\n{Chorus}\n[Em7]O Lord of my [D/F#]heart`;
+    const { rerender } = render(
+      <LyricsSheet
+        chordLyrics={repeated}
+        mode="chords"
+        notation="letters"
+        originalKey={G}
+        playKey={G}
+        repeats="once"
+        sectionIdPrefix="song-title"
+      />
+    );
+    expect(screen.getAllByRole('heading', { name: 'Chorus' })).toHaveLength(1);
+    expect(document.getElementById('song-title-s1')).not.toBeNull();
+
+    rerender(
+      <LyricsSheet
+        chordLyrics={repeated}
+        mode="lyrics"
+        notation="letters"
+        originalKey={G}
+        playKey={G}
+        repeats="once"
+      />
+    );
+    expect(screen.getAllByRole('heading', { name: 'Chorus' })).toHaveLength(2);
+  });
+
   it('keeps the lyrics size class alongside the column classes', () => {
     const { container } = render(
       <LyricsSheet

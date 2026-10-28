@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { Panel } from '@/components/primitives/panel';
 import type { MusicKey } from '@/features/chords/theory';
+import type { SectionRepeats } from '@/features/reader/chord-display';
 import { useSongCapo } from '@/features/reader/song-capo';
 import { SongReader } from '@/features/reader/song-reader';
 import { cn } from '@/lib/utils';
@@ -56,9 +57,10 @@ type SplitSongProps = {
   playKey: MusicKey | null;
   onPlayKeyChange: (key: MusicKey) => void;
   note: string;
+  repeats?: SectionRepeats;
 };
 
-function SplitSong({ entry, pane, playKey, onPlayKeyChange, note }: SplitSongProps) {
+function SplitSong({ entry, pane, playKey, onPlayKeyChange, note, repeats }: SplitSongProps) {
   const [capo, changeCapo] = useSongCapo(entry._id, entry.capo);
   return (
     <SongReader
@@ -69,6 +71,7 @@ function SplitSong({ entry, pane, playKey, onPlayKeyChange, note }: SplitSongPro
       capo={capo}
       onCapoChange={changeCapo}
       note={note}
+      repeats={repeats}
     />
   );
 }
@@ -88,6 +91,7 @@ type SplitViewProps = {
   onShowBeside: (songId: string | null) => void;
   // The left pane's scroll container, which auto-scroll moves.
   leftPaneRef: (element: HTMLElement | null) => void;
+  repeats?: SectionRepeats;
 };
 
 // Two songs with equal weight, each scrolling on its own: the current song on the left, the next song or a
@@ -104,6 +108,7 @@ export function SplitView({
   onPlay,
   onShowBeside,
   leftPaneRef,
+  repeats,
 }: SplitViewProps) {
   const { t } = useTranslation();
   const left = entries[currentIndex];
@@ -141,6 +146,7 @@ export function SplitView({
           playKey={playKeyFor(currentIndex)}
           onPlayKeyChange={(key) => onPlayKeyChange(left._id, key)}
           note={noteFor(left._id)}
+          repeats={repeats}
         />
       </article>
       <aside
@@ -190,6 +196,7 @@ export function SplitView({
             playKey={playKeyFor(rightIndex)}
             onPlayKeyChange={(key) => onPlayKeyChange(right._id, key)}
             note={noteFor(right._id)}
+            repeats={repeats}
           />
         ) : (
           <div className="grid h-[70%] place-content-center">

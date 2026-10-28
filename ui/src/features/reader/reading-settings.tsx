@@ -17,6 +17,7 @@ import {
   useAccidentals,
   useChordStyle,
   useColourChords,
+  useSectionRepeats,
 } from './chord-display';
 import { enterFullscreen } from './fullscreen';
 import { useKeepAwake, wakeLockSupported } from './keep-awake';
@@ -70,6 +71,7 @@ export function ReadingSettings({
   const [chordStyle, setChordStyle] = useChordStyle();
   const [accidentals, setAccidentals] = useAccidentals();
   const [colourChords, setColourChords] = useColourChords();
+  const [sectionRepeats, setSectionRepeats] = useSectionRepeats();
   const [keepAwake, setKeepAwake] = useKeepAwake();
   const [isTrayOpen, setIsTrayOpen] = useState(false);
   const [isPresenting, setIsPresenting] = useState(false);
@@ -128,6 +130,13 @@ export function ReadingSettings({
                 onCheckedChange={(checked) => setColourChords(checked ? 'on' : 'off')}
               />
             </span>
+          </SetRow>
+          <SetRow label={t('reader.sectionsOnce')} hint={t('reader.sectionsOnceHint')}>
+            <Switch
+              aria-label={t('reader.sectionsOnce')}
+              checked={sectionRepeats === 'once'}
+              onCheckedChange={(checked) => setSectionRepeats(checked ? 'once' : 'all')}
+            />
           </SetRow>
           <SetRow label={t('reader.accidentals')}>
             <Segmented

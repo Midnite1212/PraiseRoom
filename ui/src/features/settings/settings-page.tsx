@@ -23,6 +23,7 @@ import {
   useChordNotation,
   useChordStyle,
   useColourChords,
+  useSectionRepeats,
 } from '@/features/reader/chord-display';
 import { useKeepAwake, wakeLockSupported } from '@/features/reader/keep-awake';
 import { LYRICS_SIZES, type LyricsSize, useLyricsSize } from '@/features/reader/lyrics-size';
@@ -150,6 +151,7 @@ function SongsGroup() {
   const [chordStyle, setChordStyle] = useChordStyle();
   const [accidentals, setAccidentals] = useAccidentals();
   const [colourChords, setColourChords] = useColourChords();
+  const [sectionRepeats, setSectionRepeats] = useSectionRepeats();
 
   return (
     <SettingsGroup
@@ -233,6 +235,13 @@ function SongsGroup() {
           aria-label={t('reader.colourChords')}
           checked={colourChords === 'on'}
           onCheckedChange={(checked) => setColourChords(checked ? 'on' : 'off')}
+        />
+      </SettingsRow>
+      <SettingsRow inline label={t('reader.sectionsOnce')} hint={t('settings.sectionsOnce.hint')}>
+        <Switch
+          aria-label={t('reader.sectionsOnce')}
+          checked={sectionRepeats === 'once'}
+          onCheckedChange={(checked) => setSectionRepeats(checked ? 'once' : 'all')}
         />
       </SettingsRow>
     </SettingsGroup>

@@ -7,17 +7,20 @@ import { useIsWide } from '@/hooks/use-wide';
 import { cn } from '@/lib/utils';
 
 import {
+  type SectionRepeats,
   useAccidentals,
   useChordNotation,
   useChordStyle,
   useColourChords,
   useReaderMode,
+  useSectionRepeats,
 } from './chord-display';
 import { KeyPicker } from './key-picker';
 import { useLyricsColumns } from './lyrics-columns';
 import { LyricsSheet } from './lyrics-sheet';
 import { useLyricsSize } from './lyrics-size';
 import { LyricsColumnsControl, SongInfo } from './reader-controls';
+import { SectionFlow } from './section-flow';
 import type { ReaderSong } from './song';
 
 type SongReaderProps = {
@@ -30,6 +33,8 @@ type SongReaderProps = {
   note?: string;
   // A pane of the split reader: a smaller title, and the id another pane's title does not share.
   pane?: 'left' | 'right';
+  // Overrides the saved choice; the public setlist link always shows the full flow.
+  repeats?: SectionRepeats;
   children?: ReactNode;
 };
 
@@ -43,6 +48,7 @@ export function SongReader({
   onCapoChange,
   note = '',
   pane,
+  repeats,
   children,
 }: SongReaderProps) {
   const { t } = useTranslation();
@@ -52,11 +58,14 @@ export function SongReader({
   const [accidentals] = useAccidentals();
   const [chordStyle] = useChordStyle();
   const [colourChords] = useColourChords();
+  const [savedRepeats] = useSectionRepeats();
   const [lyricsSize] = useLyricsSize();
   const [lyricsColumns, setLyricsColumns] = useLyricsColumns();
   const originalKey = parseKey(song.originalKey);
   const showChordControls = mode === 'chords' && originalKey && playKey;
   const titleId = pane === 'right' ? 'song-title-right' : 'song-title';
+  const sectionRepeats = repeats ?? savedRepeats;
+  const showFlow = mode === 'chords' && sectionRepeats === 'once' && song.chordLyrics.trim() !== '';
 
   return (
     <article data-lyrics-size={lyricsSize} aria-labelledby={titleId} className="min-w-0">
@@ -97,6 +106,7 @@ export function SongReader({
             {note}
           </p>
         ) : null}
+        {showFlow ? <SectionFlow chordLyrics={song.chordLyrics} idPrefix={titleId} /> : null}
       </header>
 
       {song.chordLyrics.trim() === '' ? (
@@ -113,6 +123,8 @@ export function SongReader({
           playKey={playKey}
           capo={capo}
           columns={lyricsColumns}
+          repeats={sectionRepeats}
+          sectionIdPrefix={titleId}
         />
       )}
 

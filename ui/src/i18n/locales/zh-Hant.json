@@ -262,6 +262,12 @@
     "full": "完整",
     "simple": "簡化",
     "colourChords": "和弦上色",
+    "sectionsOnce": "每段只顯示一次",
+    "sectionsOnceHint": "和弦檢視：重複的段落併入第一次出現",
+    "flow": {
+      "label": "歌曲流程",
+      "unnamed": "第 {{n}} 段"
+    },
     "sharp": "升號",
     "flat": "降號",
     "key": "調",
@@ -709,6 +715,9 @@
     },
     "colourChords": {
       "hint": "一、四、五級及小和弦各有顏色"
+    },
+    "sectionsOnce": {
+      "hint": "和弦檢視中，重複的副歌只顯示一次，歌曲流程列出順序"
     },
     "scrollSpeed": {
       "hint": "按下播放後開始"

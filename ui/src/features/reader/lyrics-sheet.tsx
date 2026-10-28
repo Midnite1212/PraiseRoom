@@ -10,12 +10,14 @@ import {
   simplifyChord,
   transposeChord,
 } from '@/features/chords/theory';
+import { uniqueSections } from '@/features/chords/unique-sections';
 import {
   type Accidentals,
   type ChordNotation,
   type ChordStyle,
   chordsUseFlats,
   type ReaderMode,
+  type SectionRepeats,
 } from '@/features/reader/chord-display';
 import { cn } from '@/lib/utils';
 
@@ -37,7 +39,13 @@ type LyricsSheetProps = {
   playKey: MusicKey | null;
   capo?: number;
   columns?: LyricsColumns;
+  repeats?: SectionRepeats;
+  // Prefix for each section's element id, so the song flow can scroll to it; none means no ids.
+  sectionIdPrefix?: string;
 };
+
+export const sectionElementId = (prefix: string, sectionId: string): string =>
+  `${prefix}-${sectionId}`;
 
 export type ChordRenderer = (chord: string) => ReactNode;
 
@@ -135,11 +143,14 @@ export function LyricsSheet({
   playKey,
   capo = 0,
   columns = DEFAULT_LYRICS_COLUMNS,
+  repeats = 'all',
+  sectionIdPrefix,
 }: LyricsSheetProps) {
   const showChords = mode === 'chords';
-  const sections = parseChordLyrics(chordLyrics).filter(
+  const parsed = parseChordLyrics(chordLyrics).filter(
     (section) => showChords || hasLyrics(section)
   );
+  const sections = showChords && repeats === 'once' ? uniqueSections(parsed).sections : parsed;
   const renderChord = createChordRenderer(
     notation,
     originalKey,
@@ -158,6 +169,7 @@ export function LyricsSheet({
       {sections.map((section) => (
         <section
           key={section.id}
+          id={sectionIdPrefix ? sectionElementId(sectionIdPrefix, section.id) : undefined}
           className={cn(
             'mb-[1.5em] break-inside-avoid scroll-mt-[calc(var(--top-h)+60px)]',
             showChords ? 'space-y-[0.35em]' : 'space-y-0'
