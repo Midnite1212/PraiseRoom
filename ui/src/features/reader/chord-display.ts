@@ -30,6 +30,12 @@ export type ColourChords = (typeof COLOUR_CHORDS)[number];
 
 export const useColourChords = createStoredChoice('chord-colour', COLOUR_CHORDS, 'off').use;
 
+// 'once' shows each distinct section the first time it appears, in both views; 'all' keeps the song's flow.
+export const SECTION_REPEATS = ['once', 'all'] as const;
+export type SectionRepeats = (typeof SECTION_REPEATS)[number];
+
+export const useSectionRepeats = createStoredChoice('section-repeats', SECTION_REPEATS, 'once').use;
+
 export const chordsUseFlats = (accidentals: Accidentals, playKey: MusicKey | null): boolean =>
   accidentals === 'auto' ? (playKey?.prefersFlats ?? false) : accidentals === 'flat';
 

@@ -468,6 +468,7 @@ export function MusicianView({
           onPlay={(index) => goToSong(index + 1)}
           onShowBeside={(songId) => setPinnedId(pinAfterPick(songIds, currentIndex, songId))}
           leftPaneRef={setLeftPane}
+          repeats={isPublic ? 'all' : undefined}
         />
       ) : (
         <SongReader
@@ -478,6 +479,7 @@ export function MusicianView({
           capo={capo}
           onCapoChange={changeCapo}
           note={noteForSong(setlist, song._id)}
+          repeats={isPublic ? 'all' : undefined}
         >
           {currentIndex === songCount - 1 ? (
             <div className="border-hairline text-ink-2 mt-10 flex items-center gap-3.5 border-t py-5">

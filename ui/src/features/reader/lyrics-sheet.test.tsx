@@ -76,6 +76,72 @@ describe('LyricsSheet', () => {
     expect(screen.getByRole('heading', { name: 'Interlude' })).toBeInTheDocument();
   });
 
+  it('shows a repeated section once in both views and gives each block an id', () => {
+    const repeated = `${LYRICS}\n{Chorus}\n[Em7]O Lord of my [D/F#]heart`;
+    const { rerender } = render(
+      <LyricsSheet
+        chordLyrics={repeated}
+        mode="chords"
+        notation="letters"
+        originalKey={G}
+        playKey={G}
+        repeats="once"
+        sectionIdPrefix="song-title"
+      />
+    );
+    expect(screen.getAllByRole('heading', { name: 'Chorus' })).toHaveLength(1);
+    expect(document.getElementById('song-title-s1')).not.toBeNull();
+
+    rerender(
+      <LyricsSheet
+        chordLyrics={repeated}
+        mode="lyrics"
+        notation="letters"
+        originalKey={G}
+        playKey={G}
+        repeats="once"
+      />
+    );
+    expect(screen.getAllByRole('heading', { name: 'Chorus' })).toHaveLength(1);
+
+    rerender(
+      <LyricsSheet
+        chordLyrics={repeated}
+        mode="lyrics"
+        notation="letters"
+        originalKey={G}
+        playKey={G}
+        repeats="all"
+      />
+    );
+    expect(screen.getAllByRole('heading', { name: 'Chorus' })).toHaveLength(2);
+  });
+
+  it('shows a lead-in chord over the first word and drops the space in lyrics view', () => {
+    const { container, rerender } = render(
+      <LyricsSheet
+        chordLyrics="[G] Holy is the Lord"
+        mode="chords"
+        notation="letters"
+        originalKey={G}
+        playKey={G}
+      />
+    );
+    const first = container.querySelector('p > span');
+    expect(first?.textContent).toBe('GHoly ');
+
+    rerender(
+      <LyricsSheet
+        chordLyrics="[G] Holy is the Lord"
+        mode="lyrics"
+        notation="letters"
+        originalKey={G}
+        playKey={G}
+      />
+    );
+    expect(container.querySelector('p')?.textContent).toBe('Holy is the Lord');
+  });
+
   it('keeps the lyrics size class alongside the column classes', () => {
     const { container } = render(
       <LyricsSheet
