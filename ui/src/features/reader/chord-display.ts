@@ -30,7 +30,7 @@ export type ColourChords = (typeof COLOUR_CHORDS)[number];
 
 export const useColourChords = createStoredChoice('chord-colour', COLOUR_CHORDS, 'off').use;
 
-// Chords view only: 'once' shows each distinct section the first time it appears; Lyrics view keeps the flow.
+// 'once' shows each distinct section the first time it appears, in both views; 'all' keeps the song's flow.
 export const SECTION_REPEATS = ['once', 'all'] as const;
 export type SectionRepeats = (typeof SECTION_REPEATS)[number];
 

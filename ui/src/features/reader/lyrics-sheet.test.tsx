@@ -76,7 +76,7 @@ describe('LyricsSheet', () => {
     expect(screen.getByRole('heading', { name: 'Interlude' })).toBeInTheDocument();
   });
 
-  it('shows a repeated section once in chords view and gives each block an id', () => {
+  it('shows a repeated section once in both views and gives each block an id', () => {
     const repeated = `${LYRICS}\n{Chorus}\n[Em7]O Lord of my [D/F#]heart`;
     const { rerender } = render(
       <LyricsSheet
@@ -100,6 +100,18 @@ describe('LyricsSheet', () => {
         originalKey={G}
         playKey={G}
         repeats="once"
+      />
+    );
+    expect(screen.getAllByRole('heading', { name: 'Chorus' })).toHaveLength(1);
+
+    rerender(
+      <LyricsSheet
+        chordLyrics={repeated}
+        mode="lyrics"
+        notation="letters"
+        originalKey={G}
+        playKey={G}
+        repeats="all"
       />
     );
     expect(screen.getAllByRole('heading', { name: 'Chorus' })).toHaveLength(2);

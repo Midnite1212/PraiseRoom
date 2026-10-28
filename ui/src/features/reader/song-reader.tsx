@@ -65,7 +65,7 @@ export function SongReader({
   const showChordControls = mode === 'chords' && originalKey && playKey;
   const titleId = pane === 'right' ? 'song-title-right' : 'song-title';
   const sectionRepeats = repeats ?? savedRepeats;
-  const showFlow = mode === 'chords' && sectionRepeats === 'once' && song.chordLyrics.trim() !== '';
+  const showFlow = sectionRepeats === 'once' && song.chordLyrics.trim() !== '';
 
   return (
     <article data-lyrics-size={lyricsSize} aria-labelledby={titleId} className="min-w-0">

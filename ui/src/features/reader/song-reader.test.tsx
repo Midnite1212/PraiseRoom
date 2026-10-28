@@ -72,15 +72,16 @@ describe('SongReader song flow', () => {
     expect(scrollIntoView.mock.contexts[0]).toBe(document.getElementById('song-title-s3'));
   });
 
-  it('shows the full flow and no chips when repeats are shown, or in Lyrics mode', () => {
-    const { unmount } = renderRepeated('all');
+  it('shows the full flow and no chips when repeats are shown', () => {
+    renderRepeated('all');
     expect(screen.queryByRole('navigation', { name: 'Song flow' })).toBeNull();
     expect(screen.getAllByRole('heading', { name: 'Chorus' })).toHaveLength(2);
-    unmount();
+  });
 
+  it('folds repeats in Lyrics mode too', () => {
     localStorage.setItem('reader-mode', 'lyrics');
     renderRepeated();
-    expect(screen.queryByRole('navigation', { name: 'Song flow' })).toBeNull();
-    expect(screen.getAllByRole('heading', { name: 'Chorus' })).toHaveLength(2);
+    expect(screen.getByRole('navigation', { name: 'Song flow' })).toBeInTheDocument();
+    expect(screen.getAllByRole('heading', { name: 'Chorus' })).toHaveLength(1);
   });
 });

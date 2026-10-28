@@ -151,7 +151,7 @@ export function LyricsSheet({
   const parsed = parseChordLyrics(chordLyrics).filter(
     (section) => showChords || hasLyrics(section)
   );
-  const sections = showChords && repeats === 'once' ? uniqueSections(parsed).sections : parsed;
+  const sections = repeats === 'once' ? uniqueSections(parsed).sections : parsed;
   const renderChord = createChordRenderer(
     notation,
     originalKey,

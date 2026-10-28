@@ -264,7 +264,7 @@
     "simple": "Simple",
     "colourChords": "Colour chords",
     "sectionsOnce": "Each section once",
-    "sectionsOnceHint": "Chords view: repeats fold into their first copy",
+    "sectionsOnceHint": "Repeats fold into their first copy",
     "flow": {
       "label": "Song flow",
       "unnamed": "Section {{n}}"
@@ -720,7 +720,7 @@
       "hint": "1, 4, 5 and minors differ"
     },
     "sectionsOnce": {
-      "hint": "In Chords view, a repeated chorus shows once and the song flow lists the order"
+      "hint": "A repeated chorus shows once and the song flow lists the order"
     },
     "scrollSpeed": {
       "hint": "Starts when you press play"
