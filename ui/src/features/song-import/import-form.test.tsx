@@ -46,10 +46,47 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
+const setupThemes = (suggested: string[]) => {
+  const created: unknown[] = [];
+  const suggestBodies: unknown[] = [];
+  fetchMock.mockImplementation(async (input, init) => {
+    const url = requestUrl(input);
+    if (url.startsWith('/api/songs/themes') && !url.startsWith('/api/songs/themes/suggest')) {
+      return new Response(JSON.stringify(['Call to Worship', 'Hope', 'Prayer', 'The Cross']));
+    }
+    if (url.startsWith('/api/auth/get-session')) return sessionResponse();
+    if (url.startsWith('/api/songs/import/metadata')) return emptyMetadata();
+    if (url.startsWith('/api/songs/search')) return emptySongSearch();
+    if (url.startsWith('/api/songs/themes/suggest')) {
+      suggestBodies.push(typeof init?.body === 'string' ? JSON.parse(init.body) : null);
+      return new Response(JSON.stringify({ themes: suggested }));
+    }
+    if (url.startsWith('/api/songs/create')) {
+      created.push(typeof init?.body === 'string' ? JSON.parse(init.body) : null);
+      return new Response(
+        JSON.stringify({
+          _id: '507f1f77bcf86cd799439031',
+          urlKey: 'k3x9p2',
+          title: 'Invented Song',
+        })
+      );
+    }
+    throw new Error(`unexpected fetch to ${url}`);
+  });
+  const onSaved = vi.fn<() => void>();
+  renderWithQueryAndRouter(
+    <ImportForm chart={chart} onDirtyChange={vi.fn<(dirty: boolean) => void>()} onSaved={onSaved} />
+  );
+  return { created, suggestBodies, onSaved, user: userEvent.setup() };
+};
+
 describe('ImportForm', () => {
   it('renders the converted chart in the live preview', async () => {
     fetchMock.mockImplementation(async (input) => {
       const url = requestUrl(input);
+      if (url.startsWith('/api/songs/themes') && !url.startsWith('/api/songs/themes/suggest')) {
+        return new Response(JSON.stringify(['Call to Worship', 'Hope', 'Prayer', 'The Cross']));
+      }
       if (url.startsWith('/api/auth/get-session')) return sessionResponse();
       if (url.startsWith('/api/songs/import/metadata')) return emptyMetadata();
       if (url.startsWith('/api/songs/search')) return emptySongSearch();
@@ -71,6 +108,9 @@ describe('ImportForm', () => {
   it('transposes the raw chart text when the recording-key suggestion is applied', async () => {
     fetchMock.mockImplementation(async (input) => {
       const url = requestUrl(input);
+      if (url.startsWith('/api/songs/themes') && !url.startsWith('/api/songs/themes/suggest')) {
+        return new Response(JSON.stringify(['Call to Worship', 'Hope', 'Prayer', 'The Cross']));
+      }
       if (url.startsWith('/api/auth/get-session')) return sessionResponse();
       if (url.startsWith('/api/songs/import/metadata')) {
         return new Response(
@@ -113,6 +153,9 @@ describe('ImportForm', () => {
 
     fetchMock.mockImplementation(async (input) => {
       const url = requestUrl(input);
+      if (url.startsWith('/api/songs/themes') && !url.startsWith('/api/songs/themes/suggest')) {
+        return new Response(JSON.stringify(['Call to Worship', 'Hope', 'Prayer', 'The Cross']));
+      }
       if (url.startsWith('/api/auth/get-session')) return sessionResponse();
       if (url.startsWith('/api/songs/import/metadata')) return metadataPromise;
       if (url.startsWith('/api/songs/search')) return emptySongSearch();
@@ -153,6 +196,9 @@ describe('ImportForm', () => {
     const metadataUrls: string[] = [];
     fetchMock.mockImplementation(async (input) => {
       const url = requestUrl(input);
+      if (url.startsWith('/api/songs/themes') && !url.startsWith('/api/songs/themes/suggest')) {
+        return new Response(JSON.stringify(['Call to Worship', 'Hope', 'Prayer', 'The Cross']));
+      }
       if (url.startsWith('/api/auth/get-session')) return sessionResponse();
       if (url.startsWith('/api/songs/import/metadata')) {
         metadataUrls.push(url);
@@ -185,6 +231,9 @@ describe('ImportForm', () => {
   it('does not mark the form edited when metadata fills fields', async () => {
     fetchMock.mockImplementation(async (input) => {
       const url = requestUrl(input);
+      if (url.startsWith('/api/songs/themes') && !url.startsWith('/api/songs/themes/suggest')) {
+        return new Response(JSON.stringify(['Call to Worship', 'Hope', 'Prayer', 'The Cross']));
+      }
       if (url.startsWith('/api/auth/get-session')) return sessionResponse();
       if (url.startsWith('/api/songs/import/metadata')) {
         return new Response(
@@ -214,6 +263,9 @@ describe('ImportForm', () => {
     const created: unknown[] = [];
     fetchMock.mockImplementation(async (input, init) => {
       const url = requestUrl(input);
+      if (url.startsWith('/api/songs/themes') && !url.startsWith('/api/songs/themes/suggest')) {
+        return new Response(JSON.stringify(['Call to Worship', 'Hope', 'Prayer', 'The Cross']));
+      }
       if (url.startsWith('/api/auth/get-session')) return sessionResponse();
       if (url.startsWith('/api/songs/import/metadata')) return emptyMetadata();
       if (url.startsWith('/api/songs/search')) return emptySongSearch();
@@ -260,6 +312,9 @@ describe('ImportForm', () => {
     let recordingKey = 'Em';
     fetchMock.mockImplementation(async (input) => {
       const url = requestUrl(input);
+      if (url.startsWith('/api/songs/themes') && !url.startsWith('/api/songs/themes/suggest')) {
+        return new Response(JSON.stringify(['Call to Worship', 'Hope', 'Prayer', 'The Cross']));
+      }
       if (url.startsWith('/api/auth/get-session')) return sessionResponse();
       if (url.startsWith('/api/songs/import/metadata')) {
         return new Response(
@@ -290,5 +345,49 @@ describe('ImportForm', () => {
     await user.tab();
     await user.click(await screen.findByRole('button', { name: 'Recording key: A — use it' }));
     expect(screen.getByDisplayValue(/\[G\]Test \[C\]line/)).toBeInTheDocument();
+  });
+
+  describe('theme suggestions', () => {
+    it('pre-selects the suggested themes and submits them', async () => {
+      const { created, suggestBodies, onSaved, user } = setupThemes(['Hope', 'The Cross']);
+
+      const hope = await screen.findByRole('button', { name: 'Hope' });
+      await waitFor(() => expect(hope).toHaveAttribute('aria-pressed', 'true'));
+      expect(screen.getByRole('button', { name: 'The Cross' })).toHaveAttribute(
+        'aria-pressed',
+        'true'
+      );
+      expect(screen.getByRole('button', { name: 'Prayer' })).toHaveAttribute(
+        'aria-pressed',
+        'false'
+      );
+      expect(screen.getByText('Suggested from the title and lyrics')).toBeInTheDocument();
+      expect(suggestBodies[0]).toEqual({
+        title: 'Invented Song',
+        chordLyrics: '{Verse 1}\n[C]Test [G]line',
+      });
+
+      await user.click(screen.getByRole('button', { name: 'Save song' }));
+      await waitFor(() => expect(onSaved).toHaveBeenCalledOnce());
+      expect(created).toEqual([expect.objectContaining({ themes: ['Hope', 'The Cross'] })]);
+    });
+
+    it('stops following suggestions once a chip is toggled and submits the chosen themes', async () => {
+      const { created, suggestBodies, onSaved, user } = setupThemes(['Hope']);
+
+      const hope = await screen.findByRole('button', { name: 'Hope' });
+      await waitFor(() => expect(hope).toHaveAttribute('aria-pressed', 'true'));
+
+      await user.click(screen.getByRole('button', { name: 'Prayer' }));
+      await user.click(hope);
+
+      await user.type(screen.getByLabelText('Title'), ' Two');
+      await waitFor(() => expect(suggestBodies).toHaveLength(2), { timeout: 3000 });
+      expect(screen.getByRole('button', { name: 'Hope' })).toHaveAttribute('aria-pressed', 'false');
+
+      await user.click(screen.getByRole('button', { name: 'Save song' }));
+      await waitFor(() => expect(onSaved).toHaveBeenCalledOnce());
+      expect(created).toEqual([expect.objectContaining({ themes: ['Prayer'] })]);
+    });
   });
 });

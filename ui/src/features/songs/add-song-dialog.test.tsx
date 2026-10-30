@@ -71,6 +71,7 @@ describe('AddSongDialog', () => {
         chordLyrics: '{Verse 1}',
       }),
     ]);
+    expect(created[0]).not.toHaveProperty('themes');
   });
 
   it('hands the title and artist to the web search without creating a song', async () => {

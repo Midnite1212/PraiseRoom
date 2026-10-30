@@ -2,12 +2,14 @@ import { Request, RequestHandler, Response } from 'express';
 
 import { hasNulCharacter } from '../db/cast';
 import { SONG_FIELDS, SongSortField, songRepository } from '../db/repositories/song.repository';
-import { MUSIC_KEYS } from '../db/schema';
+import { MUSIC_KEYS, SONG_THEMES } from '../db/schema';
 import { pick } from '../utils/pick';
 import { sendError, sendResponse } from '../utils/response';
+import { deriveSongThemes } from '../utils/songThemes';
 import { isObjectIdString, isUrlKeyString } from '../utils/validation';
 
 const MAX_SEARCH_LENGTH = 100;
+const MAX_CHART_LENGTH = 30_000;
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 100;
@@ -147,6 +149,23 @@ const listSongKeys: RequestHandler = async (_req: Request, res: Response): Promi
   }
 };
 
+const listSongThemes: RequestHandler = (_req: Request, res: Response): void => {
+  sendResponse(res, 200, SONG_THEMES);
+};
+
+const isChartText = (value: unknown): value is string =>
+  typeof value === 'string' && value.length <= MAX_CHART_LENGTH && !hasNulCharacter(value);
+
+const suggestSongThemes: RequestHandler = (req: Request, res: Response): void => {
+  const title: unknown = req.body?.title ?? '';
+  const chordLyrics: unknown = req.body?.chordLyrics ?? '';
+  if (!isChartText(title) || !isChartText(chordLyrics)) {
+    sendResponse(res, 400, 'Invalid song text');
+    return;
+  }
+  sendResponse(res, 200, { themes: deriveSongThemes(title, chordLyrics) });
+};
+
 const getSongView: RequestHandler = async (_req: Request, res: Response): Promise<void> => {
   try {
     const songs = await songRepository.listLiveView();
@@ -197,4 +216,14 @@ const deleteSong: RequestHandler = async (req: Request, res: Response): Promise<
   }
 };
 
-export { createSong, getSong, getSongView, listSongKeys, updateSong, deleteSong, searchSongs };
+export {
+  createSong,
+  getSong,
+  getSongView,
+  listSongKeys,
+  listSongThemes,
+  updateSong,
+  deleteSong,
+  searchSongs,
+  suggestSongThemes,
+};
