@@ -40,6 +40,34 @@ export const SONG_CREDITS_MAX_LENGTH = 500;
 
 export const MUSIC_KEYS = [...MAJOR_KEYS, ...MAJOR_KEYS.map((key) => `${key}m` as const)];
 
+export const SONG_THEMES = [
+  'Attributes of God',
+  'Declaration (Victorious/Kingdom)',
+  'Call to Worship',
+  'Celebration',
+  'Church / Unity',
+  'Dependence',
+  'Freedom / Overcoming Sin',
+  "God's Faithfulness",
+  "God's Presence",
+  'Holiness / Purity',
+  'Holy Spirit',
+  'Hope',
+  'Intimacy / Love for God',
+  'Missions / Evangelism',
+  'Obedience / Trust',
+  'Prayer',
+  'Purpose/Destiny',
+  'Repentance',
+  'Resurrection',
+  'Surrender / Sacrifice',
+  'Thankfulness/Gratitude',
+  'The Cross',
+  'Worship / Adoration / Praise',
+] as const;
+
+const sqlLiteral = (value: string): SQL => sql.raw(`'${value.replace(/'/g, "''")}'`);
+
 const isObjectIdHex = (column: AnyPgColumn): SQL => sql`${column} ~ '^[0-9a-f]{24}$'`;
 
 const timestamps = {
@@ -95,6 +123,10 @@ export const songs = pgTable(
     check(
       'songs_credits_length',
       sql`char_length(${table.credits}) <= ${sql.raw(String(SONG_CREDITS_MAX_LENGTH))}`
+    ),
+    check(
+      'songs_themes_known',
+      sql`${table.themes} <@ array[${sql.join(SONG_THEMES.map(sqlLiteral), sql`, `)}]::text[]`
     ),
   ]
 );

@@ -7,6 +7,7 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "import:songs": "tsx scripts/import-songs.ts",
+    "backfill:themes": "tsx scripts/backfill-themes.ts",
     "start": "cross-env NODE_ENV=production tsx app.ts",
     "dev": "cross-env NODE_ENV=test tsx watch app.ts",
     "test": "node --test --import tsx 'src/**/*.test.ts'",

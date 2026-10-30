@@ -148,6 +148,7 @@ describe(
           { title: 'Only title' },
           song(''),
           song('x', { themes: [''] }),
+          song('x', { themes: ['Joy'] }),
           song('x', { artist: { a: 1 } }),
           song('x', { chordLyrics: 'pasted\u0000text' }),
         ]) {
@@ -182,12 +183,43 @@ describe(
         assert.deepEqual(await songRepository.listLive(), []);
       });
 
+      it('derives themes on create and on a chart change unless the request sets them itself', async () => {
+        const created = await ok(createSong, {
+          body: {
+            artist: 'Test Artist',
+            chordLyrics: '{Verse}\n[G]At the cr[C]oss, Cal[D]vary',
+            originalKey: 'C',
+            title: 'Thank You',
+          },
+          user: ADMIN,
+        });
+        assert.deepEqual(created.themes, ['Thankfulness/Gratitude', 'The Cross']);
+
+        const curated = await ok(updateSong, {
+          body: { chordLyrics: '[D]He is risen', id: created._id, themes: ['Hope'] },
+          user: ADMIN,
+        });
+        assert.deepEqual(curated.themes, ['Hope']);
+
+        const edited = await ok(updateSong, {
+          body: { chordLyrics: '[D]He is risen, the tomb is empty, alive!', id: created._id },
+          user: ADMIN,
+        });
+        assert.deepEqual(edited.themes, ['Hope', 'Resurrection', 'Thankfulness/Gratitude']);
+
+        const untouched = await ok(updateSong, {
+          body: { code: 'T1', id: created._id },
+          user: ADMIN,
+        });
+        assert.deepEqual(untouched.themes, ['Hope', 'Resurrection', 'Thankfulness/Gratitude']);
+      });
+
       it('searches case-insensitively with literal wildcards, filters, sorting, and paging', async () => {
         for (const [title, fields] of [
           ['amazing love', { code: 'b2', tempo: ['Slow'] }],
           ['Amazing Grace', { code: 'A1', tempo: ['Fast'] }],
-          ['100% Yours', { themes: ['Joy'] }],
-          ['Under_score', { code: 'C3', themes: ['Joy', 'Hope'] }],
+          ['100% Yours', { themes: ['Celebration'] }],
+          ['Under_score', { code: 'C3', themes: ['Celebration', 'Hope'] }],
           ['Undersc0re', { code: 'c4' }],
         ] as const) {
           await ok(createSong, { body: song(title, fields), user: ADMIN });
@@ -210,7 +242,7 @@ describe(
           'Amazing Grace',
           'amazing love',
         ]);
-        assert.deepEqual(await titles({ themes: 'Joy' }), ['100% Yours', 'Under_score']);
+        assert.deepEqual(await titles({ themes: 'Celebration' }), ['100% Yours', 'Under_score']);
         assert.deepEqual(await titles({ sortBy: 'code' }), [
           '100% Yours',
           'Amazing Grace',
