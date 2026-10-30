@@ -40,12 +40,7 @@ type LyricsSheetProps = {
   capo?: number;
   columns?: LyricsColumns;
   repeats?: SectionRepeats;
-  // Prefix for each section's element id, so the song flow can scroll to it; none means no ids.
-  sectionIdPrefix?: string;
 };
-
-export const sectionElementId = (prefix: string, sectionId: string): string =>
-  `${prefix}-${sectionId}`;
 
 export type ChordRenderer = (chord: string) => ReactNode;
 
@@ -145,7 +140,6 @@ export function LyricsSheet({
   capo = 0,
   columns = DEFAULT_LYRICS_COLUMNS,
   repeats = 'all',
-  sectionIdPrefix,
 }: LyricsSheetProps) {
   const showChords = mode === 'chords';
   const parsed = parseChordLyrics(chordLyrics).filter(
@@ -170,9 +164,8 @@ export function LyricsSheet({
       {sections.map((section) => (
         <section
           key={section.id}
-          id={sectionIdPrefix ? sectionElementId(sectionIdPrefix, section.id) : undefined}
           className={cn(
-            'mb-[1.5em] break-inside-avoid scroll-mt-[calc(var(--top-h)+60px)]',
+            'mb-[1.5em] break-inside-avoid',
             showChords ? 'space-y-[0.35em]' : 'space-y-0'
           )}
         >

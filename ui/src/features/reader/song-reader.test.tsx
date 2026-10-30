@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import { parseKey } from '@/features/chords/theory';
 
@@ -40,7 +40,7 @@ describe('SongReader note', () => {
   });
 });
 
-describe('SongReader song flow', () => {
+describe('SongReader section repeats', () => {
   const REPEATED: ReaderSong = {
     ...SONG,
     chordLyrics: '{Verse 1}\n[E]One\n{Chorus}\n[A]Two\n{Verse 2}\n[E]Three\n{Chorus}\n[A]Two',
@@ -55,33 +55,20 @@ describe('SongReader song flow', () => {
       />
     );
 
-  it('lists the flow and shows each distinct section once by default', () => {
+  it('shows each distinct section once by default, with no section chips', () => {
     renderRepeated();
-    const flow = screen.getByRole('navigation', { name: 'Song flow' });
-    expect(flow.querySelectorAll('button')).toHaveLength(4);
     expect(screen.getAllByRole('heading', { name: 'Chorus' })).toHaveLength(1);
+    expect(screen.queryByRole('navigation')).toBeNull();
   });
 
-  it('scrolls a repeated chip to the block that shows it', () => {
-    const scrollIntoView = vi.fn<() => void>();
-    Element.prototype.scrollIntoView = scrollIntoView;
-    renderRepeated();
-    const chips = screen.getByRole('navigation', { name: 'Song flow' }).querySelectorAll('button');
-    chips[3]?.click();
-    expect(scrollIntoView).toHaveBeenCalledTimes(1);
-    expect(scrollIntoView.mock.contexts[0]).toBe(document.getElementById('song-title-s3'));
-  });
-
-  it('shows the full flow and no chips when repeats are shown', () => {
+  it('shows the full flow when repeats are shown', () => {
     renderRepeated('all');
-    expect(screen.queryByRole('navigation', { name: 'Song flow' })).toBeNull();
     expect(screen.getAllByRole('heading', { name: 'Chorus' })).toHaveLength(2);
   });
 
   it('folds repeats in Lyrics mode too', () => {
     localStorage.setItem('reader-mode', 'lyrics');
     renderRepeated();
-    expect(screen.getByRole('navigation', { name: 'Song flow' })).toBeInTheDocument();
     expect(screen.getAllByRole('heading', { name: 'Chorus' })).toHaveLength(1);
   });
 });
