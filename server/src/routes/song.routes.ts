@@ -4,7 +4,9 @@ import {
   getSong,
   getSongView,
   listSongKeys,
+  listSongThemes,
   searchSongs,
+  suggestSongThemes,
   updateSong,
 } from '../controllers/song.controllers';
 import {
@@ -24,6 +26,8 @@ router.put('/api/songs/update', updateSong);
 router.put('/api/songs/delete', deleteSong);
 router.get('/api/songs/search', searchSongs);
 router.get('/api/songs/keys', listSongKeys);
+router.get('/api/songs/themes', listSongThemes);
+router.post('/api/songs/themes/suggest', suggestSongThemes);
 router.get('/api/songs/import/search', searchImportCandidates);
 router.post('/api/songs/import/fetch', fetchImportChart);
 router.post('/api/songs/import/convert', convertImportText);

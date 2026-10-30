@@ -125,6 +125,15 @@ export const ROUTE_PERMISSIONS: Record<string, PermissionConfig> = {
     requiresAuth: false,
     description: 'List the original keys used in the song library',
   },
+  'GET /api/songs/themes': {
+    requiresAuth: false,
+    description: 'List the themes a song may carry',
+  },
+  'POST /api/songs/themes/suggest': {
+    requiresAuth: true,
+    allowedAccessTypes: SONG_WRITERS,
+    description: 'Suggest themes for a song from its title and chart',
+  },
   'GET /api/songs/import/search': {
     requiresAuth: true,
     allowedAccessTypes: SONG_WRITERS,

@@ -102,7 +102,7 @@ export type NewSongInput = {
   timeSignature: string[];
   year: string | null;
   recommendedKeys: string[];
-  themes: string[];
+  themes?: string[];
 };
 
 const createdSongSchema = z.object({ _id: z.string(), urlKey: z.string(), title: z.string() });
