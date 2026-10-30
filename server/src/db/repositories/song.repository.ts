@@ -13,6 +13,7 @@ import {
 } from 'drizzle-orm';
 
 import { PublicSongRecord, SongRecord, SongViewRecord } from '../../types/song.types';
+import { deriveSongThemes, isSongTheme, mergeThemes } from '../../utils/songThemes';
 import {
   InvalidInputError,
   castBoundedText,
@@ -111,7 +112,9 @@ export const toSongValues = (fields: SongFields): SongValues => {
     values.credits = castBoundedText('credits', fields.credits, SONG_CREDITS_MAX_LENGTH);
   }
   if (has(fields, 'themes')) {
-    values.themes = castStringArray('themes', fields.themes, { itemsRequired: true });
+    const themes = castStringArray('themes', fields.themes, { itemsRequired: true });
+    if (!themes.every(isSongTheme)) throw new InvalidInputError('themes');
+    values.themes = themes;
   }
   // Capo 0 means no capo, so it is stored as null like an empty value.
   if (has(fields, 'capo'))
@@ -211,6 +214,7 @@ export const songRepository = {
         originalKey,
         artist,
         chordLyrics,
+        themes: values.themes ?? deriveSongThemes(title, chordLyrics),
         id: generateObjectId(now),
         createdAt: now,
         updatedAt: now,
@@ -274,11 +278,25 @@ export const songRepository = {
   },
 
   async updateLive(id: string, fields: SongFields): Promise<SongRecord | null> {
-    const [row] = await getDb()
-      .update(songs)
-      .set({ ...toSongValues(fields), updatedAt: new Date() })
-      .where(isLiveSong(id))
-      .returning();
+    const values = toSongValues(fields);
+    const row = await getDb().transaction(async (tx) => {
+      const [current] = await tx.select().from(songs).where(isLiveSong(id));
+      if (!current) return undefined;
+      const title = values.title ?? current.title;
+      const chordLyrics = values.chordLyrics ?? current.chordLyrics;
+      const chartChanged = title !== current.title || chordLyrics !== current.chordLyrics;
+      const themes =
+        values.themes ??
+        (chartChanged
+          ? mergeThemes(current.themes, deriveSongThemes(title, chordLyrics))
+          : undefined);
+      const [updated] = await tx
+        .update(songs)
+        .set({ ...values, themes, updatedAt: new Date() })
+        .where(isLiveSong(id))
+        .returning();
+      return updated;
+    });
     return row ? toSongRecord(row) : null;
   },
 
