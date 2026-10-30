@@ -20,7 +20,6 @@ import { useLyricsColumns } from './lyrics-columns';
 import { LyricsSheet } from './lyrics-sheet';
 import { useLyricsSize } from './lyrics-size';
 import { LyricsColumnsControl, SongInfo } from './reader-controls';
-import { SectionFlow } from './section-flow';
 import type { ReaderSong } from './song';
 
 type SongReaderProps = {
@@ -65,7 +64,6 @@ export function SongReader({
   const showChordControls = mode === 'chords' && originalKey && playKey;
   const titleId = pane === 'right' ? 'song-title-right' : 'song-title';
   const sectionRepeats = repeats ?? savedRepeats;
-  const showFlow = sectionRepeats === 'once' && song.chordLyrics.trim() !== '';
 
   return (
     <article data-lyrics-size={lyricsSize} aria-labelledby={titleId} className="min-w-0">
@@ -106,7 +104,6 @@ export function SongReader({
             {note}
           </p>
         ) : null}
-        {showFlow ? <SectionFlow chordLyrics={song.chordLyrics} idPrefix={titleId} /> : null}
       </header>
 
       {song.chordLyrics.trim() === '' ? (
@@ -124,7 +121,6 @@ export function SongReader({
           capo={capo}
           columns={lyricsColumns}
           repeats={sectionRepeats}
-          sectionIdPrefix={titleId}
         />
       )}
 

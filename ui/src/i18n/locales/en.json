@@ -265,10 +265,6 @@
     "colourChords": "Colour chords",
     "sectionsOnce": "Each section once",
     "sectionsOnceHint": "Repeats fold into their first copy",
-    "flow": {
-      "label": "Song flow",
-      "unnamed": "Section {{n}}"
-    },
     "sharp": "Sharps",
     "flat": "Flats",
     "key": "Key",

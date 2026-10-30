@@ -264,10 +264,6 @@
     "colourChords": "和弦上色",
     "sectionsOnce": "每段只顯示一次",
     "sectionsOnceHint": "重複的段落併入第一次出現",
-    "flow": {
-      "label": "歌曲流程",
-      "unnamed": "第 {{n}} 段"
-    },
     "sharp": "升號",
     "flat": "降號",
     "key": "調",
