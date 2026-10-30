@@ -57,7 +57,7 @@ const LIBRARY_SONG = {
   urlKey: 'k3x9p2',
   title: 'Song c',
   artist: 'Y',
-  originalKey: 'A',
+  originalKey: 'D',
   tempo: ['Slow'],
   timeSignature: ['4/4'],
   themes: [],
@@ -154,7 +154,7 @@ describe('SetlistEditor', () => {
     stubApi(200, [LIBRARY_SONG]);
     const user = userEvent.setup();
     renderEditor();
-    expect(await screen.findByText('Not sung lately')).toBeInTheDocument();
+    expect(await screen.findByText('Suggested for this set')).toBeInTheDocument();
     await user.click(await screen.findByRole('button', { name: 'Add Song c' }));
     expect(screen.queryByRole('button', { name: 'Add Song c' })).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Remove Song c' })).toBeInTheDocument();

@@ -426,13 +426,12 @@
       "results": "結果",
       "noMatch": "找不到詩歌",
       "noMatchHint": "試試其他字詞。",
-      "recentInFolder": "「{{folder}}」最近用過",
-      "recentInFolders": "「{{folder}}」等資料夾最近用過",
-      "recentInSetlists": "你的歌單最近用過",
-      "lately": "久未詠唱",
+      "suggested": "為這份歌單推薦",
+      "fresh": "詩歌庫新歌",
+      "themes": "同樣關於{{themes}}",
+      "inKey": "可用 {{key}} 調",
       "lastSung": "上次唱於 {{date}}",
-      "neverSung": "未唱過",
-      "fits": "配合這份歌單的主題",
+      "addedOn": "新增於 {{date}}",
       "foot": "搜尋即可瀏覽整個詩歌庫。"
     }
   },

@@ -16,7 +16,8 @@ import {
 import { useDebouncedValue } from '@/hooks/use-debounced-value';
 import { dateLocale } from '@/lib/date-locale';
 
-import { foldersQueryOptions, setlistsQueryOptions } from '../api';
+import { setlistsQueryOptions } from '../api';
+import { toDateInputValue } from '../format-date';
 import { type Suggestion, shortTheme, suggestSongs } from './add-suggestions';
 import type { SetlistDraft } from './setlist-draft';
 
@@ -101,9 +102,8 @@ const SkeletonRows = () =>
     </li>
   ));
 
-// Library search, and before anything is typed, songs to start from: recent in the set's folders,
-// not sung lately, and sharing the set's themes. All of it is ranked on the client from the song
-// library and the setlists the caller can already read.
+// Library search, and before anything is typed, songs ranked for this set plus new songs. All of it
+// is ranked on the client from the song library and the setlists the caller can already read.
 export function AddPanel({ setlistId, draft, today, onAdd }: AddPanelProps) {
   const { t, i18n } = useTranslation();
   const [keyword, setKeyword] = useState('');
@@ -115,7 +115,6 @@ export function AddPanel({ setlistId, draft, today, onAdd }: AddPanelProps) {
   });
   const library = useQuery(songLibraryQueryOptions());
   const setlists = useQuery(setlistsQueryOptions());
-  const folders = useQuery(foldersQueryOptions());
   const sentinelRef = useRef<HTMLLIElement | null>(null);
   const { hasNextPage, isFetchingNextPage, fetchNextPage } = search;
 
@@ -146,19 +145,18 @@ export function AddPanel({ setlistId, draft, today, onAdd }: AddPanelProps) {
       month: 'short',
     }).format(new Date(`${day}T00:00:00`));
 
-  const folderNames = draft.groupIds.flatMap((id) => {
-    const name = folders.data?.find((folder) => folder._id === id)?.groupName;
-    return name ? [name] : [];
-  });
-  const [firstFolder] = folderNames;
-  const recentTitle = firstFolder
-    ? t(
-        folderNames.length > 1 ? 'editor.suggest.recentInFolders' : 'editor.suggest.recentInFolder',
-        {
-          folder: firstFolder,
-        }
-      )
-    : t('editor.suggest.recentInSetlists');
+  const reason = ({ sharedThemes, matchedKey, lastSung }: Suggestion): string | undefined => {
+    const parts = [
+      matchedKey ? t('editor.suggest.inKey', { key: matchedKey }) : '',
+      lastSung ? t('editor.suggest.lastSung', { date: formatDay(lastSung) }) : '',
+      sharedThemes.length > 0
+        ? t('editor.suggest.themes', {
+            themes: sharedThemes.slice(0, 2).map(shortTheme).join(', '),
+          })
+        : '',
+    ].filter(Boolean);
+    return parts.length > 0 ? parts.join(' · ') : undefined;
+  };
 
   const rows = (items: Suggestion[], meta: (item: Suggestion) => string | undefined) =>
     items.map((item) => (
@@ -172,8 +170,7 @@ export function AddPanel({ setlistId, draft, today, onAdd }: AddPanelProps) {
     ));
 
   const suggestionsPending = library.isPending || setlists.isPending;
-  const hasSuggestions =
-    suggestions.recent.length + suggestions.lately.length + suggestions.fits.length > 0;
+  const hasSuggestions = suggestions.suggested.length + suggestions.fresh.length > 0;
 
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col gap-2">
@@ -220,23 +217,19 @@ export function AddPanel({ setlistId, draft, today, onAdd }: AddPanelProps) {
                 <SkeletonRows />
               </ul>
             ) : null}
-            {suggestions.recent.length > 0 ? (
-              <AddGroup title={recentTitle}>{rows(suggestions.recent, () => undefined)}</AddGroup>
-            ) : null}
-            {suggestions.lately.length > 0 ? (
-              <AddGroup title={t('editor.suggest.lately')}>
-                {rows(suggestions.lately, ({ lastSung }) =>
-                  lastSung
-                    ? t('editor.suggest.lastSung', { date: formatDay(lastSung) })
-                    : t('editor.suggest.neverSung')
-                )}
+            {suggestions.suggested.length > 0 ? (
+              <AddGroup title={t('editor.suggest.suggested')}>
+                {rows(suggestions.suggested, reason)}
               </AddGroup>
             ) : null}
-            {suggestions.fits.length > 0 ? (
-              <AddGroup title={t('editor.suggest.fits')}>
-                {rows(suggestions.fits, ({ sharedThemes }) =>
-                  sharedThemes.map(shortTheme).join(', ')
-                )}
+            {suggestions.fresh.length > 0 ? (
+              <AddGroup title={t('editor.suggest.fresh')}>
+                {rows(suggestions.fresh, ({ song }) => {
+                  const added = toDateInputValue(song.createdAt);
+                  return added
+                    ? t('editor.suggest.addedOn', { date: formatDay(added) })
+                    : undefined;
+                })}
               </AddGroup>
             ) : null}
             {!suggestionsPending && !hasSuggestions && !library.isError ? (
