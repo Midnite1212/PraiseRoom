@@ -426,13 +426,12 @@
       "results": "Results",
       "noMatch": "No songs match",
       "noMatchHint": "Try another word.",
-      "recentInFolder": "Recent in {{folder}}",
-      "recentInFolders": "Recent in {{folder}} and others",
-      "recentInSetlists": "Recent in your setlists",
-      "lately": "Not sung lately",
+      "suggested": "Suggested for this set",
+      "fresh": "New in the library",
+      "themes": "Shares {{themes}}",
+      "inKey": "Fits in {{key}}",
       "lastSung": "Last sung {{date}}",
-      "neverSung": "Not sung yet",
-      "fits": "Fits this set's themes",
+      "addedOn": "Added {{date}}",
       "foot": "Search to see the whole library."
     }
   },

@@ -26,10 +26,12 @@ export const songSummarySchema = z.object({
   title: z.string(),
   artist: z.string(),
   originalKey: z.string(),
+  recommendedKeys: z.array(z.string()).optional(),
   tempo: z.array(z.string()),
   timeSignature: z.array(z.string()).default([]),
   themes: z.array(z.string()).default([]),
   code: z.string().nullish(),
+  createdAt: z.string().optional(),
 });
 
 export type SongSummary = z.infer<typeof songSummarySchema>;
