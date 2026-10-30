@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, it, mock } from 'node:test';
 
 import { InvalidInputError } from '../db/cast';
 import { SongSearch, songRepository } from '../db/repositories/song.repository';
+import { SONG_THEMES } from '../db/schema';
 import { FakeRequestInit, callHandler, createRequest, createResponse } from '../testing/http';
 import {
   createSong,
@@ -10,7 +11,9 @@ import {
   getSong,
   getSongView,
   listSongKeys,
+  listSongThemes,
   searchSongs,
+  suggestSongThemes,
   updateSong,
 } from './song.controllers';
 
@@ -442,6 +445,38 @@ describe('song controllers', () => {
       const res = await call(deleteSong, { body: { id: SONG_ID } });
       assert.equal(res.statusCode, 404);
       assert.equal(res.body, 'Song not found');
+    });
+  });
+
+  describe('listSongThemes', () => {
+    it('returns the fixed theme list', async () => {
+      const res = await call(listSongThemes, {});
+      assert.equal(res.statusCode, 200);
+      assert.deepEqual(res.body, SONG_THEMES);
+    });
+  });
+
+  describe('suggestSongThemes', () => {
+    it('derives themes from the title and chart without touching the database', async () => {
+      const res = await call(suggestSongThemes, {
+        body: { chordLyrics: '[G]At the cross, Cal[D]vary', title: 'Thank You' },
+      });
+      assert.equal(res.statusCode, 200);
+      assert.deepEqual(res.body, { themes: ['Thankfulness/Gratitude', 'The Cross'] });
+    });
+
+    it('treats missing text as empty and rejects non-strings, NUL, and oversized charts', async () => {
+      assert.deepEqual((await call(suggestSongThemes, { body: {} })).body, { themes: [] });
+      for (const body of [
+        { title: 1 },
+        { chordLyrics: ['x'] },
+        { chordLyrics: 'a\u0000b' },
+        { chordLyrics: 'x'.repeat(30_001) },
+      ]) {
+        const res = await call(suggestSongThemes, { body });
+        assert.equal(res.statusCode, 400, JSON.stringify(body).slice(0, 40));
+        assert.equal(res.body, 'Invalid song text');
+      }
     });
   });
 });

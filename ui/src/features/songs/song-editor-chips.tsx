@@ -1,3 +1,4 @@
+import { useQuery } from '@tanstack/react-query';
 import { Check } from 'pixelarticons/react';
 import type { ComponentProps } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -12,7 +13,7 @@ import { keyLabel, type MusicKey } from '@/features/chords/theory';
 import { TIME_SIGNATURE_OPTIONS } from '@/features/song-import/api';
 import { cn } from '@/lib/utils';
 
-import { TEMPO_LABEL_KEYS, TEMPO_OPTIONS, THEME_OPTIONS } from './api';
+import { TEMPO_LABEL_KEYS, TEMPO_OPTIONS, songThemesQueryOptions } from './api';
 import { KEY_OPTIONS, keyOptionValue } from './key-options';
 import { CREDITS_MAX_LENGTH, sameKey } from './song-draft';
 
@@ -147,8 +148,8 @@ type ThemesChipProps = { value: string[]; onChange: (themes: string[]) => void }
 
 export function ThemesSettingChip({ value, onChange }: ThemesChipProps) {
   const { t } = useTranslation();
-  const known: readonly string[] = THEME_OPTIONS;
-  const options = [...THEME_OPTIONS, ...value.filter((theme) => !known.includes(theme))];
+  const { data: themeOptions = [] } = useQuery(songThemesQueryOptions());
+  const options = [...themeOptions, ...value.filter((theme) => !themeOptions.includes(theme))];
   const toggle = (theme: string) =>
     onChange(value.includes(theme) ? value.filter((item) => item !== theme) : [...value, theme]);
   return (

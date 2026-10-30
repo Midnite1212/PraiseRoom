@@ -11,7 +11,6 @@ import {
   type SortDirection,
   TEMPO_LABEL_KEYS,
   TEMPO_OPTIONS,
-  THEME_OPTIONS,
 } from './api';
 import { KEY_FILTER_OPTIONS, type KeyFilterOption } from './key-options';
 
@@ -33,6 +32,7 @@ type SongFilterSheetProps = Omit<SongFilterValues, 'dir'> & {
   matchCount: number | undefined;
   canSearchWeb: boolean;
   availableKeys: ReadonlySet<string> | undefined;
+  themeOptions: readonly string[];
   onChange: (filters: Partial<SongFilterValues>) => void;
 };
 
@@ -47,6 +47,7 @@ export function SongFilterSheet({
   matchCount,
   canSearchWeb,
   availableKeys,
+  themeOptions,
   onChange,
 }: SongFilterSheetProps) {
   const { t } = useTranslation();
@@ -88,7 +89,7 @@ export function SongFilterSheet({
         onClear={themes.length > 0 ? () => onChange({ themes: [] }) : undefined}
       >
         <div className="flex flex-wrap gap-1.5">
-          {THEME_OPTIONS.map((option) => (
+          {themeOptions.map((option) => (
             <FilterToggle
               key={option}
               pressed={themes.includes(option)}

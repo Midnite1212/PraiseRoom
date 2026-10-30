@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
+import { FilterToggle } from '@/components/page/filter-sheet';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -32,6 +33,8 @@ import {
   songSlug,
   TEMPO_LABEL_KEYS,
   TEMPO_OPTIONS,
+  songThemesQueryOptions,
+  themeSuggestionsQueryOptions,
 } from '@/features/songs/api';
 import {
   initialKey,
@@ -48,6 +51,8 @@ import {
   TIME_SIGNATURE_OPTIONS,
 } from './api';
 
+const THEME_SUGGEST_DEBOUNCE_MS = 400;
+
 type ImportFormProps = {
   chart: ImportedChart;
   onDirtyChange: (dirty: boolean) => void;
@@ -61,6 +66,7 @@ type FormValues = {
   tempo: string;
   timeSignature: string;
   year: string;
+  themes: string[];
   chordLyrics: string;
 };
 
@@ -71,7 +77,12 @@ export function ImportForm({ chart, onDirtyChange, onSaved }: ImportFormProps) {
   const queryClient = useQueryClient();
   const [rawOpen, setRawOpen] = useState(false);
   const [moveChords, setMoveChords] = useState(true);
-  const [touched, setTouched] = useState({ tempo: false, timeSignature: false, year: false });
+  const [touched, setTouched] = useState({
+    tempo: false,
+    timeSignature: false,
+    year: false,
+    themes: false,
+  });
   const [lookup, setLookup] = useState({ title: chart.title.trim(), artist: chart.artist.trim() });
 
   const metadata = useQuery(importMetadataQueryOptions(lookup.title, lookup.artist));
@@ -86,6 +97,7 @@ export function ImportForm({ chart, onDirtyChange, onSaved }: ImportFormProps) {
     year: z
       .string()
       .refine((value) => value === '' || /^\d{3,4}$/.test(value), t('songImport.form.yearInvalid')),
+    themes: z.array(z.string()),
     chordLyrics: z.string(),
   });
 
@@ -96,6 +108,7 @@ export function ImportForm({ chart, onDirtyChange, onSaved }: ImportFormProps) {
     tempo: '',
     timeSignature: '',
     year: '',
+    themes: [],
     chordLyrics: chart.chordLyrics,
   };
 
@@ -114,7 +127,7 @@ export function ImportForm({ chart, onDirtyChange, onSaved }: ImportFormProps) {
           timeSignature: value.timeSignature ? [value.timeSignature] : [],
           year: value.year || null,
           recommendedKeys: [],
-          themes: [],
+          themes: value.themes,
         });
       } catch {
         toast.error(t('songImport.form.saveFailed'));
@@ -129,6 +142,15 @@ export function ImportForm({ chart, onDirtyChange, onSaved }: ImportFormProps) {
   });
 
   const isDirty = useStore(form.store, (state) => state.isDirty);
+  const currentTitle = useStore(form.store, (state) => state.values.title);
+  const chordLyrics = useStore(form.store, (state) => state.values.chordLyrics);
+  const debouncedTitle = useDebouncedValue(currentTitle, THEME_SUGGEST_DEBOUNCE_MS);
+  const debouncedChordLyrics = useDebouncedValue(chordLyrics, THEME_SUGGEST_DEBOUNCE_MS);
+  const themeOptions = useQuery(songThemesQueryOptions());
+  const themeSuggestions = useQuery(
+    themeSuggestionsQueryOptions({ title: debouncedTitle, chordLyrics: debouncedChordLyrics })
+  );
+  const suggestedThemes = themeSuggestions.data?.themes ?? [];
 
   // The lookup is slow, so it runs on the title and artist the user settles on, not on each keystroke.
   const commitLookup = () => {
@@ -156,6 +178,11 @@ export function ImportForm({ chart, onDirtyChange, onSaved }: ImportFormProps) {
       form.setFieldValue('year', metadata.data.year, { dontUpdateMeta: true });
     }
   }, [metadata.data, touched, form]);
+
+  useEffect(() => {
+    if (touched.themes || !themeSuggestions.data) return;
+    form.setFieldValue('themes', themeSuggestions.data.themes, { dontUpdateMeta: true });
+  }, [themeSuggestions.data, touched.themes, form]);
 
   const applyKey = (newKey: MusicKey) => {
     const current = form.getFieldValue('key');
@@ -374,6 +401,41 @@ export function ImportForm({ chart, onDirtyChange, onSaved }: ImportFormProps) {
               }}
             </form.Field>
           </FieldGroup>
+
+          <form.Field name="themes">
+            {(field) => (
+              <Field>
+                <div className="flex flex-wrap items-baseline justify-between gap-x-3">
+                  <FieldLabel>{t('songImport.form.themes')}</FieldLabel>
+                  {suggestedThemes.length > 0 ? (
+                    <p className="text-muted-foreground flex items-center gap-1.5 text-xs">
+                      <Sparkles className="size-3.5" />
+                      {t('songImport.form.themesSuggestedHint')}
+                    </p>
+                  ) : null}
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {(themeOptions.data ?? []).map((option) => (
+                    <FilterToggle
+                      key={option}
+                      pressed={field.state.value.includes(option)}
+                      onToggle={() => {
+                        setTouched((prev) => ({ ...prev, themes: true }));
+                        field.handleChange(
+                          field.state.value.includes(option)
+                            ? field.state.value.filter((theme) => theme !== option)
+                            : [...field.state.value, option]
+                        );
+                      }}
+                    >
+                      {suggestedThemes.includes(option) ? <Sparkles aria-hidden /> : null}
+                      {option}
+                    </FilterToggle>
+                  ))}
+                </div>
+              </Field>
+            )}
+          </form.Field>
 
           <form.Field name="chordLyrics">
             {(field) => (

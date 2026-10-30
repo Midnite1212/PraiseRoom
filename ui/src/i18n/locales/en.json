@@ -585,6 +585,8 @@
       "duplicateWarning": "A song called \"{{title}}\" already exists.",
       "duplicateLink": "View it",
       "viewSource": "View on {{source}}",
+      "themes": "Themes",
+      "themesSuggestedHint": "Suggested from the title and lyrics",
       "untitled": "Untitled",
       "moveChords": "Move the chords with the key"
     }

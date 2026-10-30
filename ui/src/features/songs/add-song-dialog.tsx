@@ -69,7 +69,6 @@ export function AddSongDialog({ open, onOpenChange, onFindOnWeb }: AddSongDialog
           timeSignature: ['4/4'],
           year: null,
           recommendedKeys: [],
-          themes: [],
         });
         await queryClient.invalidateQueries({ queryKey: ['songs', 'search'] });
         formApi.reset();

@@ -18,31 +18,7 @@ export const TEMPO_LABEL_KEYS = {
   'Medium Slow': 'songs.tempo.mediumSlow',
 } as const;
 
-export const THEME_OPTIONS = [
-  'Attributes of God',
-  'Declaration (Victorious/Kingdom)',
-  'Call to Worship',
-  'Celebration',
-  'Church / Unity',
-  'Dependence',
-  'Freedom / Overcoming Sin',
-  "God's Faithfulness",
-  "God's Presence",
-  'Holiness / Purity',
-  'Holy Spirit',
-  'Hope',
-  'Intimacy / Love for God',
-  'Missions / Evangelism',
-  'Obedience / Trust',
-  'Prayer',
-  'Purpose/Destiny',
-  'Repentance',
-  'Resurrection',
-  'Surrender / Sacrifice',
-  'Thankfulness/Gratitude',
-  'The Cross',
-  'Worship / Adoration / Praise',
-] as const;
+export const THEME_SUGGEST_MAX_CHARS = 30000;
 
 export const songSummarySchema = z.object({
   _id: z.string(),
@@ -150,6 +126,39 @@ export const songKeysQueryOptions = () =>
   queryOptions({
     queryKey: ['songs', 'keys'],
     queryFn: ({ signal }) => apiRequest('/api/songs/keys', z.array(z.string()), { signal }),
+  });
+
+export const songThemesQueryOptions = () =>
+  queryOptions({
+    queryKey: ['songs', 'themes'],
+    queryFn: ({ signal }) => apiRequest('/api/songs/themes', z.array(z.string()), { signal }),
+    staleTime: Infinity,
+  });
+
+const themeSuggestionsSchema = z.object({ themes: z.array(z.string()) });
+
+export type ThemeSuggestInput = { title: string; chordLyrics: string };
+
+export const suggestSongThemes = (
+  { title, chordLyrics }: ThemeSuggestInput,
+  signal?: AbortSignal
+): Promise<z.infer<typeof themeSuggestionsSchema>> =>
+  apiRequest('/api/songs/themes/suggest', themeSuggestionsSchema, {
+    method: 'POST',
+    body: { title, chordLyrics },
+    signal,
+  });
+
+export const themeSuggestionsQueryOptions = (input: ThemeSuggestInput) =>
+  queryOptions({
+    queryKey: ['songs', 'theme-suggestions', input],
+    queryFn: ({ signal }) => suggestSongThemes(input, signal),
+    enabled:
+      (input.title.trim() !== '' || input.chordLyrics.trim() !== '') &&
+      input.title.length <= THEME_SUGGEST_MAX_CHARS &&
+      input.chordLyrics.length <= THEME_SUGGEST_MAX_CHARS,
+    staleTime: Infinity,
+    retry: false,
   });
 
 export const RECENT_SONGS_COUNT = 3;

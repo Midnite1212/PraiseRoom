@@ -585,6 +585,8 @@
       "duplicateWarning": "已有一首名為「{{title}}」的歌曲。",
       "duplicateLink": "查看歌曲",
       "viewSource": "在 {{source}} 查看",
+      "themes": "主題",
+      "themesSuggestedHint": "根據歌名及歌詞建議",
       "untitled": "未命名",
       "moveChords": "轉調時一併移動和弦"
     }

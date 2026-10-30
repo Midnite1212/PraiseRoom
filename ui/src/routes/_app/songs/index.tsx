@@ -24,6 +24,7 @@ import {
   SONG_SORTS,
   SORT_DIRECTIONS,
   songKeysQueryOptions,
+  songThemesQueryOptions,
   songListInfiniteQueryOptions,
   songSearchQueryOptions,
   type SongSort,
@@ -112,6 +113,7 @@ function SongsPage() {
   const availableKeys = libraryKeys
     ? new Set(libraryKeys.flatMap((key) => tonicOf(key) ?? []))
     : undefined;
+  const { data: themeOptions = [] } = useQuery(songThemesQueryOptions());
   const { data: setlists } = useQuery(setlistsQueryOptions());
   const nextSetSongs = nextSetSongIds(setlists ?? [], now);
 
@@ -319,6 +321,7 @@ function SongsPage() {
         web={web}
         sort={sort}
         availableKeys={availableKeys}
+        themeOptions={themeOptions}
         matchCount={totalCount}
         canSearchWeb={canAdd}
         onChange={changeFilters}

@@ -39,6 +39,9 @@ beforeEach(() => {
   vi.stubGlobal('fetch', fetchMock);
   fetchMock.mockImplementation(async (input, init) => {
     const url = requestUrl(input);
+    if (url.startsWith('/api/songs/themes') && !url.startsWith('/api/songs/themes/suggest')) {
+      return new Response(JSON.stringify(['Call to Worship', 'Hope', 'Prayer', 'The Cross']));
+    }
     if (url.startsWith('/api/auth/get-session')) return sessionResponse();
     if (url.startsWith('/api/songs/update')) {
       const body: unknown = typeof init?.body === 'string' ? JSON.parse(init.body) : null;
