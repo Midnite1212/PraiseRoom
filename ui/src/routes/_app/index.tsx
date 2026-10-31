@@ -79,7 +79,7 @@ function HomePage() {
           {later.length > 0 ? (
             <>
               <GroupTitle
-                title={t('home.then')}
+                title={t('home.upcoming')}
                 count={later.length}
                 action={<AllLink to="/setlists" label={t('home.allSetlists')} />}
               />

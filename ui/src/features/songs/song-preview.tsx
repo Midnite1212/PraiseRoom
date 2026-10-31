@@ -14,6 +14,7 @@ import { TempoMeter, tempoLevel } from '@/components/primitives/tempo-meter';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Session } from '@/features/auth/session';
+import { LyricLine } from '@/features/reader/lyrics-sheet';
 import { AddToSetlist } from '@/features/setlists/add-to-setlist';
 import { cn } from '@/lib/utils';
 
@@ -36,6 +37,8 @@ function Fact({ label, children }: { label: string; children: React.ReactNode })
   );
 }
 
+const showChord = (chord: string) => chord;
+
 function LyricsPeek({ urlKey }: { urlKey: string }) {
   const { data, isPending } = useQuery(songQueryOptions(urlKey));
   if (isPending) return <Skeleton className="mt-6 h-28 w-full rounded-2xl" />;
@@ -46,18 +49,17 @@ function LyricsPeek({ urlKey }: { urlKey: string }) {
       {peek.label ? (
         <h3 className="text-ink-3 m-0 mb-2 text-xs font-semibold">{peek.label}</h3>
       ) : null}
-      {peek.lines.map((line) => (
-        <p key={line.id} className="m-0 mb-2 flex flex-wrap last:mb-0">
-          {line.segments.map(({ id, chord, lyric }) => (
-            <span key={id} className="inline-flex flex-col">
-              <span className="text-chord min-h-[1.2em] pr-1 font-mono text-xs font-bold">
-                {chord}
-              </span>
-              <span className="whitespace-pre">{lyric}</span>
-            </span>
-          ))}
-        </p>
-      ))}
+      <div className="space-y-2 text-sm">
+        {peek.lines.map((line) => (
+          <LyricLine
+            key={line.id}
+            line={line}
+            showChords
+            renderChord={showChord}
+            colourKey={null}
+          />
+        ))}
+      </div>
     </div>
   );
 }

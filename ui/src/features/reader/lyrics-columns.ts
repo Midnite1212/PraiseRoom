@@ -19,3 +19,5 @@ export const LYRICS_COLUMN_CLASSES: Record<LyricsColumns, string> = {
   '2': 'columns-2',
   '3': 'columns-3',
 };
+
+export const LYRICS_COLUMN_GAP_CLASSES = 'wide:gap-8 gap-5';

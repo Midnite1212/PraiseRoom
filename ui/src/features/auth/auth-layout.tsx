@@ -12,11 +12,11 @@ const ART_PIXELS = [
   { id: 'fourth', lit: false },
 ] as const;
 
-function Brand({ className }: { className?: string }) {
+function Brand({ className, markClassName }: { className?: string; markClassName?: string }) {
   const { t } = useTranslation();
   return (
     <div className={cn('flex items-center gap-2.5 font-bold', className)}>
-      <BrandMark />
+      <BrandMark className={markClassName} />
       {t('app.name')}
     </div>
   );
@@ -34,7 +34,7 @@ export function AuthLayout({ children }: { children: ReactNode }) {
           aria-hidden
           className="wide:col-start-1 wide:row-span-2 wide:row-start-1 wide:flex wide:flex-col wide:justify-between wide:self-stretch hidden py-1 pb-2"
         >
-          <Brand />
+          <Brand className="text-2xl" markClassName="m-0 size-16" />
           <div>
             <p className="text-ink-3 mb-3 font-mono text-xs font-bold tracking-[0.12em] uppercase">
               {t('auth.art.label')}
