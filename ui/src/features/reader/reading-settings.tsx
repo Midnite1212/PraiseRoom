@@ -17,6 +17,7 @@ import {
   useAccidentals,
   useChordStyle,
   useColourChords,
+  useReaderMode,
   useSectionRepeats,
 } from './chord-display';
 import { enterFullscreen } from './fullscreen';
@@ -58,7 +59,8 @@ type PresentOption = {
 };
 
 // The sliders button and the tray behind it: what you set once and read every song with, saved on this
-// device. The settings link shows in the app only; the public setlist link has no Settings page.
+// device. The settings link shows in the app only; the public setlist link has no Settings page, so
+// it gets the theme, language and keep-awake rows here instead.
 // `present` adds the Present to TV row and owns the overlay it opens.
 export function ReadingSettings({
   showSettingsLink = true,
@@ -73,8 +75,10 @@ export function ReadingSettings({
   const [colourChords, setColourChords] = useColourChords();
   const [sectionRepeats, setSectionRepeats] = useSectionRepeats();
   const [keepAwake, setKeepAwake] = useKeepAwake();
+  const [mode] = useReaderMode();
   const [isTrayOpen, setIsTrayOpen] = useState(false);
   const [isPresenting, setIsPresenting] = useState(false);
+  const showsChords = mode === 'chords';
   const awakeHint = wakeLockSupported()
     ? keepAwake === 'on'
       ? t('reader.awakeOn')
@@ -107,30 +111,34 @@ export function ReadingSettings({
         }
       >
         <div className="flex flex-col gap-1.5">
-          <SetRow label={t('reader.chordStyle')}>
-            <Segmented
-              mono
-              size="sm"
-              value={chordStyle}
-              onChange={setChordStyle}
-              label={t('reader.chordStyle')}
-              options={CHORD_STYLES.map((value) => ({
-                value,
-                label: <ChordStyleLabel style={value} />,
-                ariaLabel: t(`reader.${value}`),
-              }))}
-            />
-          </SetRow>
-          <SetRow label={t('reader.colourChords')}>
-            <span className="flex items-center gap-2.5">
-              <ColourDots />
-              <Switch
-                aria-label={t('reader.colourChords')}
-                checked={colourChords === 'on'}
-                onCheckedChange={(checked) => setColourChords(checked ? 'on' : 'off')}
-              />
-            </span>
-          </SetRow>
+          {showsChords ? (
+            <>
+              <SetRow label={t('reader.chordStyle')}>
+                <Segmented
+                  mono
+                  size="sm"
+                  value={chordStyle}
+                  onChange={setChordStyle}
+                  label={t('reader.chordStyle')}
+                  options={CHORD_STYLES.map((value) => ({
+                    value,
+                    label: <ChordStyleLabel style={value} />,
+                    ariaLabel: t(`reader.${value}`),
+                  }))}
+                />
+              </SetRow>
+              <SetRow label={t('reader.colourChords')}>
+                <span className="flex items-center gap-2.5">
+                  <ColourDots />
+                  <Switch
+                    aria-label={t('reader.colourChords')}
+                    checked={colourChords === 'on'}
+                    onCheckedChange={(checked) => setColourChords(checked ? 'on' : 'off')}
+                  />
+                </span>
+              </SetRow>
+            </>
+          ) : null}
           <SetRow label={t('reader.sectionsOnce')} hint={t('reader.sectionsOnceHint')}>
             <Switch
               aria-label={t('reader.sectionsOnce')}
@@ -138,33 +146,39 @@ export function ReadingSettings({
               onCheckedChange={(checked) => setSectionRepeats(checked ? 'once' : 'all')}
             />
           </SetRow>
-          <SetRow label={t('reader.accidentals')}>
-            <Segmented
-              mono
-              size="sm"
-              value={accidentals}
-              onChange={setAccidentals}
-              label={t('reader.accidentals')}
-              options={ACCIDENTALS.map((value) =>
-                value === 'auto'
-                  ? { value, label: t('reader.auto') }
-                  : { value, label: ACCIDENTAL_LABELS[value], ariaLabel: t(`reader.${value}`) }
-              )}
-            />
-          </SetRow>
-          <SetRow label={t('theme.label')}>
-            <ThemeChoice compact />
-          </SetRow>
-          <SetRow label={t('language.label')}>
-            <LanguageChoice compact />
-          </SetRow>
-          <SetRow label={t('reader.keepAwake')} hint={awakeHint}>
-            <Switch
-              aria-label={t('reader.keepAwake')}
-              checked={keepAwake === 'on'}
-              onCheckedChange={(checked) => setKeepAwake(checked ? 'on' : 'off')}
-            />
-          </SetRow>
+          {showsChords ? (
+            <SetRow label={t('reader.accidentals')}>
+              <Segmented
+                mono
+                size="sm"
+                value={accidentals}
+                onChange={setAccidentals}
+                label={t('reader.accidentals')}
+                options={ACCIDENTALS.map((value) =>
+                  value === 'auto'
+                    ? { value, label: t('reader.auto') }
+                    : { value, label: ACCIDENTAL_LABELS[value], ariaLabel: t(`reader.${value}`) }
+                )}
+              />
+            </SetRow>
+          ) : null}
+          {showSettingsLink ? null : (
+            <>
+              <SetRow label={t('theme.label')}>
+                <ThemeChoice compact />
+              </SetRow>
+              <SetRow label={t('language.label')}>
+                <LanguageChoice compact />
+              </SetRow>
+              <SetRow label={t('reader.keepAwake')} hint={awakeHint}>
+                <Switch
+                  aria-label={t('reader.keepAwake')}
+                  checked={keepAwake === 'on'}
+                  onCheckedChange={(checked) => setKeepAwake(checked ? 'on' : 'off')}
+                />
+              </SetRow>
+            </>
+          )}
           {present && present.songs.length > 0 ? (
             <SetRow
               label={t('reader.present.row')}
