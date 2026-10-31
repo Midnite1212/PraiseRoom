@@ -8,6 +8,39 @@ export type SongGroup = { id: string; label: string; songs: SongSummary[] };
 
 const OTHER = '#';
 
+// The first-letter filter values: A to Z, and "#" for titles that start with anything else.
+export const LETTER_FILTERS = [
+  'A',
+  'B',
+  'C',
+  'D',
+  'E',
+  'F',
+  'G',
+  'H',
+  'I',
+  'J',
+  'K',
+  'L',
+  'M',
+  'N',
+  'O',
+  'P',
+  'Q',
+  'R',
+  'S',
+  'T',
+  'U',
+  'V',
+  'W',
+  'X',
+  'Y',
+  'Z',
+  OTHER,
+] as const;
+
+export type LetterFilter = (typeof LETTER_FILTERS)[number];
+
 const leadingLetter = (text: string | null | undefined): string => {
   const first = text?.trim().charAt(0) ?? '';
   return /^[A-Za-z]$/.test(first) ? first.toUpperCase() : OTHER;

@@ -127,6 +127,7 @@
     "searchWide": "以歌名、作者、歌詞或編號搜尋 {{total}} 首歌曲",
     "nextSet": "下一個歌單",
     "jumpToLetter": "跳到字母",
+    "filterByLetter": "按首字母篩選",
     "startingWith": "以 {{letter}} 開頭的歌曲",
     "startingWithOther": "以其他字元開頭的歌曲",
     "results": "搜尋結果",

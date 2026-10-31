@@ -273,6 +273,29 @@ describe(
           { currentPage: 2, totalCount: 5, totalPages: 3 }
         );
       });
+
+      it('matches the keyword in artist and lyrics without chords, and filters by first letter', async () => {
+        for (const [title, fields] of [
+          ['Beta', { artist: 'Zed Choir', chordLyrics: '{Verse 1}\nHo[G]ly, ho[D/F#]ly' }],
+          ['alpha', { chordLyrics: 'Great is [Am]Thy faith[C]fulness' }],
+          ['Gamma', {}],
+          ['1 Corinthians', {}],
+          ['Éclat', {}],
+        ] as const) {
+          await ok(createSong, { body: song(title, fields), user: ADMIN });
+        }
+        const titles = async (query: Body) =>
+          (await ok(searchSongs, { query })).data.map((found: Body) => found.title);
+
+        assert.deepEqual(await titles({ keyword: 'zed choir' }), ['Beta']);
+        assert.deepEqual(await titles({ keyword: 'holy, holy' }), ['Beta']);
+        assert.deepEqual(await titles({ keyword: 'thy faithfulness' }), ['alpha']);
+        assert.deepEqual(await titles({ keyword: '[Am]' }), []);
+        assert.deepEqual(await titles({ keyword: 'test artist', letter: 'G' }), ['Gamma']);
+        assert.deepEqual(await titles({ letter: 'A' }), ['alpha']);
+        assert.deepEqual(await titles({ letter: 'G' }), ['Gamma']);
+        assert.deepEqual(await titles({ letter: '#' }), ['1 Corinthians', 'Éclat']);
+      });
     });
 
     describe('song keys and tempo', () => {

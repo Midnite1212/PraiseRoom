@@ -6,6 +6,7 @@ import { apiRequest } from '@/lib/api-client';
 import { withUrlKey } from '@/lib/slug';
 
 import { keyFilterSpellings } from './key-options';
+import type { LetterFilter } from './song-groups';
 
 export const SONGS_PAGE_SIZE = 20;
 
@@ -54,6 +55,7 @@ export type SortDirection = (typeof SORT_DIRECTIONS)[number];
 export type SongSearch = {
   keyword: string;
   page: number;
+  letter?: LetterFilter;
   sort?: SongSort;
   dir?: SortDirection;
   keys?: readonly string[];
@@ -64,10 +66,19 @@ export type SongSearch = {
 export type SongListSearch = Omit<SongSearch, 'page'>;
 
 const songListQuery = (
-  { keyword, tempo = [], themes = [], sort = 'title', dir = 'asc', keys = [] }: SongListSearch,
+  {
+    keyword,
+    letter,
+    tempo = [],
+    themes = [],
+    sort = 'title',
+    dir = 'asc',
+    keys = [],
+  }: SongListSearch,
   page: number
 ) => ({
   keyword: keyword || undefined,
+  letter,
   page,
   limit: SONGS_PAGE_SIZE,
   tempo,
@@ -84,6 +95,7 @@ export const songSearchQueryOptions = ({ page, ...search }: SongSearch) =>
       'search',
       {
         keyword: search.keyword,
+        letter: search.letter ?? null,
         page,
         tempo: search.tempo ?? [],
         themes: search.themes ?? [],
@@ -107,6 +119,7 @@ export const songListInfiniteQueryOptions = (search: SongListSearch) =>
       'list',
       {
         keyword: search.keyword,
+        letter: search.letter ?? null,
         tempo: search.tempo ?? [],
         themes: search.themes ?? [],
         sort: search.sort ?? 'title',

@@ -1,9 +1,72 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
 
+import { PgDialect } from 'drizzle-orm/pg-core';
+
 import { InvalidInputError } from '../cast';
 import { SONG_CREDITS_MAX_LENGTH } from '../schema';
-import { containsPattern, toSongValues } from './song.repository';
+import { SongSearch, containsPattern, searchCondition, toSongValues } from './song.repository';
+
+const NO_FILTERS: SongSearch = {
+  keyword: '',
+  code: '',
+  letter: '',
+  tempo: [],
+  themes: [],
+  keys: [],
+  sortBy: 'title',
+  descending: false,
+  offset: 0,
+  limit: 20,
+};
+
+const compile = (search: Partial<SongSearch>) => {
+  const condition = searchCondition({ ...NO_FILTERS, ...search });
+  assert.ok(condition);
+  return new PgDialect().sqlToQuery(condition);
+};
+
+describe('searchCondition', () => {
+  it('only filters out deleted songs when nothing else is asked for', () => {
+    const { sql, params } = compile({});
+    assert.equal(sql, '"songs"."is_deleted" = $1');
+    assert.deepEqual(params, [false]);
+  });
+
+  it('matches the keyword against title, artist, and lyrics with the chords stripped', () => {
+    const { sql, params } = compile({ keyword: '50%_off' });
+    assert.match(sql, /"songs"."title" ilike \$2/);
+    assert.match(sql, /"songs"."artist" ilike \$3/);
+    assert.match(sql, /regexp_replace\("songs"."chord_lyrics", \$4, '', 'g'\) ilike \$5/);
+    assert.deepEqual(params, [
+      false,
+      '%50\\%\\_off%',
+      '%50\\%\\_off%',
+      String.raw`\[[^\]]*\]`,
+      '%50\\%\\_off%',
+    ]);
+  });
+
+  it('keeps the keyword and code in one OR group', () => {
+    const { sql } = compile({ keyword: 'love', code: 'A1' });
+    assert.match(
+      sql,
+      /\(.*title.* ilike .* or .*artist.* or .*chord_lyrics.* or .*code.* ilike .*\)/
+    );
+  });
+
+  it('filters by first letter as a parameter, allowing leading whitespace', () => {
+    const { sql, params } = compile({ letter: 'B' });
+    assert.match(sql, /"songs"."title" ~\* \$2/);
+    assert.deepEqual(params, [false, String.raw`^\s*B`]);
+  });
+
+  it('filters titles not starting with A to Z for #', () => {
+    const { sql, params } = compile({ letter: '#' });
+    assert.match(sql, /"songs"."title" !~\* \$2/);
+    assert.deepEqual(params, [false, String.raw`^\s*[a-z]`]);
+  });
+});
 
 describe('containsPattern', () => {
   it('wraps the text in wildcards, escaping LIKE wildcards and the escape character', () => {
