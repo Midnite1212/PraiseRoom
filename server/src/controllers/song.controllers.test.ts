@@ -177,6 +177,29 @@ describe('song controllers', () => {
       assert.equal(search.mock.callCount(), 0);
     });
 
+    it('passes a single capital letter or # as the first-letter filter', async () => {
+      const search = stubSearch();
+      for (const letter of ['A', 'Z', '#', '']) {
+        const res = await call(searchSongs, { query: { letter } });
+        assert.equal(res.statusCode, 200, letter);
+      }
+      await call(searchSongs, {});
+      assert.deepEqual(
+        search.mock.calls.map((c) => c.arguments[0]?.letter),
+        ['A', 'Z', '#', '', '']
+      );
+    });
+
+    it('rejects a first-letter filter that is not one capital letter or #', async () => {
+      const search = stubSearch();
+      for (const letter of ['a', 'AB', '1', '%', '_', ' ', ['A'], { $ne: '' }, 'A\u0000']) {
+        const res = await call(searchSongs, { query: { letter } });
+        assert.equal(res.statusCode, 400, JSON.stringify(letter));
+        assert.equal(res.body, 'Invalid search parameters');
+      }
+      assert.equal(search.mock.callCount(), 0);
+    });
+
     it('accepts a 100-character keyword', async () => {
       stubSearch();
       const res = await call(searchSongs, { query: { keyword: 'a'.repeat(100) } });
@@ -199,6 +222,7 @@ describe('song controllers', () => {
       assert.deepEqual(searchArgs(search), {
         code: '',
         keyword: '',
+        letter: '',
         limit: 20,
         offset: 0,
         descending: false,
@@ -219,6 +243,7 @@ describe('song controllers', () => {
       assert.deepEqual(searchArgs(search), {
         code: 'S(1)',
         keyword: 'a.b*%_',
+        letter: '',
         limit: 20,
         offset: 0,
         descending: false,

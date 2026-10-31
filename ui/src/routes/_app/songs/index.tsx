@@ -32,8 +32,10 @@ import {
   TEMPO_OPTIONS,
 } from '@/features/songs/api';
 import { KEY_FILTER_OPTIONS, tonicOf } from '@/features/songs/key-options';
+import { LetterFilter } from '@/features/songs/letter-filter';
 import { nextSetSongIds } from '@/features/songs/next-set';
 import { type SongFilterValues, SongFilterSheet } from '@/features/songs/song-filter-sheet';
+import { LETTER_FILTERS } from '@/features/songs/song-groups';
 import { SongPreview } from '@/features/songs/song-preview';
 import { SongRows } from '@/features/songs/song-rows';
 import { MAX_KEYWORD_LENGTH, toSearchKeyword } from '@/features/songs/song-search';
@@ -45,6 +47,7 @@ import { cn } from '@/lib/utils';
 
 const songsSearchSchema = z.object({
   q: z.string().default('').catch(''),
+  letter: z.enum(LETTER_FILTERS).optional().catch(undefined),
   tempo: z.array(z.string()).default([]).catch([]),
   themes: z.array(z.string()).default([]).catch([]),
   keys: z.array(z.enum(KEY_FILTER_OPTIONS)).default([]).catch([]),
@@ -56,8 +59,9 @@ const songsSearchSchema = z.object({
 
 export const Route = createFileRoute('/_app/songs/')({
   validateSearch: songsSearchSchema,
-  loaderDeps: ({ search: { q, tempo, themes, keys, sort, dir } }) => ({
+  loaderDeps: ({ search: { q, letter, tempo, themes, keys, sort, dir } }) => ({
     q,
+    letter,
     tempo,
     themes,
     keys,
@@ -68,6 +72,7 @@ export const Route = createFileRoute('/_app/songs/')({
     await context.queryClient.ensureInfiniteQueryData(
       songListInfiniteQueryOptions({
         keyword: deps.q,
+        letter: deps.letter,
         tempo: deps.tempo,
         themes: deps.themes,
         keys: deps.keys,
@@ -89,7 +94,7 @@ function SongsPage() {
   const { session } = Route.useRouteContext();
   const { now } = Route.useLoaderData();
   const search = Route.useSearch();
-  const { q, tempo, themes, keys, web, sort, dir, song: selectedId } = search;
+  const { q, letter, tempo, themes, keys, web, sort, dir, song: selectedId } = search;
   const navigate = Route.useNavigate();
   const isWide = useIsWide();
   const searchInput = useRef<HTMLInputElement>(null);
@@ -99,7 +104,7 @@ function SongsPage() {
   const songImport = useSongImport();
   const { data, isError, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useInfiniteQuery({
-      ...songListInfiniteQueryOptions({ keyword: q, tempo, themes, keys, sort, dir }),
+      ...songListInfiniteQueryOptions({ keyword: q, letter, tempo, themes, keys, sort, dir }),
       placeholderData: keepPreviousData,
     });
   const endRef = useRef<HTMLDivElement>(null);
@@ -118,8 +123,14 @@ function SongsPage() {
   const nextSetSongs = nextSetSongIds(setlists ?? [], now);
 
   const canAdd = canWriteSongs(session);
-  const setSearch = (next: Partial<typeof search>) =>
-    void navigate({ search: (previous) => ({ ...previous, ...next }), replace: true });
+  const setSearch = (next: Partial<typeof search>, options?: { resetScroll?: boolean }) =>
+    void navigate({
+      search: (previous) => ({ ...previous, ...next }),
+      replace: true,
+      resetScroll: options?.resetScroll,
+    });
+  const selectSong = (songId: string | undefined) =>
+    setSearch({ song: songId }, { resetScroll: false });
 
   // The list follows the search box as you type, once typing pauses.
   const keyword = toSearchKeyword(useDebouncedValue(text, 300));
@@ -166,7 +177,11 @@ function SongsPage() {
     isWide && selectedId !== undefined && !selectedSong && !isFetching && data !== undefined;
   useEffect(() => {
     if (hasStaleSelection)
-      void navigate({ search: (previous) => ({ ...previous, song: undefined }), replace: true });
+      void navigate({
+        search: (previous) => ({ ...previous, song: undefined }),
+        replace: true,
+        resetScroll: false,
+      });
   }, [hasStaleSelection, navigate]);
 
   const sortBy = (next: SongSort) =>
@@ -174,7 +189,7 @@ function SongsPage() {
 
   const closePreview = () => {
     if (selectedId) document.getElementById(`song-row-${selectedId}`)?.focus();
-    setSearch({ song: undefined });
+    selectSong(undefined);
   };
   const isPreviewOpen = selectedSong !== undefined;
   const slideOver = useSlideOver(isPreviewOpen, closePreview);
@@ -192,7 +207,7 @@ function SongsPage() {
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
   });
-  const isFiltered = q !== '' || activeFilters.length > 0;
+  const isFiltered = q !== '' || letter !== undefined || activeFilters.length > 0;
   const isSearching = (isFetching && !isFetchingNextPage) || toSearchKeyword(text) !== q;
   const typedKeyword = toSearchKeyword(text);
   const isSearchingKeyword = isSearching && typedKeyword !== '';
@@ -201,9 +216,9 @@ function SongsPage() {
     : t('songs.searching');
   const clearSearch = q === '' && text === '' ? undefined : () => setText('');
   const clearFilters =
-    activeFilters.length === 0
+    activeFilters.length === 0 && letter === undefined
       ? undefined
-      : () => changeFilters({ tempo: [], themes: [], keys: [], web: false });
+      : () => setSearch({ letter: undefined, tempo: [], themes: [], keys: [], web: false });
   const addSongLabel = t('songs.add.button');
 
   return (
@@ -242,6 +257,7 @@ function SongsPage() {
             filterCount={activeFilters.length}
             onFilter={() => setIsFilterOpen(true)}
           />
+          <LetterFilter value={letter} onChange={(next) => setSearch({ letter: next })} />
           <FilterChips filters={activeFilters} />
 
           <GroupTitle
@@ -268,7 +284,7 @@ function SongsPage() {
                   sort={sort}
                   dir={dir}
                   onSort={sortBy}
-                  onSelect={(songId) => setSearch({ song: songId })}
+                  onSelect={selectSong}
                   onClearSearch={clearSearch}
                   onClearFilters={clearFilters}
                 />

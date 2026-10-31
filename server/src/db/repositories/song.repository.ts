@@ -51,6 +51,7 @@ export type SongSortField = 'title' | 'code' | 'key' | 'tempo' | 'recent';
 export type SongSearch = {
   keyword: string;
   code: string;
+  letter: string;
   tempo: string[];
   themes: string[];
   keys: string[];
@@ -129,12 +130,35 @@ export const containsPattern = (value: string): string => `%${escapeLikePattern(
 const isLiveSong = (id: string): SQL | undefined =>
   and(eq(songs.id, toObjectId(id)), eq(songs.isDeleted, false));
 
-const searchCondition = ({ keyword, code, tempo, themes, keys }: SongSearch): SQL | undefined => {
+// Chords sit inline as `[G]`, so stripping them lets a phrase split by a chord still match.
+const plainLyrics = sql`regexp_replace(${songs.chordLyrics}, ${String.raw`\[[^\]]*\]`}, '', 'g')`;
+
+const letterCondition = (letter: string): SQL =>
+  letter === '#'
+    ? sql`${songs.title} !~* ${String.raw`^\s*[a-z]`}`
+    : sql`${songs.title} ~* ${String.raw`^\s*${letter}`}`;
+
+export const searchCondition = ({
+  keyword,
+  code,
+  letter,
+  tempo,
+  themes,
+  keys,
+}: SongSearch): SQL | undefined => {
   const conditions: (SQL | undefined)[] = [eq(songs.isDeleted, false)];
   const textMatches: SQL[] = [];
-  if (keyword) textMatches.push(ilike(songs.title, containsPattern(keyword)));
+  if (keyword) {
+    const pattern = containsPattern(keyword);
+    textMatches.push(
+      ilike(songs.title, pattern),
+      ilike(songs.artist, pattern),
+      ilike(plainLyrics, pattern)
+    );
+  }
   if (code) textMatches.push(ilike(songs.code, containsPattern(code)));
   if (textMatches.length > 0) conditions.push(or(...textMatches));
+  if (letter) conditions.push(letterCondition(letter));
   if (tempo.length > 0) conditions.push(arrayOverlaps(songs.tempo, tempo));
   if (themes.length > 0) conditions.push(arrayOverlaps(songs.themes, themes));
   if (keys.length > 0) conditions.push(inArray(songs.originalKey, keys));

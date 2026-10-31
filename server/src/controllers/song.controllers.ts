@@ -24,6 +24,9 @@ const toSearchArray = (value: unknown): string[] | null => {
   return null;
 };
 
+const isLetterFilter = (value: unknown): value is string =>
+  typeof value === 'string' && /^[A-Z#]$/.test(value);
+
 const isMusicKey = (value: string): boolean => MUSIC_KEYS.some((key) => key === value);
 
 const toKeyArray = (value: unknown): string[] | null => {
@@ -98,7 +101,7 @@ const getSong: RequestHandler = async (req: Request, res: Response): Promise<voi
 };
 
 const searchSongs: RequestHandler = async (req: Request, res: Response): Promise<void> => {
-  const { keyword, code, tempo, themes, keys, sortBy, order, page, limit } = req.query;
+  const { keyword, code, letter, tempo, themes, keys, sortBy, order, page, limit } = req.query;
 
   const tempoArray = toSearchArray(tempo);
   const themesArray = toSearchArray(themes);
@@ -106,6 +109,7 @@ const searchSongs: RequestHandler = async (req: Request, res: Response): Promise
   if (
     (keyword !== undefined && !isSearchString(keyword)) ||
     (code !== undefined && !isSearchString(code)) ||
+    (letter !== undefined && letter !== '' && !isLetterFilter(letter)) ||
     tempoArray === null ||
     themesArray === null ||
     keysArray === null ||
@@ -122,6 +126,7 @@ const searchSongs: RequestHandler = async (req: Request, res: Response): Promise
     const { songs, totalCount } = await songRepository.search({
       keyword: isSearchString(keyword) ? keyword : '',
       code: isSearchString(code) ? code : '',
+      letter: isLetterFilter(letter) ? letter : '',
       tempo: tempoArray,
       themes: themesArray,
       keys: keysArray,
