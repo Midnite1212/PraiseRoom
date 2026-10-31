@@ -112,6 +112,14 @@ describe('SettingsPage', () => {
     expect(localStorage.getItem('keep-awake')).toBe('off');
   });
 
+  it('offers theme, language and keep screen awake, which the reading settings sheet leaves out', async () => {
+    await renderPage();
+
+    expect(screen.getByRole('radiogroup', { name: 'Theme' })).toBeInTheDocument();
+    expect(screen.getByRole('radiogroup', { name: 'Language' })).toBeInTheDocument();
+    expect(screen.getByRole('switch', { name: 'Keep screen awake' })).toBeChecked();
+  });
+
   describe('preview', () => {
     it('draws the dummy chart in letters, full chords and the key of E', async () => {
       await renderPage();

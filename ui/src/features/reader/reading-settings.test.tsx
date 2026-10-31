@@ -82,12 +82,27 @@ describe('ReadingSettings', () => {
     expect(localStorage.getItem('chord-colour')).toBe('on');
   });
 
-  it('stores the keep screen awake switch, on by default, with a note', async () => {
+  it('leaves theme, language and keep screen awake to the Settings page', async () => {
+    await renderSettings();
+
+    expect(screen.queryByRole('radiogroup', { name: 'Theme' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('radiogroup', { name: 'Language' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('switch', { name: 'Keep screen awake' })).not.toBeInTheDocument();
+  });
+
+  it('keeps theme and language on the public link, which has no Settings page', async () => {
+    await renderSettings(false);
+
+    expect(screen.getByRole('radiogroup', { name: 'Theme' })).toBeInTheDocument();
+    expect(screen.getByRole('radiogroup', { name: 'Language' })).toBeInTheDocument();
+  });
+
+  it('stores the keep screen awake switch on the public link, on by default, with a note', async () => {
     Object.defineProperty(navigator, 'wakeLock', {
       configurable: true,
       value: { request: vi.fn<() => Promise<void>>() },
     });
-    const user = await renderSettings();
+    const user = await renderSettings(false);
 
     const awake = screen.getByRole('switch', { name: 'Keep screen awake' });
     expect(awake).toBeChecked();
@@ -95,21 +110,32 @@ describe('ReadingSettings', () => {
     await user.click(awake);
     expect(awake).not.toBeChecked();
     expect(localStorage.getItem('keep-awake')).toBe('off');
-    expect(screen.queryByText('On while this page is open')).not.toBeInTheDocument();
     Reflect.deleteProperty(navigator, 'wakeLock');
   });
 
-  it('says so where the browser has no Wake Lock', async () => {
-    await renderSettings();
+  it('says so on the public link where the browser has no Wake Lock', async () => {
+    await renderSettings(false);
 
     expect(screen.getByText('Not supported in this browser')).toBeInTheDocument();
   });
 
-  it('has theme and language controls', async () => {
+  it('shows every chord row in Chords mode', async () => {
     await renderSettings();
 
-    expect(screen.getByRole('radiogroup', { name: 'Theme' })).toBeInTheDocument();
-    expect(screen.getByRole('radiogroup', { name: 'Language' })).toBeInTheDocument();
+    expect(screen.getByRole('radiogroup', { name: 'Chord style' })).toBeInTheDocument();
+    expect(screen.getByRole('switch', { name: 'Colour chords' })).toBeInTheDocument();
+    expect(screen.getByRole('switch', { name: 'Each section once' })).toBeInTheDocument();
+    expect(screen.getByRole('radiogroup', { name: 'Sharps & flats' })).toBeInTheDocument();
+  });
+
+  it('hides the chord-only rows in Lyrics mode and keeps Each section once', async () => {
+    localStorage.setItem('reader-mode', 'lyrics');
+    await renderSettings();
+
+    expect(screen.queryByRole('radiogroup', { name: 'Chord style' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('switch', { name: 'Colour chords' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('radiogroup', { name: 'Sharps & flats' })).not.toBeInTheDocument();
+    expect(screen.getByRole('switch', { name: 'Each section once' })).toBeInTheDocument();
   });
 
   it('links to Settings, except on the public link', async () => {
@@ -143,7 +169,7 @@ describe('ReadingSettings', () => {
     await user.click(screen.getByRole('button', { name: /Present to TV/ }));
     expect(onStart).toHaveBeenCalledOnce();
     expect(screen.getByRole('heading', { name: 'Second Song' })).toBeInTheDocument();
-    expect(screen.queryByRole('radiogroup', { name: 'Theme' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('switch', { name: 'Each section once' })).not.toBeInTheDocument();
 
     await user.keyboard('{ArrowLeft}{ArrowLeft}');
     await user.click(screen.getByRole('button', { name: 'Exit' }));
