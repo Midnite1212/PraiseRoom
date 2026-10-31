@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 
-import { LYRICS_COLUMN_CLASSES, nextLyricsColumns } from './lyrics-columns';
+import {
+  LYRICS_COLUMN_CLASSES,
+  LYRICS_COLUMN_GAP_CLASSES,
+  nextLyricsColumns,
+} from './lyrics-columns';
 
 describe('lyrics columns', () => {
   it('cycles 1 → 2 → 3 → 1', () => {
@@ -13,5 +17,9 @@ describe('lyrics columns', () => {
     expect(LYRICS_COLUMN_CLASSES['1']).toBe('columns-1');
     expect(LYRICS_COLUMN_CLASSES['2']).toBe('columns-2');
     expect(LYRICS_COLUMN_CLASSES['3']).toBe('columns-3');
+  });
+
+  it('keeps the gutter between columns narrow so each column stays wide', () => {
+    expect(LYRICS_COLUMN_GAP_CLASSES).toBe('wide:gap-8 gap-5');
   });
 });

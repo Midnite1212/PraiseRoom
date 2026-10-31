@@ -24,6 +24,7 @@ import { cn } from '@/lib/utils';
 import {
   DEFAULT_LYRICS_COLUMNS,
   LYRICS_COLUMN_CLASSES,
+  LYRICS_COLUMN_GAP_CLASSES,
   type LyricsColumns,
 } from './lyrics-columns';
 import { groupWordUnits } from './word-units';
@@ -159,7 +160,7 @@ export function LyricsSheet({
     // Not merged with cn(): tailwind-merge reads text-lyrics (size) and text-sheet-foreground (colour)
     // as one conflicting text-* group and drops the size.
     <div
-      className={`font-lyrics text-lyrics text-sheet-foreground wide:gap-14 gap-8 leading-[1.45] ${LYRICS_COLUMN_CLASSES[columns]}`}
+      className={`font-lyrics text-lyrics text-sheet-foreground leading-[1.45] ${LYRICS_COLUMN_GAP_CLASSES} ${LYRICS_COLUMN_CLASSES[columns]}`}
     >
       {sections.map((section) => (
         <section

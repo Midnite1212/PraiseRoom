@@ -50,7 +50,7 @@
     "allSetlists": "所有歌單",
     "yourFolders": "你的資料夾",
     "allFolders": "所有資料夾",
-    "then": "接著",
+    "upcoming": "即將舉行",
     "open": "開啟",
     "recentlyAdded": "最近新增",
     "allSongs": "所有歌曲"
@@ -224,7 +224,7 @@
       "played": "已完成",
       "showAll": "顯示全部"
     },
-    "then": "接著",
+    "upcoming": "即將舉行",
     "comingUp": "即將到來",
     "played": "已完成",
     "showPlayed": "展開",

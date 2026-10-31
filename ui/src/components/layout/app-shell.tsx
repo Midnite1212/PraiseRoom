@@ -68,11 +68,14 @@ function PageChrome({
 
   return (
     <AppBarSlotsContext value={{ left, right }}>
-      <div data-rail={rail} className="group/rail data-[rail=folded]:[--rail-w:72px]">
+      <div
+        data-rail={rail}
+        className="group/rail wide:[--frame-l:max(28px,env(safe-area-inset-left),calc((100vw-1600px)/2))] wide:[--top:max(28px,env(safe-area-inset-top))] data-[rail=folded]:[--rail-w:72px]"
+      >
         <div aria-hidden className="ground-wash pointer-events-none fixed inset-0 z-0" />
         <div
           aria-hidden
-          className="edge-top wide:h-20 compact:in-[:root:has([data-slide-over])]:hidden pointer-events-none fixed inset-x-0 top-0 z-20 h-[calc(var(--top)+64px)] opacity-0 transition-opacity duration-200 ease-out in-[.scrolled]:opacity-100 in-[:root:has([data-finder])]:hidden"
+          className="edge-top wide:h-[calc(var(--top)+var(--head-h)+16px)] compact:in-[:root:has([data-slide-over])]:hidden pointer-events-none fixed inset-x-0 top-0 z-20 h-[calc(var(--top)+64px)] opacity-0 transition-opacity duration-200 ease-out in-[.scrolled]:opacity-100 in-[:root:has([data-finder])]:hidden"
         />
         <div
           aria-hidden

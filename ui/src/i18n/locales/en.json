@@ -50,7 +50,7 @@
     "allSetlists": "All setlists",
     "yourFolders": "Your folders",
     "allFolders": "All folders",
-    "then": "Then",
+    "upcoming": "Upcoming",
     "open": "Open",
     "recentlyAdded": "Recently added",
     "allSongs": "All songs"
@@ -224,7 +224,7 @@
       "played": "Played",
       "showAll": "Show all"
     },
-    "then": "Then",
+    "upcoming": "Upcoming",
     "comingUp": "Coming up",
     "played": "Played",
     "showPlayed": "Show",

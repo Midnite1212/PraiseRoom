@@ -80,7 +80,7 @@ function SetlistsPage() {
   const sections = [
     {
       key: 'upcoming',
-      title: groups.next ? t('setlists.then') : t('setlists.comingUp'),
+      title: groups.next ? t('setlists.upcoming') : t('setlists.comingUp'),
       items: groups.upcoming,
     },
     { key: 'undated', title: t('setlists.undated'), items: groups.undated },
