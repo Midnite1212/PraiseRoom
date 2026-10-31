@@ -19,6 +19,7 @@ import { ReaderModes } from '@/features/reader/reader-modes';
 import { ReadingSettings } from '@/features/reader/reading-settings';
 import { readSongCapo, useSongCapo } from '@/features/reader/song-capo';
 import { SongReader } from '@/features/reader/song-reader';
+import { useKeyShortcuts } from '@/features/reader/use-key-shortcuts';
 import { ViewOneIcon, ViewSplitIcon } from '@/features/reader/view-icons';
 import { useIsRoomy, useIsWide } from '@/hooks/use-wide';
 import { createStoredChoice } from '@/lib/stored-choice';
@@ -43,6 +44,7 @@ import {
   useReaderLayout,
 } from './split-panes';
 import { SplitView } from './split-view';
+import { useSongSwipe } from './use-song-swipe';
 
 const LAYOUT_ICONS = { one: ViewOneIcon, split: ViewSplitIcon } as const;
 
@@ -169,6 +171,14 @@ export function MusicianView({
       return conventionalKey(chosenRoot, originalKey.isMinor);
     return parseKey(keyForSong(setlist, entry)) ?? originalKey;
   };
+  useSongSwipe((direction) => goToSong(currentIndex + 1 + direction));
+  useKeyShortcuts(
+    mode === 'chords' && song ? parseKey(song.originalKey) : null,
+    playKeyFor(currentIndex),
+    (key) => {
+      if (song) setChosenKeys((keys) => ({ ...keys, [song._id]: key.root }));
+    }
+  );
   const songs = entries.map((entry, index) => {
     const playKey = playKeyFor(index);
     const isShown = right !== null && right.index === index;

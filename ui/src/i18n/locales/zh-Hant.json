@@ -503,6 +503,7 @@
     "left": "你已離開 {{name}}。",
     "done": "完成",
     "addSetlistsDescription": "{{name}} 內每個人都可以開啟及編輯這些歌單。",
+    "createSetlist": "建立新歌單",
     "searchSetlists": "搜尋你的歌單",
     "alreadyIn": "已在此資料夾",
     "addCount_one": "加入 {{count}} 個歌單",

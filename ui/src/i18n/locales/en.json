@@ -503,6 +503,7 @@
     "left": "You left {{name}}.",
     "done": "Done",
     "addSetlistsDescription": "Everyone in {{name}} will be able to open and edit them.",
+    "createSetlist": "Create a new setlist",
     "searchSetlists": "Search your setlists",
     "alreadyIn": "Already in this folder",
     "addCount_one": "Add {{count}} setlist",
