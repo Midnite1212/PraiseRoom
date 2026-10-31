@@ -20,6 +20,7 @@ import { ReaderModes } from '@/features/reader/reader-modes';
 import { ReadingSettings } from '@/features/reader/reading-settings';
 import { useSongCapo } from '@/features/reader/song-capo';
 import { SongReader } from '@/features/reader/song-reader';
+import { useKeyShortcuts } from '@/features/reader/use-key-shortcuts';
 import { AddToSetlist } from '@/features/setlists/add-to-setlist';
 import { type Song, songQueryOptions, songSlug } from '@/features/songs/api';
 import { ensureFromSlug } from '@/lib/ensure-or-not-found';
@@ -49,6 +50,7 @@ function SongView({ song }: { song: Song }) {
   const [playKey, setPlayKey] = useState<MusicKey | null>(originalKey);
   const [capo, setCapo] = useSongCapo(song._id, song.capo);
   const auto = useAutoScroll(song._id);
+  useKeyShortcuts(mode === 'chords' ? originalKey : null, playKey, setPlayKey);
   const readingTrigger = (
     <Button
       variant="glass"

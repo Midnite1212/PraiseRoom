@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Bulletlist, Search } from 'pixelarticons/react';
+import { Link } from '@tanstack/react-router';
+import { Bulletlist, Plus, Search } from 'pixelarticons/react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
@@ -31,6 +32,7 @@ import { useSetlistNames } from '@/features/setlists/use-setlist-names';
 
 import { FOLDER_RELATED_QUERY_KEYS, setFolderSetlists } from './api';
 import { orderFolderSetlists } from './order-setlists';
+import { canEditFolder } from './permissions';
 
 const useFolderSetlistsUpdate = (folder: Folder) => {
   const { t } = useTranslation();
@@ -206,6 +208,14 @@ export function AddSetlistsDialog({
             className="placeholder:text-ink-3 h-full min-w-0 flex-1 bg-transparent outline-none"
           />
         </label>
+        {canEditFolder(session, folder) ? (
+          <Button asChild variant="secondary" className="w-full flex-none">
+            <Link to="/setlists/new" search={{ folder: folder._id }}>
+              <Plus />
+              {t('folders.createSetlist')}
+            </Link>
+          </Button>
+        ) : null}
         <div className="-mx-1 flex flex-col">
           {options.length === 0 ? (
             <p className="text-ink-2 py-4 text-center text-sm">{t('folders.noSetlistsToAdd')}</p>
