@@ -3,6 +3,7 @@ import { Monitor, Moon, Sun } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 
 import { Segmented } from '@/components/primitives/segmented';
+import { useMarkStep } from '@/features/getting-started/track';
 import { changeLanguage, LANGUAGES, type LanguageCode } from '@/i18n';
 
 const THEMES = ['light', 'system', 'dark'] as const;
@@ -32,10 +33,14 @@ export function ThemeChoice({
 }: ChoiceProps & { withIcons?: boolean }) {
   const { t } = useTranslation();
   const { theme, setTheme } = useTheme();
+  const markStep = useMarkStep();
   return (
     <Segmented
       value={isTheme(theme) ? theme : 'system'}
-      onChange={setTheme}
+      onChange={(next) => {
+        setTheme(next);
+        markStep('personalize');
+      }}
       label={t('theme.label')}
       size={size}
       fullWidth={fullWidth}
@@ -70,11 +75,15 @@ export function LanguageChoice({
   className,
 }: ChoiceProps) {
   const { t, i18n } = useTranslation();
+  const markStep = useMarkStep();
   const language = LANGUAGES.find(({ code }) => code === i18n.language)?.code ?? 'en';
   return (
     <Segmented<LanguageCode>
       value={language}
-      onChange={(code) => void changeLanguage(code)}
+      onChange={(code) => {
+        void changeLanguage(code);
+        markStep('personalize');
+      }}
       label={t('language.label')}
       size={size}
       fullWidth={fullWidth}

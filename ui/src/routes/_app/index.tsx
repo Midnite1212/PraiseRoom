@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { peopleQueryOptions } from '@/features/folders/api';
 import { FolderRow } from '@/features/folders/folder-row';
+import { GettingStartedCard } from '@/features/home/getting-started-card';
 import { NextUp } from '@/features/home/next-up';
 import { foldersQueryOptions, setlistsQueryOptions } from '@/features/setlists/api';
 import { groupSetlists } from '@/features/setlists/list';
@@ -69,6 +70,7 @@ function HomePage() {
           month: 'long',
         }).format(new Date(now))}
       />
+      <GettingStartedCard session={session} />
       <div className="roomy:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] roomy:items-start grid gap-x-10 gap-y-2">
         <div className="min-w-0">
           {next ? (

@@ -15,6 +15,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import type { Session } from '@/features/auth/session';
+import { useMarkStep } from '@/features/getting-started/track';
 
 import { duplicateSetlist, publicSetlistUrl, type SetlistSummary } from './api';
 import { canDeleteSetlist, canEditSetlist } from './permissions';
@@ -30,6 +31,7 @@ export const useSetlistActions = (session: Session, setlist: SetlistSummary) => 
   const [isFoldersOpen, setIsFoldersOpen] = useState(false);
   const remove = useDeleteSetlist();
   const queryClient = useQueryClient();
+  const markStep = useMarkStep();
   const duplicate = useMutation({
     mutationFn: () =>
       duplicateSetlist(setlist._id, t('setlists.menu.copyName', { name: setlist.name })),
@@ -46,6 +48,7 @@ export const useSetlistActions = (session: Session, setlist: SetlistSummary) => 
     try {
       await navigator.clipboard.writeText(publicSetlistUrl(setlist));
       toast.success(t('reader.linkCopied'));
+      markStep('shareLink');
     } catch {
       toast.error(t('reader.linkCopyFailed'));
     }

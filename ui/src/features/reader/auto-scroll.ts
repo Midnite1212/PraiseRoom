@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'sonner';
 
+import { useMarkStep } from '@/features/getting-started/track';
 import { useIsWide } from '@/hooks/use-wide';
 import { createStoredChoice } from '@/lib/stored-choice';
 
@@ -128,6 +129,7 @@ export function useAutoScroll(
   const isWide = useIsWide();
   const [speed] = useScrollSpeed();
   const [startedFor, setStartedFor] = useState<string | null>(null);
+  const markStep = useMarkStep();
   const running = startedFor === songKey;
 
   useEffect(() => {
@@ -154,7 +156,10 @@ export function useAutoScroll(
 
   return {
     running,
-    toggle: () => setStartedFor(running ? null : songKey),
+    toggle: () => {
+      setStartedFor(running ? null : songKey);
+      if (!running) markStep('playHandsFree');
+    },
     where: isWide ? 'topBar' : 'dock',
   };
 }
