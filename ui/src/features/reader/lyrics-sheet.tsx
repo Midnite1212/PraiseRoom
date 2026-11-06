@@ -1,23 +1,18 @@
 import type { ReactNode } from 'react';
 
 import { type ChordClass, classifyChord } from '@/features/chords/chord-class';
-import { shapeKey } from '@/features/chords/key-spelling';
 import { chordToNumberParts } from '@/features/chords/nashville';
 import { type ChordLine, hasLyrics, parseChordLyrics } from '@/features/chords/parse';
-import {
-  type MusicKey,
-  semitonesBetween,
-  simplifyChord,
-  transposeChord,
-} from '@/features/chords/theory';
+import type { MusicKey } from '@/features/chords/theory';
 import { uniqueSections } from '@/features/chords/unique-sections';
 import {
   type Accidentals,
   type ChordNotation,
   type ChordStyle,
-  chordsUseFlats,
+  createChordSpeller,
   type ReaderMode,
   type SectionRepeats,
+  styleChord,
 } from '@/features/reader/chord-display';
 import { cn } from '@/lib/utils';
 
@@ -61,10 +56,9 @@ export const createChordRenderer = (
   chordStyle: ChordStyle,
   capo: number
 ): ChordRenderer => {
-  const shape = (chord: string) => (chordStyle === 'simple' ? simplifyChord(chord) : chord);
   if (notation === 'numbers' && originalKey) {
     return (chord) => {
-      const parts = chordToNumberParts(shape(chord), originalKey);
+      const parts = chordToNumberParts(styleChord(chord, chordStyle), originalKey);
       if (!parts) return chord;
       return (
         <>
@@ -77,9 +71,7 @@ export const createChordRenderer = (
       );
     };
   }
-  const semitones = originalKey && playKey ? semitonesBetween(originalKey, playKey) - capo : 0;
-  const useFlats = chordsUseFlats(accidentals, playKey && shapeKey(playKey, capo));
-  return (chord) => transposeChord(shape(chord), semitones, useFlats);
+  return createChordSpeller(originalKey, playKey, accidentals, chordStyle, capo);
 };
 
 export function LyricLine({

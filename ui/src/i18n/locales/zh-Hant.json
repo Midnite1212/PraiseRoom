@@ -263,6 +263,17 @@
     "full": "完整",
     "simple": "簡化",
     "colourChords": "和弦上色",
+    "chordChart": {
+      "toggle": "和弦圖",
+      "hint": "此歌的結他指法",
+      "title": "使用的和弦",
+      "shape": "{{name}}，品位 {{frets}}",
+      "noDiagram": "沒有指法圖",
+      "previous": "{{name}} 的上一個指法",
+      "next": "{{name}} 的下一個指法",
+      "position": "第 {{current}} 個指法，共 {{total}} 個",
+      "loadFailed": "未能載入和弦指法。"
+    },
     "sectionsOnce": "每段只顯示一次",
     "sectionsOnceHint": "重複的段落併入第一次出現",
     "sharp": "升號",
@@ -714,6 +725,9 @@
     },
     "colourChords": {
       "hint": "一、四、五級及小和弦各有顏色"
+    },
+    "chordChart": {
+      "hint": "在歌曲旁顯示結他指法，跟隨轉調和變調夾"
     },
     "sectionsOnce": {
       "hint": "重複的副歌只顯示一次，歌曲流程列出順序"

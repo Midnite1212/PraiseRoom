@@ -72,6 +72,7 @@ function SongView({ song }: { song: Song }) {
         <>
           <WideReadingControls auto={auto} />
           <ReadingSettings
+            chordChart
             present={{
               songs: [toPresentSong(song, playKey, originalKey, capo)],
               startIndex: 0,
@@ -125,6 +126,7 @@ function SongView({ song }: { song: Song }) {
         onPlayKeyChange={setPlayKey}
         capo={capo}
         onCapoChange={setCapo}
+        chordChart
       />
     </ReaderLayout>
   );
