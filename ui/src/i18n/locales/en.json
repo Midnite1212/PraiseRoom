@@ -36,9 +36,12 @@
     "accessType": {
       "member": "Member",
       "editor": "Editor",
-      "admin": "Admin"
+      "admin": "Admin",
+      "super": "Super"
     },
-    "account": "Account"
+    "account": "Account",
+    "admin": "Admin",
+    "adminHint": "Verify songs and manage roles"
   },
   "home": {
     "greeting": "Welcome, {{name}}",
@@ -244,6 +247,7 @@
     }
   },
   "reader": {
+    "verified": "Verified",
     "setlist": "Setlist",
     "songCount_one": "{{count}} song",
     "songCount_other": "{{count}} songs",
@@ -863,6 +867,39 @@
       "failed": "Something went wrong. Please try again."
     }
   },
+  "admin": {
+    "title": "Admin",
+    "sections": "Admin sections",
+    "songs": {
+      "tab": "Songs",
+      "search": "Search songs",
+      "verified": "Verified",
+      "unverified": "Unverified",
+      "verify": "Verify",
+      "unverify": "Unverify",
+      "verifyTitle": "Mark {{title}} verified",
+      "unverifyTitle": "Mark {{title}} unverified",
+      "markedVerified": "{{title}} is verified",
+      "markedUnverified": "{{title}} is no longer verified",
+      "failed": "Couldn’t update the song. Please try again.",
+      "notFound": "That song no longer exists.",
+      "empty": "No songs found",
+      "loadFailed": "Couldn’t load songs."
+    },
+    "members": {
+      "tab": "Members",
+      "search": "Search members",
+      "role": "Role for {{name}}",
+      "you": "You",
+      "supers": "Supers: {{count}} / {{max}}",
+      "changed": "{{name}} is now {{role}}",
+      "failed": "Couldn’t change the role. Please try again.",
+      "forbidden": "You can’t change this member’s role.",
+      "notFound": "That member no longer exists.",
+      "empty": "No members found",
+      "loadFailed": "Couldn’t load members."
+    }
+  },
   "account": {
     "title": "Account",
     "loadFailed": "Couldn’t load this. Reload the page to try again.",
@@ -919,7 +956,8 @@
       "title": "What you can do",
       "member": "Browse songs, and make setlists and folders. An admin can give you song editing.",
       "editor": "Add and edit songs, and make setlists and folders. Only an admin can change your role.",
-      "admin": "Everything an editor can do, plus manage any setlist or folder."
+      "admin": "Everything an editor can do, plus manage any setlist or folder.",
+      "super": "Everything an admin can do, plus change other members’ roles."
     },
     "delete": {
       "title": "Delete account",

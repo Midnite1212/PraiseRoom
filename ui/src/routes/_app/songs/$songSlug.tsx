@@ -121,6 +121,7 @@ function SongView({ song }: { song: Song }) {
     >
       <SongReader
         song={song}
+        isVerified={song.isVerified}
         playKey={playKey}
         onPlayKeyChange={setPlayKey}
         capo={capo}

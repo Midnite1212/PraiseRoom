@@ -46,7 +46,7 @@ export const SONG_FIELDS = [
 
 export type SongField = (typeof SONG_FIELDS)[number];
 export type SongFields = Partial<Record<SongField, unknown>>;
-export type SongSortField = 'title' | 'code' | 'key' | 'tempo' | 'recent';
+export type SongSortField = 'title' | 'code' | 'key' | 'tempo' | 'recent' | 'verified';
 
 export type SongSearch = {
   keyword: string;
@@ -217,6 +217,8 @@ const searchOrder = ({ sortBy, descending }: SongSearch): SQL[] => {
       return [direction(keyRank()), asc(songs.originalKey), byTitle, asc(songs.id)];
     case 'tempo':
       return [direction(tempoRank()), byTitle, asc(songs.id)];
+    case 'verified':
+      return [descending ? desc(songs.isVerified) : asc(songs.isVerified), byTitle, asc(songs.id)];
     default:
       return [descending ? sql`${songs.title} collate "C" desc` : byTitle, asc(songs.id)];
   }
@@ -321,6 +323,15 @@ export const songRepository = {
         .returning();
       return updated;
     });
+    return row ? toSongRecord(row) : null;
+  },
+
+  async setVerified(id: string, isVerified: boolean): Promise<SongRecord | null> {
+    const [row] = await getDb()
+      .update(songs)
+      .set({ isVerified, updatedAt: new Date() })
+      .where(isLiveSong(id))
+      .returning();
     return row ? toSongRecord(row) : null;
   },
 

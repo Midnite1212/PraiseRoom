@@ -36,9 +36,12 @@
     "accessType": {
       "member": "成員",
       "editor": "編輯",
-      "admin": "管理員"
+      "admin": "管理員",
+      "super": "超級管理員"
     },
-    "account": "帳戶"
+    "account": "帳戶",
+    "admin": "管理",
+    "adminHint": "核實詩歌及管理角色"
   },
   "home": {
     "greeting": "歡迎，{{name}}",
@@ -244,6 +247,7 @@
     }
   },
   "reader": {
+    "verified": "已核實",
     "setlist": "歌單",
     "songCount_one": "{{count}} 首歌曲",
     "songCount_other": "{{count}} 首歌曲",
@@ -860,6 +864,39 @@
       "failed": "發生錯誤，請再試一次。"
     }
   },
+  "admin": {
+    "title": "管理",
+    "sections": "管理分頁",
+    "songs": {
+      "tab": "詩歌",
+      "search": "搜尋詩歌",
+      "verified": "已核實",
+      "unverified": "未核實",
+      "verify": "核實",
+      "unverify": "取消核實",
+      "verifyTitle": "將「{{title}}」標為已核實",
+      "unverifyTitle": "將「{{title}}」標為未核實",
+      "markedVerified": "「{{title}}」已核實",
+      "markedUnverified": "「{{title}}」已取消核實",
+      "failed": "未能更新詩歌，請再試一次。",
+      "notFound": "這首詩歌已不存在。",
+      "empty": "找不到詩歌",
+      "loadFailed": "未能載入詩歌。"
+    },
+    "members": {
+      "tab": "成員",
+      "search": "搜尋成員",
+      "role": "{{name}} 的角色",
+      "you": "你",
+      "supers": "超級管理員：{{count}} / {{max}}",
+      "changed": "{{name}} 現在是{{role}}",
+      "failed": "未能更改角色，請再試一次。",
+      "forbidden": "你不能更改這位成員的角色。",
+      "notFound": "這位成員已不存在。",
+      "empty": "找不到成員",
+      "loadFailed": "未能載入成員。"
+    }
+  },
   "account": {
     "title": "帳戶",
     "loadFailed": "無法載入，請重新整理頁面再試。",
@@ -916,7 +953,8 @@
       "title": "你可以做什麼",
       "member": "瀏覽詩歌，並建立歌單和資料夾。管理員可以讓你編輯詩歌。",
       "editor": "新增和編輯詩歌，並建立歌單和資料夾。只有管理員可以更改你的角色。",
-      "admin": "編輯者能做的一切，另可管理任何歌單或資料夾。"
+      "admin": "編輯者能做的一切，另可管理任何歌單或資料夾。",
+      "super": "管理員能做的一切，另可更改其他成員的角色。"
     },
     "delete": {
       "title": "刪除帳戶",

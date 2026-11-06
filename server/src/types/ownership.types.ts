@@ -19,4 +19,6 @@ type OwnershipRecord = RecordFields & {
 
 type OwnershipSummary = Pick<OwnershipRecord, '_id' | 'userId' | 'fullName' | 'groupIds'>;
 
-export { OwnershipEntry, OwnershipRecord, OwnershipSummary, StoredOwnershipEntry };
+type MemberAccess = Pick<OwnershipRecord, 'userId' | 'fullName' | 'accessType'>;
+
+export { MemberAccess, OwnershipEntry, OwnershipRecord, OwnershipSummary, StoredOwnershipEntry };
