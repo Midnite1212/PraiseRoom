@@ -34,6 +34,8 @@ describe('folder permissions', () => {
     expect(canEditFolder(session(['folder-a']), folder('someone'))).toBe(true);
     expect(canEditFolder(session([]), folder('user-1'))).toBe(true);
     expect(canEditFolder(session([], 'admin'), folder('someone'))).toBe(true);
+    expect(canEditFolder(session([], 'super'), folder('someone'))).toBe(true);
+    expect(canEditFolder(session([], 'editor'), folder('someone'))).toBe(false);
     expect(canEditFolder(session([]), folder('someone'))).toBe(false);
   });
 
@@ -42,6 +44,7 @@ describe('folder permissions', () => {
     expect(canDeleteFolder(session([]), folder('user-1'))).toBe(true);
     expect(canDeleteFolder(session(['folder-a']), folder(null))).toBe(true);
     expect(canDeleteFolder(session([], 'admin'), folder('someone'))).toBe(true);
+    expect(canDeleteFolder(session([], 'super'), folder('someone'))).toBe(true);
   });
 
   it('finds the members of a folder', () => {

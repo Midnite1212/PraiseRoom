@@ -1,11 +1,15 @@
-export const ACCESS_TYPES = ['member', 'editor', 'admin'] as const;
+export const ACCESS_TYPES = ['member', 'editor', 'admin', 'super'] as const;
 export type AccessType = (typeof ACCESS_TYPES)[number];
 export const DEFAULT_ACCESS_TYPE: AccessType = 'member';
+
+// Super is granted only outside the app, so the API can never assign it.
+export const ASSIGNABLE_ACCESS_TYPES = ['member', 'editor', 'admin'] as const;
+export type AssignableAccessType = (typeof ASSIGNABLE_ACCESS_TYPES)[number];
 
 export type PermissionConfig =
   | {
       requiresAuth: true;
-      allowedAccessTypes?: AccessType[];
+      allowedAccessTypes?: readonly AccessType[];
       description?: string;
     }
   | {
@@ -15,7 +19,9 @@ export type PermissionConfig =
     };
 
 // Only the access types listed can use a route; there is no hierarchy.
-const SONG_WRITERS: AccessType[] = ['editor', 'admin'];
+export const ADMIN_ACCESS_TYPES: readonly AccessType[] = ['admin', 'super'];
+const SONG_WRITERS: readonly AccessType[] = ['editor', ...ADMIN_ACCESS_TYPES];
+const SUPERS: readonly AccessType[] = ['super'];
 
 export const ROUTE_PERMISSIONS: Record<string, PermissionConfig> = {
   // Ownership routes
@@ -38,6 +44,16 @@ export const ROUTE_PERMISSIONS: Record<string, PermissionConfig> = {
   'PUT /api/ownerships/delete-account': {
     requiresAuth: true,
     description: "Delete the caller's setlists, folders and ownership record",
+  },
+  'GET /api/ownerships/members': {
+    requiresAuth: true,
+    allowedAccessTypes: SUPERS,
+    description: 'List members with their access types',
+  },
+  'PUT /api/ownerships/access-type': {
+    requiresAuth: true,
+    allowedAccessTypes: SUPERS,
+    description: "Set another member's access type",
   },
 
   // Group routes
@@ -116,6 +132,11 @@ export const ROUTE_PERMISSIONS: Record<string, PermissionConfig> = {
     requiresAuth: true,
     allowedAccessTypes: SONG_WRITERS,
     description: 'Delete song',
+  },
+  'PUT /api/songs/verify': {
+    requiresAuth: true,
+    allowedAccessTypes: ADMIN_ACCESS_TYPES,
+    description: 'Mark a song verified or unverified',
   },
   'GET /api/songs/search': {
     requiresAuth: false,

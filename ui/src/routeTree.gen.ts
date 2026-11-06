@@ -18,6 +18,7 @@ import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
 import { Route as AppAccountIndexRouteImport } from './routes/_app/account/index'
 import { Route as AppAccountPasswordRouteImport } from './routes/_app/account/password'
+import { Route as AppAdminIndexRouteImport } from './routes/_app/admin/index'
 import { Route as AppFoldersIndexRouteImport } from './routes/_app/folders/index'
 import { Route as AppFoldersFolderSlugRouteImport } from './routes/_app/folders/$folderSlug'
 import { Route as AppJoinTokenRouteImport } from './routes/_app/join/$token'
@@ -73,6 +74,11 @@ const AppAccountIndexRoute = AppAccountIndexRouteImport.update({
 const AppAccountPasswordRoute = AppAccountPasswordRouteImport.update({
   id: '/account/password',
   path: '/account/password',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAdminIndexRoute = AppAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppFoldersIndexRoute = AppFoldersIndexRouteImport.update({
@@ -152,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/songs/$songSlug': typeof AppSongsSongSlugRoute
   '/setlist/view/$setlistSlug': typeof SetlistViewSetlistSlugRoute
   '/account/': typeof AppAccountIndexRoute
+  '/admin/': typeof AppAdminIndexRoute
   '/folders/': typeof AppFoldersIndexRoute
   '/setlists/': typeof AppSetlistsIndexRoute
   '/settings/': typeof AppSettingsIndexRoute
@@ -174,6 +181,7 @@ export interface FileRoutesByTo {
   '/songs/$songSlug': typeof AppSongsSongSlugRoute
   '/setlist/view/$setlistSlug': typeof SetlistViewSetlistSlugRoute
   '/account': typeof AppAccountIndexRoute
+  '/admin': typeof AppAdminIndexRoute
   '/folders': typeof AppFoldersIndexRoute
   '/setlists': typeof AppSetlistsIndexRoute
   '/settings': typeof AppSettingsIndexRoute
@@ -198,6 +206,7 @@ export interface FileRoutesById {
   '/_app/songs/$songSlug': typeof AppSongsSongSlugRoute
   '/setlist/view/$setlistSlug': typeof SetlistViewSetlistSlugRoute
   '/_app/account/': typeof AppAccountIndexRoute
+  '/_app/admin/': typeof AppAdminIndexRoute
   '/_app/folders/': typeof AppFoldersIndexRoute
   '/_app/setlists/': typeof AppSetlistsIndexRoute
   '/_app/settings/': typeof AppSettingsIndexRoute
@@ -222,6 +231,7 @@ export interface FileRouteTypes {
     | '/songs/$songSlug'
     | '/setlist/view/$setlistSlug'
     | '/account/'
+    | '/admin/'
     | '/folders/'
     | '/setlists/'
     | '/settings/'
@@ -244,6 +254,7 @@ export interface FileRouteTypes {
     | '/songs/$songSlug'
     | '/setlist/view/$setlistSlug'
     | '/account'
+    | '/admin'
     | '/folders'
     | '/setlists'
     | '/settings'
@@ -267,6 +278,7 @@ export interface FileRouteTypes {
     | '/_app/songs/$songSlug'
     | '/setlist/view/$setlistSlug'
     | '/_app/account/'
+    | '/_app/admin/'
     | '/_app/folders/'
     | '/_app/setlists/'
     | '/_app/settings/'
@@ -348,6 +360,13 @@ declare module '@tanstack/react-router' {
       path: '/account/password'
       fullPath: '/account/password'
       preLoaderRoute: typeof AppAccountPasswordRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/admin/': {
+      id: '/_app/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AppAdminIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/folders/': {
@@ -446,6 +465,7 @@ interface AppRouteChildren {
   AppSetlistsNewRoute: typeof AppSetlistsNewRoute
   AppSongsSongSlugRoute: typeof AppSongsSongSlugRoute
   AppAccountIndexRoute: typeof AppAccountIndexRoute
+  AppAdminIndexRoute: typeof AppAdminIndexRoute
   AppFoldersIndexRoute: typeof AppFoldersIndexRoute
   AppSetlistsIndexRoute: typeof AppSetlistsIndexRoute
   AppSettingsIndexRoute: typeof AppSettingsIndexRoute
@@ -463,6 +483,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppSetlistsNewRoute: AppSetlistsNewRoute,
   AppSongsSongSlugRoute: AppSongsSongSlugRoute,
   AppAccountIndexRoute: AppAccountIndexRoute,
+  AppAdminIndexRoute: AppAdminIndexRoute,
   AppFoldersIndexRoute: AppFoldersIndexRoute,
   AppSetlistsIndexRoute: AppSetlistsIndexRoute,
   AppSettingsIndexRoute: AppSettingsIndexRoute,

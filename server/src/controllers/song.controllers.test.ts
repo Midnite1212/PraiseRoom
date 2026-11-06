@@ -5,6 +5,7 @@ import { InvalidInputError } from '../db/cast';
 import { SongSearch, songRepository } from '../db/repositories/song.repository';
 import { SONG_THEMES } from '../db/schema';
 import { FakeRequestInit, callHandler, createRequest, createResponse } from '../testing/http';
+import { TokenUser } from '../utils/verify-jwt';
 import {
   createSong,
   deleteSong,
@@ -15,6 +16,7 @@ import {
   searchSongs,
   suggestSongThemes,
   updateSong,
+  verifySong,
 } from './song.controllers';
 
 const SONG_ID = '507f1f77bcf86cd799439031';
@@ -254,14 +256,14 @@ describe('song controllers', () => {
       });
     });
 
-    it('sorts by code, key, or tempo and falls back to title for other values', async () => {
+    it('sorts by code, key, tempo, or verified and falls back to title for other values', async () => {
       const search = stubSearch();
-      for (const sortBy of ['code', 'key', 'tempo', 'artist']) {
+      for (const sortBy of ['code', 'key', 'tempo', 'verified', 'artist']) {
         await call(searchSongs, { query: { sortBy } });
       }
       assert.deepEqual(
         search.mock.calls.map((c) => c.arguments[0]?.sortBy),
-        ['code', 'key', 'tempo', 'title']
+        ['code', 'key', 'tempo', 'verified', 'title']
       );
     });
 
@@ -468,6 +470,86 @@ describe('song controllers', () => {
     it('returns 404 when no live song matches', async () => {
       mock.method(songRepository, 'softDelete', async () => false);
       const res = await call(deleteSong, { body: { id: SONG_ID } });
+      assert.equal(res.statusCode, 404);
+      assert.equal(res.body, 'Song not found');
+    });
+  });
+
+  describe('verifySong', () => {
+    const user = (accessType: string): TokenUser => ({ accessType, id: 'user-1' });
+    const mockSetVerified = (song: unknown) =>
+      mock.method(songRepository, 'setVerified', async () => song);
+
+    it('rejects a request without req.user', async () => {
+      const setVerified = mockSetVerified({ _id: SONG_ID });
+      const res = await call(verifySong, { body: { id: SONG_ID, isVerified: true } });
+      assert.equal(res.statusCode, 401);
+      assert.equal(setVerified.mock.callCount(), 0);
+    });
+
+    it('forbids members and editors', async () => {
+      const setVerified = mockSetVerified({ _id: SONG_ID });
+      for (const accessType of ['member', 'editor', 'ministry', '']) {
+        const res = await call(verifySong, {
+          body: { id: SONG_ID, isVerified: true },
+          user: user(accessType),
+        });
+        assert.equal(res.statusCode, 403, accessType);
+        assert.deepEqual(res.body, { error: 'Access denied', message: 'Forbidden' });
+      }
+      assert.equal(setVerified.mock.callCount(), 0);
+    });
+
+    it('lets an admin and a super set the flag either way', async () => {
+      const song = { _id: SONG_ID, isVerified: true };
+      const setVerified = mockSetVerified(song);
+      for (const [accessType, isVerified] of [
+        ['admin', true],
+        ['super', false],
+      ] as const) {
+        const res = await call(verifySong, {
+          body: { id: SONG_ID, isVerified },
+          user: user(accessType),
+        });
+        assert.equal(res.statusCode, 200, accessType);
+        assert.equal(res.body, song);
+      }
+      assert.deepEqual(
+        setVerified.mock.calls.map((c) => c.arguments),
+        [
+          [SONG_ID, true],
+          [SONG_ID, false],
+        ]
+      );
+    });
+
+    it('rejects an invalid id or a non-boolean flag before writing', async () => {
+      const setVerified = mockSetVerified({ _id: SONG_ID });
+      for (const id of [undefined, 'bad', [SONG_ID], { $ne: null }]) {
+        const res = await call(verifySong, {
+          body: { id, isVerified: true },
+          user: user('admin'),
+        });
+        assert.equal(res.statusCode, 400, JSON.stringify(id));
+        assert.equal(res.body, 'Invalid song id');
+      }
+      for (const isVerified of [undefined, 'true', 1, null]) {
+        const res = await call(verifySong, {
+          body: { id: SONG_ID, isVerified },
+          user: user('admin'),
+        });
+        assert.equal(res.statusCode, 400, JSON.stringify(isVerified));
+        assert.equal(res.body, 'Missing required fields');
+      }
+      assert.equal(setVerified.mock.callCount(), 0);
+    });
+
+    it('returns 404 when no live song matches', async () => {
+      mockSetVerified(null);
+      const res = await call(verifySong, {
+        body: { id: SONG_ID, isVerified: true },
+        user: user('super'),
+      });
       assert.equal(res.statusCode, 404);
       assert.equal(res.body, 'Song not found');
     });

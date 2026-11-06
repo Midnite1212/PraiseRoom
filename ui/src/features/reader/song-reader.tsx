@@ -1,7 +1,8 @@
-import { FileText } from 'pixelarticons/react';
+import { Check, FileText } from 'pixelarticons/react';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { Tag } from '@/components/primitives/tag';
 import { type MusicKey, parseKey } from '@/features/chords/theory';
 import { useIsWide } from '@/hooks/use-wide';
 import { cn } from '@/lib/utils';
@@ -34,6 +35,7 @@ type SongReaderProps = {
   pane?: 'left' | 'right';
   // Overrides the saved choice; the public setlist link always shows the full flow.
   repeats?: SectionRepeats;
+  isVerified?: boolean;
   children?: ReactNode;
 };
 
@@ -48,6 +50,7 @@ export function SongReader({
   note = '',
   pane,
   repeats,
+  isVerified = false,
   children,
 }: SongReaderProps) {
   const { t } = useTranslation();
@@ -84,7 +87,15 @@ export function SongReader({
           </span>
         </div>
         <div className="mt-2 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
-          <span className="text-ink-2 min-w-0">{song.artist}</span>
+          <span className="text-ink-2 flex min-w-0 flex-wrap items-center gap-2">
+            {song.artist}
+            {isVerified ? (
+              <Tag>
+                <Check />
+                {t('reader.verified')}
+              </Tag>
+            ) : null}
+          </span>
           <div className="flex items-center gap-1.5">
             {showChordControls && isWide ? (
               <KeyPicker

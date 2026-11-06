@@ -1,0 +1,2 @@
+ALTER TABLE "ownerships" DROP CONSTRAINT "ownerships_access_type_known";--> statement-breakpoint
+ALTER TABLE "ownerships" ADD CONSTRAINT "ownerships_access_type_known" CHECK ("ownerships"."access_type" in ('member', 'editor', 'admin', 'super'));
