@@ -2,6 +2,56 @@
   "app": {
     "name": "Praise Room"
   },
+  "gettingStarted": {
+    "title": "新手入門",
+    "intro": "剛開始可以先試試這幾件事。做過之後會自動打勾。",
+    "progress": "{{done}}/{{total}}",
+    "progressLabel": "已完成 {{done}} 項，共 {{total}} 項",
+    "done": "已完成",
+    "toDo": "未完成",
+    "stepLabel": "{{title}}（{{status}}）。{{description}}",
+    "hide": "隱藏新手入門",
+    "hidden": "已從首頁隱藏。可在「帳戶」重新顯示。",
+    "showOnHome": "在首頁顯示",
+    "shownOnHome": "新手入門已回到首頁",
+    "finishedTitle": "一切就緒",
+    "finishedBody": "清單上的事你都試過了。想再看的話，它會留在「帳戶」頁。",
+    "close": "關閉",
+    "steps": {
+      "openSong": {
+        "title": "打開一首歌",
+        "description": "在「歌曲」找一首歌，打開它的和弦譜。"
+      },
+      "changeKey": {
+        "title": "轉換歌曲的調",
+        "description": "在打開的歌曲中點一下調，選另一個調，和弦會跟著轉。"
+      },
+      "personalize": {
+        "title": "選擇主題和語言",
+        "description": "在「設定」選淺色或深色、English 或繁體中文。"
+      },
+      "createSetlist": {
+        "title": "建立歌單",
+        "description": "在「歌單」排好下一次聚會要唱的歌。"
+      },
+      "playHandsFree": {
+        "title": "免手動彈奏",
+        "description": "開始自動捲動，或在閱讀設定中投放到電視。"
+      },
+      "shareLink": {
+        "title": "分享歌單",
+        "description": "複製公開連結，讓樂隊一起跟著看。"
+      },
+      "joinFolder": {
+        "title": "加入或建立資料夾",
+        "description": "資料夾讓你和團隊共用歌單。"
+      },
+      "capoOrNumbers": {
+        "title": "試試變調夾或數字和弦",
+        "description": "在調的面板中設定變調夾，或把和弦顯示為數字。"
+      }
+    }
+  },
   "nav": {
     "home": "首頁",
     "songs": "歌曲",

@@ -6,6 +6,7 @@ import { Tray } from '@/components/primitives/tray';
 import { Button } from '@/components/ui/button';
 import { conventionalKey, shapeKey, signedSemitones } from '@/features/chords/key-spelling';
 import { keyLabel, type MusicKey } from '@/features/chords/theory';
+import { useMarkStep } from '@/features/getting-started/track';
 import { cn } from '@/lib/utils';
 
 import { MAX_CAPO, useChordNotation } from './chord-display';
@@ -35,13 +36,26 @@ export function KeyPicker({
 }: KeyPickerProps) {
   const { t } = useTranslation();
   const [notation, setNotation] = useChordNotation();
+  const markStep = useMarkStep();
   const fret = capo;
   const offset = signedSemitones(originalKey, playKey);
   const options = Array.from({ length: 12 }, (_, root) =>
     conventionalKey(root, originalKey.isMinor)
   );
+  const pick = (key: MusicKey) => {
+    onChange(key);
+    markStep('changeKey');
+  };
   const step = (semitones: number) =>
-    onChange(conventionalKey(playKey.root + semitones, originalKey.isMinor));
+    pick(conventionalKey(playKey.root + semitones, originalKey.isMinor));
+  const changeNotation = (next: typeof notation) => {
+    setNotation(next);
+    if (next === 'numbers') markStep('capoOrNumbers');
+  };
+  const changeCapo = (next: number) => {
+    onCapoChange?.(next);
+    markStep('capoOrNumbers');
+  };
 
   return (
     <Tray
@@ -119,7 +133,7 @@ export function KeyPicker({
               aria-label={
                 isOriginal ? `${keyLabel(option)}, ${t('reader.original')}` : keyLabel(option)
               }
-              onClick={() => onChange(option)}
+              onClick={() => pick(option)}
               className={cn(
                 'bg-fill-hover hover:bg-fill-press aria-pressed:bg-chord aria-pressed:text-ground relative h-10 rounded-xl font-mono font-semibold transition-colors',
                 isOriginal &&
@@ -135,7 +149,7 @@ export function KeyPicker({
         <span className="text-ink-2 text-[0.8125rem] font-semibold">
           {t('reader.showChordsAs')}
         </span>
-        <ChordNotationToggle notation={notation} onChange={setNotation} />
+        <ChordNotationToggle notation={notation} onChange={changeNotation} />
       </div>
       {onCapoChange ? (
         <div className="mt-3 flex items-center justify-between gap-2.5">
@@ -153,8 +167,8 @@ export function KeyPicker({
             increaseLabel={t('reader.capoUp')}
             canDecrease={fret > 0}
             canIncrease={fret < MAX_CAPO}
-            onDecrease={() => onCapoChange(fret - 1)}
-            onIncrease={() => onCapoChange(fret + 1)}
+            onDecrease={() => changeCapo(fret - 1)}
+            onIncrease={() => changeCapo(fret + 1)}
           />
         </div>
       ) : null}

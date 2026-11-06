@@ -7,6 +7,7 @@ import { Panel } from '@/components/primitives/panel';
 import { Segmented } from '@/components/primitives/segmented';
 import { Tray } from '@/components/primitives/tray';
 import { Button } from '@/components/ui/button';
+import { useMarkStep } from '@/features/getting-started/track';
 import {
   CHORD_NOTATIONS,
   type ChordNotation,
@@ -216,11 +217,13 @@ export function ReaderPreferenceControls() {
 
 export function ShareButton({ link }: { link: string | null | undefined }) {
   const { t } = useTranslation();
+  const markStep = useMarkStep();
   if (!link) return null;
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(link);
       toast.success(t('reader.linkCopied'));
+      markStep('shareLink');
     } catch {
       toast.error(t('reader.linkCopyFailed'));
     }

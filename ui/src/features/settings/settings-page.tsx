@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import type { Session } from '@/features/auth/session';
 import { useSignOut } from '@/features/auth/use-sign-out';
+import { useMarkStep } from '@/features/getting-started/track';
 import { AUTO_SCROLL_SPEEDS, useScrollSpeed } from '@/features/reader/auto-scroll';
 import { TempoIcon } from '@/features/reader/auto-scroll-controls';
 import {
@@ -148,6 +149,7 @@ function SongsGroup() {
   const { t } = useTranslation();
   const [lyricsSize, setLyricsSize] = useLyricsSize();
   const [notation, setNotation] = useChordNotation();
+  const markStep = useMarkStep();
   const [chordStyle, setChordStyle] = useChordStyle();
   const [accidentals, setAccidentals] = useAccidentals();
   const [colourChords, setColourChords] = useColourChords();
@@ -185,7 +187,10 @@ function SongsGroup() {
         <Segmented<ChordNotation>
           mono
           value={notation}
-          onChange={setNotation}
+          onChange={(next) => {
+            setNotation(next);
+            if (next === 'numbers') markStep('capoOrNumbers');
+          }}
           label={t('reader.showChordsAs')}
           className={STRETCH}
           options={[
