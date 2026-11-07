@@ -269,6 +269,8 @@
       "title": "使用的和弦",
       "shape": "{{name}}，品位 {{frets}}",
       "noDiagram": "沒有指法圖",
+      "hide": "隱藏",
+      "show": "顯示",
       "previous": "{{name}} 的上一個指法",
       "next": "{{name}} 的下一個指法",
       "position": "第 {{current}} 個指法，共 {{total}} 個",

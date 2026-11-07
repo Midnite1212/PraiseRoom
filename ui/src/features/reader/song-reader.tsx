@@ -71,15 +71,16 @@ export function SongReader({
   const showChordControls = mode === 'chords' && originalKey && playKey;
   const titleId = pane === 'right' ? 'song-title-right' : 'song-title';
   const sectionRepeats = repeats ?? savedRepeats;
-  const [chartChoice] = useChordChart();
+  const [chartChoice, setChartChoice] = useChordChart();
   const chords =
-    chordChart && mode === 'chords' && chartChoice === 'on'
+    chordChart && mode === 'chords'
       ? chartChords(
           song.chordLyrics,
           createChordSpeller(originalKey, playKey, accidentals, chordStyle, capo)
         )
       : [];
-  const hasChart = chords.length > 0;
+  const offersChart = chords.length > 0;
+  const showsChart = offersChart && chartChoice === 'on';
 
   return (
     <article
@@ -87,11 +88,11 @@ export function SongReader({
       aria-labelledby={titleId}
       className={cn(
         'min-w-0',
-        hasChart &&
+        showsChart &&
           'roomy:grid roomy:grid-cols-[minmax(0,1fr)_216px] roomy:grid-rows-[auto_1fr] roomy:gap-x-10'
       )}
     >
-      <header className={cn('mb-[18px]', hasChart && 'roomy:col-start-1')}>
+      <header className={cn('mb-[18px]', showsChart && 'roomy:col-start-1')}>
         <div
           className={cn(
             'flex items-start gap-0.5 text-[clamp(1.75rem,1.2rem+2.2vw,2.5rem)] leading-[1.08] font-bold tracking-[-0.03em]',
@@ -130,14 +131,16 @@ export function SongReader({
         ) : null}
       </header>
 
-      {hasChart ? (
+      {offersChart ? (
         <ChordChart
           chords={chords}
-          className="roomy:col-start-2 roomy:row-span-2 roomy:row-start-1"
+          open={showsChart}
+          onOpenChange={(open) => setChartChoice(open ? 'on' : 'off')}
+          className={cn(showsChart && 'roomy:col-start-2 roomy:row-span-2 roomy:row-start-1')}
         />
       ) : null}
 
-      <div className={cn('min-w-0', hasChart && 'roomy:col-start-1 roomy:row-start-2')}>
+      <div className={cn('min-w-0', showsChart && 'roomy:col-start-1 roomy:row-start-2')}>
         {song.chordLyrics.trim() === '' ? (
           <p className="text-ink-2">{t('reader.noLyrics')}</p>
         ) : (
