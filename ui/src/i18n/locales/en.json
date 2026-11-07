@@ -270,6 +270,8 @@
       "title": "Chords used",
       "shape": "{{name}}, frets {{frets}}",
       "noDiagram": "No diagram",
+      "hide": "Hide",
+      "show": "Show",
       "previous": "Previous shape for {{name}}",
       "next": "Next shape for {{name}}",
       "position": "Shape {{current}} of {{total}}",

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { ChevronLeft, ChevronRight } from 'pixelarticons/react';
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from 'pixelarticons/react';
 import { useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -77,37 +77,69 @@ export function ChordShapeCard({ name, shapes }: { name: string; shapes: ChordSh
 
 // The chords a song uses as guitar shapes: a sticky column beside the lyrics on roomy screens, a
 // strip that scrolls sideways under the song's header everywhere else.
-export function ChordChart({ chords, className }: { chords: string[]; className?: string }) {
+export function ChordChart({
+  chords,
+  open,
+  onOpenChange,
+  className,
+}: {
+  chords: string[];
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  className?: string;
+}) {
   const { t } = useTranslation();
   const headingId = useId();
-  const { data: db, isError } = useQuery(guitarChordsQueryOptions);
+  const listId = useId();
+  const { data: db, isError } = useQuery({ ...guitarChordsQueryOptions, enabled: open });
 
   return (
     <aside
       aria-labelledby={headingId}
       className={cn(
-        'roomy:sticky roomy:top-[calc(var(--top)+var(--top-h)+var(--bar-h)+16px)] roomy:mb-0 roomy:max-h-[calc(100svh-var(--top)-var(--top-h)-var(--bar-h)-32px)] roomy:self-start roomy:overflow-y-auto mb-6 min-w-0',
+        'min-w-0',
+        open
+          ? 'roomy:sticky roomy:top-[calc(var(--top)+var(--top-h)+var(--bar-h)+16px)] roomy:mb-0 roomy:max-h-[calc(100svh-var(--top)-var(--top-h)-var(--bar-h)-32px)] roomy:self-start roomy:overflow-y-auto mb-6'
+          : 'mb-4',
         className
       )}
     >
-      <h2
-        id={headingId}
-        className="text-ink-3 mb-2 font-mono text-xs leading-none font-bold tracking-[0.12em] uppercase"
-      >
-        {t('reader.chordChart.title')}
-      </h2>
-      {isError ? (
+      <div className="mb-2 flex h-7 items-center justify-between gap-2">
+        <h2
+          id={headingId}
+          className="text-ink-3 font-mono text-xs leading-none font-bold tracking-[0.12em] uppercase"
+        >
+          {t('reader.chordChart.title')}
+        </h2>
+        <Button
+          variant="ghost"
+          size="xs"
+          aria-expanded={open}
+          aria-controls={listId}
+          onClick={() => onOpenChange(!open)}
+        >
+          {t(open ? 'reader.chordChart.hide' : 'reader.chordChart.show')}
+          {open ? <ChevronUp /> : <ChevronDown />}
+        </Button>
+      </div>
+      {open && isError ? (
         <p className="text-ink-3 mb-2 text-sm">{t('reader.chordChart.loadFailed')}</p>
       ) : null}
-      <ul className="roomy:mx-0 roomy:grid roomy:grid-cols-2 roomy:overflow-visible roomy:px-0 roomy:pb-0 -mx-[18px] flex snap-x gap-2 overflow-x-auto px-[18px] pb-1">
-        {chords.map((name) => (
-          <ChordShapeCard
-            key={name}
-            name={name}
-            shapes={db ? findChordShapes(db, name) : isError ? [] : null}
-          />
-        ))}
-      </ul>
+      {open ? (
+        // `relative` keeps the cards' sr-only labels inside the scroll box; otherwise they widen the page.
+        <ul
+          id={listId}
+          className="roomy:mx-0 roomy:grid roomy:grid-cols-2 roomy:overflow-visible roomy:px-0 roomy:pb-0 relative -mx-[18px] flex snap-x gap-2 overflow-x-auto px-[18px] pb-1"
+        >
+          {chords.map((name) => (
+            <ChordShapeCard
+              key={name}
+              name={name}
+              shapes={db ? findChordShapes(db, name) : isError ? [] : null}
+            />
+          ))}
+        </ul>
+      ) : null}
     </aside>
   );
 }

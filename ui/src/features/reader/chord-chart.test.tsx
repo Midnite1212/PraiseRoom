@@ -1,10 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import type { ChordShape } from '@/features/chords/chord-shapes';
+import { renderWithQueryAndRouter } from '@/test/render-with-router';
 
-import { ChordShapeCard } from './chord-chart';
+import { ChordChart, ChordShapeCard } from './chord-chart';
 
 const OPEN_G: ChordShape = {
   frets: [3, 2, 0, 0, 0, 3],
@@ -52,5 +53,41 @@ describe('ChordShapeCard', () => {
     renderCard([]);
     expect(screen.getByText('No diagram')).toBeInTheDocument();
     expect(screen.queryByTitle(/frets/)).not.toBeInTheDocument();
+  });
+});
+
+describe('ChordChart', () => {
+  it('lists the chords with a Hide button when open', async () => {
+    renderWithQueryAndRouter(
+      <ChordChart chords={['G', 'D']} open onOpenChange={vi.fn<(open: boolean) => void>()} />
+    );
+    const toggle = await screen.findByRole('button', { name: 'Hide' });
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByRole('list')).toBeInTheDocument();
+    expect(screen.getByText('G')).toBeInTheDocument();
+    expect(screen.getByText('D')).toBeInTheDocument();
+  });
+
+  it('collapses to the header with a Show button', async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn<(open: boolean) => void>();
+    renderWithQueryAndRouter(
+      <ChordChart chords={['G', 'D']} open={false} onOpenChange={onOpenChange} />
+    );
+    expect(await screen.findByRole('heading', { name: 'Chords used' })).toBeInTheDocument();
+    expect(screen.queryByRole('list')).not.toBeInTheDocument();
+    const toggle = screen.getByRole('button', { name: 'Show' });
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+
+    await user.click(toggle);
+    expect(onOpenChange).toHaveBeenCalledWith(true);
+  });
+
+  it('asks to hide from the open state', async () => {
+    const user = userEvent.setup();
+    const onOpenChange = vi.fn<(open: boolean) => void>();
+    renderWithQueryAndRouter(<ChordChart chords={['G']} open onOpenChange={onOpenChange} />);
+    await user.click(await screen.findByRole('button', { name: 'Hide' }));
+    expect(onOpenChange).toHaveBeenCalledWith(false);
   });
 });
