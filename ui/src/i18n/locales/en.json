@@ -264,6 +264,17 @@
     "full": "Full",
     "simple": "Simple",
     "colourChords": "Colour chords",
+    "chordChart": {
+      "toggle": "Chord chart",
+      "hint": "Guitar shapes for this song",
+      "title": "Chords used",
+      "shape": "{{name}}, frets {{frets}}",
+      "noDiagram": "No diagram",
+      "previous": "Previous shape for {{name}}",
+      "next": "Next shape for {{name}}",
+      "position": "Shape {{current}} of {{total}}",
+      "loadFailed": "Couldn't load chord shapes."
+    },
     "sectionsOnce": "Each section once",
     "sectionsOnceHint": "Repeats fold into their first copy",
     "sharp": "Sharps",
@@ -717,6 +728,9 @@
     },
     "colourChords": {
       "hint": "1, 4, 5 and minors differ"
+    },
+    "chordChart": {
+      "hint": "Guitar shapes beside a song, after key and capo"
     },
     "sectionsOnce": {
       "hint": "A repeated chorus shows once and the song flow lists the order"

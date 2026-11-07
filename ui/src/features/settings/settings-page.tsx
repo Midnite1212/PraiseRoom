@@ -20,6 +20,7 @@ import {
   CHORD_STYLES,
   type ChordNotation,
   useAccidentals,
+  useChordChart,
   useChordNotation,
   useChordStyle,
   useColourChords,
@@ -151,6 +152,7 @@ function SongsGroup() {
   const [chordStyle, setChordStyle] = useChordStyle();
   const [accidentals, setAccidentals] = useAccidentals();
   const [colourChords, setColourChords] = useColourChords();
+  const [chordChart, setChordChart] = useChordChart();
   const [sectionRepeats, setSectionRepeats] = useSectionRepeats();
 
   return (
@@ -235,6 +237,17 @@ function SongsGroup() {
           aria-label={t('reader.colourChords')}
           checked={colourChords === 'on'}
           onCheckedChange={(checked) => setColourChords(checked ? 'on' : 'off')}
+        />
+      </SettingsRow>
+      <SettingsRow
+        inline
+        label={t('reader.chordChart.toggle')}
+        hint={t('settings.chordChart.hint')}
+      >
+        <Switch
+          aria-label={t('reader.chordChart.toggle')}
+          checked={chordChart === 'on'}
+          onCheckedChange={(checked) => setChordChart(checked ? 'on' : 'off')}
         />
       </SettingsRow>
       <SettingsRow inline label={t('reader.sectionsOnce')} hint={t('settings.sectionsOnce.hint')}>
