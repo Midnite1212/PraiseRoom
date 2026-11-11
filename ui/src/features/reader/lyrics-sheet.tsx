@@ -40,7 +40,7 @@ type LyricsSheetProps = {
 
 export type ChordRenderer = (chord: string) => ReactNode;
 
-const CHORD_CLASS_COLOURS: Record<ChordClass, string> = {
+export const CHORD_CLASS_COLOURS: Record<ChordClass, string> = {
   one: 'text-chord',
   four: 'text-chord-four',
   five: 'text-chord-five',
