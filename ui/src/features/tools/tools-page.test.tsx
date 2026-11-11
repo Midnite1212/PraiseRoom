@@ -1,6 +1,6 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { renderWithQueryAndRouter } from '@/test/render-with-router';
 
@@ -21,6 +21,10 @@ const cardLabels = (list: HTMLElement) =>
     );
 
 describe('ToolsPage', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
   it('opens on the chord library and switches tools', async () => {
     const user = userEvent.setup();
     const { onToolChange } = renderTools('chords');
@@ -106,6 +110,14 @@ describe('ToolsPage', () => {
     );
     expect(screen.getByText('Fret 10')).toBeInTheDocument();
     expect(screen.getByText(/high up the neck/)).toBeInTheDocument();
+  });
+
+  it('offers the tuner as the fourth tool', async () => {
+    vi.stubGlobal('isSecureContext', false);
+    renderTools('tuner');
+
+    expect(await screen.findByRole('radio', { name: 'Tuner' })).toBeChecked();
+    expect(screen.getByText('The microphone needs a secure page')).toBeInTheDocument();
   });
 
   it('finds the key from the shapes and the capo', async () => {

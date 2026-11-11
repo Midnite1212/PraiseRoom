@@ -782,7 +782,8 @@
     "tabs": {
       "chords": "和弦",
       "keys": "調",
-      "capo": "變調夾"
+      "capo": "變調夾",
+      "tuner": "調音器"
     },
     "chords": {
       "searchPlaceholder": "搜尋和弦，例如 F#m7",
@@ -811,6 +812,56 @@
       "noCapoNote": "不用變調夾，{{shapes}} 指法出來就是 {{key}} 調。",
       "highNote": "第 {{fret}} 品在琴頸上太高，試試較接近歌曲的調的指法。",
       "keyNote": "變調夾夾在第 {{fret}} 品，{{shapes}} 指法出來是 {{key}} 調。"
+    },
+    "tuner": {
+      "start": "開始調音",
+      "stop": "停止",
+      "retry": "再試一次",
+      "privacy": "聲音只留在這部裝置上，不會錄音，也不會傳送出去。",
+      "idle": {
+        "title": "為結他調音",
+        "body": "開始調音並允許使用麥克風，然後逐條弦彈奏。"
+      },
+      "asking": {
+        "title": "正在等待麥克風",
+        "body": "瀏覽器詢問是否使用麥克風時，請選擇「允許」。"
+      },
+      "listening": {
+        "title": "聆聽中",
+        "body": "彈一條弦，讓它持續發聲。"
+      },
+      "denied": {
+        "title": "麥克風權限已被封鎖",
+        "body": "請從網址列開啟此網站的設定，將麥克風設為「允許」，然後再試一次。使用 iPhone 的話，請同時在「設定」App 內檢查 Safari 的麥克風設定。"
+      },
+      "unavailable": {
+        "title": "沒有可用的麥克風",
+        "body": "調音器找不到麥克風，或此瀏覽器不讓網頁使用麥克風。請接上麥克風，關閉正在使用它的其他應用程式，然後再試一次。"
+      },
+      "insecure": {
+        "title": "麥克風需要安全的頁面",
+        "body": "瀏覽器只會讓以 HTTPS 或 localhost 開啟的頁面使用麥克風。請用 https:// 網址開啟 Praise Room。"
+      },
+      "strings": "弦",
+      "autoHint": "自動。點選一條弦以鎖定",
+      "lockedHint": "已鎖定。再點一次回到自動",
+      "string": "第 {{number}} 弦，{{note}}",
+      "stringNumber": "第 {{number}} 弦",
+      "meter": "音準",
+      "state": {
+        "flat": "偏低，調高一點",
+        "inTune": "音準了",
+        "sharp": "偏高，調低一點"
+      },
+      "scale": {
+        "flat": "偏低",
+        "sharp": "偏高"
+      },
+      "cents_one": "{{cents}} 音分",
+      "cents_other": "{{cents}} 音分",
+      "reading": "{{note}}，{{offset}}，{{state}}",
+      "heard": "聽到",
+      "heardValue": "{{note}} · {{hertz}} Hz"
     }
   },
   "filters": {
