@@ -7,9 +7,13 @@ import { type MusicKey, parseKey } from '@/features/chords/theory';
 import { useIsWide } from '@/hooks/use-wide';
 import { cn } from '@/lib/utils';
 
+import { chartChords } from './chart-chords';
+import { ChordChart } from './chord-chart';
 import {
+  createChordSpeller,
   type SectionRepeats,
   useAccidentals,
+  useChordChart,
   useChordNotation,
   useChordStyle,
   useColourChords,
@@ -36,6 +40,8 @@ type SongReaderProps = {
   // Overrides the saved choice; the public setlist link always shows the full flow.
   repeats?: SectionRepeats;
   isVerified?: boolean;
+  // Offers the chord chart (still subject to the saved Chord chart choice and Chords mode).
+  chordChart?: boolean;
   children?: ReactNode;
 };
 
@@ -51,6 +57,7 @@ export function SongReader({
   pane,
   repeats,
   isVerified = false,
+  chordChart = false,
   children,
 }: SongReaderProps) {
   const { t } = useTranslation();
@@ -67,10 +74,28 @@ export function SongReader({
   const showChordControls = mode === 'chords' && originalKey && playKey;
   const titleId = pane === 'right' ? 'song-title-right' : 'song-title';
   const sectionRepeats = repeats ?? savedRepeats;
+  const [chartChoice, setChartChoice] = useChordChart();
+  const chords =
+    chordChart && mode === 'chords'
+      ? chartChords(
+          song.chordLyrics,
+          createChordSpeller(originalKey, playKey, accidentals, chordStyle, capo)
+        )
+      : [];
+  const offersChart = chords.length > 0;
+  const showsChart = offersChart && chartChoice === 'on';
 
   return (
-    <article data-lyrics-size={lyricsSize} aria-labelledby={titleId} className="min-w-0">
-      <header className="mb-[18px]">
+    <article
+      data-lyrics-size={lyricsSize}
+      aria-labelledby={titleId}
+      className={cn(
+        'min-w-0',
+        showsChart &&
+          'roomy:grid roomy:grid-cols-[minmax(0,1fr)_216px] roomy:grid-rows-[auto_1fr] roomy:gap-x-10'
+      )}
+    >
+      <header className={cn('mb-[18px]', showsChart && 'roomy:col-start-1')}>
         <div
           className={cn(
             'flex items-start gap-0.5 text-[clamp(1.75rem,1.2rem+2.2vw,2.5rem)] leading-[1.08] font-bold tracking-[-0.03em]',
@@ -117,25 +142,36 @@ export function SongReader({
         ) : null}
       </header>
 
-      {song.chordLyrics.trim() === '' ? (
-        <p className="text-ink-2">{t('reader.noLyrics')}</p>
-      ) : (
-        <LyricsSheet
-          chordLyrics={song.chordLyrics}
-          mode={mode}
-          notation={notation}
-          accidentals={accidentals}
-          chordStyle={chordStyle}
-          colourChords={colourChords === 'on'}
-          originalKey={originalKey}
-          playKey={playKey}
-          capo={capo}
-          columns={lyricsColumns}
-          repeats={sectionRepeats}
+      {offersChart ? (
+        <ChordChart
+          chords={chords}
+          open={showsChart}
+          onOpenChange={(open) => setChartChoice(open ? 'on' : 'off')}
+          className={cn(showsChart && 'roomy:col-start-2 roomy:row-span-2 roomy:row-start-1')}
         />
-      )}
+      ) : null}
 
-      {children}
+      <div className={cn('min-w-0', showsChart && 'roomy:col-start-1 roomy:row-start-2')}>
+        {song.chordLyrics.trim() === '' ? (
+          <p className="text-ink-2">{t('reader.noLyrics')}</p>
+        ) : (
+          <LyricsSheet
+            chordLyrics={song.chordLyrics}
+            mode={mode}
+            notation={notation}
+            accidentals={accidentals}
+            chordStyle={chordStyle}
+            colourChords={colourChords === 'on'}
+            originalKey={originalKey}
+            playKey={playKey}
+            capo={capo}
+            columns={lyricsColumns}
+            repeats={sectionRepeats}
+          />
+        )}
+
+        {children}
+      </div>
     </article>
   );
 }
