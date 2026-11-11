@@ -1,5 +1,5 @@
 import type { QueryClient } from '@tanstack/react-query';
-import { Bulletlist, Folder, Home, Music } from 'pixelarticons/react';
+import { Bulletlist, Folder, Home, Music, Tools } from 'pixelarticons/react';
 
 import { withPixelMotion } from '@/components/primitives/pixel-motion';
 import type { Session } from '@/features/auth/session';
@@ -24,6 +24,7 @@ export const NAV_ITEMS = [
     labelKey: 'nav.folders',
     icon: withPixelMotion(Folder, nudge(0, -1)),
   },
+  { id: 'tools', to: '/tools', labelKey: 'nav.tools', icon: withPixelMotion(Tools, nudge(0, -1)) },
 ] as const;
 
 export type NavId = (typeof NAV_ITEMS)[number]['id'];

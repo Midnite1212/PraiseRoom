@@ -10,6 +10,7 @@
     "expandSidebar": "Expand sidebar",
     "setlists": "Setlists",
     "folders": "Folders",
+    "tools": "Tools",
     "pages": "Pages",
     "nextUpWhen": "Next up · {{when}}",
     "nextUpLabel": "Next up: {{name}}, {{day}}"
@@ -776,6 +777,43 @@
       "simple": "simple chords",
       "coloured": "coloured",
       "chart": "{Verse 1}\n[E]Sing to the [A]Lord a [B7]new [C#m]song;\n[E]sing to the [B]Lord, all the [E]earth."
+    }
+  },
+  "tools": {
+    "title": "Tools",
+    "pick": "Tool",
+    "tabs": {
+      "chords": "Chords",
+      "keys": "Keys",
+      "capo": "Capo"
+    },
+    "chords": {
+      "searchPlaceholder": "Search chords, such as F#m7",
+      "search": "Search chords",
+      "root": "Root note",
+      "browse": "Major and minor chords",
+      "results": "Chords",
+      "none": "No chord called “{{query}}”",
+      "noneHint": "Type a root and a chord type, such as Bb or Em7."
+    },
+    "keys": {
+      "pick": "Key",
+      "chordsIn": "Chords in {{key}}",
+      "progressions": "Common progressions",
+      "progressionIn": "{{progression}} in {{key}}"
+    },
+    "capo": {
+      "mode": "What to work out",
+      "findCapo": "Find the capo",
+      "findKey": "Find the key",
+      "songKey": "Song key",
+      "shapes": "Chord shapes",
+      "fret": "Fret {{fret}}",
+      "keyAnswer": "Sounds in",
+      "capoNote": "Play {{shapes}} shapes with the capo on fret {{fret}} to sound in {{key}}.",
+      "noCapoNote": "{{shapes}} shapes sound in {{key}} without a capo.",
+      "highNote": "Fret {{fret}} is high up the neck. Try shapes closer to the song key.",
+      "keyNote": "{{shapes}} shapes with the capo on fret {{fret}} sound in {{key}}."
     }
   },
   "filters": {

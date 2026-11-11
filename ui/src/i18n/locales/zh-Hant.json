@@ -10,6 +10,7 @@
     "expandSidebar": "展開側邊欄",
     "setlists": "歌單",
     "folders": "資料夾",
+    "tools": "工具",
     "pages": "頁面",
     "nextUpWhen": "下一個 · {{when}}",
     "nextUpLabel": "下一個：{{name}}，{{day}}"
@@ -773,6 +774,43 @@
       "simple": "簡化和弦",
       "coloured": "已上色",
       "chart": "{第一節}\n[E]向耶和華[A]唱一首[B7]新的[C#m]歌；\n[E]全地都要[B]向耶和華[E]歌唱。"
+    }
+  },
+  "tools": {
+    "title": "工具",
+    "pick": "工具",
+    "tabs": {
+      "chords": "和弦",
+      "keys": "調",
+      "capo": "變調夾"
+    },
+    "chords": {
+      "searchPlaceholder": "搜尋和弦，例如 F#m7",
+      "search": "搜尋和弦",
+      "root": "根音",
+      "browse": "大三和弦及小三和弦",
+      "results": "和弦",
+      "none": "找不到「{{query}}」這個和弦",
+      "noneHint": "輸入根音和和弦類型，例如 Bb 或 Em7。"
+    },
+    "keys": {
+      "pick": "調",
+      "chordsIn": "{{key}} 調的和弦",
+      "progressions": "常用和弦進行",
+      "progressionIn": "{{key}} 調的 {{progression}}"
+    },
+    "capo": {
+      "mode": "要找甚麼",
+      "findCapo": "找變調夾位置",
+      "findKey": "找實際的調",
+      "songKey": "歌曲的調",
+      "shapes": "和弦指法",
+      "fret": "第 {{fret}} 品",
+      "keyAnswer": "實際的調",
+      "capoNote": "變調夾夾在第 {{fret}} 品，以 {{shapes}} 指法彈奏，出來就是 {{key}} 調。",
+      "noCapoNote": "不用變調夾，{{shapes}} 指法出來就是 {{key}} 調。",
+      "highNote": "第 {{fret}} 品在琴頸上太高，試試較接近歌曲的調的指法。",
+      "keyNote": "變調夾夾在第 {{fret}} 品，{{shapes}} 指法出來是 {{key}} 調。"
     }
   },
   "filters": {
