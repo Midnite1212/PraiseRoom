@@ -9,12 +9,15 @@ import {
   canEditGroup,
   canEditSetlist,
   canEditSetlists,
+  hasAdminPowers,
+  isSuper,
   ownedEntryIds,
 } from './authorization';
 import { TokenUser } from './verify-jwt';
 
 const USER: TokenUser = { accessType: 'ministry', id: '507f1f77bcf86cd799439011' };
 const ADMIN: TokenUser = { accessType: 'admin', id: '507f1f77bcf86cd799439019' };
+const SUPER: TokenUser = { accessType: 'super', id: '507f1f77bcf86cd799439018' };
 const OTHER_USER_ID = '507f1f77bcf86cd799439012';
 const SETLIST_ID = '507f1f77bcf86cd799439021';
 const GROUP_ID = '507f1f77bcf86cd799439031';
@@ -49,6 +52,29 @@ describe('authorization', () => {
       ]);
       assert.deepEqual(ownedEntryIds(undefined), []);
       assert.deepEqual(ownedEntryIds(null), []);
+    });
+  });
+
+  describe('hasAdminPowers and isSuper', () => {
+    it('gives admins and supers admin powers, and only supers the super role', () => {
+      const as = (accessType: string): TokenUser => ({ accessType, id: USER.id });
+      assert.equal(hasAdminPowers(ADMIN), true);
+      assert.equal(hasAdminPowers(SUPER), true);
+      for (const accessType of ['member', 'editor', 'ministry', 'Admin', '']) {
+        assert.equal(hasAdminPowers(as(accessType)), false, accessType);
+      }
+      assert.equal(hasAdminPowers(undefined), false);
+      assert.equal(isSuper(SUPER), true);
+      assert.equal(isSuper(ADMIN), false);
+      assert.equal(isSuper(as('Super')), false);
+      assert.equal(isSuper(undefined), false);
+    });
+
+    it('lets a super edit and delete any setlist or folder, like an admin', () => {
+      assert.equal(canEditSetlist(SUPER, setlist({ createdBy: OTHER_USER_ID }), null), true);
+      assert.equal(canDeleteSetlist(SUPER, setlist({ createdBy: OTHER_USER_ID })), true);
+      assert.equal(canEditGroup(SUPER, group({ createdBy: OTHER_USER_ID }), null), true);
+      assert.equal(canDeleteGroup(SUPER, group({ createdBy: OTHER_USER_ID }), null), true);
     });
   });
 

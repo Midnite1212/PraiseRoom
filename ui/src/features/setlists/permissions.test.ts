@@ -26,6 +26,9 @@ describe('setlist permissions', () => {
     expect(
       canEditSetlist(session({ accessType: 'admin' }), { _id: 's1', createdBy: 'x', groupIds: [] })
     ).toBe(true);
+    expect(
+      canEditSetlist(session({ accessType: 'super' }), { _id: 's1', createdBy: 'x', groupIds: [] })
+    ).toBe(true);
     expect(canEditSetlist(session(), { _id: 's1', createdBy: 'x', groupIds: ['folder-a'] })).toBe(
       true
     );
@@ -45,13 +48,11 @@ describe('setlist permissions', () => {
     expect(canDeleteSetlist(session(), { _id: 's1', createdBy: 'x', groupIds: ['folder-a'] })).toBe(
       false
     );
-    expect(
-      canDeleteSetlist(session({ accessType: 'admin' }), {
-        _id: 's1',
-        createdBy: 'x',
-        groupIds: [],
-      })
-    ).toBe(true);
+    for (const accessType of ['admin', 'super'] as const) {
+      expect(
+        canDeleteSetlist(session({ accessType }), { _id: 's1', createdBy: 'x', groupIds: [] })
+      ).toBe(true);
+    }
   });
 
   it('keeps only folders the caller belongs to', () => {

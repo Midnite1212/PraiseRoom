@@ -3,6 +3,8 @@ import { Request, RequestHandler, Response } from 'express';
 import { hasNulCharacter } from '../db/cast';
 import { SONG_FIELDS, SongSortField, songRepository } from '../db/repositories/song.repository';
 import { MUSIC_KEYS, SONG_THEMES } from '../db/schema';
+import { AuthenticatedRequest } from '../policies/permissionMiddleware';
+import { hasAdminPowers, sendForbidden } from '../utils/authorization';
 import { pick } from '../utils/pick';
 import { sendError, sendResponse } from '../utils/response';
 import { deriveSongThemes } from '../utils/songThemes';
@@ -34,7 +36,7 @@ const toKeyArray = (value: unknown): string[] | null => {
   return keys?.every(isMusicKey) ? keys : null;
 };
 
-const SORT_FIELDS: readonly SongSortField[] = ['code', 'key', 'tempo', 'recent'];
+const SORT_FIELDS: readonly SongSortField[] = ['code', 'key', 'tempo', 'recent', 'verified'];
 
 const toSortField = (value: unknown): SongSortField =>
   SORT_FIELDS.find((field) => field === value) ?? 'title';
@@ -202,6 +204,42 @@ const updateSong: RequestHandler = async (req: Request, res: Response): Promise<
   }
 };
 
+const verifySong: RequestHandler = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<void> => {
+  if (!req.user) {
+    sendResponse(res, 401, 'Unauthorized');
+    return;
+  }
+  if (!hasAdminPowers(req.user)) {
+    sendForbidden(res);
+    return;
+  }
+
+  const id: unknown = req.body?.id;
+  const isVerified: unknown = req.body?.isVerified;
+  if (!isObjectIdString(id)) {
+    sendResponse(res, 400, 'Invalid song id');
+    return;
+  }
+  if (typeof isVerified !== 'boolean') {
+    sendResponse(res, 400, 'Missing required fields');
+    return;
+  }
+
+  try {
+    const song = await songRepository.setVerified(id, isVerified);
+    if (song) {
+      sendResponse(res, 200, song);
+    } else {
+      sendResponse(res, 404, 'Song not found');
+    }
+  } catch (error: unknown) {
+    sendError(res, error);
+  }
+};
+
 const deleteSong: RequestHandler = async (req: Request, res: Response): Promise<void> => {
   const id: unknown = [req.body?.params?.id, req.body?.id].find(isObjectIdString);
 
@@ -231,4 +269,5 @@ export {
   deleteSong,
   searchSongs,
   suggestSongThemes,
+  verifySong,
 };

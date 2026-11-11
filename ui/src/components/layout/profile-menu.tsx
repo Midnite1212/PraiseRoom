@@ -1,12 +1,12 @@
 import { Link } from '@tanstack/react-router';
-import { ChevronRight, Logout, SettingsCog } from 'pixelarticons/react';
+import { ChevronRight, Logout, SettingsCog, Shield } from 'pixelarticons/react';
 import type { ReactElement, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ActionMenu, MenuRow, MenuSeparator } from '@/components/primitives/action-menu';
 import { toInitials } from '@/components/primitives/avatar';
 import { Vinyl } from '@/components/primitives/vinyl';
-import type { Session } from '@/features/auth/session';
+import { hasAdminPowers, type Session } from '@/features/auth/session';
 import { useSignOut } from '@/features/auth/use-sign-out';
 
 import { LanguageChoice, ThemeChoice } from './preference-choices';
@@ -65,6 +65,18 @@ export function ProfileMenu({ session, trigger }: { session: Session; trigger: R
           <ChevronRight className="text-ink-3" />
         </Link>
       </MenuRow>
+      {hasAdminPowers(session) ? (
+        <MenuRow asChild>
+          <Link to="/admin">
+            <Shield />
+            <span className="min-w-0 flex-1">
+              {t('user.admin')}
+              <small className="text-ink-3 block text-xs font-normal">{t('user.adminHint')}</small>
+            </span>
+            <ChevronRight className="text-ink-3" />
+          </Link>
+        </MenuRow>
+      ) : null}
       <MenuSeparator />
       <MenuRow tone="danger" onSelect={() => void signOut()}>
         <Logout />

@@ -69,6 +69,7 @@ describe('permissionMiddleware', () => {
       const expected: Record<string, number> = {
         'GET /api/groups/get': 1,
         'GET /api/ownerships/get': 1,
+        'GET /api/ownerships/members': 2,
         'GET /api/setlists/get': 1,
         'GET /api/songs/get': 0,
         'GET /api/songs/get-view': 0,
@@ -90,6 +91,7 @@ describe('permissionMiddleware', () => {
         'PUT /api/groups/join': 1,
         'PUT /api/groups/members': 1,
         'PUT /api/groups/update': 1,
+        'PUT /api/ownerships/access-type': 2,
         'PUT /api/ownerships/delete': 1,
         'PUT /api/ownerships/delete-account': 1,
         'PUT /api/ownerships/update': 1,
@@ -97,6 +99,7 @@ describe('permissionMiddleware', () => {
         'PUT /api/setlists/update': 1,
         'PUT /api/songs/delete': 2,
         'PUT /api/songs/update': 2,
+        'PUT /api/songs/verify': 2,
       };
       assert.deepEqual(Object.keys(ROUTE_PERMISSIONS).sort(), Object.keys(expected).sort());
       for (const [routeKey, length] of Object.entries(expected)) {
@@ -210,8 +213,33 @@ describe('permissionMiddleware', () => {
   describe('requireAccessType', () => {
     const requireAccessType = () => middlewareAt('POST', '/api/songs/create', 1);
 
+    const runAs = async (handler: RequestHandler, accessType: string) => {
+      const req = createRequest({ user: { accessType, id: USER_ID } });
+      const res = createResponse();
+      const next = await callHandler(handler, req, res);
+      return { allowed: next.mock.callCount() === 1, status: res.statusCode };
+    };
+
+    it('lets admins and supers verify songs, and only supers manage member access', async () => {
+      const routes = {
+        'PUT /api/songs/verify': ['admin', 'super'],
+        'GET /api/ownerships/members': ['super'],
+        'PUT /api/ownerships/access-type': ['super'],
+      };
+      for (const [routeKey, allowed] of Object.entries(routes)) {
+        const [method = '', path = ''] = routeKey.split(' ');
+        const handler = middlewareAt(method, path, 1);
+        for (const accessType of ['member', 'editor', 'admin', 'super']) {
+          const result = await runAs(handler, accessType);
+          const expected = allowed.includes(accessType);
+          assert.equal(result.allowed, expected, `${routeKey} ${accessType}`);
+          assert.equal(result.status, expected ? undefined : 403, `${routeKey} ${accessType}`);
+        }
+      }
+    });
+
     it('allows each listed access type', async () => {
-      for (const accessType of ['editor', 'admin']) {
+      for (const accessType of ['editor', 'admin', 'super']) {
         const req = createRequest({ user: { accessType, id: USER_ID } });
         const res = createResponse();
         const next = await callHandler(requireAccessType(), req, res);
@@ -221,7 +249,7 @@ describe('permissionMiddleware', () => {
     });
 
     it('rejects unlisted access types with a 403 that names none of them', async () => {
-      for (const accessType of ['member', 'ministry', 'Admin', 'editors', '']) {
+      for (const accessType of ['member', 'ministry', 'Admin', 'Super', 'editors', '']) {
         const req = createRequest({ user: { accessType, id: USER_ID } });
         const res = createResponse();
         const next = await callHandler(requireAccessType(), req, res);
