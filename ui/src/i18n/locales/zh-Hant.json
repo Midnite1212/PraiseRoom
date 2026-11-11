@@ -651,10 +651,16 @@
     "chordOn": "{{word}}上的和弦 {{chord}}",
     "addChordTo": "在「{{word}}」上放和弦",
     "chordOver": "在 <word>{{word}}</word> 上放和弦",
-    "slot": { "lead": "句首", "end": "句尾" },
+    "slot": {
+      "lead": "句首",
+      "end": "句尾"
+    },
     "chordAt": "{{where}}的和弦 {{chord}}",
     "addChordAt": "在{{where}}放和弦",
-    "chordSlot": { "lead": "在<where>句首</where>放和弦", "end": "在<where>句尾</where>放和弦" },
+    "chordSlot": {
+      "lead": "在<where>句首</where>放和弦",
+      "end": "在<where>句尾</where>放和弦"
+    },
     "anotherChord": "其他和弦，例如 D/F#",
     "anotherChordLabel": "其他和弦",
     "setChord": "設定",
@@ -955,6 +961,27 @@
       "submit": "更改密碼",
       "changed": "密碼已更改",
       "changedOthers": "密碼已更改，其他裝置已登出。"
+    }
+  },
+  "about": {
+    "preview": {
+      "frameTitle": "{{name}} · {{screen}}",
+      "openPublicLink": "打開公開連結",
+      "teamView": "團隊檢視"
+    },
+    "demoData": {
+      "sundayService": "主日崇拜",
+      "christmasIdeas": "聖誕構思",
+      "youthNight": "青年晚會",
+      "prayerMeeting": "禱告會",
+      "folder": "主日樂隊",
+      "irishTraditional": "愛爾蘭傳統",
+      "people": {
+        "you": "示範樂手",
+        "leader": "敬拜帶領",
+        "keys": "鍵盤手",
+        "bass": "低音結他手"
+      }
     }
   }
 }

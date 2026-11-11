@@ -27,6 +27,7 @@ import { Route as AppSetlistsNewRouteImport } from './routes/_app/setlists/new'
 import { Route as AppSettingsIndexRouteImport } from './routes/_app/settings/index'
 import { Route as AppSongsIndexRouteImport } from './routes/_app/songs/index'
 import { Route as AppSongsSongSlugRouteImport } from './routes/_app/songs/$songSlug'
+import { Route as AboutPreviewScreenRouteImport } from './routes/about/preview/$screen'
 import { Route as SetlistViewSetlistSlugRouteImport } from './routes/setlist/view/$setlistSlug'
 import { Route as AppSetlistsSetlistSlugEditRouteImport } from './routes/_app/setlists/$setlistSlug_.edit'
 import { Route as AppSongsSongSlugEditRouteImport } from './routes/_app/songs/$songSlug_.edit'
@@ -120,6 +121,11 @@ const AppSongsSongSlugRoute = AppSongsSongSlugRouteImport.update({
   path: '/songs/$songSlug',
   getParentRoute: () => AppRoute,
 } as any)
+const AboutPreviewScreenRoute = AboutPreviewScreenRouteImport.update({
+  id: '/about/preview/$screen',
+  path: '/about/preview/$screen',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SetlistViewSetlistSlugRoute = SetlistViewSetlistSlugRouteImport.update({
   id: '/setlist/view/$setlistSlug',
   path: '/setlist/view/$setlistSlug',
@@ -150,6 +156,7 @@ export interface FileRoutesByFullPath {
   '/setlists/$setlistSlug': typeof AppSetlistsSetlistSlugRoute
   '/setlists/new': typeof AppSetlistsNewRoute
   '/songs/$songSlug': typeof AppSongsSongSlugRoute
+  '/about/preview/$screen': typeof AboutPreviewScreenRoute
   '/setlist/view/$setlistSlug': typeof SetlistViewSetlistSlugRoute
   '/account/': typeof AppAccountIndexRoute
   '/folders/': typeof AppFoldersIndexRoute
@@ -172,6 +179,7 @@ export interface FileRoutesByTo {
   '/setlists/$setlistSlug': typeof AppSetlistsSetlistSlugRoute
   '/setlists/new': typeof AppSetlistsNewRoute
   '/songs/$songSlug': typeof AppSongsSongSlugRoute
+  '/about/preview/$screen': typeof AboutPreviewScreenRoute
   '/setlist/view/$setlistSlug': typeof SetlistViewSetlistSlugRoute
   '/account': typeof AppAccountIndexRoute
   '/folders': typeof AppFoldersIndexRoute
@@ -196,6 +204,7 @@ export interface FileRoutesById {
   '/_app/setlists/$setlistSlug': typeof AppSetlistsSetlistSlugRoute
   '/_app/setlists/new': typeof AppSetlistsNewRoute
   '/_app/songs/$songSlug': typeof AppSongsSongSlugRoute
+  '/about/preview/$screen': typeof AboutPreviewScreenRoute
   '/setlist/view/$setlistSlug': typeof SetlistViewSetlistSlugRoute
   '/_app/account/': typeof AppAccountIndexRoute
   '/_app/folders/': typeof AppFoldersIndexRoute
@@ -220,6 +229,7 @@ export interface FileRouteTypes {
     | '/setlists/$setlistSlug'
     | '/setlists/new'
     | '/songs/$songSlug'
+    | '/about/preview/$screen'
     | '/setlist/view/$setlistSlug'
     | '/account/'
     | '/folders/'
@@ -242,6 +252,7 @@ export interface FileRouteTypes {
     | '/setlists/$setlistSlug'
     | '/setlists/new'
     | '/songs/$songSlug'
+    | '/about/preview/$screen'
     | '/setlist/view/$setlistSlug'
     | '/account'
     | '/folders'
@@ -265,6 +276,7 @@ export interface FileRouteTypes {
     | '/_app/setlists/$setlistSlug'
     | '/_app/setlists/new'
     | '/_app/songs/$songSlug'
+    | '/about/preview/$screen'
     | '/setlist/view/$setlistSlug'
     | '/_app/account/'
     | '/_app/folders/'
@@ -282,6 +294,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ResetRoute: typeof ResetRoute
   SignUpRoute: typeof SignUpRoute
+  AboutPreviewScreenRoute: typeof AboutPreviewScreenRoute
   SetlistViewSetlistSlugRoute: typeof SetlistViewSetlistSlugRoute
 }
 
@@ -413,6 +426,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSongsSongSlugRouteImport
       parentRoute: typeof AppRoute
     }
+    '/about/preview/$screen': {
+      id: '/about/preview/$screen'
+      path: '/about/preview/$screen'
+      fullPath: '/about/preview/$screen'
+      preLoaderRoute: typeof AboutPreviewScreenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/setlist/view/$setlistSlug': {
       id: '/setlist/view/$setlistSlug'
       path: '/setlist/view/$setlistSlug'
@@ -480,6 +500,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   ResetRoute: ResetRoute,
   SignUpRoute: SignUpRoute,
+  AboutPreviewScreenRoute: AboutPreviewScreenRoute,
   SetlistViewSetlistSlugRoute: SetlistViewSetlistSlugRoute,
 }
 export const routeTree = rootRouteImport
