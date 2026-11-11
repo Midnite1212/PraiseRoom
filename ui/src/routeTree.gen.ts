@@ -27,6 +27,7 @@ import { Route as AppSetlistsNewRouteImport } from './routes/_app/setlists/new'
 import { Route as AppSettingsIndexRouteImport } from './routes/_app/settings/index'
 import { Route as AppSongsIndexRouteImport } from './routes/_app/songs/index'
 import { Route as AppSongsSongSlugRouteImport } from './routes/_app/songs/$songSlug'
+import { Route as AppToolsIndexRouteImport } from './routes/_app/tools/index'
 import { Route as SetlistViewSetlistSlugRouteImport } from './routes/setlist/view/$setlistSlug'
 import { Route as AppSetlistsSetlistSlugEditRouteImport } from './routes/_app/setlists/$setlistSlug_.edit'
 import { Route as AppSongsSongSlugEditRouteImport } from './routes/_app/songs/$songSlug_.edit'
@@ -120,6 +121,11 @@ const AppSongsSongSlugRoute = AppSongsSongSlugRouteImport.update({
   path: '/songs/$songSlug',
   getParentRoute: () => AppRoute,
 } as any)
+const AppToolsIndexRoute = AppToolsIndexRouteImport.update({
+  id: '/tools/',
+  path: '/tools/',
+  getParentRoute: () => AppRoute,
+} as any)
 const SetlistViewSetlistSlugRoute = SetlistViewSetlistSlugRouteImport.update({
   id: '/setlist/view/$setlistSlug',
   path: '/setlist/view/$setlistSlug',
@@ -156,6 +162,7 @@ export interface FileRoutesByFullPath {
   '/setlists/': typeof AppSetlistsIndexRoute
   '/settings/': typeof AppSettingsIndexRoute
   '/songs/': typeof AppSongsIndexRoute
+  '/tools/': typeof AppToolsIndexRoute
   '/setlists/$setlistSlug/edit': typeof AppSetlistsSetlistSlugEditRoute
   '/songs/$songSlug/edit': typeof AppSongsSongSlugEditRoute
 }
@@ -178,6 +185,7 @@ export interface FileRoutesByTo {
   '/setlists': typeof AppSetlistsIndexRoute
   '/settings': typeof AppSettingsIndexRoute
   '/songs': typeof AppSongsIndexRoute
+  '/tools': typeof AppToolsIndexRoute
   '/setlists/$setlistSlug/edit': typeof AppSetlistsSetlistSlugEditRoute
   '/songs/$songSlug/edit': typeof AppSongsSongSlugEditRoute
 }
@@ -202,6 +210,7 @@ export interface FileRoutesById {
   '/_app/setlists/': typeof AppSetlistsIndexRoute
   '/_app/settings/': typeof AppSettingsIndexRoute
   '/_app/songs/': typeof AppSongsIndexRoute
+  '/_app/tools/': typeof AppToolsIndexRoute
   '/_app/setlists/$setlistSlug_/edit': typeof AppSetlistsSetlistSlugEditRoute
   '/_app/songs/$songSlug_/edit': typeof AppSongsSongSlugEditRoute
 }
@@ -226,6 +235,7 @@ export interface FileRouteTypes {
     | '/setlists/'
     | '/settings/'
     | '/songs/'
+    | '/tools/'
     | '/setlists/$setlistSlug/edit'
     | '/songs/$songSlug/edit'
   fileRoutesByTo: FileRoutesByTo
@@ -248,6 +258,7 @@ export interface FileRouteTypes {
     | '/setlists'
     | '/settings'
     | '/songs'
+    | '/tools'
     | '/setlists/$setlistSlug/edit'
     | '/songs/$songSlug/edit'
   id:
@@ -271,6 +282,7 @@ export interface FileRouteTypes {
     | '/_app/setlists/'
     | '/_app/settings/'
     | '/_app/songs/'
+    | '/_app/tools/'
     | '/_app/setlists/$setlistSlug_/edit'
     | '/_app/songs/$songSlug_/edit'
   fileRoutesById: FileRoutesById
@@ -413,6 +425,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSongsSongSlugRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/tools/': {
+      id: '/_app/tools/'
+      path: '/tools'
+      fullPath: '/tools/'
+      preLoaderRoute: typeof AppToolsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/setlist/view/$setlistSlug': {
       id: '/setlist/view/$setlistSlug'
       path: '/setlist/view/$setlistSlug'
@@ -450,6 +469,7 @@ interface AppRouteChildren {
   AppSetlistsIndexRoute: typeof AppSetlistsIndexRoute
   AppSettingsIndexRoute: typeof AppSettingsIndexRoute
   AppSongsIndexRoute: typeof AppSongsIndexRoute
+  AppToolsIndexRoute: typeof AppToolsIndexRoute
   AppSetlistsSetlistSlugEditRoute: typeof AppSetlistsSetlistSlugEditRoute
   AppSongsSongSlugEditRoute: typeof AppSongsSongSlugEditRoute
 }
@@ -467,6 +487,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppSetlistsIndexRoute: AppSetlistsIndexRoute,
   AppSettingsIndexRoute: AppSettingsIndexRoute,
   AppSongsIndexRoute: AppSongsIndexRoute,
+  AppToolsIndexRoute: AppToolsIndexRoute,
   AppSetlistsSetlistSlugEditRoute: AppSetlistsSetlistSlugEditRoute,
   AppSongsSongSlugEditRoute: AppSongsSongSlugEditRoute,
 }
