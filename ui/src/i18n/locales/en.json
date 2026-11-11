@@ -651,10 +651,7 @@
     "chordOn": "Chord {{chord}} on {{word}}",
     "addChordTo": "Add a chord to {{word}}",
     "chordOver": "Chord over <word>{{word}}</word>",
-    "slot": {
-      "lead": "before the line",
-      "end": "after the line"
-    },
+    "slot": { "lead": "before the line", "end": "after the line" },
     "chordAt": "Chord {{chord}} {{where}}",
     "addChordAt": "Add a chord {{where}}",
     "chordSlot": {

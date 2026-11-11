@@ -651,16 +651,10 @@
     "chordOn": "{{word}}上的和弦 {{chord}}",
     "addChordTo": "在「{{word}}」上放和弦",
     "chordOver": "在 <word>{{word}}</word> 上放和弦",
-    "slot": {
-      "lead": "句首",
-      "end": "句尾"
-    },
+    "slot": { "lead": "句首", "end": "句尾" },
     "chordAt": "{{where}}的和弦 {{chord}}",
     "addChordAt": "在{{where}}放和弦",
-    "chordSlot": {
-      "lead": "在<where>句首</where>放和弦",
-      "end": "在<where>句尾</where>放和弦"
-    },
+    "chordSlot": { "lead": "在<where>句首</where>放和弦", "end": "在<where>句尾</where>放和弦" },
     "anotherChord": "其他和弦，例如 D/F#",
     "anotherChordLabel": "其他和弦",
     "setChord": "設定",
