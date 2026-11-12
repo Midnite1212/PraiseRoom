@@ -106,7 +106,7 @@ function DialogHeader({
         <span
           aria-hidden
           className={cn(
-            'grid size-10 flex-none place-items-center rounded-xl',
+            'grid size-10 flex-none place-items-center rounded-xl [&_svg]:size-icon',
             tone === 'danger' ? 'bg-danger-tint text-destructive' : 'bg-fill-on text-ink'
           )}
         >

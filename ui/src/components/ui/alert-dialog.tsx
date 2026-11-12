@@ -67,7 +67,7 @@ function AlertDialogHeader({
       {icon ? (
         <span
           aria-hidden
-          className="bg-danger-tint text-destructive grid size-10 flex-none place-items-center rounded-xl"
+          className="bg-danger-tint text-destructive [&_svg]:size-icon grid size-10 flex-none place-items-center rounded-xl"
         >
           {icon}
         </span>
