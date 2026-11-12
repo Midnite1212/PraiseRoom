@@ -1,4 +1,4 @@
-import type { Session } from '@/features/auth/session';
+import { hasAdminPowers, type Session } from '@/features/auth/session';
 
 type SetlistAccess = { _id: string; createdBy?: string | null; groupIds: readonly string[] };
 
@@ -13,7 +13,7 @@ export const canEditSetlist = (
   setlist: SetlistAccess
 ): boolean => {
   if (!session) return false;
-  if (session.accessType === 'admin' || setlist.createdBy === session.id) return true;
+  if (hasAdminPowers(session) || setlist.createdBy === session.id) return true;
   if (entryIds(session.ownership.setlistIds).has(setlist._id)) return true;
   const folders = memberFolderIds(session);
   return setlist.groupIds.some((groupId) => folders.has(groupId));
@@ -22,8 +22,7 @@ export const canEditSetlist = (
 export const canDeleteSetlist = (
   session: Session | null | undefined,
   setlist: SetlistAccess
-): boolean =>
-  Boolean(session && (session.accessType === 'admin' || setlist.createdBy === session.id));
+): boolean => Boolean(session && (hasAdminPowers(session) || setlist.createdBy === session.id));
 
 export const ownFolders = <T extends { _id: string }>(
   session: Session,

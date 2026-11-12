@@ -10,6 +10,7 @@
     "expandSidebar": "Expand sidebar",
     "setlists": "Setlists",
     "folders": "Folders",
+    "tools": "Tools",
     "pages": "Pages",
     "nextUpWhen": "Next up · {{when}}",
     "nextUpLabel": "Next up: {{name}}, {{day}}"
@@ -36,9 +37,12 @@
     "accessType": {
       "member": "Member",
       "editor": "Editor",
-      "admin": "Admin"
+      "admin": "Admin",
+      "super": "Super"
     },
-    "account": "Account"
+    "account": "Account",
+    "admin": "Admin",
+    "adminHint": "Verify songs and manage roles"
   },
   "home": {
     "greeting": "Welcome, {{name}}",
@@ -244,6 +248,7 @@
     }
   },
   "reader": {
+    "verified": "Verified",
     "setlist": "Setlist",
     "songCount_one": "{{count}} song",
     "songCount_other": "{{count}} songs",
@@ -774,6 +779,94 @@
       "chart": "{Verse 1}\n[E]Sing to the [A]Lord a [B7]new [C#m]song;\n[E]sing to the [B]Lord, all the [E]earth."
     }
   },
+  "tools": {
+    "title": "Tools",
+    "pick": "Tool",
+    "tabs": {
+      "chords": "Chords",
+      "keys": "Keys",
+      "capo": "Capo",
+      "tuner": "Tuner"
+    },
+    "chords": {
+      "searchPlaceholder": "Search chords, such as F#m7",
+      "search": "Search chords",
+      "root": "Root note",
+      "browse": "Major and minor chords",
+      "results": "Chords",
+      "none": "No chord called “{{query}}”",
+      "noneHint": "Type a root and a chord type, such as Bb or Em7."
+    },
+    "keys": {
+      "pick": "Key",
+      "chordsIn": "Chords in {{key}}",
+      "progressions": "Common progressions",
+      "progressionIn": "{{progression}} in {{key}}"
+    },
+    "capo": {
+      "mode": "What to work out",
+      "findCapo": "Find the capo",
+      "findKey": "Find the key",
+      "songKey": "Song key",
+      "shapes": "Chord shapes",
+      "fret": "Fret {{fret}}",
+      "keyAnswer": "Sounds in",
+      "capoNote": "Play {{shapes}} shapes with the capo on fret {{fret}} to sound in {{key}}.",
+      "noCapoNote": "{{shapes}} shapes sound in {{key}} without a capo.",
+      "highNote": "Fret {{fret}} is high up the neck. Try shapes closer to the song key.",
+      "keyNote": "{{shapes}} shapes with the capo on fret {{fret}} sound in {{key}}."
+    },
+    "tuner": {
+      "start": "Start tuner",
+      "stop": "Stop",
+      "retry": "Try again",
+      "privacy": "Audio stays on this device. Nothing is recorded or sent.",
+      "idle": {
+        "title": "Tune your guitar",
+        "body": "Start the tuner, allow the microphone, then play one string at a time."
+      },
+      "asking": {
+        "title": "Waiting for the microphone",
+        "body": "Choose Allow when your browser asks to use the microphone."
+      },
+      "listening": {
+        "title": "Listening",
+        "body": "Play one string and let it ring."
+      },
+      "denied": {
+        "title": "Microphone access is blocked",
+        "body": "Open this site’s settings from the address bar, set Microphone to Allow, then try again. On iPhone, also check Safari’s Microphone setting in the Settings app."
+      },
+      "unavailable": {
+        "title": "No microphone to use",
+        "body": "The tuner could not find a microphone, or this browser does not let web pages use one. Plug one in, close other apps that are using it, then try again."
+      },
+      "insecure": {
+        "title": "The microphone needs a secure page",
+        "body": "Browsers only share the microphone with pages opened over HTTPS or on localhost. Open Praise Room from its https:// address."
+      },
+      "strings": "Strings",
+      "autoHint": "Auto. Tap a string to lock it",
+      "lockedHint": "Locked. Tap it again for auto",
+      "string": "String {{number}}, {{note}}",
+      "stringNumber": "String {{number}}",
+      "meter": "Tuning",
+      "state": {
+        "flat": "Flat, tune up",
+        "inTune": "In tune",
+        "sharp": "Sharp, tune down"
+      },
+      "scale": {
+        "flat": "Flat",
+        "sharp": "Sharp"
+      },
+      "cents_one": "{{cents}} cent",
+      "cents_other": "{{cents}} cents",
+      "reading": "{{note}}, {{offset}}, {{state}}",
+      "heard": "Hearing",
+      "heardValue": "{{note}} · {{hertz}} Hz"
+    }
+  },
   "filters": {
     "button": "Filter",
     "buttonWithCount": "Filter ({{count}} on)",
@@ -879,6 +972,39 @@
       "failed": "Something went wrong. Please try again."
     }
   },
+  "admin": {
+    "title": "Admin",
+    "sections": "Admin sections",
+    "songs": {
+      "tab": "Songs",
+      "search": "Search songs",
+      "verified": "Verified",
+      "unverified": "Unverified",
+      "verify": "Verify",
+      "unverify": "Unverify",
+      "verifyTitle": "Mark {{title}} verified",
+      "unverifyTitle": "Mark {{title}} unverified",
+      "markedVerified": "{{title}} is verified",
+      "markedUnverified": "{{title}} is no longer verified",
+      "failed": "Couldn’t update the song. Please try again.",
+      "notFound": "That song no longer exists.",
+      "empty": "No songs found",
+      "loadFailed": "Couldn’t load songs."
+    },
+    "members": {
+      "tab": "Members",
+      "search": "Search members",
+      "role": "Role for {{name}}",
+      "you": "You",
+      "supers": "Supers: {{count}} / {{max}}",
+      "changed": "{{name}} is now {{role}}",
+      "failed": "Couldn’t change the role. Please try again.",
+      "forbidden": "You can’t change this member’s role.",
+      "notFound": "That member no longer exists.",
+      "empty": "No members found",
+      "loadFailed": "Couldn’t load members."
+    }
+  },
   "account": {
     "title": "Account",
     "loadFailed": "Couldn’t load this. Reload the page to try again.",
@@ -935,7 +1061,8 @@
       "title": "What you can do",
       "member": "Browse songs, and make setlists and folders. An admin can give you song editing.",
       "editor": "Add and edit songs, and make setlists and folders. Only an admin can change your role.",
-      "admin": "Everything an editor can do, plus manage any setlist or folder."
+      "admin": "Everything an editor can do, plus manage any setlist or folder.",
+      "super": "Everything an admin can do, plus change other members’ roles."
     },
     "delete": {
       "title": "Delete account",

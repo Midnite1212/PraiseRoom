@@ -8,6 +8,7 @@ import {
   searchSongs,
   suggestSongThemes,
   updateSong,
+  verifySong,
 } from '../controllers/song.controllers';
 import {
   convertImportText,
@@ -24,6 +25,7 @@ router.get('/api/songs/get', getSong);
 router.get('/api/songs/get-view', getSongView);
 router.put('/api/songs/update', updateSong);
 router.put('/api/songs/delete', deleteSong);
+router.put('/api/songs/verify', verifySong);
 router.get('/api/songs/search', searchSongs);
 router.get('/api/songs/keys', listSongKeys);
 router.get('/api/songs/themes', listSongThemes);
