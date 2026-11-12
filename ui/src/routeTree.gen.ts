@@ -16,8 +16,10 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as ResetRouteImport } from './routes/reset'
 import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as AboutIndexRouteImport } from './routes/about/index'
 import { Route as AppAccountIndexRouteImport } from './routes/_app/account/index'
 import { Route as AppAccountPasswordRouteImport } from './routes/_app/account/password'
+import { Route as AppAdminIndexRouteImport } from './routes/_app/admin/index'
 import { Route as AppFoldersIndexRouteImport } from './routes/_app/folders/index'
 import { Route as AppFoldersFolderSlugRouteImport } from './routes/_app/folders/$folderSlug'
 import { Route as AppJoinTokenRouteImport } from './routes/_app/join/$token'
@@ -27,6 +29,8 @@ import { Route as AppSetlistsNewRouteImport } from './routes/_app/setlists/new'
 import { Route as AppSettingsIndexRouteImport } from './routes/_app/settings/index'
 import { Route as AppSongsIndexRouteImport } from './routes/_app/songs/index'
 import { Route as AppSongsSongSlugRouteImport } from './routes/_app/songs/$songSlug'
+import { Route as AppToolsIndexRouteImport } from './routes/_app/tools/index'
+import { Route as AboutPreviewScreenRouteImport } from './routes/about/preview/$screen'
 import { Route as SetlistViewSetlistSlugRouteImport } from './routes/setlist/view/$setlistSlug'
 import { Route as AppSetlistsSetlistSlugEditRouteImport } from './routes/_app/setlists/$setlistSlug_.edit'
 import { Route as AppSongsSongSlugEditRouteImport } from './routes/_app/songs/$songSlug_.edit'
@@ -65,6 +69,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
+const AboutIndexRoute = AboutIndexRouteImport.update({
+  id: '/about/',
+  path: '/about/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppAccountIndexRoute = AppAccountIndexRouteImport.update({
   id: '/account/',
   path: '/account/',
@@ -73,6 +82,11 @@ const AppAccountIndexRoute = AppAccountIndexRouteImport.update({
 const AppAccountPasswordRoute = AppAccountPasswordRouteImport.update({
   id: '/account/password',
   path: '/account/password',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAdminIndexRoute = AppAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppFoldersIndexRoute = AppFoldersIndexRouteImport.update({
@@ -120,6 +134,16 @@ const AppSongsSongSlugRoute = AppSongsSongSlugRouteImport.update({
   path: '/songs/$songSlug',
   getParentRoute: () => AppRoute,
 } as any)
+const AppToolsIndexRoute = AppToolsIndexRouteImport.update({
+  id: '/tools/',
+  path: '/tools/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AboutPreviewScreenRoute = AboutPreviewScreenRouteImport.update({
+  id: '/about/preview/$screen',
+  path: '/about/preview/$screen',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SetlistViewSetlistSlugRoute = SetlistViewSetlistSlugRouteImport.update({
   id: '/setlist/view/$setlistSlug',
   path: '/setlist/view/$setlistSlug',
@@ -144,18 +168,22 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/reset': typeof ResetRoute
   '/sign-up': typeof SignUpRoute
+  '/about/': typeof AboutIndexRoute
   '/account/password': typeof AppAccountPasswordRoute
   '/folders/$folderSlug': typeof AppFoldersFolderSlugRoute
   '/join/$token': typeof AppJoinTokenRoute
   '/setlists/$setlistSlug': typeof AppSetlistsSetlistSlugRoute
   '/setlists/new': typeof AppSetlistsNewRoute
   '/songs/$songSlug': typeof AppSongsSongSlugRoute
+  '/about/preview/$screen': typeof AboutPreviewScreenRoute
   '/setlist/view/$setlistSlug': typeof SetlistViewSetlistSlugRoute
   '/account/': typeof AppAccountIndexRoute
+  '/admin/': typeof AppAdminIndexRoute
   '/folders/': typeof AppFoldersIndexRoute
   '/setlists/': typeof AppSetlistsIndexRoute
   '/settings/': typeof AppSettingsIndexRoute
   '/songs/': typeof AppSongsIndexRoute
+  '/tools/': typeof AppToolsIndexRoute
   '/setlists/$setlistSlug/edit': typeof AppSetlistsSetlistSlugEditRoute
   '/songs/$songSlug/edit': typeof AppSongsSongSlugEditRoute
 }
@@ -166,18 +194,22 @@ export interface FileRoutesByTo {
   '/reset': typeof ResetRoute
   '/sign-up': typeof SignUpRoute
   '/': typeof AppIndexRoute
+  '/about': typeof AboutIndexRoute
   '/account/password': typeof AppAccountPasswordRoute
   '/folders/$folderSlug': typeof AppFoldersFolderSlugRoute
   '/join/$token': typeof AppJoinTokenRoute
   '/setlists/$setlistSlug': typeof AppSetlistsSetlistSlugRoute
   '/setlists/new': typeof AppSetlistsNewRoute
   '/songs/$songSlug': typeof AppSongsSongSlugRoute
+  '/about/preview/$screen': typeof AboutPreviewScreenRoute
   '/setlist/view/$setlistSlug': typeof SetlistViewSetlistSlugRoute
   '/account': typeof AppAccountIndexRoute
+  '/admin': typeof AppAdminIndexRoute
   '/folders': typeof AppFoldersIndexRoute
   '/setlists': typeof AppSetlistsIndexRoute
   '/settings': typeof AppSettingsIndexRoute
   '/songs': typeof AppSongsIndexRoute
+  '/tools': typeof AppToolsIndexRoute
   '/setlists/$setlistSlug/edit': typeof AppSetlistsSetlistSlugEditRoute
   '/songs/$songSlug/edit': typeof AppSongsSongSlugEditRoute
 }
@@ -190,18 +222,22 @@ export interface FileRoutesById {
   '/reset': typeof ResetRoute
   '/sign-up': typeof SignUpRoute
   '/_app/': typeof AppIndexRoute
+  '/about/': typeof AboutIndexRoute
   '/_app/account/password': typeof AppAccountPasswordRoute
   '/_app/folders/$folderSlug': typeof AppFoldersFolderSlugRoute
   '/_app/join/$token': typeof AppJoinTokenRoute
   '/_app/setlists/$setlistSlug': typeof AppSetlistsSetlistSlugRoute
   '/_app/setlists/new': typeof AppSetlistsNewRoute
   '/_app/songs/$songSlug': typeof AppSongsSongSlugRoute
+  '/about/preview/$screen': typeof AboutPreviewScreenRoute
   '/setlist/view/$setlistSlug': typeof SetlistViewSetlistSlugRoute
   '/_app/account/': typeof AppAccountIndexRoute
+  '/_app/admin/': typeof AppAdminIndexRoute
   '/_app/folders/': typeof AppFoldersIndexRoute
   '/_app/setlists/': typeof AppSetlistsIndexRoute
   '/_app/settings/': typeof AppSettingsIndexRoute
   '/_app/songs/': typeof AppSongsIndexRoute
+  '/_app/tools/': typeof AppToolsIndexRoute
   '/_app/setlists/$setlistSlug_/edit': typeof AppSetlistsSetlistSlugEditRoute
   '/_app/songs/$songSlug_/edit': typeof AppSongsSongSlugEditRoute
 }
@@ -214,18 +250,22 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset'
     | '/sign-up'
+    | '/about/'
     | '/account/password'
     | '/folders/$folderSlug'
     | '/join/$token'
     | '/setlists/$setlistSlug'
     | '/setlists/new'
     | '/songs/$songSlug'
+    | '/about/preview/$screen'
     | '/setlist/view/$setlistSlug'
     | '/account/'
+    | '/admin/'
     | '/folders/'
     | '/setlists/'
     | '/settings/'
     | '/songs/'
+    | '/tools/'
     | '/setlists/$setlistSlug/edit'
     | '/songs/$songSlug/edit'
   fileRoutesByTo: FileRoutesByTo
@@ -236,18 +276,22 @@ export interface FileRouteTypes {
     | '/reset'
     | '/sign-up'
     | '/'
+    | '/about'
     | '/account/password'
     | '/folders/$folderSlug'
     | '/join/$token'
     | '/setlists/$setlistSlug'
     | '/setlists/new'
     | '/songs/$songSlug'
+    | '/about/preview/$screen'
     | '/setlist/view/$setlistSlug'
     | '/account'
+    | '/admin'
     | '/folders'
     | '/setlists'
     | '/settings'
     | '/songs'
+    | '/tools'
     | '/setlists/$setlistSlug/edit'
     | '/songs/$songSlug/edit'
   id:
@@ -259,18 +303,22 @@ export interface FileRouteTypes {
     | '/reset'
     | '/sign-up'
     | '/_app/'
+    | '/about/'
     | '/_app/account/password'
     | '/_app/folders/$folderSlug'
     | '/_app/join/$token'
     | '/_app/setlists/$setlistSlug'
     | '/_app/setlists/new'
     | '/_app/songs/$songSlug'
+    | '/about/preview/$screen'
     | '/setlist/view/$setlistSlug'
     | '/_app/account/'
+    | '/_app/admin/'
     | '/_app/folders/'
     | '/_app/setlists/'
     | '/_app/settings/'
     | '/_app/songs/'
+    | '/_app/tools/'
     | '/_app/setlists/$setlistSlug_/edit'
     | '/_app/songs/$songSlug_/edit'
   fileRoutesById: FileRoutesById
@@ -282,6 +330,8 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ResetRoute: typeof ResetRoute
   SignUpRoute: typeof SignUpRoute
+  AboutIndexRoute: typeof AboutIndexRoute
+  AboutPreviewScreenRoute: typeof AboutPreviewScreenRoute
   SetlistViewSetlistSlugRoute: typeof SetlistViewSetlistSlugRoute
 }
 
@@ -336,6 +386,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/about/': {
+      id: '/about/'
+      path: '/about'
+      fullPath: '/about/'
+      preLoaderRoute: typeof AboutIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app/account/': {
       id: '/_app/account/'
       path: '/account'
@@ -348,6 +405,13 @@ declare module '@tanstack/react-router' {
       path: '/account/password'
       fullPath: '/account/password'
       preLoaderRoute: typeof AppAccountPasswordRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/admin/': {
+      id: '/_app/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AppAdminIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/folders/': {
@@ -413,6 +477,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSongsSongSlugRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/tools/': {
+      id: '/_app/tools/'
+      path: '/tools'
+      fullPath: '/tools/'
+      preLoaderRoute: typeof AppToolsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/about/preview/$screen': {
+      id: '/about/preview/$screen'
+      path: '/about/preview/$screen'
+      fullPath: '/about/preview/$screen'
+      preLoaderRoute: typeof AboutPreviewScreenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/setlist/view/$setlistSlug': {
       id: '/setlist/view/$setlistSlug'
       path: '/setlist/view/$setlistSlug'
@@ -446,10 +524,12 @@ interface AppRouteChildren {
   AppSetlistsNewRoute: typeof AppSetlistsNewRoute
   AppSongsSongSlugRoute: typeof AppSongsSongSlugRoute
   AppAccountIndexRoute: typeof AppAccountIndexRoute
+  AppAdminIndexRoute: typeof AppAdminIndexRoute
   AppFoldersIndexRoute: typeof AppFoldersIndexRoute
   AppSetlistsIndexRoute: typeof AppSetlistsIndexRoute
   AppSettingsIndexRoute: typeof AppSettingsIndexRoute
   AppSongsIndexRoute: typeof AppSongsIndexRoute
+  AppToolsIndexRoute: typeof AppToolsIndexRoute
   AppSetlistsSetlistSlugEditRoute: typeof AppSetlistsSetlistSlugEditRoute
   AppSongsSongSlugEditRoute: typeof AppSongsSongSlugEditRoute
 }
@@ -463,10 +543,12 @@ const AppRouteChildren: AppRouteChildren = {
   AppSetlistsNewRoute: AppSetlistsNewRoute,
   AppSongsSongSlugRoute: AppSongsSongSlugRoute,
   AppAccountIndexRoute: AppAccountIndexRoute,
+  AppAdminIndexRoute: AppAdminIndexRoute,
   AppFoldersIndexRoute: AppFoldersIndexRoute,
   AppSetlistsIndexRoute: AppSetlistsIndexRoute,
   AppSettingsIndexRoute: AppSettingsIndexRoute,
   AppSongsIndexRoute: AppSongsIndexRoute,
+  AppToolsIndexRoute: AppToolsIndexRoute,
   AppSetlistsSetlistSlugEditRoute: AppSetlistsSetlistSlugEditRoute,
   AppSongsSongSlugEditRoute: AppSongsSongSlugEditRoute,
 }
@@ -480,6 +562,8 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   ResetRoute: ResetRoute,
   SignUpRoute: SignUpRoute,
+  AboutIndexRoute: AboutIndexRoute,
+  AboutPreviewScreenRoute: AboutPreviewScreenRoute,
   SetlistViewSetlistSlugRoute: SetlistViewSetlistSlugRoute,
 }
 export const routeTree = rootRouteImport

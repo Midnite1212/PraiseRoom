@@ -2,6 +2,7 @@ import { Response } from 'express';
 
 import { ownershipRepository } from '../db/repositories/ownership.repository';
 import { setlistRepository } from '../db/repositories/setlist.repository';
+import { ADMIN_ACCESS_TYPES } from '../policies/permissions.config';
 import { StoredOwnershipEntry } from '../types/ownership.types';
 import { sendResponse } from './response';
 import { TokenUser } from './verify-jwt';
@@ -34,7 +35,10 @@ export const ownedEntryIds = (
 ): string[] =>
   (entries ?? []).map(({ id }) => id).filter((id): id is string => typeof id === 'string');
 
-export const isAdmin = (user: TokenUser): boolean => user.accessType === 'admin';
+export const hasAdminPowers = (user: TokenUser | undefined): boolean =>
+  user !== undefined && ADMIN_ACCESS_TYPES.some((accessType) => accessType === user.accessType);
+
+export const isSuper = (user: TokenUser | undefined): boolean => user?.accessType === 'super';
 
 const hasCreator = (resource: OwnedResource): boolean =>
   resource.createdBy !== undefined && resource.createdBy !== null;
@@ -50,7 +54,7 @@ export const canEditSetlist = (
   setlist: SetlistResource,
   ownership: CallerOwnership
 ): boolean => {
-  if (isAdmin(user) || isCreator(user, setlist)) return true;
+  if (hasAdminPowers(user) || isCreator(user, setlist)) return true;
   if (ownedEntryIds(ownership?.setlistIds).includes(setlist._id)) return true;
   const memberGroupIds = new Set(ownedEntryIds(ownership?.groupIds));
   return (setlist.groupIds ?? []).some((groupId) => memberGroupIds.has(groupId));
@@ -71,19 +75,19 @@ export const canEditSetlists = async (
 };
 
 export const canDeleteSetlist = (user: TokenUser, setlist: OwnedResource): boolean =>
-  isAdmin(user) || isCreator(user, setlist);
+  hasAdminPowers(user) || isCreator(user, setlist);
 
 export const canEditGroup = (
   user: TokenUser,
   group: OwnedResource,
   ownership: CallerOwnership
-): boolean => isAdmin(user) || isCreator(user, group) || isGroupMember(group, ownership);
+): boolean => hasAdminPowers(user) || isCreator(user, group) || isGroupMember(group, ownership);
 
 export const canDeleteGroup = (
   user: TokenUser,
   group: OwnedResource,
   ownership: CallerOwnership
 ): boolean => {
-  if (isAdmin(user)) return true;
+  if (hasAdminPowers(user)) return true;
   return hasCreator(group) ? isCreator(user, group) : isGroupMember(group, ownership);
 };

@@ -214,6 +214,7 @@ export const songLibraryQueryOptions = () =>
 export const songSchema = readerSongSchema.extend({
   urlKey: z.string(),
   recommendedKeys: z.array(z.string()),
+  isVerified: z.boolean().optional(),
 });
 
 export type Song = z.infer<typeof songSchema>;

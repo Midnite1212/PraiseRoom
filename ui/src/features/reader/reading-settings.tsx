@@ -16,6 +16,7 @@ import {
   CHORD_STYLES,
   type ChordStyle,
   useAccidentals,
+  useChordChart,
   useChordStyle,
   useColourChords,
   useReaderMode,
@@ -62,18 +63,21 @@ type PresentOption = {
 // The sliders button and the tray behind it: what you set once and read every song with, saved on this
 // device. The settings link shows in the app only; the public setlist link has no Settings page, so
 // it gets the theme, language and keep-awake rows here instead.
-// `present` adds the Present to TV row and owns the overlay it opens.
+// `present` adds the Present to TV row and owns the overlay it opens; `chordChart` adds the Chord chart row.
 export function ReadingSettings({
   showSettingsLink = true,
   present,
+  chordChart = false,
 }: {
   showSettingsLink?: boolean;
   present?: PresentOption;
+  chordChart?: boolean;
 }) {
   const { t } = useTranslation();
   const [chordStyle, setChordStyle] = useChordStyle();
   const [accidentals, setAccidentals] = useAccidentals();
   const [colourChords, setColourChords] = useColourChords();
+  const [chartChoice, setChartChoice] = useChordChart();
   const [sectionRepeats, setSectionRepeats] = useSectionRepeats();
   const [keepAwake, setKeepAwake] = useKeepAwake();
   const [mode] = useReaderMode();
@@ -140,6 +144,15 @@ export function ReadingSettings({
                   />
                 </span>
               </SetRow>
+              {chordChart ? (
+                <SetRow label={t('reader.chordChart.toggle')} hint={t('reader.chordChart.hint')}>
+                  <Switch
+                    aria-label={t('reader.chordChart.toggle')}
+                    checked={chartChoice === 'on'}
+                    onCheckedChange={(checked) => setChartChoice(checked ? 'on' : 'off')}
+                  />
+                </SetRow>
+              ) : null}
             </>
           ) : null}
           <SetRow label={t('reader.sectionsOnce')} hint={t('reader.sectionsOnceHint')}>

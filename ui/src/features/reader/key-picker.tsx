@@ -1,6 +1,7 @@
 import { Minus, Plus } from 'pixelarticons/react';
 import { useTranslation } from 'react-i18next';
 
+import { KeyGrid } from '@/components/primitives/key-grid';
 import { Stepper } from '@/components/primitives/stepper';
 import { Tray } from '@/components/primitives/tray';
 import { Button } from '@/components/ui/button';
@@ -121,30 +122,15 @@ export function KeyPicker({
           <Plus />
         </Button>
       </div>
-      <fieldset className="m-0 mt-3 grid min-w-0 grid-cols-4 gap-1 border-0 p-0">
-        <legend className="sr-only">{t('reader.key')}</legend>
-        {options.map((option) => {
-          const isOriginal = option.root === originalKey.root;
-          return (
-            <button
-              key={option.root}
-              type="button"
-              aria-pressed={option.root === playKey.root}
-              aria-label={
-                isOriginal ? `${keyLabel(option)}, ${t('reader.original')}` : keyLabel(option)
-              }
-              onClick={() => pick(option)}
-              className={cn(
-                'bg-fill-hover hover:bg-fill-press aria-pressed:bg-chord aria-pressed:text-ground relative h-10 rounded-xl font-mono font-semibold transition-colors',
-                isOriginal &&
-                  'after:absolute after:bottom-[5px] after:left-1/2 after:size-1 after:-translate-x-1/2 after:bg-current after:opacity-75'
-              )}
-            >
-              {keyLabel(option)}
-            </button>
-          );
-        })}
-      </fieldset>
+      <KeyGrid
+        label={t('reader.key')}
+        options={options}
+        selectedRoot={playKey.root}
+        onSelect={pick}
+        markedRoot={originalKey.root}
+        markedLabel={t('reader.original')}
+        className="mt-3"
+      />
       <div className="mt-3 flex items-center justify-between gap-2.5">
         <span className="text-ink-2 text-[0.8125rem] font-semibold">
           {t('reader.showChordsAs')}

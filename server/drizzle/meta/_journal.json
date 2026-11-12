@@ -64,6 +64,13 @@
       "when": 1793371499145,
       "tag": "0008_song_themes_known",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1793958731499,
+      "tag": "0009_daffy_longshot",
+      "breakpoints": true
     }
   ]
 }

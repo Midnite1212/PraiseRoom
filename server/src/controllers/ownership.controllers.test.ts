@@ -13,6 +13,8 @@ import {
   deleteAccountData,
   deleteOwnership,
   getOwnership,
+  listMembers,
+  setMemberAccessType,
   updateOwnership,
 } from './ownership.controllers';
 
@@ -430,6 +432,161 @@ describe('ownership controllers', () => {
       const res = await call(deleteOwnership, { body: { userId: USER_ID }, user: USER });
       assert.equal(res.statusCode, 404);
       assert.equal(res.body, 'Ownership not found');
+    });
+  });
+
+  describe('member access', () => {
+    const SUPER: TokenUser = { accessType: 'super', id: USER_ID };
+    const NON_SUPERS = ['member', 'editor', 'admin'].map((accessType): TokenUser => ({
+      accessType,
+      id: USER_ID,
+    }));
+    const FORBIDDEN = { error: 'Access denied', message: 'Forbidden' };
+
+    describe('listMembers', () => {
+      it('rejects a request without req.user', async () => {
+        const list = mock.method(ownershipRepository, 'listLiveMemberAccess', async () => []);
+        const res = await call(listMembers, {});
+        assert.equal(res.statusCode, 401);
+        assert.equal(list.mock.callCount(), 0);
+      });
+
+      it('forbids everyone but a super', async () => {
+        const list = mock.method(ownershipRepository, 'listLiveMemberAccess', async () => []);
+        for (const user of NON_SUPERS) {
+          const res = await call(listMembers, { user });
+          assert.equal(res.statusCode, 403, user.accessType);
+          assert.deepEqual(res.body, FORBIDDEN);
+        }
+        assert.equal(list.mock.callCount(), 0);
+      });
+
+      it('returns the live members for a super', async () => {
+        const members = [{ accessType: 'editor', fullName: 'Test Person', userId: OTHER_USER_ID }];
+        mock.method(ownershipRepository, 'listLiveMemberAccess', async () => members);
+        const res = await call(listMembers, { user: SUPER });
+        assert.equal(res.statusCode, 200);
+        assert.equal(res.body, members);
+      });
+    });
+
+    describe('setMemberAccessType', () => {
+      const mockAccess = (current: string | null, updated: unknown = null) => ({
+        find: mock.method(ownershipRepository, 'findAccessType', async () => current),
+        set: mock.method(ownershipRepository, 'setAccessType', async () => updated),
+      });
+
+      it('rejects a request without req.user', async () => {
+        const { set } = mockAccess('member');
+        const res = await call(setMemberAccessType, {
+          body: { accessType: 'editor', userId: OTHER_USER_ID },
+        });
+        assert.equal(res.statusCode, 401);
+        assert.equal(set.mock.callCount(), 0);
+      });
+
+      it('forbids everyone but a super', async () => {
+        const { find, set } = mockAccess('member');
+        for (const user of NON_SUPERS) {
+          const res = await call(setMemberAccessType, {
+            body: { accessType: 'editor', userId: OTHER_USER_ID },
+            user,
+          });
+          assert.equal(res.statusCode, 403, user.accessType);
+          assert.deepEqual(res.body, FORBIDDEN);
+        }
+        assert.equal(find.mock.callCount(), 0);
+        assert.equal(set.mock.callCount(), 0);
+      });
+
+      it('rejects an invalid user id', async () => {
+        const { find, set } = mockAccess('member');
+        for (const userId of [undefined, 'not valid', 'x'.repeat(65), '', [OTHER_USER_ID]]) {
+          const res = await call(setMemberAccessType, {
+            body: { accessType: 'editor', userId },
+            user: SUPER,
+          });
+          assert.equal(res.statusCode, 400, JSON.stringify(userId));
+          assert.equal(res.body, 'Invalid user id');
+        }
+        assert.equal(find.mock.callCount(), 0);
+        assert.equal(set.mock.callCount(), 0);
+      });
+
+      it('never assigns super or an unknown access type', async () => {
+        const { find, set } = mockAccess('member');
+        for (const accessType of ['super', 'Super', 'ministry', '', undefined, ['admin']]) {
+          const res = await call(setMemberAccessType, {
+            body: { accessType, userId: OTHER_USER_ID },
+            user: SUPER,
+          });
+          assert.equal(res.statusCode, 400, JSON.stringify(accessType));
+          assert.equal(res.body, 'Invalid access type');
+        }
+        assert.equal(find.mock.callCount(), 0);
+        assert.equal(set.mock.callCount(), 0);
+      });
+
+      it("forbids changing the caller's own access type", async () => {
+        const { find, set } = mockAccess('super');
+        const res = await call(setMemberAccessType, {
+          body: { accessType: 'admin', userId: USER_ID },
+          user: SUPER,
+        });
+        assert.equal(res.statusCode, 403);
+        assert.deepEqual(res.body, FORBIDDEN);
+        assert.equal(find.mock.callCount(), 0);
+        assert.equal(set.mock.callCount(), 0);
+      });
+
+      it("forbids changing another super's access type", async () => {
+        const { set } = mockAccess('super');
+        const res = await call(setMemberAccessType, {
+          body: { accessType: 'member', userId: OTHER_USER_ID },
+          user: SUPER,
+        });
+        assert.equal(res.statusCode, 403);
+        assert.deepEqual(res.body, FORBIDDEN);
+        assert.equal(set.mock.callCount(), 0);
+      });
+
+      it('returns 404 for an unknown or deleted user', async () => {
+        const { set } = mockAccess(null);
+        const res = await call(setMemberAccessType, {
+          body: { accessType: 'editor', userId: OTHER_USER_ID },
+          user: SUPER,
+        });
+        assert.equal(res.statusCode, 404);
+        assert.equal(res.body, 'Ownership not found');
+        assert.equal(set.mock.callCount(), 0);
+      });
+
+      it('returns 404 when the update matches no live non-super row', async () => {
+        mockAccess('member', null);
+        const res = await call(setMemberAccessType, {
+          body: { accessType: 'editor', userId: OTHER_USER_ID },
+          user: SUPER,
+        });
+        assert.equal(res.statusCode, 404);
+        assert.equal(res.body, 'Ownership not found');
+      });
+
+      it('sets the access type, ignoring other body fields, and logs ids only', async () => {
+        const member = { accessType: 'admin', fullName: 'Test Person', userId: OTHER_USER_ID };
+        const { set } = mockAccess('editor', member);
+        const info = mock.method(console, 'info', () => undefined);
+        const res = await call(setMemberAccessType, {
+          body: { accessType: 'admin', fullName: 'Spoofed', userId: OTHER_USER_ID },
+          user: { ...SUPER, name: 'Caller Name' },
+        });
+        assert.deepEqual(set.mock.calls[0]?.arguments, [OTHER_USER_ID, 'admin']);
+        assert.equal(res.statusCode, 200);
+        assert.equal(res.body, member);
+        const logged = String(info.mock.calls[0]?.arguments[0]);
+        assert.match(logged, new RegExp(OTHER_USER_ID));
+        assert.match(logged, new RegExp(USER_ID));
+        assert.doesNotMatch(logged, /Test Person|Caller Name|Spoofed/);
+      });
     });
   });
 });
