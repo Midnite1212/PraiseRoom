@@ -140,7 +140,11 @@ function PageChrome({
                 type="button"
                 aria-label={folded ? session.fullName : undefined}
                 title={folded ? session.fullName : undefined}
-                className="glass group/vinyl mt-auto flex items-center gap-3 py-1.5 pr-4 pl-1.5 text-left group-data-[rail=folded]/rail:justify-center group-data-[rail=folded]/rail:p-1.5"
+                className={
+                  folded
+                    ? 'group/vinyl mt-auto self-center rounded-full'
+                    : 'glass group/vinyl mt-auto flex items-center gap-3 py-1.5 pr-4 pl-1.5 text-left'
+                }
               >
                 <Vinyl initial={initial} />
                 <span className="min-w-0 group-data-[rail=folded]/rail:hidden">
