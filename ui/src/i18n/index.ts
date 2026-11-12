@@ -44,6 +44,16 @@ export const changeLanguage = async (language: LanguageCode): Promise<void> => {
   }
 };
 
+const followLanguage = (event: StorageEvent) => {
+  if (event.key !== LANGUAGE_STORAGE_KEY || !isLanguageCode(event.newValue)) return;
+  if (event.newValue !== i18n.language) void i18n.changeLanguage(event.newValue);
+};
+
+export const followStoredLanguage = (): (() => void) => {
+  window.addEventListener('storage', followLanguage);
+  return () => window.removeEventListener('storage', followLanguage);
+};
+
 i18n.on('languageChanged', (language) => {
   document.documentElement.lang = language;
 });

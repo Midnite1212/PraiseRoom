@@ -1086,5 +1086,26 @@
       "changed": "Password changed",
       "changedOthers": "Password changed. Other devices signed out."
     }
+  },
+  "about": {
+    "preview": {
+      "frameTitle": "{{name}} · {{screen}}",
+      "openPublicLink": "Open the public link",
+      "teamView": "Team view"
+    },
+    "demoData": {
+      "sundayService": "Sunday service",
+      "christmasIdeas": "Christmas ideas",
+      "youthNight": "Youth night",
+      "prayerMeeting": "Prayer meeting",
+      "folder": "Sunday band",
+      "irishTraditional": "Irish traditional",
+      "people": {
+        "you": "Demo musician",
+        "leader": "Worship leader",
+        "keys": "Keys player",
+        "bass": "Bass player"
+      }
+    }
   }
 }

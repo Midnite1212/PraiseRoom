@@ -1083,5 +1083,26 @@
       "changed": "密碼已更改",
       "changedOthers": "密碼已更改，其他裝置已登出。"
     }
+  },
+  "about": {
+    "preview": {
+      "frameTitle": "{{name}} · {{screen}}",
+      "openPublicLink": "打開公開連結",
+      "teamView": "團隊檢視"
+    },
+    "demoData": {
+      "sundayService": "主日崇拜",
+      "christmasIdeas": "聖誕構思",
+      "youthNight": "青年晚會",
+      "prayerMeeting": "禱告會",
+      "folder": "主日樂隊",
+      "irishTraditional": "愛爾蘭傳統",
+      "people": {
+        "you": "示範樂手",
+        "leader": "敬拜帶領",
+        "keys": "鍵盤手",
+        "bass": "低音結他手"
+      }
+    }
   }
 }
