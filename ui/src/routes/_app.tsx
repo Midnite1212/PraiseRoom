@@ -3,6 +3,7 @@ import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { AppShell } from '@/components/layout/app-shell';
 import { prefetchNavCounts } from '@/components/layout/nav';
 import { sessionQueryOptions } from '@/features/auth/session';
+import { GettingStartedUserContext } from '@/features/getting-started/track';
 
 export const Route = createFileRoute('/_app')({
   beforeLoad: async ({ context, location }) => {
@@ -21,8 +22,10 @@ export const Route = createFileRoute('/_app')({
 function AppLayout() {
   const { session } = Route.useRouteContext();
   return (
-    <AppShell session={session}>
-      <Outlet />
-    </AppShell>
+    <GettingStartedUserContext value={session.id}>
+      <AppShell session={session}>
+        <Outlet />
+      </AppShell>
+    </GettingStartedUserContext>
   );
 }

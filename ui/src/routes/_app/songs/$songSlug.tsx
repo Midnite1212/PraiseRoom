@@ -1,13 +1,14 @@
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { PenSquare, Plus } from 'pixelarticons/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { canWriteSongs } from '@/features/auth/session';
 import { type MusicKey, parseKey } from '@/features/chords/theory';
+import { useMarkStep } from '@/features/getting-started/track';
 import { useAutoScroll } from '@/features/reader/auto-scroll';
 import { AutoScrollButton } from '@/features/reader/auto-scroll-controls';
 import { useReaderMode } from '@/features/reader/chord-display';
@@ -50,6 +51,10 @@ function SongView({ song }: { song: Song }) {
   const [playKey, setPlayKey] = useState<MusicKey | null>(originalKey);
   const [capo, setCapo] = useSongCapo(song._id, song.capo);
   const auto = useAutoScroll(song._id);
+  const markStep = useMarkStep();
+  useEffect(() => {
+    markStep('openSong');
+  }, [markStep]);
   useKeyShortcuts(mode === 'chords' ? originalKey : null, playKey, setPlayKey);
   const readingTrigger = (
     <Button

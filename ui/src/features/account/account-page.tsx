@@ -16,6 +16,7 @@ import { SettingsGroup } from '@/features/settings/settings-group';
 
 import { accountCounts } from './counts';
 import { DeleteAccount } from './delete-account';
+import { GettingStartedSection } from './getting-started-section';
 import { ProfileSection, useProfileName } from './profile-section';
 import { SessionsSection } from './sessions-section';
 import { SignInMethods } from './sign-in-methods';
@@ -79,6 +80,7 @@ export function AccountPage({ session }: { session: Session }) {
           ) : null}
         </header>
         <ProfileSection session={session} name={name} />
+        <GettingStartedSection session={session} />
         <SignInMethods session={session} />
         <SessionsSection />
         <SettingsGroup id="account-access" title={t('account.access.title')}>

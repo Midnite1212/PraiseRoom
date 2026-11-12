@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 
 import type { MusicKey } from '@/features/chords/theory';
+import { useMarkStep } from '@/features/getting-started/track';
 
 import { keyForShortcut } from './key-shortcut';
 
@@ -16,13 +17,16 @@ export function useKeyShortcuts(
   playKey: MusicKey | null,
   onChange: (key: MusicKey) => void
 ) {
+  const markStep = useMarkStep();
   useEffect(() => {
     if (!originalKey || !playKey) return undefined;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.defaultPrevented || event.repeat) return;
       if (event.altKey || event.ctrlKey || event.metaKey || isIgnoredTarget(event.target)) return;
       const next = keyForShortcut(event.key, originalKey, playKey);
-      if (next) onChange(next);
+      if (!next) return;
+      onChange(next);
+      markStep('changeKey');
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);

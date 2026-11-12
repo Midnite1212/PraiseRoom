@@ -2,6 +2,56 @@
   "app": {
     "name": "Praise Room"
   },
+  "gettingStarted": {
+    "title": "Getting started",
+    "intro": "A few things to try as you settle in. Each one ticks itself off when you do it.",
+    "progress": "{{done}}/{{total}}",
+    "progressLabel": "{{done}} of {{total}} done",
+    "done": "Done",
+    "toDo": "Not done yet",
+    "stepLabel": "{{title}} ({{status}}). {{description}}",
+    "hide": "Hide getting started",
+    "hidden": "Hidden from Home. You can bring it back from Account.",
+    "showOnHome": "Show on Home",
+    "shownOnHome": "Getting started is back on Home",
+    "finishedTitle": "You’re all set",
+    "finishedBody": "You’ve tried everything on the list. It stays in Account if you want to look again.",
+    "close": "Close",
+    "steps": {
+      "openSong": {
+        "title": "Open a song",
+        "description": "Find one in Songs and open its chord chart."
+      },
+      "changeKey": {
+        "title": "Change a song’s key",
+        "description": "Tap the key in an open song and pick another. The chords follow."
+      },
+      "personalize": {
+        "title": "Pick your theme and language",
+        "description": "Light or dark, English or 繁體中文, in Settings."
+      },
+      "createSetlist": {
+        "title": "Make a setlist",
+        "description": "Line up the songs for your next service in Setlists."
+      },
+      "playHandsFree": {
+        "title": "Play hands-free",
+        "description": "Start auto-scroll, or Present to TV from the reading settings."
+      },
+      "shareLink": {
+        "title": "Share a setlist",
+        "description": "Copy its public link so the band can follow along."
+      },
+      "joinFolder": {
+        "title": "Join or make a folder",
+        "description": "Folders share setlists with your team."
+      },
+      "capoOrNumbers": {
+        "title": "Try a capo or numbers",
+        "description": "In the key tray, set a capo or show chords as numbers."
+      }
+    }
+  },
   "nav": {
     "home": "Home",
     "songs": "Songs",

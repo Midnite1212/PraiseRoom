@@ -9,6 +9,7 @@ import { SetRow } from '@/components/primitives/set-row';
 import { Tray } from '@/components/primitives/tray';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import { useMarkStep } from '@/features/getting-started/track';
 
 import {
   ACCIDENTALS,
@@ -82,6 +83,7 @@ export function ReadingSettings({
   const [mode] = useReaderMode();
   const [isTrayOpen, setIsTrayOpen] = useState(false);
   const [isPresenting, setIsPresenting] = useState(false);
+  const markStep = useMarkStep();
   const showsChords = mode === 'chords';
   const awakeHint = wakeLockSupported()
     ? keepAwake === 'on'
@@ -94,6 +96,7 @@ export function ReadingSettings({
     setIsTrayOpen(false);
     setIsPresenting(true);
     void enterFullscreen();
+    markStep('playHandsFree');
   };
 
   return (
