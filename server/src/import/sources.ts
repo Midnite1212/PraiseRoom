@@ -54,6 +54,7 @@ const asNumber = (value: unknown): number =>
 // ---------- WorshipTogether ----------
 
 const WT_SITEMAP = 'https://www.worshiptogether.com/sitemap-en.xml';
+const WT_SITEMAP_TIMEOUT_MS = 25_000;
 const WT_INDEX_TTL_MS = 6 * 60 * 60 * 1000;
 const WT_FAILURE_TTL_MS = 5 * 60 * 1000;
 let wtIndex: { urls: string[]; loadedAt: number } | null = null;
@@ -70,7 +71,7 @@ const worshipTogetherIndex = async (): Promise<string[]> => {
   if (wtIndex && Date.now() - wtIndex.loadedAt < WT_INDEX_TTL_MS) return wtIndex.urls;
   if (Date.now() - wtFailedAt < WT_FAILURE_TTL_MS)
     throw new UpstreamError('unavailable', 'Recently failed');
-  wtLoading ??= fetchPage(WT_SITEMAP, { timeoutMs: SEARCH_TIMEOUT_MS })
+  wtLoading ??= fetchPage(WT_SITEMAP, { timeoutMs: WT_SITEMAP_TIMEOUT_MS })
     .then(({ body }) => {
       wtIndex = { urls: parseWorshipTogetherSitemap(body), loadedAt: Date.now() };
       return wtIndex.urls;

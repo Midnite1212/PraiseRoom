@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
-import { describe, it } from 'node:test';
+import { afterEach, beforeEach, describe, it, mock } from 'node:test';
 
+import { UpstreamError } from './fetchPage';
 import {
   matchWorshipTogether,
   parsePnw,
@@ -9,6 +10,7 @@ import {
   parseUltimateGuitarSearch,
   parseWorshipTogether,
   parseWorshipTogetherSitemap,
+  searchSource,
   sourceOf,
 } from './sources';
 
@@ -72,6 +74,115 @@ describe('WorshipTogether', () => {
 
   it('returns null for a lyrics-only page', () => {
     assert.equal(parseWorshipTogether(wtLine([['', 'Just words']]), 'https://x'), null);
+  });
+});
+
+describe('WorshipTogether sitemap loading', () => {
+  const songUrl = 'https://www.worshiptogether.com/songs/morning-light-invented-band/';
+  const sitemap = `<url><loc>${songUrl}</loc></url>`;
+  let testTime = Date.UTC(2030, 0, 1);
+
+  beforeEach(() => {
+    testTime += 24 * 60 * 60 * 1000;
+    mock.timers.enable({ apis: ['Date', 'setTimeout'], now: testTime });
+    mock.method(AbortSignal, 'timeout', (timeoutMs: number) => {
+      const controller = new AbortController();
+      setTimeout(() => controller.abort(), timeoutMs);
+      return controller.signal;
+    });
+  });
+
+  afterEach(() => {
+    mock.restoreAll();
+    mock.timers.reset();
+  });
+
+  it('allows a 12-second sitemap download while other searches time out after 8 seconds', async () => {
+    const fetchMock = mock.method(
+      globalThis,
+      'fetch',
+      (_url: string | URL | Request, options?: RequestInit) =>
+        new Promise<Response>((resolve, reject) => {
+          setTimeout(() => resolve(new Response(sitemap)), 12_000);
+          options?.signal?.addEventListener('abort', () => reject(new Error('Timed out')));
+        })
+    );
+    const searches = Promise.allSettled([
+      searchSource('worshiptogether', 'Morning Light'),
+      searchSource('ultimate-guitar', 'Morning Light'),
+    ]);
+    mock.timers.tick(8_000);
+    assert.equal(fetchMock.mock.calls[0]?.arguments[1]?.signal?.aborted, false);
+    assert.equal(fetchMock.mock.calls[1]?.arguments[1]?.signal?.aborted, true);
+    mock.timers.tick(4_000);
+    const [worshipTogether, ultimateGuitar] = await searches;
+    assert.equal(worshipTogether?.status, 'fulfilled');
+    if (worshipTogether?.status === 'fulfilled') {
+      assert.deepEqual(
+        worshipTogether.value.map(({ url }) => url),
+        [songUrl]
+      );
+    }
+    assert.equal(ultimateGuitar?.status, 'rejected');
+  });
+
+  it('shares one in-flight sitemap across queries and caches success for six hours', async () => {
+    let finishDownload: (response: Response) => void = () => {};
+    const download = new Promise<Response>((resolve) => {
+      finishDownload = resolve;
+    });
+    const fetchMock = mock.method(globalThis, 'fetch', () => download);
+    const first = searchSource('worshiptogether', 'Morning');
+    const second = searchSource('worshiptogether', 'Invented Band');
+    assert.equal(fetchMock.mock.callCount(), 1);
+    finishDownload(new Response(sitemap));
+    const [firstResults, secondResults] = await Promise.all([first, second]);
+    assert.deepEqual(
+      firstResults.map(({ url }) => url),
+      [songUrl]
+    );
+    assert.deepEqual(secondResults, firstResults);
+
+    mock.timers.tick(6 * 60 * 60 * 1000 - 1);
+    assert.deepEqual(await searchSource('worshiptogether', 'Morning'), firstResults);
+    assert.equal(fetchMock.mock.callCount(), 1);
+    mock.timers.tick(1);
+    fetchMock.mock.mockImplementation(async () => new Response(sitemap));
+    assert.deepEqual(await searchSource('worshiptogether', 'Morning'), firstResults);
+    assert.equal(fetchMock.mock.callCount(), 2);
+  });
+
+  it('times out the shared download after 25 seconds and retries after five minutes', async () => {
+    const fetchMock = mock.method(
+      globalThis,
+      'fetch',
+      (_url: string | URL | Request, options?: RequestInit) =>
+        new Promise<Response>((_resolve, reject) => {
+          options?.signal?.addEventListener('abort', () => reject(new Error('Timed out')));
+        })
+    );
+    const searches = Promise.all([
+      assert.rejects(searchSource('worshiptogether', 'Morning'), UpstreamError),
+      assert.rejects(searchSource('worshiptogether', 'Light'), UpstreamError),
+    ]);
+    assert.equal(fetchMock.mock.callCount(), 1);
+    mock.timers.tick(24_999);
+    assert.equal(fetchMock.mock.calls[0]?.arguments[1]?.signal?.aborted, false);
+    mock.timers.tick(1);
+    await searches;
+
+    mock.timers.tick(5 * 60 * 1000 - 1);
+    await assert.rejects(searchSource('worshiptogether', 'Morning'), /Recently failed/);
+    assert.equal(fetchMock.mock.callCount(), 1);
+    mock.timers.tick(1);
+    fetchMock.mock.mockImplementation(async () => new Response(sitemap));
+    assert.deepEqual(
+      (await searchSource('worshiptogether', 'Morning')).map(({ url }) => url),
+      [songUrl]
+    );
+    assert.equal(fetchMock.mock.callCount(), 2);
+    await searchSource('worshiptogether', 'Light');
+    assert.equal(fetchMock.mock.callCount(), 2);
   });
 });
 
