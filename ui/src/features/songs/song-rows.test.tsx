@@ -1,5 +1,6 @@
 import { screen } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import userEvent from '@testing-library/user-event';
+import { describe, expect, it, vi } from 'vitest';
 
 import { renderWithRouter } from '@/test/render-with-router';
 
@@ -21,6 +22,43 @@ const song = (id: string, title: string): SongSummary => ({
 const songs = [song('0123456789abcdef01234567', 'Alpha'), song('0123456789abcdef01234568', 'Beta')];
 
 describe('SongRows', () => {
+  it('offers the empty action alongside the existing clear actions', async () => {
+    const onSearchWeb = vi.fn<() => void>();
+    const onClearSearch = vi.fn<() => void>();
+    const onClearFilters = vi.fn<() => void>();
+    renderWithRouter(
+      <SongRows
+        songs={[]}
+        sort="title"
+        nextSetSongIds={new Set()}
+        emptyAction={<button onClick={onSearchWeb}>Search the web</button>}
+        onClearSearch={onClearSearch}
+        onClearFilters={onClearFilters}
+      />
+    );
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Search the web' }));
+    expect(onSearchWeb).toHaveBeenCalledOnce();
+    await userEvent.click(screen.getByRole('button', { name: 'Clear search' }));
+    expect(onClearSearch).toHaveBeenCalledOnce();
+    await userEvent.click(screen.getByRole('button', { name: 'Clear filters' }));
+    expect(onClearFilters).toHaveBeenCalledOnce();
+  });
+
+  it('hides the empty action when songs are present', async () => {
+    renderWithRouter(
+      <SongRows
+        songs={songs}
+        sort="title"
+        nextSetSongIds={new Set()}
+        emptyAction={<button>Search the web</button>}
+      />
+    );
+
+    await screen.findByRole('link', { name: /Alpha/ });
+    expect(screen.queryByRole('button', { name: 'Search the web' })).not.toBeInTheDocument();
+  });
+
   it('shows the Next set marker only on songs in the next set', async () => {
     renderWithRouter(
       <SongRows songs={songs} sort="title" nextSetSongIds={new Set(['0123456789abcdef01234568'])} />

@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router';
+import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { EmptyState } from '@/components/page/empty-state';
@@ -55,6 +56,7 @@ export function SongRows({
   sort,
   grouped = false,
   nextSetSongIds,
+  emptyAction,
   onClearSearch,
   onClearFilters,
 }: {
@@ -62,6 +64,7 @@ export function SongRows({
   sort: SongSort;
   grouped?: boolean;
   nextSetSongIds: ReadonlySet<string>;
+  emptyAction?: ReactNode;
   onClearSearch?: () => void;
   onClearFilters?: () => void;
 }) {
@@ -70,6 +73,7 @@ export function SongRows({
     return (
       <EmptyState
         title={t('songs.empty')}
+        action={emptyAction}
         onClearSearch={onClearSearch}
         onClearFilters={onClearFilters}
       >

@@ -92,5 +92,35 @@ describe('SongsTable', () => {
     );
 
     expect(await screen.findByText('No songs found.')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Search the web' })).not.toBeInTheDocument();
+  });
+
+  it('offers the empty action without requiring clear actions', async () => {
+    const onSearchWeb = vi.fn<() => void>();
+    renderWithRouter(
+      <SongsTable
+        songs={[]}
+        onSelect={vi.fn<(songId: string) => void>()}
+        emptyAction={<button onClick={onSearchWeb}>Search the web</button>}
+        {...sorted}
+      />
+    );
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Search the web' }));
+    expect(onSearchWeb).toHaveBeenCalledOnce();
+  });
+
+  it('hides the empty action when songs are present', async () => {
+    renderWithRouter(
+      <SongsTable
+        songs={songs}
+        onSelect={vi.fn<(songId: string) => void>()}
+        emptyAction={<button>Search the web</button>}
+        {...sorted}
+      />
+    );
+
+    await screen.findByRole('row', { name: /Song One/ });
+    expect(screen.queryByRole('button', { name: 'Search the web' })).not.toBeInTheDocument();
   });
 });
