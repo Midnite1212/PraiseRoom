@@ -834,7 +834,8 @@
       "keys": "調",
       "capo": "變調夾",
       "tuner": "調音器",
-      "metronome": "節拍器"
+      "metronome": "節拍器",
+      "transpose": "轉調"
     },
     "chords": {
       "searchPlaceholder": "搜尋和弦，例如 F#m7",
@@ -935,6 +936,25 @@
         "title": "此瀏覽器無法播放拍子聲",
         "body": "你的瀏覽器不讓網頁發出聲音。請用最新版本的瀏覽器開啟 Praise Room。"
       }
+    },
+    "transpose": {
+      "chords": "要轉調的和弦",
+      "placeholder": "G D/F# Em C",
+      "inputHint": "輸入或貼上和弦，用空格分隔，或貼上像 [G]Amazing [C]grace 這樣的一行。",
+      "from": "原調",
+      "to": "新調",
+      "minorHint": "小調的歌？請選它的關係大調，例如 Em 選 G。",
+      "result": "{{key}} 調",
+      "sameKey": "同一個調",
+      "up_one": "升 {{count}} 個半音",
+      "up_other": "升 {{count}} 個半音",
+      "down_one": "降 {{count}} 個半音",
+      "down_other": "降 {{count}} 個半音",
+      "empty": "輸入和弦，就會看到它們在新調的樣子。",
+      "line": "第 {{number}} 行",
+      "numbersHint": "小數字是 Nashville 級數，在任何調都一樣。",
+      "unreadMark": "不是和弦",
+      "unreadHint": "劃了線的字不是和弦，所以保留原樣。"
     }
   },
   "filters": {
