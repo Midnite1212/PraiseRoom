@@ -785,7 +785,8 @@
     "tabs": {
       "chords": "Chords",
       "keys": "Keys",
-      "capo": "Capo"
+      "capo": "Capo",
+      "tuner": "Tuner"
     },
     "chords": {
       "searchPlaceholder": "Search chords, such as F#m7",
@@ -814,6 +815,56 @@
       "noCapoNote": "{{shapes}} shapes sound in {{key}} without a capo.",
       "highNote": "Fret {{fret}} is high up the neck. Try shapes closer to the song key.",
       "keyNote": "{{shapes}} shapes with the capo on fret {{fret}} sound in {{key}}."
+    },
+    "tuner": {
+      "start": "Start tuner",
+      "stop": "Stop",
+      "retry": "Try again",
+      "privacy": "Audio stays on this device. Nothing is recorded or sent.",
+      "idle": {
+        "title": "Tune your guitar",
+        "body": "Start the tuner, allow the microphone, then play one string at a time."
+      },
+      "asking": {
+        "title": "Waiting for the microphone",
+        "body": "Choose Allow when your browser asks to use the microphone."
+      },
+      "listening": {
+        "title": "Listening",
+        "body": "Play one string and let it ring."
+      },
+      "denied": {
+        "title": "Microphone access is blocked",
+        "body": "Open this site’s settings from the address bar, set Microphone to Allow, then try again. On iPhone, also check Safari’s Microphone setting in the Settings app."
+      },
+      "unavailable": {
+        "title": "No microphone to use",
+        "body": "The tuner could not find a microphone, or this browser does not let web pages use one. Plug one in, close other apps that are using it, then try again."
+      },
+      "insecure": {
+        "title": "The microphone needs a secure page",
+        "body": "Browsers only share the microphone with pages opened over HTTPS or on localhost. Open Praise Room from its https:// address."
+      },
+      "strings": "Strings",
+      "autoHint": "Auto. Tap a string to lock it",
+      "lockedHint": "Locked. Tap it again for auto",
+      "string": "String {{number}}, {{note}}",
+      "stringNumber": "String {{number}}",
+      "meter": "Tuning",
+      "state": {
+        "flat": "Flat, tune up",
+        "inTune": "In tune",
+        "sharp": "Sharp, tune down"
+      },
+      "scale": {
+        "flat": "Flat",
+        "sharp": "Sharp"
+      },
+      "cents_one": "{{cents}} cent",
+      "cents_other": "{{cents}} cents",
+      "reading": "{{note}}, {{offset}}, {{state}}",
+      "heard": "Hearing",
+      "heardValue": "{{note}} · {{hertz}} Hz"
     }
   },
   "filters": {

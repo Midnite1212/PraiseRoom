@@ -8,11 +8,13 @@ import { CapoHelper } from './capo-helper';
 import { ChordLibrary } from './chord-library';
 import { KeyGuide } from './key-guide';
 import { type Tool, TOOLS } from './tools';
+import { Tuner } from './tuner';
 
 const TOOL_VIEWS: Record<Tool, ComponentType> = {
   chords: ChordLibrary,
   keys: KeyGuide,
   capo: CapoHelper,
+  tuner: Tuner,
 };
 
 export function ToolsPage({
