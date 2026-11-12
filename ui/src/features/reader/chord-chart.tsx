@@ -14,10 +14,24 @@ import { cn } from '@/lib/utils';
 
 import { ChordDiagram } from './chord-diagram';
 
-const DIAGRAM_BOX = 'aspect-[86/94] w-[76px]';
+const DIAGRAM_BOX = 'aspect-[86/94] w-full max-w-[76px]';
+
+type ChordShapeCardProps = {
+  name: string;
+  shapes: ChordShape[] | null;
+  caption?: string;
+  nameClassName?: string;
+  className?: string;
+};
 
 // One chord: its name, a diagram, and prev/next through the dataset's other voicings.
-export function ChordShapeCard({ name, shapes }: { name: string; shapes: ChordShape[] | null }) {
+export function ChordShapeCard({
+  name,
+  shapes,
+  caption,
+  nameClassName = 'text-chord',
+  className,
+}: ChordShapeCardProps) {
   const { t } = useTranslation();
   const [index, setIndex] = useState(0);
   const count = shapes?.length ?? 0;
@@ -25,8 +39,20 @@ export function ChordShapeCard({ name, shapes }: { name: string; shapes: ChordSh
   const step = (by: number) => setIndex((current) => (current + by + count) % count);
 
   return (
-    <li className="bg-fill-hover roomy:w-auto flex w-[92px] flex-none snap-start flex-col items-center gap-1 rounded-2xl px-1.5 pt-2 pb-1.5">
-      <span className="text-chord max-w-full truncate font-mono text-sm font-bold">{name}</span>
+    <li
+      className={cn(
+        'bg-fill-hover roomy:w-auto flex w-[92px] flex-none snap-start flex-col items-center gap-1 rounded-2xl px-1.5 pt-2 pb-1.5',
+        className
+      )}
+    >
+      {caption ? (
+        <span className="text-ink-3 font-mono text-[0.6875rem] leading-none font-semibold">
+          {caption}
+        </span>
+      ) : null}
+      <span className={cn('max-w-full truncate font-mono text-sm font-bold', nameClassName)}>
+        {name}
+      </span>
       {shapes === null ? (
         <Skeleton className={cn(DIAGRAM_BOX, 'rounded-xl')} />
       ) : shape ? (
@@ -41,7 +67,7 @@ export function ChordShapeCard({ name, shapes }: { name: string; shapes: ChordSh
           {t('reader.chordChart.noDiagram')}
         </span>
       )}
-      <div className="flex h-7 items-center gap-0.5">
+      <div className="flex h-7 w-[calc(100%+8px)] max-w-[88px] flex-none items-center justify-center gap-0.5">
         {count > 1 ? (
           <>
             <Button
@@ -52,7 +78,7 @@ export function ChordShapeCard({ name, shapes }: { name: string; shapes: ChordSh
             >
               <ChevronLeft />
             </Button>
-            <span className="text-ink-3 min-w-7 text-center font-mono text-[0.6875rem] font-semibold">
+            <span className="text-ink-3 min-w-0 flex-1 text-center font-mono text-[0.6875rem] font-semibold">
               <span aria-hidden>
                 {(index % count) + 1}/{count}
               </span>

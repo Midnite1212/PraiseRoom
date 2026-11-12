@@ -2,8 +2,9 @@ import { RequestHandler, Response } from 'express';
 
 import { ownershipRepository } from '../db/repositories/ownership.repository';
 import { AuthenticatedRequest } from '../policies/permissionMiddleware';
+import { ASSIGNABLE_ACCESS_TYPES, AssignableAccessType } from '../policies/permissions.config';
 import { OwnershipRecord } from '../types/ownership.types';
-import { canEditSetlists, ownedEntryIds, sendForbidden } from '../utils/authorization';
+import { canEditSetlists, isSuper, ownedEntryIds, sendForbidden } from '../utils/authorization';
 import { pick } from '../utils/pick';
 import { sendError, sendResponse } from '../utils/response';
 import { isObjectIdString, isUserIdString } from '../utils/validation';
@@ -185,4 +186,85 @@ const deleteAccountData: RequestHandler = async (
   }
 };
 
-export { createOwnership, getOwnership, updateOwnership, deleteOwnership, deleteAccountData };
+const isAssignableAccessType = (value: unknown): value is AssignableAccessType =>
+  ASSIGNABLE_ACCESS_TYPES.some((accessType) => accessType === value);
+
+const listMembers: RequestHandler = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<void> => {
+  if (!req.user) {
+    sendResponse(res, 401, 'Unauthorized');
+    return;
+  }
+  if (!isSuper(req.user)) {
+    sendForbidden(res);
+    return;
+  }
+
+  try {
+    sendResponse(res, 200, await ownershipRepository.listLiveMemberAccess());
+  } catch (error: unknown) {
+    sendError(res, error);
+  }
+};
+
+const setMemberAccessType: RequestHandler = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<void> => {
+  if (!req.user) {
+    sendResponse(res, 401, 'Unauthorized');
+    return;
+  }
+  if (!isSuper(req.user)) {
+    sendForbidden(res);
+    return;
+  }
+
+  const userId: unknown = req.body?.userId;
+  const accessType: unknown = req.body?.accessType;
+  if (!isUserIdString(userId)) {
+    sendResponse(res, 400, 'Invalid user id');
+    return;
+  }
+  if (!isAssignableAccessType(accessType)) {
+    sendResponse(res, 400, 'Invalid access type');
+    return;
+  }
+  if (userId === req.user.id) {
+    sendForbidden(res);
+    return;
+  }
+
+  try {
+    const current = await ownershipRepository.findAccessType(userId);
+    if (current === null) {
+      sendResponse(res, 404, 'Ownership not found');
+      return;
+    }
+    if (current === 'super') {
+      sendForbidden(res);
+      return;
+    }
+    const member = await ownershipRepository.setAccessType(userId, accessType);
+    if (!member) {
+      sendResponse(res, 404, 'Ownership not found');
+      return;
+    }
+    console.info(`Access type of user ${userId} set to ${accessType} by user ${req.user.id}`);
+    sendResponse(res, 200, member);
+  } catch (error: unknown) {
+    sendError(res, error);
+  }
+};
+
+export {
+  createOwnership,
+  getOwnership,
+  updateOwnership,
+  deleteOwnership,
+  deleteAccountData,
+  listMembers,
+  setMemberAccessType,
+};

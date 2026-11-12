@@ -10,6 +10,7 @@
     "expandSidebar": "展開側邊欄",
     "setlists": "歌單",
     "folders": "資料夾",
+    "tools": "工具",
     "pages": "頁面",
     "nextUpWhen": "下一個 · {{when}}",
     "nextUpLabel": "下一個：{{name}}，{{day}}"
@@ -36,9 +37,12 @@
     "accessType": {
       "member": "成員",
       "editor": "編輯",
-      "admin": "管理員"
+      "admin": "管理員",
+      "super": "超級管理員"
     },
-    "account": "帳戶"
+    "account": "帳戶",
+    "admin": "管理",
+    "adminHint": "核實詩歌及管理角色"
   },
   "home": {
     "greeting": "歡迎，{{name}}",
@@ -244,6 +248,7 @@
     }
   },
   "reader": {
+    "verified": "已核實",
     "setlist": "歌單",
     "songCount_one": "{{count}} 首歌曲",
     "songCount_other": "{{count}} 首歌曲",
@@ -771,6 +776,94 @@
       "chart": "{第一節}\n[E]向耶和華[A]唱一首[B7]新的[C#m]歌；\n[E]全地都要[B]向耶和華[E]歌唱。"
     }
   },
+  "tools": {
+    "title": "工具",
+    "pick": "工具",
+    "tabs": {
+      "chords": "和弦",
+      "keys": "調",
+      "capo": "變調夾",
+      "tuner": "調音器"
+    },
+    "chords": {
+      "searchPlaceholder": "搜尋和弦，例如 F#m7",
+      "search": "搜尋和弦",
+      "root": "根音",
+      "browse": "大三和弦及小三和弦",
+      "results": "和弦",
+      "none": "找不到「{{query}}」這個和弦",
+      "noneHint": "輸入根音和和弦類型，例如 Bb 或 Em7。"
+    },
+    "keys": {
+      "pick": "調",
+      "chordsIn": "{{key}} 調的和弦",
+      "progressions": "常用和弦進行",
+      "progressionIn": "{{key}} 調的 {{progression}}"
+    },
+    "capo": {
+      "mode": "要找甚麼",
+      "findCapo": "找變調夾位置",
+      "findKey": "找實際的調",
+      "songKey": "歌曲的調",
+      "shapes": "和弦指法",
+      "fret": "第 {{fret}} 品",
+      "keyAnswer": "實際的調",
+      "capoNote": "變調夾夾在第 {{fret}} 品，以 {{shapes}} 指法彈奏，出來就是 {{key}} 調。",
+      "noCapoNote": "不用變調夾，{{shapes}} 指法出來就是 {{key}} 調。",
+      "highNote": "第 {{fret}} 品在琴頸上太高，試試較接近歌曲的調的指法。",
+      "keyNote": "變調夾夾在第 {{fret}} 品，{{shapes}} 指法出來是 {{key}} 調。"
+    },
+    "tuner": {
+      "start": "開始調音",
+      "stop": "停止",
+      "retry": "再試一次",
+      "privacy": "聲音只留在這部裝置上，不會錄音，也不會傳送出去。",
+      "idle": {
+        "title": "為結他調音",
+        "body": "開始調音並允許使用麥克風，然後逐條弦彈奏。"
+      },
+      "asking": {
+        "title": "正在等待麥克風",
+        "body": "瀏覽器詢問是否使用麥克風時，請選擇「允許」。"
+      },
+      "listening": {
+        "title": "聆聽中",
+        "body": "彈一條弦，讓它持續發聲。"
+      },
+      "denied": {
+        "title": "麥克風權限已被封鎖",
+        "body": "請從網址列開啟此網站的設定，將麥克風設為「允許」，然後再試一次。使用 iPhone 的話，請同時在「設定」App 內檢查 Safari 的麥克風設定。"
+      },
+      "unavailable": {
+        "title": "沒有可用的麥克風",
+        "body": "調音器找不到麥克風，或此瀏覽器不讓網頁使用麥克風。請接上麥克風，關閉正在使用它的其他應用程式，然後再試一次。"
+      },
+      "insecure": {
+        "title": "麥克風需要安全的頁面",
+        "body": "瀏覽器只會讓以 HTTPS 或 localhost 開啟的頁面使用麥克風。請用 https:// 網址開啟 Praise Room。"
+      },
+      "strings": "弦",
+      "autoHint": "自動。點選一條弦以鎖定",
+      "lockedHint": "已鎖定。再點一次回到自動",
+      "string": "第 {{number}} 弦，{{note}}",
+      "stringNumber": "第 {{number}} 弦",
+      "meter": "音準",
+      "state": {
+        "flat": "偏低，調高一點",
+        "inTune": "音準了",
+        "sharp": "偏高，調低一點"
+      },
+      "scale": {
+        "flat": "偏低",
+        "sharp": "偏高"
+      },
+      "cents_one": "{{cents}} 音分",
+      "cents_other": "{{cents}} 音分",
+      "reading": "{{note}}，{{offset}}，{{state}}",
+      "heard": "聽到",
+      "heardValue": "{{note}} · {{hertz}} Hz"
+    }
+  },
   "filters": {
     "button": "篩選",
     "buttonWithCount": "篩選（已選 {{count}} 項）",
@@ -876,6 +969,39 @@
       "failed": "發生錯誤，請再試一次。"
     }
   },
+  "admin": {
+    "title": "管理",
+    "sections": "管理分頁",
+    "songs": {
+      "tab": "詩歌",
+      "search": "搜尋詩歌",
+      "verified": "已核實",
+      "unverified": "未核實",
+      "verify": "核實",
+      "unverify": "取消核實",
+      "verifyTitle": "將「{{title}}」標為已核實",
+      "unverifyTitle": "將「{{title}}」標為未核實",
+      "markedVerified": "「{{title}}」已核實",
+      "markedUnverified": "「{{title}}」已取消核實",
+      "failed": "未能更新詩歌，請再試一次。",
+      "notFound": "這首詩歌已不存在。",
+      "empty": "找不到詩歌",
+      "loadFailed": "未能載入詩歌。"
+    },
+    "members": {
+      "tab": "成員",
+      "search": "搜尋成員",
+      "role": "{{name}} 的角色",
+      "you": "你",
+      "supers": "超級管理員：{{count}} / {{max}}",
+      "changed": "{{name}} 現在是{{role}}",
+      "failed": "未能更改角色，請再試一次。",
+      "forbidden": "你不能更改這位成員的角色。",
+      "notFound": "這位成員已不存在。",
+      "empty": "找不到成員",
+      "loadFailed": "未能載入成員。"
+    }
+  },
   "account": {
     "title": "帳戶",
     "loadFailed": "無法載入，請重新整理頁面再試。",
@@ -932,7 +1058,8 @@
       "title": "你可以做什麼",
       "member": "瀏覽詩歌，並建立歌單和資料夾。管理員可以讓你編輯詩歌。",
       "editor": "新增和編輯詩歌，並建立歌單和資料夾。只有管理員可以更改你的角色。",
-      "admin": "編輯者能做的一切，另可管理任何歌單或資料夾。"
+      "admin": "編輯者能做的一切，另可管理任何歌單或資料夾。",
+      "super": "管理員能做的一切，另可更改其他成員的角色。"
     },
     "delete": {
       "title": "刪除帳戶",

@@ -4,9 +4,11 @@ import { z } from 'zod';
 import { ApiError, apiRequest, clearAuthToken } from '@/lib/api-client';
 import { authClient, fetchSession, type SessionUser } from '@/lib/auth-client';
 
-export const ACCESS_TYPES = ['member', 'editor', 'admin'] as const;
+export const ACCESS_TYPES = ['member', 'editor', 'admin', 'super'] as const;
 
 export type AccessType = (typeof ACCESS_TYPES)[number];
+
+const ADMIN_ACCESS_TYPES: ReadonlySet<AccessType> = new Set(['admin', 'super']);
 
 const ownershipEntrySchema = z.object({
   id: z.string().optional(),
@@ -36,8 +38,15 @@ export type Session = {
 const toAccessType = (value: string): AccessType =>
   ACCESS_TYPES.find((accessType) => accessType === value) ?? 'member';
 
+// Mirrors `hasAdminPowers` and `isSuper` in `server/src/utils/authorization.ts`; the server still decides.
+export const hasAdminPowers = (session: Session | null | undefined): boolean =>
+  session ? ADMIN_ACCESS_TYPES.has(session.accessType) : false;
+
+export const isSuper = (session: Session | null | undefined): boolean =>
+  session?.accessType === 'super';
+
 export const canWriteSongs = (session: Session | null): boolean =>
-  session?.accessType === 'editor' || session?.accessType === 'admin';
+  session?.accessType === 'editor' || hasAdminPowers(session);
 
 const loadOwnership = async (user: SessionUser): Promise<Ownership> => {
   try {

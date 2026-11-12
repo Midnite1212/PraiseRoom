@@ -1,6 +1,8 @@
-import { SQL, and, asc, eq, inArray, sql } from 'drizzle-orm';
+import { SQL, and, asc, eq, inArray, ne, sql } from 'drizzle-orm';
 
+import { AssignableAccessType } from '../../policies/permissions.config';
 import {
+  MemberAccess,
   OwnershipEntry,
   OwnershipRecord,
   OwnershipSummary,
@@ -185,6 +187,40 @@ export const ownershipRepository = {
       fullName,
       groupIds,
     }));
+  },
+
+  listLiveMemberAccess(): Promise<MemberAccess[]> {
+    return getDb()
+      .select({
+        userId: ownerships.userId,
+        fullName: ownerships.fullName,
+        accessType: ownerships.accessType,
+      })
+      .from(ownerships)
+      .where(eq(ownerships.isDeleted, false))
+      .orderBy(asc(ownerships.fullName), asc(ownerships.id));
+  },
+
+  async setAccessType(
+    userId: string,
+    accessType: AssignableAccessType
+  ): Promise<MemberAccess | null> {
+    const [row] = await getDb()
+      .update(ownerships)
+      .set({ accessType, updatedAt: new Date() })
+      .where(
+        and(
+          eq(ownerships.userId, userId),
+          eq(ownerships.isDeleted, false),
+          ne(ownerships.accessType, 'super')
+        )
+      )
+      .returning({
+        userId: ownerships.userId,
+        fullName: ownerships.fullName,
+        accessType: ownerships.accessType,
+      });
+    return row ?? null;
   },
 
   async replaceSetlistEntries(

@@ -103,13 +103,13 @@ const optionalAuth: RequestHandler = async (req: AuthenticatedRequest, _res: Res
   next();
 };
 
-const isAllowedAccessType = (allowedTypes: AccessType[], accessType: string): boolean =>
+const isAllowedAccessType = (allowedTypes: readonly AccessType[], accessType: string): boolean =>
   allowedTypes.some((allowedType) => allowedType === accessType);
 
 /**
  * Access type middleware factory - checks if user has required access type
  */
-const requireAccessType = (allowedTypes: AccessType[]): RequestHandler => {
+const requireAccessType = (allowedTypes: readonly AccessType[]): RequestHandler => {
   return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     if (!req.user) {
       return res.status(401).json({
