@@ -9,6 +9,7 @@ import { KeyGuide } from './key-guide';
 import { Metronome } from './metronome';
 import { ToolSwitch } from './tool-switch';
 import type { Tool } from './tools';
+import { ToolsGuides } from './tools-guides';
 import { TransposeHelper } from './transpose-helper';
 import { Tuner } from './tuner';
 
@@ -19,6 +20,7 @@ const TOOL_VIEWS: Record<Tool, ComponentType> = {
   tuner: Tuner,
   metronome: Metronome,
   transpose: TransposeHelper,
+  guides: ToolsGuides,
 };
 
 export function ToolsPage({

@@ -838,7 +838,8 @@
       "capo": "Capo",
       "tuner": "Tuner",
       "metronome": "Metronome",
-      "transpose": "Transpose"
+      "transpose": "Transpose",
+      "guides": "Guides"
     },
     "chords": {
       "searchPlaceholder": "Search chords, such as F#m7",
@@ -958,6 +959,40 @@
       "numbersHint": "The small numbers are Nashville numbers. They stay the same in every key.",
       "unreadMark": "not a chord",
       "unreadHint": "Crossed-out words are not chords, so they are kept as typed."
+    },
+    "guides": {
+      "basics": "The basics",
+      "kicker": "Basics",
+      "howTos": "Praise Room how-tos",
+      "reads": {
+        "nashville": {
+          "title": "Nashville numbers",
+          "body": {
+            "what": "Nashville numbers name each chord by its step in the key. In G, G is **1**, C is **4** and D is **5**, so G–C–D reads 1–4–5.",
+            "keys": "Change the key and the letters change, but the numbers do not. In A the same chords are A–D–E, still 1–4–5, so a band can read one numbers chart in any key.",
+            "marks": "A minor chord keeps its m (**6m**), extras such as 7 sit raised beside the number, and a slash bass is a number too: D/F# in G is **5/7**.",
+            "where": "To read a song in numbers, tap the **key** beside its title and set **Show chords as** to **Numbers**. The Keys tool lists every key’s chords with their numbers."
+          }
+        },
+        "capo": {
+          "title": "Using a capo",
+          "open": "Open the Capo helper",
+          "body": {
+            "what": "A capo clamps across the strings and raises every chord you play. With the capo on fret 3, the G shape sounds as Bb.",
+            "when": "Use one when a song’s key is full of hard chords. Bb, Eb and F are awkward on guitar, but G, C and D shapes with the capo on fret 3 sound the same. It also lets you move a song up for a singer and keep the shapes you know.",
+            "reader": "In a song, tap the **key** and set the **Capo** fret. The chords then show the shapes to play, while numbers and colours stay the same. Praise Room remembers the capo for that song on this device."
+          }
+        },
+        "chart": {
+          "title": "Reading the chord chart",
+          "body": {
+            "syllables": "Each chord sits above the syllable where it changes. Play it on that syllable and hold it until the next chord.",
+            "colours": "Turn on **Colour chords** in the reading settings to tint each chord by its job: the **1** takes your accent colour, the **4** and **5** have their own colours, and the minor **2**, **3** and **6** share one. Colours follow the song’s original key, so they stay put when you change key.",
+            "notation": "**Show chords as** in the key tray switches between **Letters** in the song’s key and **Numbers**, which stay the same in every key. **Simple** chord style, in the reading settings, drops sevenths, sus and slash basses to leave plain chords.",
+            "shapes": "On a song’s page, the guitar shapes for its chords sit beside the lyrics, or under the title on smaller screens. **Hide** folds them away."
+          }
+        }
+      }
     }
   },
   "filters": {
