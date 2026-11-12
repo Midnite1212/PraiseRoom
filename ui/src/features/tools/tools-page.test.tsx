@@ -30,6 +30,11 @@ describe('ToolsPage', () => {
     const { onToolChange } = renderTools('chords');
 
     expect(await screen.findByRole('heading', { name: 'Tools', level: 1 })).toBeInTheDocument();
+    expect(
+      within(screen.getByRole('radiogroup', { name: 'Tool' }))
+        .getAllByRole('radio')
+        .map((radio) => radio.textContent)
+    ).toEqual(['Chords', 'Keys', 'Capo', 'Tuner', 'Metronome']);
     expect(screen.getByRole('radio', { name: 'Chords' })).toBeChecked();
     expect(screen.getByRole('searchbox', { name: 'Search chords' })).toBeInTheDocument();
     expect(screen.getByRole('list', { name: 'Major and minor chords' })).toBeInTheDocument();

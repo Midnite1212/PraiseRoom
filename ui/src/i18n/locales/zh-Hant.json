@@ -833,7 +833,8 @@
       "chords": "和弦",
       "keys": "調",
       "capo": "變調夾",
-      "tuner": "調音器"
+      "tuner": "調音器",
+      "metronome": "節拍器"
     },
     "chords": {
       "searchPlaceholder": "搜尋和弦，例如 F#m7",
@@ -912,6 +913,28 @@
       "reading": "{{note}}，{{offset}}，{{state}}",
       "heard": "聽到",
       "heardValue": "{{note}} · {{hertz}} Hz"
+    },
+    "metronome": {
+      "title": "節拍器",
+      "bpm": "BPM",
+      "start": "開始",
+      "stop": "停止",
+      "beats": "拍子",
+      "beat": "第 {{number}} 拍",
+      "accentedBeat": "第 {{number}} 拍，重拍",
+      "tempo": "速度",
+      "range": "{{min}} 至 {{max}} BPM",
+      "bpmField": "每分鐘拍數",
+      "slower": "慢一點",
+      "faster": "快一點",
+      "slider": "速度",
+      "tap": "點按測速",
+      "signature": "拍號",
+      "compoundHint": "每小節六下，第 1 和第 4 拍是重拍",
+      "unavailable": {
+        "title": "此瀏覽器無法播放拍子聲",
+        "body": "你的瀏覽器不讓網頁發出聲音。請用最新版本的瀏覽器開啟 Praise Room。"
+      }
     }
   },
   "filters": {
