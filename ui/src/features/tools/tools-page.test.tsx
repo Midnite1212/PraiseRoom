@@ -34,7 +34,7 @@ describe('ToolsPage', () => {
       within(screen.getByRole('radiogroup', { name: 'Tool' }))
         .getAllByRole('radio')
         .map((radio) => radio.textContent)
-    ).toEqual(['Chords', 'Keys', 'Capo', 'Tuner', 'Metronome']);
+    ).toEqual(['Chords', 'Keys', 'Capo', 'Tuner', 'Metronome', 'Transpose']);
     expect(screen.getByRole('radio', { name: 'Chords' })).toBeChecked();
     expect(screen.getByRole('searchbox', { name: 'Search chords' })).toBeInTheDocument();
     expect(screen.getByRole('list', { name: 'Major and minor chords' })).toBeInTheDocument();

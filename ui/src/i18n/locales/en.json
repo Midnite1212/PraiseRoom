@@ -837,7 +837,8 @@
       "keys": "Keys",
       "capo": "Capo",
       "tuner": "Tuner",
-      "metronome": "Metronome"
+      "metronome": "Metronome",
+      "transpose": "Transpose"
     },
     "chords": {
       "searchPlaceholder": "Search chords, such as F#m7",
@@ -938,6 +939,25 @@
         "title": "This browser cannot play the clicks",
         "body": "Your browser does not let web pages make sound. Open Praise Room in an up-to-date browser."
       }
+    },
+    "transpose": {
+      "chords": "Chords to transpose",
+      "placeholder": "G D/F# Em C",
+      "inputHint": "Type or paste chords with spaces between them, or a line like [G]Amazing [C]grace.",
+      "from": "From key",
+      "to": "To key",
+      "minorHint": "Minor song? Pick its relative major, such as G for Em.",
+      "result": "In {{key}}",
+      "sameKey": "Same key",
+      "up_one": "Up {{count}} semitone",
+      "up_other": "Up {{count}} semitones",
+      "down_one": "Down {{count}} semitone",
+      "down_other": "Down {{count}} semitones",
+      "empty": "Type some chords to see them in the new key.",
+      "line": "Line {{number}}",
+      "numbersHint": "The small numbers are Nashville numbers. They stay the same in every key.",
+      "unreadMark": "not a chord",
+      "unreadHint": "Crossed-out words are not chords, so they are kept as typed."
     }
   },
   "filters": {
