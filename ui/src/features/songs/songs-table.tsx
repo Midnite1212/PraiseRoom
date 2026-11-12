@@ -2,7 +2,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { createColumnHelper, FlexRender, tableFeatures, useTable } from '@tanstack/react-table';
 import type { TFunction } from 'i18next';
 import { ChevronDown, ChevronUp } from 'pixelarticons/react';
-import type { KeyboardEvent } from 'react';
+import type { KeyboardEvent, ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { EmptyState } from '@/components/page/empty-state';
@@ -67,6 +67,7 @@ export function SongsTable({
   dir,
   onSort,
   onSelect,
+  emptyAction,
   onClearSearch,
   onClearFilters,
 }: {
@@ -76,6 +77,7 @@ export function SongsTable({
   dir: SortDirection;
   onSort: (sort: SongSort) => void;
   onSelect: (songId: string) => void;
+  emptyAction?: ReactNode;
   onClearSearch?: () => void;
   onClearFilters?: () => void;
 }) {
@@ -92,6 +94,7 @@ export function SongsTable({
     return (
       <EmptyState
         title={t('songs.empty')}
+        action={emptyAction}
         onClearSearch={onClearSearch}
         onClearFilters={onClearFilters}
       >

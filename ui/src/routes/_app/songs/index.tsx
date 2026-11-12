@@ -220,6 +220,10 @@ function SongsPage() {
       ? undefined
       : () => setSearch({ letter: undefined, tempo: [], themes: [], keys: [], web: false });
   const addSongLabel = t('songs.add.button');
+  const emptyAction =
+    canAdd && q.trim() !== '' && !web ? (
+      <Button onClick={() => setSearch({ web: true })}>{t('songs.searchWebButton')}</Button>
+    ) : null;
 
   return (
     <>
@@ -285,6 +289,7 @@ function SongsPage() {
                   dir={dir}
                   onSort={sortBy}
                   onSelect={selectSong}
+                  emptyAction={emptyAction}
                   onClearSearch={clearSearch}
                   onClearFilters={clearFilters}
                 />
@@ -294,6 +299,7 @@ function SongsPage() {
                   sort={sort}
                   grouped={q.trim() === ''}
                   nextSetSongIds={nextSetSongs}
+                  emptyAction={emptyAction}
                   onClearSearch={clearSearch}
                   onClearFilters={clearFilters}
                 />
