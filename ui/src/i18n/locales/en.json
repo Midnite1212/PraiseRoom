@@ -836,7 +836,8 @@
       "chords": "Chords",
       "keys": "Keys",
       "capo": "Capo",
-      "tuner": "Tuner"
+      "tuner": "Tuner",
+      "metronome": "Metronome"
     },
     "chords": {
       "searchPlaceholder": "Search chords, such as F#m7",
@@ -915,6 +916,28 @@
       "reading": "{{note}}, {{offset}}, {{state}}",
       "heard": "Hearing",
       "heardValue": "{{note}} · {{hertz}} Hz"
+    },
+    "metronome": {
+      "title": "Metronome",
+      "bpm": "BPM",
+      "start": "Start",
+      "stop": "Stop",
+      "beats": "Beats",
+      "beat": "Beat {{number}}",
+      "accentedBeat": "Beat {{number}}, accented",
+      "tempo": "Tempo",
+      "range": "{{min}} to {{max}} BPM",
+      "bpmField": "Beats per minute",
+      "slower": "Slower",
+      "faster": "Faster",
+      "slider": "Tempo",
+      "tap": "Tap tempo",
+      "signature": "Time signature",
+      "compoundHint": "Six clicks a bar, accents on 1 and 4",
+      "unavailable": {
+        "title": "This browser cannot play the clicks",
+        "body": "Your browser does not let web pages make sound. Open Praise Room in an up-to-date browser."
+      }
     }
   },
   "filters": {
