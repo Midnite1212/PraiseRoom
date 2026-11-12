@@ -16,6 +16,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as ResetRouteImport } from './routes/reset'
 import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as AboutIndexRouteImport } from './routes/about/index'
 import { Route as AppAccountIndexRouteImport } from './routes/_app/account/index'
 import { Route as AppAccountPasswordRouteImport } from './routes/_app/account/password'
 import { Route as AppAdminIndexRouteImport } from './routes/_app/admin/index'
@@ -67,6 +68,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRoute,
+} as any)
+const AboutIndexRoute = AboutIndexRouteImport.update({
+  id: '/about/',
+  path: '/about/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppAccountIndexRoute = AppAccountIndexRouteImport.update({
   id: '/account/',
@@ -162,6 +168,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/reset': typeof ResetRoute
   '/sign-up': typeof SignUpRoute
+  '/about/': typeof AboutIndexRoute
   '/account/password': typeof AppAccountPasswordRoute
   '/folders/$folderSlug': typeof AppFoldersFolderSlugRoute
   '/join/$token': typeof AppJoinTokenRoute
@@ -187,6 +194,7 @@ export interface FileRoutesByTo {
   '/reset': typeof ResetRoute
   '/sign-up': typeof SignUpRoute
   '/': typeof AppIndexRoute
+  '/about': typeof AboutIndexRoute
   '/account/password': typeof AppAccountPasswordRoute
   '/folders/$folderSlug': typeof AppFoldersFolderSlugRoute
   '/join/$token': typeof AppJoinTokenRoute
@@ -214,6 +222,7 @@ export interface FileRoutesById {
   '/reset': typeof ResetRoute
   '/sign-up': typeof SignUpRoute
   '/_app/': typeof AppIndexRoute
+  '/about/': typeof AboutIndexRoute
   '/_app/account/password': typeof AppAccountPasswordRoute
   '/_app/folders/$folderSlug': typeof AppFoldersFolderSlugRoute
   '/_app/join/$token': typeof AppJoinTokenRoute
@@ -241,6 +250,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset'
     | '/sign-up'
+    | '/about/'
     | '/account/password'
     | '/folders/$folderSlug'
     | '/join/$token'
@@ -266,6 +276,7 @@ export interface FileRouteTypes {
     | '/reset'
     | '/sign-up'
     | '/'
+    | '/about'
     | '/account/password'
     | '/folders/$folderSlug'
     | '/join/$token'
@@ -292,6 +303,7 @@ export interface FileRouteTypes {
     | '/reset'
     | '/sign-up'
     | '/_app/'
+    | '/about/'
     | '/_app/account/password'
     | '/_app/folders/$folderSlug'
     | '/_app/join/$token'
@@ -318,6 +330,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   ResetRoute: typeof ResetRoute
   SignUpRoute: typeof SignUpRoute
+  AboutIndexRoute: typeof AboutIndexRoute
   AboutPreviewScreenRoute: typeof AboutPreviewScreenRoute
   SetlistViewSetlistSlugRoute: typeof SetlistViewSetlistSlugRoute
 }
@@ -372,6 +385,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/about/': {
+      id: '/about/'
+      path: '/about'
+      fullPath: '/about/'
+      preLoaderRoute: typeof AboutIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_app/account/': {
       id: '/_app/account/'
@@ -542,6 +562,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   ResetRoute: ResetRoute,
   SignUpRoute: SignUpRoute,
+  AboutIndexRoute: AboutIndexRoute,
   AboutPreviewScreenRoute: AboutPreviewScreenRoute,
   SetlistViewSetlistSlugRoute: SetlistViewSetlistSlugRoute,
 }

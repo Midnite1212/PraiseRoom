@@ -1088,6 +1088,334 @@
     }
   },
   "about": {
+    "nav": {
+      "label": "About Praise Room",
+      "features": "Features",
+      "demo": "Demo",
+      "guides": "Guides",
+      "feedback": "Feedback",
+      "give": "Give",
+      "faq": "FAQ",
+      "tryIt": "Try it"
+    },
+    "prefs": {
+      "button": "Display settings",
+      "title": "Display"
+    },
+    "hero": {
+      "eyebrow": "Praise Room · for worship teams",
+      "before": "Your songs are *everywhere.*",
+      "after": "Now they live in *one room.*",
+      "lede": "Praise Room replaces paper charts and PDFs passed around the group chat with one place where your team finds songs, plans the set, and plays it in the right key.",
+      "scrollHint": "Scroll to tidy up",
+      "openDemo": "Open the demo",
+      "seeInside": "See what's inside",
+      "devicesCaption": "One room. Every screen, every key.",
+      "pile": {
+        "chat": "Worship team chat",
+        "chatMessage": "this sunday: … capo 2??",
+        "chatReply": "which version is the one we do",
+        "sticky": "Bridge ×2 ?? ask leader",
+        "notes": "Notes · my version",
+        "voice": "0:42 · key for Sunday",
+        "pdfName": "sunday-set-FINAL-v3.pdf",
+        "pdfMeta": "2.4 MB · 23:48",
+        "site": "chords-site.example/holy-holy",
+        "ad": "AD · LEARN GUITAR IN 7 DAYS",
+        "copy": "COPY 3 / 4",
+        "penKey": "G → A?",
+        "capo": "Capo 3 · tuning: E♭"
+      }
+    },
+    "features": {
+      "eyebrow": "Inside the room",
+      "title": "Seven doors off the same room.",
+      "lede": "Every scrap from the pile has a home now. Scroll on and each door opens on the screen you'd use it on: a laptop to plan, a phone to share, the TV on the stage floor to play. Switch screens any time. Everything is live, so tap away.",
+      "screenLabel": "Screen",
+      "screens": {
+        "phone": "Phone",
+        "tablet": "Tablet",
+        "desktop": "Desktop",
+        "tv": "TV"
+      },
+      "library": {
+        "kicker": "Song library",
+        "title": "One shelf for every song.",
+        "lede": "Search the church's shared library by title, artist, or a line you remember from the chorus, in English or Chinese. Filter by tempo and theme when you're building a set.",
+        "facts": {
+          "search": "Title, artist or lyric",
+          "languages": "English · 中文",
+          "filters": "Tempo and theme filters"
+        },
+        "try": "Try searching “sweet”, “river”, or 恩典.",
+        "screen": "Planning at a desk, with the whole library in view."
+      },
+      "charts": {
+        "kicker": "Chord charts",
+        "title": "Chords where they land.",
+        "lede": "Each chord sits right above the syllable it falls on. Read them as letters, as Nashville numbers, or as plain chords, whichever your players think in. Colour follows each chord's job, so it survives every key change.",
+        "facts": {
+          "notation": "Letters · Numbers · Simple",
+          "colour": "Coloured by function",
+          "shapes": "Guitar shapes beside the song"
+        },
+        "try": "Flip between Letters and Numbers on the screen.",
+        "screen": "A tablet on the music stand."
+      },
+      "transpose": {
+        "kicker": "Transpose",
+        "title": "Any key, spelled right.",
+        "lede": "Pick a key and every chord moves with it, spelled the way a musician reads it: B♭, not A♯. All twelve keys, major and minor, a capo when the guitarist wants one, and each song in a setlist keeps its own key.",
+        "facts": {
+          "keys": "All 12 keys",
+          "modes": "Major and minor",
+          "capo": "Capo",
+          "perSong": "Key per song"
+        },
+        "try": "Tap B♭ or F♯ and watch the spelling change.",
+        "screen": "Changing key on the phone in your pocket."
+      },
+      "setlists": {
+        "kicker": "Setlists",
+        "title": "This Sunday, always on top.",
+        "lede": "Build the service as a dated setlist: songs in order, each in its own key. Upcoming, undated and past sets are grouped for you, and Mine or Shared shows whose they are.",
+        "facts": {
+          "dated": "Dated and ordered",
+          "groups": "Upcoming · No date · Past",
+          "owners": "Mine and Shared"
+        },
+        "try": "Switch to Shared, then open a set.",
+        "screen": "Building Sunday on a laptop."
+      },
+      "musician": {
+        "kicker": "Musician view",
+        "title": "Made for a glance mid-song.",
+        "lede": "One setlist on screen, from a phone on the music stand to the TV on the stage floor, with ← / → to move between songs. Hide the chords for singers, pick from five lyric sizes, let it scroll for you, and keep the screen awake. On a TV, Present shows one section at a time, full screen.",
+        "facts": {
+          "arrows": "← / → between songs",
+          "lyricsOnly": "Lyrics only",
+          "sizes": "Five lyric sizes",
+          "autoScroll": "Auto-scroll",
+          "present": "Present to TV"
+        },
+        "try": "Press → to move on, then hide the chords.",
+        "screen": "The TV on the stage floor, read from three metres away."
+      },
+      "sharing": {
+        "kicker": "Sharing",
+        "title": "Share the songs, not the people.",
+        "lede": "Folders share setlists with the people in them, and an invite link brings new members in. Every setlist also has a public link that anyone can open without an account. It carries the songs and keys, and never member data.",
+        "facts": {
+          "folders": "Folders for your team",
+          "invite": "Invite link",
+          "publicLink": "Signed-out public link",
+          "noMemberData": "No member data"
+        },
+        "try": "Compare the team view with the public link.",
+        "screen": "Sending the link from a phone."
+      },
+      "bilingual": {
+        "kicker": "Bilingual by design",
+        "title": "Two languages, equal footing.",
+        "lede": "English and Traditional Chinese are built in rather than translated after the fact. Songs, search and every screen work in both, and Chinese text gets the space it needs.",
+        "facts": {
+          "english": "English",
+          "chinese": "繁體中文",
+          "search": "Search either way"
+        },
+        "try": "On a big screen, English and 中文 sit side by side.",
+        "screen": "A big screen shows both languages side by side."
+      }
+    },
+    "demo": {
+      "eyebrow": "Full demo",
+      "title": "Play the set yourself.",
+      "lede": "This is the reader your musicians open on Sunday, running on four public-domain hymns. Try it as a laptop, a tablet on the stand, a phone, or the TV on the stage floor. Nothing to install and no account needed.",
+      "frame": "Full demo",
+      "steps": {
+        "key": "Tap the key and move Amazing Grace to B♭. The original key stays outlined.",
+        "numbers": "Switch to Numbers. The chords stop changing when you change key.",
+        "songs": "Use ← → to move between songs. Each one keeps its own key.",
+        "lyrics": "Hide the chords and change the lyric size."
+      }
+    },
+    "guides": {
+      "eyebrow": "Guides",
+      "title": "How to, step by step.",
+      "lede": "Short guides for each room. Open the one you need.",
+      "tipLabel": "Tip",
+      "library": {
+        "findSong": {
+          "title": "Find a song",
+          "steps": {
+            "open": "Open **Songs** from the sidebar, or the bottom bar on a phone.",
+            "type": "Type part of a title, an artist, or a lyric.",
+            "filter": "Narrow the list with the **tempo** and **theme** filters.",
+            "tap": "Tap a song to open its chart."
+          },
+          "tip": "Searching lyrics finds songs when nobody remembers the title."
+        },
+        "addSong": {
+          "title": "Add a song",
+          "steps": {
+            "editor": "Ask an admin to make you an **editor**.",
+            "new": "Choose **New song**, or paste a chart.",
+            "chords": "Write chords in brackets before the syllable: `[G]Amazing`.",
+            "save": "Set the key, tempo and theme, then save."
+          }
+        }
+      },
+      "charts": {
+        "notation": {
+          "title": "Letters, numbers or simple",
+          "steps": {
+            "open": "Open any song.",
+            "settings": "Open the reading settings.",
+            "pick": "Pick **Letters**, **Numbers** or **Simple**. Your choice sticks for every song."
+          },
+          "tip": "Numbers stay the same in every key."
+        },
+        "colours": {
+          "title": "What the colours mean",
+          "steps": {
+            "one": "The **1** chord, home, takes your accent colour.",
+            "fourFive": "The **4** and **5** each get their own colour.",
+            "minor": "The minor **2**, **3** and **6** share one colour."
+          }
+        }
+      },
+      "transpose": {
+        "whileReading": {
+          "title": "Change key while reading",
+          "steps": {
+            "tap": "Tap the **key** beside the song title.",
+            "pick": "Pick a new key. The original stays outlined.",
+            "back": "Tap the original to go back."
+          },
+          "tip": "This only changes your screen, not the setlist."
+        },
+        "forTeam": {
+          "title": "Set a key for the team",
+          "steps": {
+            "edit": "Edit the setlist.",
+            "chip": "Tap the key chip on a song row.",
+            "save": "Choose the key and save. Everyone opens it in that key."
+          }
+        }
+      },
+      "setlists": {
+        "create": {
+          "title": "Create a setlist",
+          "steps": {
+            "new": "Go to **Setlists** and choose **New setlist**.",
+            "name": "Give it a name and a date, or leave the date empty for ideas.",
+            "songs": "Add songs, set each key, and drag them into order.",
+            "save": "Save. It appears under **Upcoming**."
+          }
+        }
+      },
+      "musician": {
+        "play": {
+          "title": "Play through a set",
+          "steps": {
+            "open": "Open a setlist.",
+            "arrows": "Use ← → to move between songs.",
+            "settings": "Hide the chords or change the lyric size from the reading settings.",
+            "tv": "On a TV, choose **Present to TV** for one section at a time, full screen."
+          },
+          "tip": "On a music stand, landscape shows more of each song."
+        }
+      },
+      "sharing": {
+        "team": {
+          "title": "Share with your team",
+          "steps": {
+            "folder": "Create a **folder** and add members, or send them the invite link.",
+            "move": "Move setlists into the folder.",
+            "shared": "Members find them under **Shared**."
+          }
+        },
+        "public": {
+          "title": "Send a public link",
+          "steps": {
+            "open": "Open a setlist.",
+            "copy": "Choose **Copy public link**.",
+            "read": "Anyone can read the songs without an account."
+          },
+          "tip": "Public links carry songs only, never member data."
+        }
+      }
+    },
+    "feedback": {
+      "eyebrow": "Feedback",
+      "title": "Tell us what to fix next.",
+      "lede": "Found a wrong chord, a bug, or a missing song? Tell us here.",
+      "form": {
+        "kindLegend": "What kind of note is this?",
+        "kinds": {
+          "bug": "Bug",
+          "idea": "Idea",
+          "question": "Question"
+        },
+        "message": "Message",
+        "messagePlaceholder": "Which song, which screen, what happened?",
+        "messageRequired": "Write a few words about it.",
+        "email": "Email (optional)",
+        "emailPlaceholder": "Only if you'd like a reply",
+        "emailHint": "We only use it to reply to this note.",
+        "submit": "Send feedback",
+        "thanksTitle": "Thank you. It's in the room."
+      }
+    },
+    "team": {
+      "eyebrow": "Who builds it",
+      "title": "Built by a worship team, for worship teams.",
+      "cardTitle": "A few volunteers, one church in Hong Kong.",
+      "body": "We play on Sundays and write code during the week. Praise Room is what we wanted on our own music stands: one library, the right key, and nothing to fight with mid-song.",
+      "roles": {
+        "musicians": "Musicians",
+        "leaders": "Worship leaders",
+        "developers": "Developers",
+        "editors": "Song editors"
+      }
+    },
+    "give": {
+      "title": "Keep the room open.",
+      "body": "Praise Room is free for worship teams. Gifts cover hosting and the domain, and anything beyond that goes back into the app.",
+      "once": "Give once",
+      "monthly": "Give monthly"
+    },
+    "faq": {
+      "title": "Questions people ask.",
+      "cost": {
+        "q": "Does it cost anything?",
+        "a": "No. Praise Room is free for worship teams. Gifts help cover hosting."
+      },
+      "join": {
+        "q": "Can our church join?",
+        "a": "Not yet. We're still deciding how other churches join, for example whether each church gets its own library. Leave a note in the feedback form and we'll let you know."
+      },
+      "chinese": {
+        "q": "Does it work in Chinese?",
+        "a": "Yes. Every screen exists in English and Traditional Chinese, and you can search songs in either language."
+      },
+      "stage": {
+        "q": "Can I read it on a dark stage?",
+        "a": "Dark is the default. Pick from five lyric sizes, and the screen stays awake while a song is open."
+      },
+      "publicLink": {
+        "q": "What does a public link show?",
+        "a": "Only the songs and their keys. Public links never show member names, emails, or folders."
+      },
+      "missingSong": {
+        "q": "A song we need is missing. What now?",
+        "a": "Ask an editor on your team to add it, or send a request through the feedback form with the title and artist."
+      }
+    },
+    "footer": {
+      "domain": "praiseroom.app",
+      "copyright": "© 2026 Praise Room"
+    },
     "preview": {
       "frameTitle": "{{name}} · {{screen}}",
       "openPublicLink": "Open the public link",

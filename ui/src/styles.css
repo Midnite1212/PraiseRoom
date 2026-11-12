@@ -164,6 +164,12 @@
   --text-card-title: 1.25rem;
   --text-card-title--line-height: 1.15;
   --text-ui: 0.9375rem;
+  --text-display: clamp(2.375rem, 1.3rem + 4.6vw, 5rem);
+  --text-display--line-height: 1.55;
+  --text-headline: clamp(2rem, 1.3rem + 2.6vw, 3.25rem);
+  --text-headline--line-height: 1.6;
+  --text-subhead: clamp(1.75rem, 1.3rem + 1.6vw, 2.625rem);
+  --text-subhead--line-height: 1.6;
 
   --color-brand: var(--brand);
   --color-ground: var(--ground);
@@ -195,6 +201,24 @@
   --color-chord-five: var(--chord-five);
   --color-chord-minor: var(--chord-minor);
   --color-label: var(--label);
+  --color-bezel: var(--bezel);
+  --color-bezel-rim: var(--bezel-rim);
+  --color-paper: var(--paper);
+  --color-paper-ink: var(--paper-ink);
+  --color-pen: var(--pen);
+  --color-sticky: var(--sticky);
+  --color-sticky-ink: var(--sticky-ink);
+  --color-bubble: var(--bubble);
+  --color-bubble-mine: var(--bubble-mine);
+  --color-bubble-ink: var(--bubble-ink);
+  --color-voice: var(--voice);
+  --color-memo: var(--memo);
+  --color-memo-ink: var(--memo-ink);
+  --color-memo-head: var(--memo-head);
+  --color-shot: var(--shot);
+  --color-shot-bar: var(--shot-bar);
+  --color-shot-ink: var(--shot-ink);
+  --color-shot-ad: var(--shot-ad);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -317,6 +341,25 @@
   --label: oklch(0.34 0 0);
   --destructive: oklch(0.55 0.21 27);
   --ok: oklch(0.55 0.15 150);
+
+  --bezel: oklch(0.2 0 0);
+  --bezel-rim: oklch(0 0 0 / 0.22);
+  --paper: oklch(0.97 0.02 85);
+  --paper-ink: oklch(0.27 0.02 60);
+  --pen: oklch(0.55 0.2 25);
+  --sticky: oklch(0.91 0.13 98);
+  --sticky-ink: oklch(0.3 0.05 90);
+  --bubble: oklch(0.96 0 0);
+  --bubble-mine: oklch(0.92 0.06 150);
+  --bubble-ink: oklch(0.22 0 0);
+  --voice: oklch(0.55 0.08 165);
+  --memo: oklch(0.2 0 0);
+  --memo-ink: oklch(0.93 0 0);
+  --memo-head: oklch(0.82 0.15 85);
+  --shot: oklch(0.99 0 0);
+  --shot-bar: oklch(0.9 0 0);
+  --shot-ink: oklch(0.25 0 0);
+  --shot-ad: oklch(0.88 0.08 95);
   --border: var(--hairline);
   --input: var(--hairline);
   --ring: var(--brand);
@@ -373,6 +416,25 @@
   --chord-minor: oklch(0.8 0.11 305);
   --destructive: oklch(0.7 0.19 25);
   --ok: oklch(0.8 0.15 150);
+
+  --bezel: oklch(0.12 0 0);
+  --bezel-rim: oklch(1 0 0 / 0.16);
+  --paper: oklch(0.86 0.02 85);
+  --paper-ink: oklch(0.24 0.02 60);
+  --pen: oklch(0.5 0.19 25);
+  --sticky: oklch(0.8 0.11 98);
+  --sticky-ink: oklch(0.26 0.05 90);
+  --bubble: oklch(0.27 0 0);
+  --bubble-mine: oklch(0.34 0.06 150);
+  --bubble-ink: oklch(0.94 0 0);
+  --voice: oklch(0.6 0.08 165);
+  --memo: oklch(0.16 0 0);
+  --memo-ink: oklch(0.9 0 0);
+  --memo-head: oklch(0.8 0.14 85);
+  --shot: oklch(0.88 0 0);
+  --shot-bar: oklch(0.76 0 0);
+  --shot-ink: oklch(0.22 0 0);
+  --shot-ad: oklch(0.76 0.07 95);
 
   color-scheme: dark;
 }
@@ -1091,6 +1153,120 @@
     .pixel-strip,
   .lit-icon-danger:hover:not(:disabled, [aria-disabled='true']) .pixel-strip {
     animation: var(--pixel-play);
+  }
+}
+
+/* Without scroll timelines or with reduced motion, the About hero shows its end state: no pile, no first
+   headline, no scroll hint. */
+.about-hero {
+  view-timeline: --about-hero block;
+}
+.about-pile,
+.about-before,
+.about-hint {
+  display: none;
+}
+
+@keyframes about-scrap-fold {
+  0% {
+    transform: translate(-50%, -50%) translate(var(--x), var(--y)) rotate(var(--r));
+    opacity: 1;
+  }
+  45% {
+    transform: translate(-50%, -50%) translate(var(--sx), var(--sy)) scale(0.9);
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(0.2);
+    opacity: 0;
+  }
+}
+@keyframes about-in {
+  from {
+    opacity: 0;
+    visibility: hidden;
+  }
+  to {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+@keyframes about-out {
+  from {
+    opacity: 1;
+    visibility: visible;
+  }
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@keyframes about-rise {
+  from {
+    opacity: 0;
+    translate: 0 36px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+@keyframes about-chord-in {
+  from {
+    opacity: 0;
+    translate: 0 0.5em;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .about-chord-now {
+    animation: about-chord-in 640ms var(--ease-out) both;
+    animation-delay: calc(240ms + var(--i, 0) * 140ms);
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .about-hero {
+      height: 240svh;
+    }
+    .about-hero-pin {
+      position: sticky;
+      top: 0;
+      height: 100svh;
+    }
+    .about-pile {
+      display: block;
+    }
+    .about-before {
+      display: block;
+    }
+    .about-hint {
+      display: inline-flex;
+    }
+    .about-scrap {
+      transform: translate(-50%, -50%) translate(var(--x), var(--y)) rotate(var(--r));
+      animation: about-scrap-fold linear both;
+      animation-timeline: --about-hero;
+      animation-range: contain calc(var(--i) * 2.5%) contain calc(62% + var(--i) * 2.5%);
+    }
+    .about-step {
+      animation: var(--step) linear both;
+      animation-timeline: --about-hero;
+      animation-range: contain var(--from) contain var(--to);
+    }
+    .about-chord {
+      animation: about-chord-in linear both;
+      animation-timeline: view();
+      animation-range: cover calc(6% + var(--i, 0) * 4%) cover calc(24% + var(--i, 0) * 4%);
+    }
   }
 }
 

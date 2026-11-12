@@ -4,7 +4,7 @@ import { ToggleGroup as ToggleGroupPrimitive } from 'radix-ui';
 import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { LanguageChoice, ThemeChoice } from '@/components/layout/preference-choices';
+import { AccentChoice, LanguageChoice, ThemeChoice } from '@/components/layout/preference-choices';
 import { PageHeader } from '@/components/page/page-header';
 import { toInitials } from '@/components/primitives/avatar';
 import { Segmented } from '@/components/primitives/segmented';
@@ -30,7 +30,6 @@ import { useKeepAwake, wakeLockSupported } from '@/features/reader/keep-awake';
 import { LYRICS_SIZES, type LyricsSize, useLyricsSize } from '@/features/reader/lyrics-size';
 import { ColourDots } from '@/features/reader/reading-settings';
 import { useIsRoomy } from '@/hooks/use-wide';
-import { ACCENTS, useAccent } from '@/lib/accent';
 import { canRefract, GLASS_STYLES, useGlassStyle } from '@/lib/liquid-glass';
 import { TYPEFACES, useTypeface } from '@/lib/typeface';
 import { cn } from '@/lib/utils';
@@ -84,42 +83,6 @@ function FontTiles() {
         </ToggleGroupPrimitive.Item>
       ))}
     </ToggleGroupPrimitive.Root>
-  );
-}
-
-function AccentSwatches() {
-  const { t } = useTranslation();
-  const [accent, setAccent] = useAccent();
-  return (
-    <div className="text-ink-2 flex items-center gap-2.5 text-sm font-semibold">
-      <ToggleGroupPrimitive.Root
-        type="single"
-        value={accent}
-        onValueChange={(next) => {
-          const choice = ACCENTS.find((candidate) => candidate === next);
-          if (choice) setAccent(choice);
-        }}
-        aria-label={t('settings.accent.title')}
-        className="-ml-2 flex gap-1.5"
-      >
-        {ACCENTS.map((value) => (
-          <ToggleGroupPrimitive.Item
-            key={value}
-            value={value}
-            aria-label={t(`settings.accent.options.${value}`)}
-            title={t(`settings.accent.options.${value}`)}
-            className="not-data-[state=on]:hover:liquid-hover grid size-10 place-items-center rounded-full transition-colors data-[state=on]:shadow-[inset_0_0_0_2px_var(--ink)]"
-          >
-            <span
-              aria-hidden
-              data-palette={value}
-              className="bg-brand size-6 rounded-full shadow-[inset_0_0_0_1px_var(--hairline)]"
-            />
-          </ToggleGroupPrimitive.Item>
-        ))}
-      </ToggleGroupPrimitive.Root>
-      <span>{t(`settings.accent.options.${accent}`)}</span>
-    </div>
   );
 }
 
@@ -319,7 +282,7 @@ function LookGroup() {
         <ThemeChoice withIcons size="md" className={STRETCH} />
       </SettingsRow>
       <SettingsRow label={t('settings.accent.title')}>
-        <AccentSwatches />
+        <AccentChoice />
       </SettingsRow>
       {canRefract() ? (
         <SettingsRow label={t('settings.glass.title')} hint={t('settings.glass.hint')}>
